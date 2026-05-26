@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+/* =========================================================
+   Design Tokens — übernommen aus dem Design-System
+   Tailwind v4 nutzt @theme statt JS-Config-Datei
+   ========================================================= */
+@theme {
+  /* Farben: Papier + Tinte + Sage Green */
+  --color-ink: #0e0d0b;
+  --color-ink-soft: #1a1815;
+  --color-paper: #f6f3ec;
+  --color-paper-warm: #fbf9f4;
+  --color-paper-edge: #ece7dc;
+  --color-rule: #d9d2c3;
+  --color-rule-soft: #e7e1d2;
+  --color-muted: #6b6557;
+  --color-muted-2: #9a9384;
+
+  /* Sage Green — Akzentfarbe */
+  --color-sage: oklch(0.46 0.04 145);
+  --color-sage-deep: oklch(0.36 0.045 145);
+  --color-sage-soft: oklch(0.86 0.025 145);
+
+  /* Fonts */
+  --font-sans: "Roboto", system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", "Times New Roman", serif;
+  --font-mono: "Roboto Mono", ui-monospace, monospace;
+}
+
+/* =========================================================
+   Globale Defaults
+   ========================================================= */
+html,
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* =========================================================
+   Editorial Typography Utilities
+   Wiederverwendbar als className="display" etc.
+   ========================================================= */
+.display {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(44px, 5.4vw, 84px);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+.display em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--color-sage-deep);
+}
+
+.h2-editorial {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(36px, 4vw, 56px);
+  line-height: 1.02;
+  letter-spacing: -0.018em;
+  color: var(--color-ink);
+  text-wrap: balance;
+}
+.h2-editorial em {
+  font-style: italic;
+  color: var(--color-sage-deep);
+  font-weight: 400;
+}
+
+.lede {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--color-muted);
+  max-width: 56ch;
+  font-weight: 400;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.eyebrow .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-sage);
+}
+
+/* =========================================================
+   Custom Scrollbar im Content-Bereich
+   ========================================================= */
+.scroll-area::-webkit-scrollbar {
+  width: 8px;
+}
+.scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scroll-area::-webkit-scrollbar-thumb {
+  background: var(--color-rule);
+  border-radius: 8px;
+}
