@@ -989,10 +989,22 @@ html, body {
 
 /* =========================================================
    SHOW-MORE (Mobile only, ab Schwellwert)
+   ---------------------------------------------------------
+   CSS-only Hide. JS toggelt `is-expanded` auf .gal-client-wrap,
+   das überschreibt das Hide.
+
+   Variante A (Mosaic): .galA-tile ab dem 6.
+   Variante B (Storyboard): .galB-item ab dem 6. Achtung: bei
+     "triple"-Layout kann das ein einzelnes item in einer Gruppe
+     hidden — Gruppe selbst bleibt sichtbar, das ist okay.
+   Variante C (Lightbox-Grid): .galC-tile ab dem 6.
    ========================================================= */
-.gal-hidden-mobile { display: block; }                /* Desktop: alle sichtbar */
 @media (max-width: 720px) {
-  .gal-hidden-mobile { display: none !important; }    /* Mobile: ausgeblendet bis Klick */
+  .gal-client-wrap:not(.is-expanded) .galA-tile:nth-child(n+6),
+  .gal-client-wrap:not(.is-expanded) .galB-item:nth-child(n+6),
+  .gal-client-wrap:not(.is-expanded) .galC-tile:nth-child(n+6) {
+    display: none;
+  }
 }
 
 .gal-showmore-row {

@@ -1,8 +1,6 @@
-'use client';
-
 import type { EffectiveTokens } from '@/types/supabase';
 import Decor from '@/components/ui/Decor';
-import GalleryWithShowMore from './GalleryWithShowMore';
+import GalleryClient from './GalleryClient';
 import {
   GALLERY_DEFAULTS,
   readImages,
@@ -13,9 +11,9 @@ import {
 /**
  * Gallery Variante B — Storyboard
  *
- * Bilder werden in Gruppen rhythmisch arrangiert (full → pair → triple → pair → ...).
- * Jedes Bild kann eine Caption haben (stamp + text). Keine Lightbox — Bilder
- * stehen für sich, der Erzählfluss ist der Punkt. Server Component (kein State).
+ * Server Component. Bilder in Gruppen (full/pair/triple) angeordnet.
+ * Keine Lightbox — Storyboard erzählt linear, Bilder stehen für sich.
+ * GalleryClient wickelt nur für ShowMore-Logik.
  */
 
 interface Props {
@@ -29,6 +27,13 @@ export default function GalleryVariantB({ tokens, content }: Props) {
   const intro = (content.intro as string) ?? GALLERY_DEFAULTS.intro;
   const images = readImages(content);
   const groups = buildStoryboardGroups(images);
+
+  // Globalen Index pro Image vorberechnen (für data-idx auf jedem item)
+  let runningIndex = 0;
+  const groupsWithIdx = groups.map((g) => ({
+    layout: g.layout,
+    items: g.items.map((img) => ({ img, idx: runningIndex++ })),
+  }));
 
   return (
     <div className="gal galB-wrap">
@@ -58,63 +63,34 @@ export default function GalleryVariantB({ tokens, content }: Props) {
         </p>
       )}
 
-      <GalleryWithShowMore
-        totalCount={images.length}
-        renderItems={(isHiddenOnMobile) => {
-          // Wir tracken den globalen Image-Index quer durch alle Gruppen
-          let runningIndex = 0;
-          return (
-            <div className="galB">
-              {groups.map((g, gi) => {
-                // Items in dieser Gruppe mit ihrem globalen Index ausstatten
-                const itemsWithIdx = g.items.map((img) => ({
-                  img,
-                  idx: runningIndex++,
-                }));
-                // Wenn ALLE items dieser Gruppe auf Mobile versteckt wären → gesamte Gruppe verstecken
-                const allHiddenOnMobile = itemsWithIdx.every(({ idx }) =>
-                  isHiddenOnMobile(idx),
-                );
-                return (
-                  <div
-                    key={gi}
-                    className={`galB-group ${allHiddenOnMobile ? 'gal-hidden-mobile' : ''}`}
-                    data-layout={g.layout}
-                  >
-                    <div className="galB-grid">
-                      {itemsWithIdx.map(({ img, idx }) => (
-                        <figure
-                          key={img.id}
-                          className={`galB-item ${
-                            !allHiddenOnMobile && isHiddenOnMobile(idx)
-                              ? 'gal-hidden-mobile'
-                              : ''
-                          }`}
-                        >
-                          <div className="galB-imgwrap">
-                            <img
-                              src={img.src}
-                              alt={img.alt}
-                              loading="lazy"
-                              data-editable={`gallery.${img.id}.image`}
-                              data-edit-type="image"
-                            />
-                          </div>
-                          {img.caption && (
-                            <figcaption className="galB-cap">
-                              <span className="stamp">{img.caption}</span>
-                            </figcaption>
-                          )}
-                        </figure>
-                      ))}
+      <GalleryClient images={images} withLightbox={false} totalCount={images.length}>
+        <div className="galB">
+          {groupsWithIdx.map((g, gi) => (
+            <div key={gi} className="galB-group" data-layout={g.layout}>
+              <div className="galB-grid">
+                {g.items.map(({ img, idx }) => (
+                  <figure key={img.id} className="galB-item" data-idx={idx}>
+                    <div className="galB-imgwrap">
+                      <img
+                        src={img.src}
+                        alt={img.alt}
+                        loading="lazy"
+                        data-editable={`gallery.${img.id}.image`}
+                        data-edit-type="image"
+                      />
                     </div>
-                  </div>
-                );
-              })}
+                    {img.caption && (
+                      <figcaption className="galB-cap">
+                        <span className="stamp">{img.caption}</span>
+                      </figcaption>
+                    )}
+                  </figure>
+                ))}
+              </div>
             </div>
-          );
-        }}
-      />
+          ))}
+        </div>
+      </GalleryClient>
     </div>
   );
 }

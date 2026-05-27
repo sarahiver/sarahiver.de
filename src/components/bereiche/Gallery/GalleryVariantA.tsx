@@ -1,10 +1,6 @@
-'use client';
-
-import { useState } from 'react';
 import type { EffectiveTokens } from '@/types/supabase';
 import Decor from '@/components/ui/Decor';
-import Lightbox from './Lightbox';
-import GalleryWithShowMore from './GalleryWithShowMore';
+import GalleryClient from './GalleryClient';
 import {
   GALLERY_DEFAULTS,
   readImages,
@@ -14,10 +10,8 @@ import {
 /**
  * Gallery Variante A — Mosaic
  *
- * CSS-columns Masonry. Bilder behalten ihre natürliche Höhe, fließen
- * von oben nach unten durch 4/3/2/1 Spalten (responsive). Sehr enge Gaps.
- * Captions erscheinen on hover als Overlay-Leiste am unteren Bildrand.
- * Klick auf Bild öffnet Lightbox.
+ * Server Component. Rendert das komplette Markup statisch.
+ * GalleryClient kümmert sich um Lightbox + ShowMore (Click-Delegation).
  */
 
 interface Props {
@@ -30,7 +24,6 @@ export default function GalleryVariantA({ tokens, content }: Props) {
   const title = (content.title as string) ?? GALLERY_DEFAULTS.title;
   const intro = (content.intro as string) ?? GALLERY_DEFAULTS.intro;
   const images = readImages(content);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   return (
     <div className="gal galA-wrap">
@@ -60,45 +53,30 @@ export default function GalleryVariantA({ tokens, content }: Props) {
         </p>
       )}
 
-      <GalleryWithShowMore
-        totalCount={images.length}
-        renderItems={(isHiddenOnMobile) => (
-          <div className="galA">
-            {images.map((img, i) => (
-              <figure
-                key={img.id}
-                className={`galA-tile ${isHiddenOnMobile(i) ? 'gal-hidden-mobile' : ''}`}
-                onClick={() => setActiveIndex(i)}
-                role="button"
-                tabIndex={0}
-                aria-label={`${img.alt} — Vergrößern`}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    setActiveIndex(i);
-                  }
-                }}
-              >
-                <img
-                  src={img.src}
-                  alt={img.alt}
-                  loading="lazy"
-                  data-editable={`gallery.${img.id}.image`}
-                  data-edit-type="image"
-                />
-                {img.caption && <figcaption className="galA-cap">{img.caption}</figcaption>}
-              </figure>
-            ))}
-          </div>
-        )}
-      />
-
-      <Lightbox
-        images={images}
-        activeIndex={activeIndex}
-        onClose={() => setActiveIndex(null)}
-        onNavigate={setActiveIndex}
-      />
+      <GalleryClient images={images} withLightbox totalCount={images.length}>
+        <div className="galA">
+          {images.map((img, i) => (
+            <figure
+              key={img.id}
+              className="galA-tile"
+              data-idx={i}
+              data-lightbox-trigger
+              role="button"
+              tabIndex={0}
+              aria-label={`${img.alt} — Vergrößern`}
+            >
+              <img
+                src={img.src}
+                alt={img.alt}
+                loading="lazy"
+                data-editable={`gallery.${img.id}.image`}
+                data-edit-type="image"
+              />
+              {img.caption && <figcaption className="galA-cap">{img.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      </GalleryClient>
     </div>
   );
 }
