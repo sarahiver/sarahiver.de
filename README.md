@@ -1,201 +1,136 @@
-# sarahiver.de — Marketing + Wedding-Plattform (v5 unified)
+# sarahiver.de — Marketing & Waitlist Site (v4)
 
-**Eine Codebase, ein Vercel-Projekt, eine Domain für alles:**
+Pre-Launch Landing Page für die Self-Service-Hochzeitsseiten-Plattform für den DACH-Raum.
 
-```
-sarahiver.de                    → Marketing-Landing (Hero, Features, Pricing, ...)
-sarahiver.de/impressum          → Marketing-Pages (statisch)
-sarahiver.de/datenschutz        → Marketing-Pages (statisch)
-sarahiver.de/sarah-und-iver     → Hochzeitsseite eines Brautpaars (dynamisch via Slug)
-sarahiver.de/julia-tom          → Demo-Hochzeit
-sarahiver.de/api/waitlist       → Brevo-API für Warteliste
-```
+## Was v4 anders macht als v3
 
-**sarahiver.com** ist das **Premium / Done-for-you-Produkt** und hat mit diesem Repo nichts zu tun.
+Diese Iteration fokussiert auf Reviewer-Feedback + Mobile-Tauglichkeit:
+
+| # | Change | Begründung |
+|---|--------|-----------|
+| 1 | **Bereich-Katalog auf 15 erweitert** (4 Basis + 11 Zusatz) | Analog zum si-wedding-themes Repo |
+| 2 | **Customizer-Live-Preview entfernt** → Coming-Soon-Placeholder | Reviewer: kollabiert auf Mobile |
+| 3 | **Customizer mobile-tauglich** mit Summary-Card statt Split-Screen | Reviewer: Mobile-First |
+| 4 | **Pricing: Laufzeit-Erklärung** (12 Monate / 18 Monate / Archiv) | Reviewer: Abo-Falle-Reflex |
+| 5 | **Pricing: Streichpreis-Logik** sichtbar (z.B. "~~28€~~ 19€") | Reviewer: Rabatt-Beweis |
+| 6 | **Pricing: Gesamtkosten-Anzeige** über 12 Monate | Reviewer: Transparenz |
+| 7 | **Bereich-Empfehlungen pro Start-Stil** | Reviewer: Choice Overload lösen |
+| 8 | **Redundanz "je mehr desto günstiger"** nur noch 1× | Reviewer: IA |
+| 9 | **Volume-Discount-Tabelle erweitert** für 11 Bereiche | Notwendig durch #1 |
+| 10 | **FAQ: neue Frage zu Abo-Modell** ganz oben | Reviewer: Transparenz |
+
+### Was bewusst NICHT geändert wurde
+
+- **Recurring Subscription beibehalten** (SaaS-Bewertung, RankBrief-Konsistenz)
+- **Hero-Mockup** weiterhin als fertige Hochzeitsseite (Entscheidung User)
+- **Modulares Bereich-System** (Differenzierung vs. Joy/Zola)
 
 ## Stack
 
-- **Next.js 15** (App Router, Server Components)
+- **Next.js 15** (App Router, RSC + Client Components)
 - **React 19**
 - **TypeScript 5** (strict)
-- **Tailwind CSS v4**
-- **Supabase** (SSR via `@supabase/ssr`)
-- **Brevo** für Wartelisten-Email-Sammlung
+- **Tailwind CSS v4** (@theme tokens)
+- **Brevo** für Waitlist
+- **Fraunces + Inter + Caveat + DM Mono** (Google Fonts)
 
-## Routing-Architektur
+## Sektions-Reihenfolge
 
-Path-basiert, keine Middleware nötig:
+1. **Hero** — Email-Sammlung + Pre-Launch-Hint, Julia-Tom-Demo-Mockup
+2. **Features** — 6 Werkzeuge
+3. **Examples** — 4 Demo-Hochzeiten
+4. **Structure** — **15 Bereiche** erklärt (4 Basis + 11 Zusatz)
+5. **Customizer** — Baukasten ohne fragile Live-Preview, mit Empfehlungen pro Stil
+6. **Print** — PDF kostenlos + 300€ Done-For-You
+7. **How** — 3 Schritte
+8. **Pricing** — Konfigurator mit Streichpreis + Laufzeit-Erklärung
+9. **Voices** — Beta-Stimmen
+10. **FAQ** — 9 Fragen (neu: Abo-Frage ganz oben)
+11. **CTA** — Finale Email-Sammlung
 
-```
-/                       → app/page.tsx                 (Marketing-Landing, statisch)
-/impressum              → app/impressum/page.tsx       (Marketing, statisch)
-/datenschutz            → app/datenschutz/page.tsx     (Marketing, statisch)
-/api/waitlist           → app/api/waitlist/route.ts    (API-Route)
-/[slug]                 → app/[slug]/page.tsx          (Wedding-Site, dynamisch)
-                          └─ Reserved-Slugs werden via isReservedSlug() abgefangen → 404
-```
+## Bereich-Katalog (15 total)
 
-**Wichtig:** Next.js priorisiert statische Routes (`/impressum`) über dynamische (`/[slug]`). Wenn ein Brautpaar versucht, einen reservierten Slug zu nehmen (`impressum`, `pricing`, etc.), greift die Reserved-Words-Liste in `lib/slug-validation.ts`.
+**4 Basis-Bereiche (immer dabei):**
+- Hero, RSVP, Timeline, Infos
 
-## Datenfluss für Hochzeitsseiten
+**11 Zusatz-Bereiche (frei wählbar):**
+- Lovestory ⭐, Galerie, Foto-Upload, Geschenke ⭐, Übernachtung, Countdown,
+  Gästebuch, FAQ, Musikwünsche, Trauzeugen, Hochzeits-ABC
 
-```
-User ruft auf:   sarahiver.de/sarah-und-iver
-        ↓
-Next.js Routing: app/[slug]/page.tsx (slug = "sarah-und-iver")
-        ↓
-isReservedSlug?  → Wenn ja: 404
-                   Wenn nein: weiter
-        ↓
-loadWeddingSite("sarah-und-iver")
-        ↓
-Supabase: SELECT * FROM v_effective_tokens WHERE slug = 'sarah-und-iver'
-          UND   SELECT * FROM wedding_bereiche ORDER BY display_order
-        ↓
-tokensToCSSVariables(tokens) → React.CSSProperties
-        ↓
-<div style={cssVars}>
-  <DnaProvider>
-    {bereiche.map(BereichRenderer)}
-  </DnaProvider>
-</div>
-```
+Namen synchron mit `si-wedding-themes` Repo (Hero.js, RSVP.js, Timeline.js, ...).
 
-## Verzeichnis-Struktur
+## Pricing-Tabelle (Volume Discount)
 
-```
-src/
-├── app/
-│   ├── layout.tsx              # Root-Layout mit Google Fonts
-│   ├── page.tsx                # Marketing-Landing (v4)
-│   ├── not-found.tsx           # 404 (für reserved/unbekannte Slugs)
-│   ├── globals.css             # Tailwind v4 + Marketing-Tokens + Wedding-Tokens
-│   ├── api/waitlist/route.ts   # Brevo-Integration
-│   ├── impressum/page.tsx      # Statische Marketing-Page
-│   ├── datenschutz/page.tsx    # Statische Marketing-Page
-│   ├── sitemap.ts              # SEO-Sitemap
-│   └── [slug]/page.tsx         # Dynamische Wedding-Site
-│
-├── components/
-│   ├── bereiche/               # Wedding-Bereich-Komponenten
-│   │   └── Hero/
-│   │       ├── HeroVariantA.tsx
-│   │       ├── HeroVariantB.tsx
-│   │       └── HeroVariantC.tsx
-│   ├── layout/
-│   │   ├── Sidebar.tsx          # Marketing-Sidebar (Desktop)
-│   │   ├── MobileNav.tsx        # Marketing-MobileNav
-│   │   ├── Footer.tsx           # Marketing-Footer
-│   │   ├── BereichRenderer.tsx  # Wedding: wählt Variante pro Bereich
-│   │   └── BereichPlaceholder.tsx # Wedding: Stub für not-yet-built
-│   ├── sections/                # Marketing-Sektionen (Hero/Features/Pricing/...)
-│   │   └── (alle v4-Sektionen)
-│   └── ui/
-│       ├── Section.tsx          # Marketing-Wrapper
-│       ├── WaitlistForm.tsx     # Marketing-Form (Brevo)
-│       └── Decor.tsx            # Wedding-Decor (DNA-basiert)
-│
-├── lib/
-│   ├── bereiche.ts              # Bereiche-Daten (Marketing + Wedding)
-│   ├── content.ts               # Marketing-Copy
-│   ├── customizer.ts            # DNA-System (Paletten/Schriften/Stile)
-│   ├── demos.ts                 # Demo-Hochzeiten für Marketing-Examples
-│   ├── pricing.ts               # Marketing-Preis-Logik
-│   ├── slug-validation.ts       # Reserved-Words + Slug-Format
-│   ├── supabase-server.ts       # Supabase-Client (SSR)
-│   ├── tokens.ts                # Token-Loader + CSS-Variable-Generator
-│   └── dna-context.tsx          # DnaProvider + useDna() für Client Components
-│
-└── types/
-    └── supabase.ts              # TypeScript-Types fürs Schema
-```
+| # Zusatz | Aufpreis | Gesamt/Monat | 12-Monate-Total |
+|----------|----------|--------------|-----------------|
+| 0 | – | 19€ | 228€ |
+| 1 | +4€ | 23€ | 276€ |
+| 2 | +7€ | 26€ | 312€ |
+| 3 | +9€ ⭐ | 28€ | 336€ |
+| 4 | +11€ | 30€ | 360€ |
+| 5 | +13€ | 32€ | 384€ |
+| 6 | +15€ | 34€ | 408€ |
+| 7 | +17€ | 36€ | 432€ |
+| **8+** | **+20€ (Cap)** | **39€** | **468€** |
 
 ## Setup
 
-### 1. Dependencies
-
 ```bash
 npm install
-```
-
-### 2. Environment
-
-```bash
 cp .env.example .env.local
-```
-
-Fülle ein:
-- `NEXT_PUBLIC_SUPABASE_URL` — deine sarahiver.de-Supabase-Projekt-URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Anon-Key
-- `BREVO_API_KEY` — für die Warteliste
-- `BREVO_WAITLIST_LIST_ID` — Brevo-List-ID
-- `NEXT_PUBLIC_APP_DOMAIN` — `sarahiver.de`
-
-### 3. Dev-Server
-
-```bash
+# BREVO_API_KEY + BREVO_WAITLIST_LIST_ID eintragen
 npm run dev
 ```
 
-Test-URLs lokal:
-- http://localhost:3000/ → Marketing-Landing
-- http://localhost:3000/sarah-und-iver-demo → Demo-Hochzeit
-- http://localhost:3000/impressum → Marketing-Page
-
-### 4. Production-Build
-
+Build:
 ```bash
 npm run build && npm start
 ```
 
-## Deployment auf Vercel
+## Bereich-Empfehlungen pro Start-Stil
 
-```bash
-vercel
+Definiert in `src/lib/customizer.ts` — `recommendedBereiche`:
+
+| Stil | Empfohlene Zusatz-Bereiche | Anzahl |
+|------|---------------------------|--------|
+| Klassisch & Warm | Lovestory, Galerie, Übernachtung, Geschenke, FAQ | 5 |
+| Modern & Klar | Lovestory, Foto-Upload, Geschenke, Musikwünsche | 4 |
+| Verspielt & Floral | Lovestory, Galerie, Gästebuch, Geschenke, Hochzeits-ABC | 5 |
+| Minimal & Ruhig | Countdown, Geschenke, FAQ | 3 |
+| Bold & Festlich | Lovestory, Galerie, Foto-Upload, Geschenke, Übernachtung, Trauzeugen, Musikwünsche | 7 |
+
+Diese Empfehlung wird in Step 4 ("Bereiche") automatisch vorgewählt — User kann ergänzen oder abwählen.
+
+## File Structure
+
+```
+src/
+├── app/
+│   ├── api/waitlist/route.ts
+│   ├── datenschutz/page.tsx
+│   ├── impressum/page.tsx
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── sitemap.ts
+├── components/
+│   ├── layout/
+│   ├── sections/  (11 Sektionen)
+│   └── ui/
+└── lib/
+    ├── bereiche.ts        (15 Bereiche)
+    ├── content.ts          (Copy + Pricing-Terms)
+    ├── customizer.ts       (DNA + Empfehlungen)
+    ├── demos.ts            (4 Demo-Hochzeiten)
+    └── pricing.ts          (Volume Discount + Laufzeit)
 ```
 
-Environment Variables im Vercel-Dashboard setzen (alle aus `.env.example`).
+## Roadmap nach Launch
 
-**Domain-Setup (nach 04.07.2026):**
-1. Vercel Settings → Domains → Add `sarahiver.de`
-2. DNS bei deinem Registrar: A-Record auf Vercel-IP (zeigt Vercel an)
-3. Auto-HTTPS funktioniert sofort
-
-**Keine Wildcard-DNS nötig** — wir nutzen Path-basiertes Multi-Tenant statt Subdomain.
-
-## Reserved Slugs
-
-Folgende Wörter dürfen NICHT als Hochzeit-Slug verwendet werden (in `lib/slug-validation.ts`):
-
-- Marketing-Pages: `impressum`, `datenschutz`, `agb`, `kontakt`
-- System-Routes: `api`, `admin`, `dashboard`, `login`, `auth`
-- Static Assets: `static`, `_next`, `public`, `favicon`
-- Häufige Konflikte: `pricing`, `features`, `baukasten`, `demo`
-- Vollständige Liste in `src/lib/slug-validation.ts`
-
-## Komponenten-Status
-
-**Marketing-Sektionen (v4, alle fertig):**
-- Hero, Features, Examples, Structure, Customizer, Print, How, Pricing, Voices, FAQ, CTA
-
-**Wedding-Bereich-Komponenten:**
-
-| Bereich | Variante A | Variante B | Variante C |
-|---------|------------|------------|------------|
-| Hero | ⚠️ Stub | ⚠️ Stub | ⚠️ Stub |
-| RSVP | ⏳ Open | ⏳ Open | ⏳ Open |
-| Timeline | ⏳ Open | ⏳ Open | ⏳ Open |
-| Infos | ⏳ Open | ⏳ Open | ⏳ Open |
-| Lovestory | ⏳ Open | ⏳ Open | ⏳ Open |
-| ... (11 weitere) | ⏳ Open | ⏳ Open | ⏳ Open |
-
-## Roadmap
-
-- [ ] Hero-Design finalisieren (via Claude Design)
-- [ ] RSVP-Komponente mit Form-Submit zu Supabase
-- [ ] Customer-Dashboard für Brautpaare (auf eigener Route `/dashboard`)
-- [ ] Auth-Flow (Email + Magic-Link via Supabase Auth)
-- [ ] OG-Image-Generator pro Hochzeit
+- [ ] Live-Preview im Customizer einbauen, sobald die echten Bereich-Komponenten fertig sind
+- [ ] Hero-Mockup mit Tool-Hint anreichern (Customizer-Tooltip-Overlay)
+- [ ] 4 Demo-Subdomains live schalten
+- [ ] OG-Image + Favicon
 - [ ] EN-Übersetzung (Phase 2 ab 2027)
 
 ## License
