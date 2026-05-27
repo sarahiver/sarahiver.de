@@ -1,113 +1,165 @@
 @import "tailwindcss";
 
 /* =========================================================
-   Design Tokens — übernommen aus dem Design-System
-   Tailwind v4 nutzt @theme statt JS-Config-Datei
+   Design Tokens v3 — übernommen aus Claude Design v3
    ========================================================= */
 @theme {
-  /* Farben: Papier + Tinte + Sage Green */
-  --color-ink: #0e0d0b;
-  --color-ink-soft: #1a1815;
-  --color-paper: #f6f3ec;
-  --color-paper-warm: #fbf9f4;
-  --color-paper-edge: #ece7dc;
-  --color-rule: #d9d2c3;
-  --color-rule-soft: #e7e1d2;
-  --color-muted: #6b6557;
-  --color-muted-2: #9a9384;
+  /* Warm paper — Hauptflächen */
+  --color-paper: #FAF6F0;
+  --color-paper-soft: #F4EDE2;
+  --color-paper-edge: #ECE2D0;
+  --color-rule: #E2D6C1;
+  --color-rule-soft: #ECE1CD;
 
-  /* Sage Green — Akzentfarbe */
-  --color-sage: oklch(0.46 0.04 145);
-  --color-sage-deep: oklch(0.36 0.045 145);
-  --color-sage-soft: oklch(0.86 0.025 145);
+  /* Ink — Text und Kontraste */
+  --color-ink: #2D2520;
+  --color-ink-soft: #5A4F46;
+  --color-muted: #8A7F73;
+  --color-muted-2: #B0A698;
+
+  /* Akzente — Terra (primary), Sage, Honey */
+  --color-terra: #B5746A;
+  --color-terra-soft: #E8C9C0;
+  --color-terra-deep: #8E574E;
+  --color-sage: #8A9A7B;
+  --color-sage-soft: #C8D2BC;
+  --color-sage-deep: #5E6E50;
+  --color-honey: #D4A574;
+  --color-honey-soft: #ECD7B6;
+
+  /* Sidebar — warmer Dunkelton (NICHT reines Schwarz) */
+  --color-sb-bg: #2D211C;
+  --color-sb-bg-soft: #3A2C26;
+  --color-sb-ink: #F4EDE2;
 
   /* Fonts */
-  --font-sans: "Roboto", system-ui, sans-serif;
-  --font-serif: "Cormorant Garamond", "Times New Roman", serif;
-  --font-mono: "Roboto Mono", ui-monospace, monospace;
+  --font-serif: "Fraunces", "Times New Roman", serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-script: "Caveat", cursive;
+  --font-mono: "DM Mono", ui-monospace, monospace;
 }
 
 /* =========================================================
    Globale Defaults
    ========================================================= */
-html,
-body {
+html, body {
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  font-feature-settings: "ss01";
 }
 
 /* =========================================================
-   Editorial Typography Utilities
-   Wiederverwendbar als className="display" etc.
+   Editorial Display + Script-Akzent (Fraunces + Caveat)
    ========================================================= */
 .display {
   font-family: var(--font-serif);
-  font-weight: 300;
-  font-size: clamp(44px, 5.4vw, 84px);
-  line-height: 0.98;
+  font-weight: 400;
+  font-size: clamp(40px, 5.2vw, 76px);
+  line-height: 1.02;
   letter-spacing: -0.02em;
   color: var(--color-ink);
   text-wrap: balance;
   overflow-wrap: break-word;
 }
 .display em {
-  font-style: italic;
-  font-weight: 400;
+  font-family: var(--font-script);
+  font-style: normal;
+  font-weight: 500;
+  color: var(--color-terra);
+  font-size: 1.06em;
+  padding: 0 0.04em;
+}
+.display .sage {
   color: var(--color-sage-deep);
+  font-style: italic;
+  font-weight: 500;
 }
 
 .h2-editorial {
   font-family: var(--font-serif);
-  font-weight: 300;
-  font-size: clamp(36px, 4vw, 56px);
-  line-height: 1.02;
+  font-weight: 400;
+  font-size: clamp(32px, 3.8vw, 52px);
+  line-height: 1.05;
   letter-spacing: -0.018em;
   color: var(--color-ink);
   text-wrap: balance;
 }
 .h2-editorial em {
-  font-style: italic;
+  font-family: var(--font-script);
+  font-style: normal;
+  font-weight: 500;
+  color: var(--color-terra);
+  font-size: 1.08em;
+}
+.h2-editorial .sage {
   color: var(--color-sage-deep);
-  font-weight: 400;
+  font-style: italic;
 }
 
 .lede {
   font-family: var(--font-sans);
   font-size: 17px;
-  line-height: 1.55;
-  color: var(--color-muted);
-  max-width: 56ch;
+  line-height: 1.6;
+  color: var(--color-ink-soft);
+  max-width: 60ch;
   font-weight: 400;
 }
 
 .eyebrow {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--color-muted);
 }
 .eyebrow .dot {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: var(--color-sage);
+  background: var(--color-terra);
 }
 
 /* =========================================================
-   Custom Scrollbar im Content-Bereich
+   Section Cards & Shadow System
    ========================================================= */
-.scroll-area::-webkit-scrollbar {
-  width: 8px;
+.shadow-card {
+  box-shadow:
+    0 1px 0 rgba(45,37,32,0.04),
+    0 12px 28px -16px rgba(45,37,32,0.12),
+    0 40px 80px -40px rgba(45,37,32,0.08);
 }
-.scroll-area::-webkit-scrollbar-track {
-  background: transparent;
+.shadow-lift {
+  box-shadow:
+    0 1px 0 rgba(45,37,32,0.04),
+    0 20px 50px -20px rgba(45,37,32,0.22),
+    0 60px 120px -40px rgba(45,37,32,0.14);
 }
+
+/* =========================================================
+   Pre-Launch Pulse Badge
+   ========================================================= */
+.pre-launch-pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-honey);
+  animation: pulse-honey 2.4s ease-in-out infinite;
+}
+@keyframes pulse-honey {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212,165,116,0.55); }
+  50% { box-shadow: 0 0 0 6px rgba(212,165,116,0); }
+}
+
+/* =========================================================
+   Scrollbar im Content
+   ========================================================= */
+.scroll-area::-webkit-scrollbar { width: 8px; }
+.scroll-area::-webkit-scrollbar-track { background: transparent; }
 .scroll-area::-webkit-scrollbar-thumb {
   background: var(--color-rule);
   border-radius: 8px;

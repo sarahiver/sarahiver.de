@@ -8,14 +8,13 @@ export default function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <Section id="faq" eyebrow={FAQ.eyebrow} eyebrowNumber="07">
+    <Section id="faq" eyebrow={FAQ.eyebrow} eyebrowNumber="10">
       <div className="mb-12">
         <h2 className="h2-editorial max-w-3xl">
-          {FAQ.title} <em>{FAQ.titleEmphasis}</em>
+          {FAQ.titlePart1} <em>{FAQ.titleEm}</em>
         </h2>
       </div>
 
-      {/* FAQ Accordion */}
       <div className="max-w-4xl">
         {FAQ.items.map((item, i) => {
           const isOpen = openIndex === i;
@@ -30,15 +29,16 @@ export default function FaqSection() {
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <span
-                  className="flex-1 text-xl md:text-2xl font-light leading-snug text-ink group-hover:text-sage-deep transition-colors"
-                  style={{ fontFamily: 'var(--font-serif)' }}
+                  className="flex-1 text-xl md:text-2xl leading-snug text-ink group-hover:text-terra-deep transition-colors"
+                  style={{ fontFamily: 'var(--font-serif)', fontWeight: 500 }}
                 >
                   {item.q}
                 </span>
                 <span
-                  className={`text-2xl text-muted transition-transform duration-300 flex-shrink-0 ${
+                  className={`text-2xl transition-transform duration-300 flex-shrink-0 ${
                     isOpen ? 'rotate-45' : ''
                   }`}
+                  style={{ color: 'var(--color-terra)' }}
                   aria-hidden="true"
                 >
                   +
@@ -46,7 +46,7 @@ export default function FaqSection() {
               </button>
               {isOpen && (
                 <div className="pb-6 pl-0 sm:pl-14">
-                  <p className="text-[15px] leading-relaxed text-muted max-w-2xl">{item.a}</p>
+                  <p className="text-[15px] leading-relaxed text-ink-soft max-w-2xl">{item.a}</p>
                 </div>
               )}
             </div>

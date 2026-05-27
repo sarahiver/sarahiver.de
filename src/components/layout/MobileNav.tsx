@@ -1,32 +1,30 @@
 'use client';
 
 import { useState } from 'react';
-import { NAV_SECTIONS } from '@/lib/content';
+import { NAV_SECTIONS, SIDEBAR } from '@/lib/content';
 
-/**
- * Mobile-Top-Nav — sichtbar unter lg-Breakpoint.
- * Klassische sticky Top-Bar mit Hamburger-Menu.
- */
 export default function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleJump = (id: string) => {
     const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     setIsOpen(false);
   };
 
   return (
     <>
-      {/* Top-Bar */}
-      <header className="lg:hidden sticky top-0 z-20 bg-ink text-paper-warm px-6 h-16 flex items-center justify-between">
-        <div className="font-sans font-black text-xl leading-none tracking-[-0.04em] text-white">
-          sarahiver<span className="text-[oklch(0.86_0.025_145)] font-light italic" style={{ fontFamily: 'var(--font-serif)' }}>.de</span>
+      <header
+        className="lg:hidden sticky top-0 z-20 text-sb-ink px-6 h-16 flex items-center justify-between"
+        style={{ background: '#2D211C' }}
+      >
+        <div
+          className="font-medium text-xl leading-none tracking-[-0.018em] text-white"
+          style={{ fontFamily: 'var(--font-serif)' }}
+        >
+          sarahiver<span style={{ color: 'var(--color-terra)' }}>.</span>de
         </div>
 
-        {/* Hamburger / Close */}
         <button
           onClick={() => setIsOpen(!isOpen)}
           aria-label={isOpen ? 'Menü schließen' : 'Menü öffnen'}
@@ -50,18 +48,33 @@ export default function MobileNav() {
         </button>
       </header>
 
-      {/* Overlay-Menu */}
       {isOpen && (
-        <div className="lg:hidden fixed inset-0 top-16 z-20 bg-ink text-paper-warm overflow-y-auto">
+        <div
+          className="lg:hidden fixed inset-0 top-16 z-20 text-sb-ink overflow-y-auto"
+          style={{ background: '#2D211C' }}
+        >
           <nav className="px-6 py-8 flex flex-col gap-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/35 mb-4">
+            <div
+              className="inline-flex items-center gap-2 mb-6 px-2.5 py-1.5 rounded-full border w-fit"
+              style={{
+                background: 'rgba(212,165,116,0.12)',
+                borderColor: 'rgba(212,165,116,0.32)',
+                color: 'var(--color-honey-soft)',
+              }}
+            >
+              <span className="pre-launch-pulse" />
+              <span className="font-mono text-[10px] tracking-[0.18em] uppercase">
+                {SIDEBAR.tag}
+              </span>
+            </div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/35 mb-3">
               Inhalt
             </p>
             {NAV_SECTIONS.map((section, i) => (
               <button
                 key={section.id}
                 onClick={() => handleJump(section.id)}
-                className="grid grid-cols-[40px_1fr] items-center gap-2 py-4 text-left text-base text-white/75 hover:text-white border-b border-white/10"
+                className="grid grid-cols-[40px_1fr] items-center gap-2 py-3.5 text-left text-base text-white/75 hover:text-white border-b border-white/10"
               >
                 <span className="font-mono text-[11px] tracking-[0.12em] text-white/30">
                   {String(i + 1).padStart(2, '0')}
@@ -69,9 +82,6 @@ export default function MobileNav() {
                 <span>{section.label}</span>
               </button>
             ))}
-            <div className="mt-8 font-mono text-[10px] uppercase tracking-[0.18em] text-white/30">
-              Pre-Launch · Q4 2026
-            </div>
           </nav>
         </div>
       )}

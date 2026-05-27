@@ -4,22 +4,18 @@ import { useState, FormEvent } from 'react';
 import { CTA } from '@/lib/content';
 
 interface WaitlistFormProps {
-  /**
-   * Layout-Variante:
-   * - 'inline': Email + Button nebeneinander (Hero, CTA-Section)
-   * - 'stacked': Email + Button untereinander (kompakte Bereiche)
-   */
-  variant?: 'inline' | 'stacked';
-  /**
-   * Honeypot-Feld zur Spam-Abwehr (Bots füllen alle Felder, Menschen nicht).
-   */
+  placeholder?: string;
+  cta?: string;
+  variant?: 'light' | 'dark';
   showPrivacy?: boolean;
 }
 
 type FormState = 'idle' | 'loading' | 'success' | 'error';
 
 export default function WaitlistForm({
-  variant = 'inline',
+  placeholder = CTA.waitlistPh,
+  cta = CTA.waitlistCta,
+  variant = 'light',
   showPrivacy = true,
 }: WaitlistFormProps) {
   const [email, setEmail] = useState('');
@@ -30,14 +26,11 @@ export default function WaitlistForm({
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (state === 'loading') return;
-
-    // Honeypot-Check: Wenn gefüllt = Bot
     if (honeypot) {
       setState('error');
       setErrorMessage('Spam erkannt');
       return;
     }
-
     setState('loading');
     try {
       const res = await fetch('/api/waitlist', {
@@ -45,12 +38,10 @@ export default function WaitlistForm({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
-
       if (!res.ok) {
         const data = await res.json();
         throw new Error(data.error || 'Etwas ist schiefgelaufen.');
       }
-
       setState('success');
       setEmail('');
     } catch (err) {
@@ -61,26 +52,30 @@ export default function WaitlistForm({
 
   if (state === 'success') {
     return (
-      <div className="p-6 rounded-xl border border-[oklch(0.46_0.04_145)] bg-[oklch(0.86_0.025_145)]/30">
-        <div className="flex items-center gap-3">
-          <span className="w-5 h-5 rounded-full bg-[oklch(0.46_0.04_145)] text-white flex items-center justify-center text-xs">
-            ✓
-          </span>
-          <p className="text-ink font-medium">{CTA.success}</p>
-        </div>
+      <div
+        className="p-5 rounded-2xl border flex items-center gap-3"
+        style={{
+          background: variant === 'dark' ? 'rgba(138,154,123,0.15)' : 'var(--color-sage-soft)',
+          borderColor: 'var(--color-sage)',
+          color: variant === 'dark' ? '#fff' : 'var(--color-sage-deep)',
+        }}
+      >
+        <span
+          className="w-5 h-5 rounded-full flex items-center justify-center text-xs flex-shrink-0"
+          style={{ background: 'var(--color-sage-deep)', color: '#fff' }}
+        >
+          ✓
+        </span>
+        <p className="font-medium">{CTA.success}</p>
       </div>
     );
   }
 
-  const inputClasses =
-    'w-full h-13 px-5 text-base text-ink bg-paper-warm border border-rule rounded-full placeholder:text-muted-2 focus:outline-none focus:border-ink transition-colors';
-
-  const buttonClasses =
-    'h-13 px-6 text-sm font-medium tracking-wide rounded-full bg-ink text-paper-warm border border-ink transition-all duration-200 hover:-translate-y-px hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center gap-2.5';
+  const isDark = variant === 'dark';
 
   return (
     <form onSubmit={handleSubmit} className="w-full" noValidate>
-      {/* Honeypot: visuell versteckt, screenreader auch */}
+      {/* Honeypot */}
       <input
         type="text"
         name="website"
@@ -92,28 +87,47 @@ export default function WaitlistForm({
         className="absolute opacity-0 pointer-events-none -left-[9999px]"
       />
 
-      <div className={variant === 'inline' ? 'flex flex-col sm:flex-row gap-3' : 'flex flex-col gap-3'}>
+      {/* Combined input + button (pill style) */}
+      <div
+        className="flex items-center gap-2 p-1.5 rounded-2xl border transition-all focus-within:shadow-card"
+        style={{
+          background: isDark ? 'rgba(255,255,255,0.06)' : 'var(--color-paper-warm, #fff)',
+          borderColor: isDark ? 'rgba(255,255,255,0.18)' : 'var(--color-rule)',
+        }}
+      >
         <input
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder={CTA.placeholder}
-          className={`${inputClasses} ${variant === 'inline' ? 'sm:flex-1' : ''}`}
+          placeholder={placeholder}
+          className="flex-1 bg-transparent border-0 outline-none px-4 py-2 text-[15px]"
+          style={{ color: isDark ? '#fff' : 'var(--color-ink)' }}
           disabled={state === 'loading'}
         />
-        <button type="submit" disabled={state === 'loading' || !email} className={buttonClasses}>
-          {state === 'loading' ? 'Wird gesendet…' : CTA.cta}
+        <button
+          type="submit"
+          disabled={state === 'loading' || !email}
+          className="h-11 px-5 text-sm font-medium tracking-wide rounded-xl transition-all hover:-translate-y-px disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center gap-2 flex-shrink-0 text-white"
+          style={{
+            background: 'var(--color-terra)',
+            boxShadow: '0 6px 16px -8px rgba(181,116,106,0.6)',
+          }}
+        >
+          {state === 'loading' ? 'Wird gesendet…' : cta}
           <span aria-hidden="true">→</span>
         </button>
       </div>
 
-      {state === 'error' && (
-        <p className="mt-3 text-sm text-red-600">{errorMessage}</p>
-      )}
+      {state === 'error' && <p className="mt-3 text-sm text-red-700">{errorMessage}</p>}
 
       {showPrivacy && (
-        <p className="mt-4 text-xs text-muted leading-relaxed max-w-md">{CTA.privacy}</p>
+        <p
+          className="mt-3 text-xs leading-relaxed max-w-md"
+          style={{ color: isDark ? 'rgba(255,255,255,0.6)' : 'var(--color-muted)' }}
+        >
+          {CTA.privacy}
+        </p>
       )}
     </form>
   );

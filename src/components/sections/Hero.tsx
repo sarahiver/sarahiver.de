@@ -2,45 +2,70 @@ import { HERO } from '@/lib/content';
 import WaitlistForm from '@/components/ui/WaitlistForm';
 
 /**
- * Hero-Section mit Browser-Mockup (Editorial-Theme Preview).
- *
- * Pre-Launch-Mode: Primary CTA ist die Email-Sammlung statt Kauf-Button.
- * Mockup zeigt eine Beispiel-Hochzeitswebsite zur Veranschaulichung.
+ * Hero — emotional, warm, "Vorfreude" als handgeschriebener Akzent.
+ * Email-Sammlung als primärer CTA.
  */
 export default function Hero() {
   return (
-    <section id="hero" className="min-h-screen px-6 md:px-12 lg:px-20 pt-12 pb-20 lg:pt-24">
-      <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-16 items-center">
-        {/* Left: Copy + CTA */}
+    <section
+      id="hero"
+      className="px-6 md:px-12 lg:px-20 pt-12 pb-20 lg:pt-20 lg:pb-24 min-h-screen flex items-center"
+    >
+      <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-14 lg:gap-20 items-center w-full">
+        {/* === LINKS: Copy + Waitlist === */}
         <div className="pr-2 min-w-0">
-          {/* Eyebrow */}
-          <div className="eyebrow mb-7">
-            <span className="dot" />
-            <span>{HERO.eyebrow}</span>
+          {/* Eyebrow with pulse */}
+          <div className="inline-flex items-center gap-2.5 mb-8 px-3 py-1.5 rounded-full"
+            style={{
+              background: 'rgba(212,165,116,0.16)',
+              border: '1px solid rgba(212,165,116,0.32)',
+            }}
+          >
+            <span className="pre-launch-pulse" />
+            <span
+              className="font-mono text-[10px] tracking-[0.2em] uppercase"
+              style={{ color: 'var(--color-terra-deep)' }}
+            >
+              {HERO.eyebrow}
+            </span>
           </div>
 
-          {/* Title */}
-          <h1 className="display mb-8 hyphens-auto break-words">
-            {HERO.title}
+          {/* Display Title with Caveat-em + Sage */}
+          <h1 className="display mb-7">
+            {HERO.titlePart1}
             <br />
-            <em>{HERO.titleEmphasis}</em>
+            <em>{HERO.titlePart2}</em>
+            <span className="sage">{HERO.titlePart3}</span>
           </h1>
 
-          {/* Sub */}
-          <p className="lede max-w-[44ch] mb-10">{HERO.sub}</p>
+          {/* Decorative "Vorfreude." */}
+          <div
+            className="mb-6 text-3xl"
+            style={{
+              fontFamily: 'var(--font-script)',
+              color: 'var(--color-terra)',
+              transform: 'rotate(-2deg)',
+              display: 'inline-block',
+            }}
+            aria-hidden="true"
+          >
+            {HERO.decor}
+          </div>
 
-          {/* Waitlist Form als primärer CTA */}
-          <div className="max-w-lg">
-            <WaitlistForm variant="inline" showPrivacy={true} />
+          <p className="lede max-w-[52ch] mb-9">{HERO.sub}</p>
+
+          {/* Waitlist Form */}
+          <div className="max-w-lg mb-7">
+            <WaitlistForm />
           </div>
 
           {/* Trust-Badges */}
-          <div className="mt-9 flex flex-wrap gap-7 font-mono text-[11px] tracking-[0.16em] uppercase text-muted">
+          <div className="flex flex-wrap gap-x-7 gap-y-2 font-mono text-[11px] tracking-[0.16em] uppercase text-muted">
             {HERO.trust.map((item) => (
               <span key={item} className="inline-flex items-center gap-2">
                 <span
                   className="w-3.5 h-3.5 inline-flex items-center justify-center rounded-full text-white text-[8px]"
-                  style={{ background: 'oklch(0.46 0.04 145)' }}
+                  style={{ background: 'var(--color-sage-deep)' }}
                   aria-hidden="true"
                 >
                   ✓
@@ -51,11 +76,14 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Right: Browser Mockup */}
+        {/* === RECHTS: Browser Mockup (Julia & Tom Demo) === */}
         <div className="relative" style={{ perspective: '1400px' }}>
           <div
-            className="bg-white rounded-[14px] overflow-hidden shadow-[0_30px_60px_-20px_rgba(14,13,11,0.25),0_60px_120px_-40px_rgba(14,13,11,0.15)]"
-            style={{ transform: 'rotateY(-3deg) rotateX(2deg)', transformStyle: 'preserve-3d' }}
+            className="bg-white rounded-[16px] overflow-hidden shadow-lift"
+            style={{
+              transform: 'rotateY(-3deg) rotateX(2deg)',
+              transformStyle: 'preserve-3d',
+            }}
           >
             {/* Browser Bar */}
             <div className="h-9 bg-[#efece6] border-b border-[#e3dfd5] flex items-center px-3.5 gap-2">
@@ -64,69 +92,124 @@ export default function Hero() {
                 <span className="w-2.5 h-2.5 rounded-full bg-[#d8d4c8]" />
                 <span className="w-2.5 h-2.5 rounded-full bg-[#d8d4c8]" />
               </div>
-              <div className="ml-3.5 bg-white rounded-md px-3 py-1 font-mono text-[10px] text-muted flex-1 max-w-[60%] border border-[#e3dfd5]">
-                <span className="text-[oklch(0.46_0.04_145)] mr-1.5">🔒</span>
-                julia-tom.sarahiver.de
+              <div
+                className="ml-3.5 bg-white rounded-md px-3 py-1 font-mono text-[10px] flex-1 max-w-[60%] border border-[#e3dfd5]"
+                style={{ color: 'var(--color-muted)' }}
+              >
+                <span style={{ color: 'var(--color-sage-deep)' }}>🔒</span> julia-tom.sarahiver.de
               </div>
             </div>
 
-            {/* Mockup Body — Editorial Theme */}
+            {/* Editorial-Stil Demo */}
             <div
               className="px-10 pt-9 relative overflow-hidden"
-              style={{ aspectRatio: '4 / 3.2', background: '#f8f4ec' }}
+              style={{
+                aspectRatio: '4 / 3.2',
+                background: 'linear-gradient(180deg, #FAF6F0 0%, #E8C9C0 100%)',
+              }}
             >
-              <div className="font-mono text-[9px] tracking-[0.3em] uppercase text-muted mb-3.5">
-                Editorial · No. 01
+              <div
+                className="font-mono text-[9px] tracking-[0.3em] uppercase mb-3.5"
+                style={{ color: 'var(--color-terra-deep)' }}
+              >
+                Klassisch & warm · Demo
               </div>
               <h2
-                className="font-light leading-[0.95] tracking-[-0.015em] mb-3"
-                style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(28px, 3.4vw, 54px)' }}
+                className="leading-[0.95] tracking-[-0.015em] mb-3"
+                style={{
+                  fontFamily: 'var(--font-serif)',
+                  fontSize: 'clamp(28px, 3.4vw, 50px)',
+                  fontWeight: 400,
+                  color: 'var(--color-ink)',
+                }}
               >
-                Julia <em className="italic">&</em>
+                Julia{' '}
+                <em
+                  style={{
+                    fontFamily: 'var(--font-script)',
+                    fontStyle: 'normal',
+                    color: 'var(--color-terra)',
+                  }}
+                >
+                  &
+                </em>
                 <br />
                 Tom
               </h2>
-              <p className="text-[11px] text-muted tracking-[0.04em] mb-5">
-                Am 27. Juni 2026 — Schloss Wackerbarth
+              <p
+                className="text-[11px] tracking-[0.04em] mb-5"
+                style={{ color: 'var(--color-ink-soft)' }}
+              >
+                12. September 2027 — Schloss Wackerbarth, Sachsen
               </p>
 
               {/* Meta-Footer */}
-              <div className="flex gap-7 font-mono text-[10px] tracking-[0.18em] uppercase text-muted border-t border-ink/10 pt-3.5 mt-2">
+              <div
+                className="flex gap-7 font-mono text-[10px] tracking-[0.18em] uppercase border-t pt-3.5 mt-2"
+                style={{
+                  color: 'var(--color-muted)',
+                  borderColor: 'rgba(45,37,32,0.15)',
+                }}
+              >
                 <div>
-                  <span className="block text-[8px] text-muted-2 mb-1">Datum</span>
                   <span
-                    className="text-sm tracking-normal text-ink"
-                    style={{ fontFamily: 'var(--font-serif)' }}
+                    className="block text-[8px] mb-1"
+                    style={{ color: 'var(--color-muted-2)' }}
                   >
-                    27 · 06 · 26
+                    Datum
+                  </span>
+                  <span
+                    className="text-sm tracking-normal"
+                    style={{
+                      fontFamily: 'var(--font-serif)',
+                      color: 'var(--color-ink)',
+                    }}
+                  >
+                    12 · 09 · 27
                   </span>
                 </div>
                 <div>
-                  <span className="block text-[8px] text-muted-2 mb-1">Ort</span>
                   <span
-                    className="text-sm tracking-normal text-ink"
-                    style={{ fontFamily: 'var(--font-serif)' }}
+                    className="block text-[8px] mb-1"
+                    style={{ color: 'var(--color-muted-2)' }}
+                  >
+                    Ort
+                  </span>
+                  <span
+                    className="text-sm tracking-normal"
+                    style={{
+                      fontFamily: 'var(--font-serif)',
+                      color: 'var(--color-ink)',
+                    }}
                   >
                     Dresden
                   </span>
                 </div>
                 <div>
-                  <span className="block text-[8px] text-muted-2 mb-1">RSVP</span>
                   <span
-                    className="text-sm tracking-normal text-ink"
-                    style={{ fontFamily: 'var(--font-serif)' }}
+                    className="block text-[8px] mb-1"
+                    style={{ color: 'var(--color-muted-2)' }}
                   >
-                    bis 15.05.
+                    RSVP
+                  </span>
+                  <span
+                    className="text-sm tracking-normal"
+                    style={{
+                      fontFamily: 'var(--font-serif)',
+                      color: 'var(--color-ink)',
+                    }}
+                  >
+                    bis 01.08.
                   </span>
                 </div>
               </div>
 
-              {/* Photo placeholder (rechts unten) */}
+              {/* Photo placeholder */}
               <div
-                className="absolute bottom-0 right-5 w-[38%] rounded-t-md overflow-hidden"
+                className="absolute bottom-0 right-6 w-[35%] rounded-t-md overflow-hidden"
                 style={{
                   aspectRatio: '3/4',
-                  background: 'linear-gradient(135deg, #d4cdb8 0%, #b8b09a 100%)',
+                  background: 'linear-gradient(135deg, #B5746A 0%, #8E574E 100%)',
                 }}
               >
                 <div
@@ -137,7 +220,7 @@ export default function Hero() {
                   }}
                 />
                 <div
-                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-[9px] tracking-[0.18em] uppercase text-ink/45 text-center"
+                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-[9px] tracking-[0.18em] uppercase text-white/70 text-center"
                   aria-hidden="true"
                 >
                   Brautpaar
@@ -146,6 +229,19 @@ export default function Hero() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Caveat-Tag rechts unten am Mockup */}
+          <div
+            className="absolute -bottom-4 -right-2 px-3 py-1.5 rounded-full text-white text-sm"
+            style={{
+              background: 'var(--color-terra)',
+              fontFamily: 'var(--font-script)',
+              transform: 'rotate(-3deg)',
+            }}
+            aria-hidden="true"
+          >
+            Beispiel
           </div>
         </div>
       </div>

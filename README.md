@@ -1,140 +1,155 @@
-# sarahiver.de — Marketing Site
+# sarahiver.de — Marketing & Waitlist Site (v3)
 
-Pre-Launch-Marketing-Site für die Self-Service-Hochzeitswebsite-SaaS.
+Pre-Launch Landing Page für die Self-Service-Hochzeitsseiten-Plattform für den DACH-Raum.
 
 ## Stack
 
-- **Next.js 15** (App Router) — modern, zukunftssicher
-- **TypeScript 5** — Type-Safety, Senior-Portfolio-Standard
-- **Tailwind CSS v4** — CSS-First-Config, kein PostCSS-Config-File nötig
+- **Next.js 15** (App Router, RSC + Client Components)
 - **React 19**
-- **Brevo-API** — Waitlist-Anmeldungen
+- **TypeScript 5** (strict)
+- **Tailwind CSS v4** (@theme tokens, no PostCSS legacy)
+- **Brevo** (für Waitlist-Anmeldung)
+- **Fraunces + Inter + Caveat + DM Mono** (Google Fonts)
 
-## Lokal entwickeln
+## Was v3 vs. v2 unterscheidet
+
+Zwei neue Sektionen, Vokabular-Umstellung, DNA-System im Customizer:
+
+| Bereich | v2 | v3 |
+|---------|----|----|
+| Sektionen | 8 + Print | **10 Sektionen** (+ Examples + Structure) |
+| UI-Wortwahl | "Komponente" | **"Bereich"** durchgängig |
+| Customizer | Theme-Wechsel | **DNA-System** (Layout, Spacing, Decor pro Stil) |
+| Demo-Beispiele | fehlten | **4 Demo-Hochzeiten** mit echten Subdomain-Links |
+| Aufbau-Erklärung | fehlte | **Structure-Sektion** mit allen 9 Bereichen |
+
+## Sektions-Reihenfolge
+
+1. **Hero** — Email-Sammlung + Pre-Launch-Hint, Julia-Tom-Demo-Mockup
+2. **Features** — 6 Werkzeuge (RSVP, Gästeliste, Anpassbar, Privacy, EN/DE, Hosting)
+3. **Examples** — 4 Demo-Hochzeiten (Featured + 3 Compact)
+4. **Structure** — 9 Bereiche erklärt (4 Basis sage-akzentuiert + 5 Zusatz)
+5. **Customizer** — Baukasten mit 4 Schritten + Live-Preview (DNA-basiert)
+6. **Print** — PDF-Vorlagen kostenlos + 300€ Done-For-You
+7. **How** — 3 Schritte mit Caveat-Tips
+8. **Pricing** — Konfigurator (Basis 19€ + 0/4/7/9/11/13/15 Aufpreis)
+9. **Voices** — 2 Beta-Stimmen + 9,4/10 Empfehlungswahrscheinlichkeit
+10. **FAQ** — Accordion mit 8 Fragen
+11. **CTA** — Finale Email-Sammlung in dark-warm
+
+## DNA-System (Customizer)
+
+Jeder Start-Stil hat eigene "DNA" — beim Wechsel ändert sich nicht nur die Farbe:
+
+| Stil | Alignment | Spacing | Decor | Schrift |
+|------|-----------|---------|-------|---------|
+| Klassisch | center | regular | rule (Linie + Punkt) | Fraunces |
+| Modern | left | airy | none | Inter Bold |
+| Floral | center | regular | sprig (Ranken) | Fraunces Italic |
+| Minimal | left | wide | hairline | DM Mono |
+| Festlich | center | tight | gold | Fraunces 700 |
+
+Siehe `src/lib/customizer.ts`.
+
+## Setup
+
+### 1. Dependencies installieren
 
 ```bash
-# Dependencies installieren
 npm install
-
-# Env-Vars setzen (Datei kopieren und Werte einfügen)
-cp .env.example .env.local
-
-# Dev-Server starten
-npm run dev
-# → http://localhost:3000
 ```
 
-## Environment Variables
+### 2. Environment-Variablen
 
-In Vercel Dashboard setzen (Settings → Environment Variables):
+Kopiere `.env.example` zu `.env.local` und fülle die Werte:
 
-| Variable | Beschreibung |
-|----------|--------------|
-| `BREVO_API_KEY` | API-Schlüssel aus Brevo (Settings → SMTP & API → API Keys) |
-| `BREVO_WAITLIST_LIST_ID` | Numerische ID der `sarahiver-de-waitlist` Liste |
+```bash
+BREVO_API_KEY=xkeysib-...
+BREVO_WAITLIST_LIST_ID=42
+```
 
-**Wichtig:** Bei Vercel auf "Sensitive" markieren (Production + Preview Environments).
+**Brevo-Setup:**
+1. Bei Brevo eine neue Kontaktliste anlegen: `sarahiver-de-waitlist`
+2. List-ID kopieren (`Contacts → Lists`)
+3. API-Key erstellen (`Settings → SMTP & API → API Keys`)
 
-## Brevo Setup
+### 3. Dev-Server
 
-1. Im Brevo-Dashboard: neue Liste anlegen → `sarahiver-de-waitlist`
-2. Liste-ID notieren (siehe URL oder in Listen-Übersicht)
-3. **Double-Opt-In aktivieren:** Settings → Forms → Templates → DOI für die Liste konfigurieren
-4. **Sender verifizieren:** `hallo@sarahiver.de` als Sender hinzufügen + DKIM/SPF/DMARC für die Domain einrichten
+```bash
+npm run dev
+```
+
+Lokal unter http://localhost:3000
+
+### 4. Production-Build
+
+```bash
+npm run build
+npm start
+```
 
 ## Deployment auf Vercel
 
 ```bash
-# 1. Mit Vercel CLI
-npx vercel
-
-# 2. Oder über GitHub:
-#    - Push zu GitHub-Repo
-#    - In Vercel: "Import Project" → Repo wählen
-#    - Custom Domain: sarahiver.de
-#    - Env-Vars setzen
+vercel deploy --prod
 ```
 
-## Projekt-Struktur
+**Wichtig:** Environment-Variablen im Vercel-Dashboard setzen. `BREVO_API_KEY` sollte als **Sensitive** markiert sein.
+
+## Domain-Setup
+
+- Hauptdomain: `sarahiver.de`
+- Demo-Subdomains (zukünftig): `julia-tom.sarahiver.de`, `anna-und-lukas.sarahiver.de`, `mia-und-noah.sarahiver.de`, `elena-und-felix.sarahiver.de`
+
+Demo-Subdomains werden im `si-wedding-themes`-System angelegt. Bis dahin führen die Links auf 404.
+
+## File Structure
 
 ```
 src/
 ├── app/
-│   ├── layout.tsx          # Root Layout mit Fonts + Metadata
-│   ├── page.tsx            # Landing Page (alle Sektionen)
-│   ├── globals.css         # Tailwind + Design Tokens
-│   ├── sitemap.ts          # Dynamische Sitemap für SEO
-│   ├── api/
-│   │   └── waitlist/
-│   │       └── route.ts    # Brevo-Integration (POST /api/waitlist)
-│   ├── impressum/page.tsx  # Impressum (Platzhalter)
-│   └── datenschutz/page.tsx
-│
+│   ├── api/waitlist/route.ts    # Brevo-Integration
+│   ├── datenschutz/page.tsx
+│   ├── impressum/page.tsx
+│   ├── globals.css              # Tailwind v4 + @theme tokens
+│   ├── layout.tsx
+│   ├── page.tsx                 # Landing (11 Sektionen)
+│   └── sitemap.ts
 ├── components/
-│   ├── layout/
-│   │   ├── Sidebar.tsx     # Desktop-Sidebar (≥ 1024px)
-│   │   ├── MobileNav.tsx   # Mobile Top-Nav (< 1024px)
-│   │   └── Footer.tsx
-│   ├── sections/
-│   │   ├── Hero.tsx        # Hero mit Browser-Mockup
-│   │   ├── Features.tsx    # 6 Feature-Cards
-│   │   ├── Themes.tsx      # 7 Themes
-│   │   ├── HowItWorks.tsx  # 3-Schritte
-│   │   ├── Pricing.tsx     # KONFIGURATOR mit Volumen-Rabatt
-│   │   ├── Social.tsx      # Testimonials
-│   │   ├── Faq.tsx         # FAQ Accordion
-│   │   └── Cta.tsx         # Final Waitlist-CTA
-│   └── ui/
-│       ├── Button.tsx
-│       ├── Section.tsx
-│       └── WaitlistForm.tsx  # Mit Honeypot-Spam-Schutz
-│
+│   ├── layout/                  # Sidebar, MobileNav, Footer
+│   ├── sections/                # 11 Sektions-Komponenten
+│   └── ui/                      # Section-Wrapper, WaitlistForm
 └── lib/
-    ├── content.ts          # ALLE Texte zentral (leicht editierbar)
-    ├── pricing.ts          # Pricing-Logik (Volumen-Rabatt)
-    └── addons.ts           # Add-On-Komponenten-Daten
+    ├── bereiche.ts              # 9 Bereiche (4 basis + 5 zusatz)
+    ├── content.ts               # Zentrale Copy-Datei
+    ├── customizer.ts            # DNA-System (Paletten, Schriften, Stile)
+    ├── demos.ts                 # 4 Demo-Hochzeiten
+    └── pricing.ts               # Volumen-Rabatt (4-7-9-11-13-15)
 ```
 
-## Pricing-Logik
+## Roadmap nach Launch
 
-**Basis:** 19€/Monat (4 Core-Components inklusive)
+- [ ] Echte Demo-Subdomains im `si-wedding-themes`-System
+- [ ] 90-Sek Demo-Video für Hero (Loom/Riverside)
+- [ ] OG-Image
+- [ ] favicon.ico
+- [ ] Vollständiges Impressum + Datenschutz
+- [ ] EN-Übersetzung (Phase 2 ab 2027)
 
-**Add-Ons mit Volumen-Rabatt:**
+## Wortwahl-Regel
 
-| Anzahl | Aufpreis | Pro Komponente |
-|--------|----------|----------------|
-| 1 | +4€ | 4,00€ |
-| 2 | +7€ | 3,50€ |
-| 3 ⭐ | +9€ | 3,00€ (Sweet Spot) |
-| 4 | +11€ | 2,75€ |
-| 5 | +13€ | 2,60€ |
-| 6+ ⭐ | +15€ flat (Komplett-Cap) |
+**Im Code:** `component`, `block`, `tier` sind OK (Dev-Sprache)
+**Im UI:** Niemals "Komponente" → immer "Bereich"
 
-Logik in `src/lib/pricing.ts` — wiederverwendbar.
+| Tech (intern) | Marketing (UI) |
+|---------------|----------------|
+| Component | Bereich |
+| Customizer | Baukasten |
+| Plan/Tier | Paket |
+| Subscription | Abo |
+| Subdomain | Eure Adresse |
+| Custom Domain | Eigene Domain |
 
-## Was zu tun ist vor Launch
+## License
 
-- [ ] Echte Impressum-Daten in `src/app/impressum/page.tsx`
-- [ ] Vollständige Datenschutzerklärung in `src/app/datenschutz/page.tsx`
-- [ ] Brevo-Liste anlegen + Double-Opt-In aktivieren
-- [ ] Brevo-Sender `hallo@sarahiver.de` verifizieren
-- [ ] Vercel-Projekt erstellen + Domain sarahiver.de connecten
-- [ ] Env-Vars in Vercel als "Sensitive" setzen
-- [ ] Cookie-Banner einfügen (vor Launch-Marketing-Push)
-- [ ] OG-Image für Social-Sharing in `public/og.png` legen
-- [ ] Favicon in `public/favicon.ico` legen
-
-## Bekannte TODOs
-
-- Cookie-Banner fehlt noch (für Launch nötig — siehe sarahiver.com als Vorlage)
-- OG-Image (1200x630px) fehlt
-- Favicon fehlt
-- Logo-Asset: Aktuell als Wortmarke "sarahiver.de" gerendert. Falls Logo-Datei später vorhanden, ersetzen in `Sidebar.tsx` und `MobileNav.tsx`.
-- Theme-Preview-Bilder: Aktuell SVG-Mockups. Können später durch echte Cloudinary-Bilder ersetzt werden.
-
-## Senior-PM-Lernpunkte (Next.js 15 App Router)
-
-- **Server vs. Client Components:** Sektionen ohne State sind Server-Components (default). Sektionen mit `useState` (Sidebar Scroll-Spy, Pricing-Konfigurator, FAQ-Accordion, Waitlist-Form) brauchen `'use client'` oben.
-- **Layout-Pattern:** `app/layout.tsx` wrapped alle Seiten. Sidebar wird aber in `page.tsx` gerendert, nicht im Root-Layout, damit Legal-Pages ohne Sidebar erscheinen.
-- **API Routes:** Statt `pages/api/*.ts` jetzt `app/api/*/route.ts` mit `POST/GET`-Exports.
-- **Metadata API:** Statt `<Head>` jetzt `export const metadata` pro Page.
+Proprietary © 2026 sarahiver UG (i. Gr.)

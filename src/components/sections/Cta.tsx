@@ -5,49 +5,70 @@ export default function CtaSection() {
   return (
     <section
       id="cta"
-      className="px-6 md:px-12 lg:px-20 py-24 lg:py-32 bg-ink text-paper-warm relative overflow-hidden"
+      className="px-6 md:px-12 lg:px-20 py-24 lg:py-32 text-paper-warm relative overflow-hidden"
+      style={{
+        background:
+          'radial-gradient(circle at 18% 22%, rgba(212,165,116,0.12), transparent 40%), radial-gradient(circle at 88% 78%, rgba(181,116,106,0.15), transparent 42%), #2D211C',
+      }}
     >
-      {/* Dezenter Sage-Akzent oben */}
-      <div
-        className="absolute top-0 left-0 right-0 h-px"
-        style={{
-          background:
-            'linear-gradient(to right, transparent, oklch(0.86 0.025 145), transparent)',
-        }}
-      />
-
-      <div className="max-w-4xl mx-auto text-center">
+      <div className="max-w-3xl mx-auto text-center">
         {/* Eyebrow */}
-        <div className="inline-flex items-center gap-3 mb-8 font-mono text-[11px] tracking-[0.22em] uppercase text-paper-warm/55">
-          <span
-            className="w-1.5 h-1.5 rounded-full"
-            style={{ background: 'oklch(0.86 0.025 145)' }}
-          />
+        <div className="inline-flex items-center gap-3 mb-8 font-mono text-[10px] tracking-[0.22em] uppercase text-paper-warm/60">
+          <span className="pre-launch-pulse" />
           {CTA.eyebrow}
         </div>
 
         {/* Title */}
         <h2
-          className="font-light leading-tight mb-8 text-paper-warm"
+          className="leading-tight mb-8"
           style={{
             fontFamily: 'var(--font-serif)',
-            fontSize: 'clamp(40px, 5vw, 72px)',
+            fontSize: 'clamp(38px, 4.8vw, 64px)',
             letterSpacing: '-0.02em',
+            color: 'var(--color-paper-warm)',
+            fontWeight: 400,
           }}
         >
-          {CTA.title}
-          <br />
-          <em style={{ color: 'oklch(0.86 0.025 145)' }}>{CTA.titleEmphasis}</em>
+          {CTA.titlePart1}{' '}
+          <em
+            style={{
+              fontFamily: 'var(--font-script)',
+              fontStyle: 'normal',
+              color: 'var(--color-honey)',
+              fontSize: '1.08em',
+              fontWeight: 500,
+            }}
+          >
+            {CTA.titleEm}
+          </em>
         </h2>
 
-        {/* Lede */}
-        <p className="text-lg leading-relaxed text-paper-warm/75 max-w-2xl mx-auto mb-12">
+        <p
+          className="text-lg leading-relaxed max-w-2xl mx-auto mb-10"
+          style={{ color: 'rgba(244,237,226,0.78)' }}
+        >
           {CTA.lede}
         </p>
 
-        {/* Waitlist Form - zentriert */}
         <div className="max-w-lg mx-auto">
-          <WaitlistForm variant="inline" showPrivacy={true} />
+          <WaitlistForm cta={CTA.waitlistCta} variant="dark" showPrivacy={true} />
+        </div>
+
+        {/* Trust-Stripe */}
+        <div className="mt-14 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto">
+          {CTA.trust.map((t) => (
+            <div key={t.lab} className="text-center">
+              <div className="font-mono text-[10px] tracking-[0.22em] uppercase text-paper-warm/45 mb-1.5">
+                {t.lab}
+              </div>
+              <div
+                className="text-base"
+                style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-paper-warm)' }}
+              >
+                {t.val}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

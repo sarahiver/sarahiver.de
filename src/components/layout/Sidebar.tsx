@@ -1,14 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { NAV_SECTIONS } from '@/lib/content';
+import { NAV_SECTIONS, SIDEBAR } from '@/lib/content';
 
 /**
- * Sticky Sidebar — nur Desktop ab lg-Breakpoint (1024px).
- * Mobile bekommt eine separate Top-Nav (siehe MobileNav.tsx).
- *
- * Scroll-Spy-Logik: Beobachtet welche Section gerade im Viewport ist
- * und highlightet sie in der Nav.
+ * Sticky Sidebar — Desktop only (≥ lg).
+ * Warmes Dunkel #2D211C (NICHT reines Schwarz) mit subtilen radial gradients.
+ * Inkl. Pre-Launch-Pulse-Badge in Honey-Farbe.
  */
 export default function Sidebar() {
   const [activeId, setActiveId] = useState<string>('hero');
@@ -16,50 +14,65 @@ export default function Sidebar() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        // Finde die Section, die am sichtbarsten ist
         const visible = entries
-          .filter((entry) => entry.isIntersecting)
+          .filter((e) => e.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visible[0]) {
-          setActiveId(visible[0].target.id);
-        }
+        if (visible[0]) setActiveId(visible[0].target.id);
       },
-      {
-        rootMargin: '-30% 0px -50% 0px',
-        threshold: [0, 0.25, 0.5, 0.75, 1],
-      }
+      { rootMargin: '-30% 0px -50% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] }
     );
-
-    NAV_SECTIONS.forEach((section) => {
-      const el = document.getElementById(section.id);
+    NAV_SECTIONS.forEach((s) => {
+      const el = document.getElementById(s.id);
       if (el) observer.observe(el);
     });
-
     return () => observer.disconnect();
   }, []);
 
   const handleJump = (id: string) => {
     const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
-    <aside className="hidden lg:flex sticky top-0 h-screen bg-ink text-paper-warm flex-col px-9 pt-10 pb-8 w-[27%] min-w-[280px] z-10">
-      {/* Brand: sarahiver.de als Wortmarke */}
-      <div className="mb-14">
-        <div className="font-sans font-black text-[28px] leading-none tracking-[-0.04em] text-white">
-          sarahiver<span className="text-[oklch(0.86_0.025_145)] font-light italic" style={{ fontFamily: 'var(--font-serif)' }}>.de</span>
+    <aside
+      className="hidden lg:flex sticky top-0 h-screen text-sb-ink flex-col px-8 pt-9 pb-7 w-[26%] min-w-[280px] z-10 relative overflow-hidden"
+      style={{
+        background:
+          'radial-gradient(circle at 18% 8%, rgba(212,165,116,0.10), transparent 36%), radial-gradient(circle at 92% 86%, rgba(181,116,106,0.12), transparent 42%), #2D211C',
+      }}
+    >
+      {/* Brand: sarahiver.de mit Terra-Punkt */}
+      <div className="mb-7">
+        <div className="flex items-baseline gap-3">
+          <div
+            className="font-medium text-[22px] leading-none tracking-[-0.018em] text-white"
+            style={{ fontFamily: 'var(--font-serif)' }}
+          >
+            sarahiver<span style={{ color: 'var(--color-terra)' }}>.</span>de
+          </div>
+          <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/40">
+            wedding<br />websites
+          </div>
         </div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/45 mt-3">
-          wedding<br/>websites
-        </div>
+      </div>
+
+      {/* Pre-Launch Pulse-Badge */}
+      <div className="inline-flex items-center gap-2 mb-7 px-2.5 py-1.5 rounded-full border w-fit"
+        style={{
+          background: 'rgba(212,165,116,0.12)',
+          borderColor: 'rgba(212,165,116,0.32)',
+          color: 'var(--color-honey-soft)',
+        }}
+      >
+        <span className="pre-launch-pulse" />
+        <span className="font-mono text-[10px] tracking-[0.18em] uppercase">
+          {SIDEBAR.tag}
+        </span>
       </div>
 
       {/* Navigation */}
       <nav className="flex flex-col gap-0.5 flex-1" aria-label="Sections">
-        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/35 mb-4">
+        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/35 mb-3">
           Inhalt
         </p>
         {NAV_SECTIONS.map((section, i) => {
@@ -69,17 +82,22 @@ export default function Sidebar() {
               key={section.id}
               onClick={() => handleJump(section.id)}
               className={`grid grid-cols-[32px_1fr] items-center gap-1 py-2.5 text-left text-sm transition-colors relative ${
-                isActive ? 'text-white font-medium' : 'text-white/55 hover:text-white/85 font-normal'
+                isActive
+                  ? 'text-white font-medium'
+                  : 'text-white/55 hover:text-white/92 font-normal'
               }`}
             >
-              {/* Aktiver Bar-Indikator links */}
               {isActive && (
-                <span className="absolute -left-9 top-1/2 -translate-y-1/2 w-6 h-px bg-[oklch(0.86_0.025_145)]" />
+                <span
+                  className="absolute -left-8 top-1/2 -translate-y-1/2 w-5 h-px"
+                  style={{ background: 'var(--color-honey)' }}
+                />
               )}
               <span
                 className={`font-mono text-[10px] tracking-[0.12em] ${
-                  isActive ? 'text-[oklch(0.86_0.025_145)]' : 'text-white/30'
+                  isActive ? '' : 'text-white/30'
                 }`}
+                style={isActive ? { color: 'var(--color-honey)' } : undefined}
               >
                 {String(i + 1).padStart(2, '0')}
               </span>
@@ -89,11 +107,20 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Footer der Sidebar: Status-Hinweis */}
-      <div className="mt-8 border-t border-white/8 pt-6">
-        <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/30">
-          Pre-Launch · Q4 2026
-        </div>
+      {/* Footer-Quote */}
+      <div className="mt-8 pt-6 border-t border-white/10">
+        <p
+          className="text-sm leading-relaxed text-white/75 italic mb-2"
+          style={{ fontFamily: 'var(--font-serif)' }}
+        >
+          „{SIDEBAR.quote}"
+        </p>
+        <p
+          className="font-mono text-[10px] uppercase tracking-[0.18em]"
+          style={{ color: 'var(--color-terra-soft)' }}
+        >
+          {SIDEBAR.by}
+        </p>
       </div>
     </aside>
   );

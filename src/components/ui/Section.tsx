@@ -6,6 +6,7 @@ interface SectionProps {
   eyebrowNumber?: string;
   children: ReactNode;
   className?: string;
+  noBorder?: boolean;
 }
 
 export default function Section({
@@ -14,11 +15,14 @@ export default function Section({
   eyebrowNumber,
   children,
   className = '',
+  noBorder = false,
 }: SectionProps) {
   return (
     <section
       id={id}
-      className={`px-6 md:px-12 lg:px-20 py-20 lg:py-24 border-b border-rule-soft ${className}`}
+      className={`px-6 md:px-12 lg:px-20 py-20 lg:py-24 relative ${
+        !noBorder ? 'border-b border-rule-soft' : ''
+      } ${className}`}
     >
       {eyebrow && (
         <div className="eyebrow mb-7">
