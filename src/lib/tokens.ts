@@ -6,12 +6,7 @@ import type {
 } from '@/types/supabase';
 
 /**
- * Token-Loader — lädt für einen Slug alle benötigten Daten:
- * 1. EffectiveTokens (aus der v_effective_tokens-View)
- * 2. Alle aktiven Bereiche der Hochzeitsseite
- *
- * Das ist die ZENTRALE Datenquelle für jede Hochzeitsseite.
- * Wird in Server Components aufgerufen, nicht in Client Components.
+ * Token-Loader — lädt für einen Slug alle benötigten Daten.
  */
 export async function loadWeddingSite(slug: string): Promise<{
   tokens: EffectiveTokens;
@@ -19,7 +14,6 @@ export async function loadWeddingSite(slug: string): Promise<{
 } | null> {
   const supabase = await createSupabaseServerClient();
 
-  // Parallel laden für Performance
   const [tokensResult, bereicheResult] = await Promise.all([
     supabase
       .from('v_effective_tokens')
@@ -40,7 +34,6 @@ export async function loadWeddingSite(slug: string): Promise<{
 
   const tokens = tokensResult.data as EffectiveTokens;
 
-  // Bereiche müssen zur wedding_site gehören
   const bereiche = (bereicheResult.data ?? []).filter(
     (b) => b.wedding_site_id === tokens.wedding_site_id
   ) as WeddingBereich[];
@@ -48,10 +41,6 @@ export async function loadWeddingSite(slug: string): Promise<{
   return { tokens, bereiche };
 }
 
-/**
- * Spacing-Map: Token-Variable → konkrete Padding-Multiplier.
- * Wird in Komponenten genutzt, um responsives Padding zu rechnen.
- */
 export const SPACING_MULTIPLIER: Record<Spacing, number> = {
   tight: 0.75,
   regular: 1.0,
@@ -60,10 +49,30 @@ export const SPACING_MULTIPLIER: Record<Spacing, number> = {
 };
 
 /**
+ * Per-Stil Image-Filter — gibt Fotos eine konsistente Anmutung.
+ */
+const IMAGE_FILTERS: Record<string, string> = {
+  klassisch: 'sepia(0.14) saturate(0.95) contrast(1.02) brightness(1.02)',
+  modern: 'saturate(0.78) contrast(1.06) brightness(1.04)',
+  floral: 'saturate(0.82) contrast(0.94) brightness(1.07) sepia(0.08) hue-rotate(-4deg)',
+  minimal: 'grayscale(1) contrast(1.05)',
+  festlich: 'saturate(1.08) contrast(1.12) brightness(0.96)',
+};
+
+const PADDING_SCALE = {
+  tight: '18px',
+  regular: '32px',
+  airy: '48px',
+  wide: '64px',
+};
+
+/**
  * Generiert das CSS-Variable-Inline-Style für eine Hochzeitsseite.
- * Wird ins <html style={...}> oder <body style={...}> gepackt.
  */
 export function tokensToCSSVariables(tokens: EffectiveTokens): React.CSSProperties {
+  const styleHint = (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'klassisch';
+  const imgFilter = IMAGE_FILTERS[styleHint] ?? IMAGE_FILTERS.klassisch;
+
   const style: Record<string, string> = {
     '--bg': tokens.color_bg,
     '--bg-soft': tokens.color_bg_soft,
@@ -73,6 +82,7 @@ export function tokensToCSSVariables(tokens: EffectiveTokens): React.CSSProperti
     '--font-display': tokens.font_display,
     '--font-body': tokens.font_body,
     '--font-script': tokens.font_script ?? 'inherit',
+    '--font-mono': "'DM Mono', ui-monospace, monospace",
     '--display-weight': String(tokens.display_weight),
     '--display-style': tokens.display_style,
     '--align': tokens.dna_align,
@@ -80,22 +90,25 @@ export function tokensToCSSVariables(tokens: EffectiveTokens): React.CSSProperti
     '--decor': tokens.dna_decor,
     '--contrast': tokens.dna_contrast,
     '--spacing-multiplier': String(SPACING_MULTIPLIER[tokens.dna_spacing]),
+    '--ink-soft': `color-mix(in srgb, ${tokens.color_ink} 65%, transparent)`,
+    '--muted': `color-mix(in srgb, ${tokens.color_ink} 45%, transparent)`,
+    '--border': `color-mix(in srgb, ${tokens.color_ink} 15%, transparent)`,
+    '--border-soft': `color-mix(in srgb, ${tokens.color_ink} 8%, transparent)`,
+    '--img-filter': imgFilter,
+    '--vignette': 'rgba(20, 16, 12, 0.45)',
+    '--vignette-soft': 'rgba(20, 16, 12, 0.12)',
+    '--gold': '#C9A668',
+    '--pad-tight': PADDING_SCALE.tight,
+    '--pad-regular': PADDING_SCALE.regular,
+    '--pad-airy': PADDING_SCALE.airy,
+    '--pad-wide': PADDING_SCALE.wide,
   };
 
   return style as React.CSSProperties;
 }
 
 /**
- * Berechnet, ob ein Bereich auf --bg oder --bg-soft Hintergrund läuft.
- *
- * Regel:
- *   - Alternierender 2er-Rhythmus basierend auf display_order
- *   - Featured Bereiche IMMER auf --bg-soft (für visuelle Aufwertung)
- *   - Hero (index 0) und letzter Bereich immer auf --bg
- *
- * @param index 0-basierter Index in der display_order
- * @param bereichKey z.B. 'hero', 'lovestory'
- * @param isLast true, wenn letzter Bereich vor Footer
+ * Background-Rhythmus.
  */
 export function getBereichBackground(
   index: number,
@@ -103,10 +116,8 @@ export function getBereichBackground(
   isLast: boolean
 ): 'bg' | 'bg-soft' {
   const FEATURED: string[] = ['lovestory', 'gifts'];
-
-  if (index === 0) return 'bg'; // Hero immer bg
+  if (index === 0) return 'bg';
   if (isLast) return 'bg';
   if (FEATURED.includes(bereichKey)) return 'bg-soft';
-
   return index % 2 === 0 ? 'bg' : 'bg-soft';
 }

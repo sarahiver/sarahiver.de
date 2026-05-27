@@ -3,140 +3,109 @@
 import { useDna } from '@/lib/dna-context';
 
 /**
- * Decor-Komponente — rendert das passende Dekorations-Element
- * basierend auf der globalen DNA des Brautpaars.
+ * Decor — rendert das passende Trenner-Element basierend auf der DNA.
  *
- * Wird in jeder Bereich-Komponente eingesetzt, statt dass jede
- * Komponente ihre eigene Decor-Logik baut.
+ * Fünf Varianten, alle in --accent-Farbe (außer 'gold' in --gold):
+ *   - none      → nichts
+ *   - rule      → linie · dot · linie
+ *   - hairline  → einzelne dünne Linie
+ *   - sprig     → SVG-Blumenranke
+ *   - gold      → linie · diamond · linie (in Gold)
  *
- * Beispiel:
- *   <Decor /> → rendert <Rule/> bei dna.decor === 'rule',
- *              <Sprig/> bei dna.decor === 'sprig', etc.
- *
- * Color: nutzt automatisch var(--accent) oder var(--accent-deep).
+ * Justify folgt --align (center vs left).
  */
 interface DecorProps {
-  variant?: 'subtle' | 'prominent';
   className?: string;
 }
 
-export default function Decor({ variant = 'subtle', className = '' }: DecorProps) {
+export default function Decor({ className = '' }: DecorProps) {
   const dna = useDna();
 
   if (dna.decor === 'none') return null;
 
-  const alignClass = dna.align === 'center' ? 'mx-auto' : 'ml-0';
+  const baseStyle: React.CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: dna.decor === 'hairline' ? '0' : dna.decor === 'sprig' ? '6px' : '10px',
+    color: dna.decor === 'gold' ? 'var(--gold)' : 'var(--accent)',
+    lineHeight: 0,
+  };
+
+  const wrapperStyle: React.CSSProperties = {
+    display: 'flex',
+    justifyContent: dna.align === 'center' ? 'center' : 'flex-start',
+    width: '100%',
+  };
 
   if (dna.decor === 'rule') {
     return (
-      <div
-        className={`flex items-center gap-3 ${alignClass} ${className}`}
-        style={{ justifyContent: dna.align === 'center' ? 'center' : 'flex-start' }}
-        aria-hidden="true"
-      >
-        <span
-          className="h-px"
-          style={{
-            background: 'var(--accent)',
-            width: variant === 'prominent' ? '60px' : '40px',
-          }}
-        />
-        <span
-          className="w-2 h-2 rounded-full"
-          style={{ background: 'var(--accent)' }}
-        />
-        <span
-          className="h-px"
-          style={{
-            background: 'var(--accent)',
-            width: variant === 'prominent' ? '60px' : '40px',
-          }}
-        />
+      <div style={wrapperStyle} className={className} aria-hidden="true">
+        <span style={baseStyle}>
+          <span style={{ display: 'block', width: 28, height: 1, background: 'currentColor' }} />
+          <span style={{ width: 5, height: 5, borderRadius: '50%', background: 'currentColor' }} />
+          <span style={{ display: 'block', width: 28, height: 1, background: 'currentColor' }} />
+        </span>
       </div>
     );
   }
 
   if (dna.decor === 'hairline') {
     return (
-      <div
-        className={`flex ${className}`}
-        style={{ justifyContent: dna.align === 'center' ? 'center' : 'flex-start' }}
-        aria-hidden="true"
-      >
-        <span
-          className="h-px"
-          style={{
-            background: 'var(--accent)',
-            width: variant === 'prominent' ? '120px' : '80px',
-            opacity: 0.7,
-          }}
-        />
+      <div style={wrapperStyle} className={className} aria-hidden="true">
+        <span style={baseStyle}>
+          <span
+            style={{
+              display: 'block',
+              width: 'clamp(80px, 18vw, 180px)',
+              height: 1,
+              background: 'currentColor',
+              opacity: 0.7,
+            }}
+          />
+        </span>
+      </div>
+    );
+  }
+
+  if (dna.decor === 'gold') {
+    return (
+      <div style={wrapperStyle} className={className} aria-hidden="true">
+        <span style={baseStyle}>
+          <span style={{ display: 'block', width: 28, height: 1, background: 'var(--gold)' }} />
+          <span
+            style={{
+              width: 8,
+              height: 8,
+              background: 'var(--gold)',
+              transform: 'rotate(45deg)',
+            }}
+          />
+          <span style={{ display: 'block', width: 28, height: 1, background: 'var(--gold)' }} />
+        </span>
       </div>
     );
   }
 
   if (dna.decor === 'sprig') {
     return (
-      <svg
-        width={variant === 'prominent' ? 64 : 48}
-        height={variant === 'prominent' ? 28 : 22}
-        viewBox="0 0 48 22"
-        className={`${alignClass} ${className}`}
-        style={{ color: 'var(--accent)' }}
-        aria-hidden="true"
-      >
-        <path
-          d="M2 11 Q 12 4 24 11 Q 36 18 46 11"
-          stroke="currentColor"
-          strokeWidth="1"
-          fill="none"
-          strokeLinecap="round"
-        />
-        <ellipse
-          cx="13"
-          cy="8"
-          rx="3"
-          ry="1.5"
-          transform="rotate(-30 13 8)"
-          fill="currentColor"
-          opacity="0.6"
-        />
-        <ellipse cx="24" cy="13" rx="3" ry="1.5" fill="currentColor" opacity="0.6" />
-        <ellipse
-          cx="35"
-          cy="8"
-          rx="3"
-          ry="1.5"
-          transform="rotate(30 35 8)"
-          fill="currentColor"
-          opacity="0.6"
-        />
-      </svg>
-    );
-  }
-
-  if (dna.decor === 'gold') {
-    return (
-      <div
-        className={`flex items-center gap-2 ${className}`}
-        style={{ justifyContent: dna.align === 'center' ? 'center' : 'flex-start' }}
-        aria-hidden="true"
-      >
-        <span
-          className="h-px"
-          style={{
-            background: 'var(--accent)',
-            width: variant === 'prominent' ? '60px' : '32px',
-          }}
-        />
-        <span style={{ color: 'var(--accent)', fontSize: '12px' }}>◆</span>
-        <span
-          className="h-px"
-          style={{
-            background: 'var(--accent)',
-            width: variant === 'prominent' ? '60px' : '32px',
-          }}
-        />
+      <div style={wrapperStyle} className={className} aria-hidden="true">
+        <span style={baseStyle}>
+          <svg
+            width="92"
+            height="22"
+            viewBox="0 0 92 22"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.2"
+            strokeLinecap="round"
+          >
+            <path d="M2 16 Q 14 4, 26 12 T 46 11" />
+            <path d="M46 11 Q 58 18, 70 10 T 90 12" />
+            <path d="M16 12 q -2 -4, -6 -4 M22 13 q -1 -5, -5 -5" />
+            <path d="M62 12 q 2 -4, 6 -4 M70 11 q 1 -5, 5 -5" />
+            <circle cx="46" cy="11" r="2" fill="currentColor" />
+          </svg>
+        </span>
       </div>
     );
   }

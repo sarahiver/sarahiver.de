@@ -164,3 +164,10 @@ html, body {
   background: var(--color-rule);
   border-radius: 8px;
 }
+
+/* === Hero Variant B: Mobile Stack (Text oben, Bild unten) === */
+@media (max-width: 767px) {
+  .hero-b-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

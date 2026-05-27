@@ -2,9 +2,13 @@ import type { EffectiveTokens } from '@/types/supabase';
 import Decor from '@/components/ui/Decor';
 
 /**
- * Hero Variante B — "Bild rechts, Text links"
+ * Hero Variante B — "Split — Text links, Bild rechts"
  *
- * ⚠️ STUB: Wird ersetzt durch das echte Design aus Claude Design.
+ * Editorial-Layout mit zwei klaren Zonen. Spaltenproportion folgt dem
+ * Spacing-Token (klassisch/floral/festlich = 1:1, modern = 0.95:1.05,
+ * minimal = 0.85:1.15).
+ *
+ * Mobile: Stack-Layout (Text oben, Bild unten — 4/5 ratio).
  */
 
 interface HeroVariantBProps {
@@ -13,85 +17,197 @@ interface HeroVariantBProps {
 }
 
 export default function HeroVariantB({ tokens, content }: HeroVariantBProps) {
-  const eyebrow = (content.eyebrow as string) ?? 'WIR HEIRATEN';
-  const date = new Date(tokens.wedding_date).toLocaleDateString('de-DE', {
+  const eyebrow = (content.eyebrow as string) ?? 'Wir heiraten';
+  const dateLong = new Date(tokens.wedding_date).toLocaleDateString('de-DE', {
+    weekday: 'long',
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   });
 
+  // Grid-Template-Columns je Spacing-Stufe
+  const gridCols =
+    tokens.dna_spacing === 'airy'
+      ? '0.95fr 1.05fr'
+      : tokens.dna_spacing === 'wide'
+      ? '0.85fr 1.15fr'
+      : '1fr 1fr';
+
+  // Padding-Skala
+  const padding =
+    tokens.dna_spacing === 'tight'
+      ? 'var(--pad-tight)'
+      : tokens.dna_spacing === 'airy'
+      ? 'var(--pad-airy)'
+      : tokens.dna_spacing === 'wide'
+      ? 'var(--pad-wide)'
+      : 'var(--pad-regular)';
+
+  const textAlignItems = tokens.dna_align === 'center' ? 'center' : 'flex-start';
+
   return (
-    <div className="grid lg:grid-cols-[1fr_1fr] min-h-[85vh]">
+    <div
+      className="hero-b-grid"
+      style={{
+        display: 'grid',
+        gridTemplateColumns: gridCols,
+        minHeight: 580,
+        width: '100%',
+        background: 'var(--bg)',
+      }}
+    >
       {/* === LINKS: Text === */}
       <div
-        className="flex flex-col justify-center px-6 md:px-12 lg:px-20 py-16 lg:py-24"
         style={{
+          padding,
+          paddingLeft: `clamp(${padding === 'var(--pad-tight)' ? '20px' : '28px'}, 5vw, 64px)`,
+          paddingRight: 'clamp(24px, 4vw, 48px)',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: textAlignItems,
           textAlign: tokens.dna_align,
-          background: 'var(--bg)',
+          minWidth: 0,
         }}
       >
         <p
-          className="text-xs tracking-[0.3em] uppercase mb-5"
-          style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent)' }}
+          data-editable="hero.eyebrow"
+          data-edit-type="text"
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 11,
+            letterSpacing: '0.28em',
+            textTransform: 'uppercase',
+            color: 'var(--ink-soft)',
+            margin: '0 0 18px',
+          }}
         >
           {eyebrow}
         </p>
 
-        <Decor variant="prominent" className="mb-6" />
-
         <h1
-          className="display mb-6"
-          style={{ fontSize: 'clamp(40px, 6vw, 88px)', color: 'var(--ink)' }}
           data-editable="hero.couple_names"
           data-edit-type="text"
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontWeight: 'var(--display-weight)' as unknown as number,
+            fontStyle: 'var(--display-style)' as unknown as 'normal' | 'italic',
+            fontSize: 'clamp(34px, 7vw, 84px)',
+            lineHeight: 0.95,
+            letterSpacing: '-0.02em',
+            color: 'var(--ink)',
+            margin: '0 0 6px',
+            textWrap: 'balance',
+          }}
         >
-          {tokens.couple_name_1}
-          <br />
-          <span className="amp">&</span>
-          <br />
+          {tokens.couple_name_1}{' '}
+          <span
+            className="amp"
+            style={{
+              fontFamily: 'var(--font-script)',
+              color: 'var(--accent)',
+              fontStyle: 'normal',
+              fontWeight: 500,
+              fontSize: '1.05em',
+              padding: '0 0.05em',
+              display: 'inline-block',
+            }}
+          >
+            &amp;
+          </span>{' '}
           {tokens.couple_name_2}
         </h1>
 
+        <div style={{ margin: '16px 0 18px' }}>
+          <Decor />
+        </div>
+
         <p
-          className="text-base lg:text-lg"
-          style={{ fontFamily: 'var(--font-body)', color: 'var(--ink-soft)' }}
+          data-editable="hero.date"
+          data-edit-type="date"
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 16,
+            color: 'var(--ink-soft)',
+            margin: '20px 0 0',
+            letterSpacing: '0.04em',
+          }}
         >
-          <span data-editable="hero.date" data-edit-type="date">
-            {date}
-          </span>
+          {dateLong}
         </p>
+
         {tokens.wedding_location && (
           <p
-            className="mt-1 text-base lg:text-lg"
-            style={{ fontFamily: 'var(--font-body)', color: 'var(--ink-soft)' }}
             data-editable="hero.location"
             data-edit-type="text"
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 14,
+              color: 'var(--muted)',
+              margin: '4px 0 0',
+              letterSpacing: '0.04em',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+            }}
           >
+            <svg
+              viewBox="0 0 12 12"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              aria-hidden="true"
+              style={{ width: 12, height: 12, color: 'var(--accent)' }}
+            >
+              <path d="M6 11c2.5-3 4-5 4-7a4 4 0 0 0-8 0c0 2 1.5 4 4 7z" />
+              <circle cx="6" cy="4" r="1.4" />
+            </svg>
             {tokens.wedding_location}
           </p>
         )}
-
-        <p
-          className="mt-8 text-xs font-mono tracking-[0.2em] uppercase"
-          style={{ color: 'var(--muted)' }}
-        >
-          STUB · Variante B · Split Layout
-        </p>
       </div>
 
       {/* === RECHTS: Bild === */}
       <div
-        className="min-h-[400px] lg:min-h-full"
         style={{
-          backgroundImage: tokens.hero_image_url
-            ? `url(${tokens.hero_image_url})`
-            : `linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%)`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          position: 'relative',
+          overflow: 'hidden',
+          aspectRatio: '4 / 5',
+          background: 'var(--bg-soft)',
+          width: '100%',
+          alignSelf: 'stretch',
+          height: '100%',
         }}
-        data-editable="hero.image"
-        data-edit-type="image"
-      />
+      >
+        {tokens.hero_image_url ? (
+          <img
+            src={tokens.hero_image_url}
+            alt={`${tokens.couple_name_1} und ${tokens.couple_name_2}`}
+            loading="eager"
+            data-editable="hero.image"
+            data-edit-type="image"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              filter: 'var(--img-filter)',
+              display: 'block',
+            }}
+          />
+        ) : (
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background:
+                'radial-gradient(ellipse 60% 50% at 50% 35%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 65%), linear-gradient(160deg, var(--bg-soft) 0%, var(--accent) 100%)',
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 }

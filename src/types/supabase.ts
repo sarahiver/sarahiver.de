@@ -114,6 +114,9 @@ export interface EffectiveTokens {
   wedding_site_id: string;
   slug: string;
 
+  // Start-Stil-Hint (wird zum Image-Filter gemappt)
+  start_style_id?: string;
+
   // Farben (effective: custom > preset)
   color_bg: string;
   color_bg_soft: string;
