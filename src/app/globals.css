@@ -171,3 +171,149 @@ html, body {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* =========================================================
+   Countdown Variante B — Flip-Card Animation
+   Wird auf der Wedding-Page genutzt (innerhalb .wedding-site-wrapper)
+   ========================================================= */
+
+.flip-card {
+  position: relative;
+  width: clamp(50px, 9vw, 90px);
+  height: clamp(72px, 13vw, 124px);
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--bg-soft) 88%, white) 0%,
+    var(--bg-soft) 50%,
+    color-mix(in srgb, var(--bg-soft) 90%, var(--ink)) 100%);
+  border-radius: 6px;
+  box-shadow:
+    0 2px 12px rgba(0,0,0,0.08),
+    0 1px 0 rgba(255,255,255,0.4) inset;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: clamp(2.2rem, 7vw, 3.8rem);
+  line-height: 1;
+  color: var(--ink);
+  transform-style: preserve-3d;
+  overflow: hidden;
+}
+
+.flip-half {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backface-visibility: hidden;
+}
+.flip-top    { top: 0; }
+.flip-bottom { bottom: 0; }
+
+.flip-digit {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: clamp(72px, 13vw, 124px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-variant-numeric: tabular-nums;
+}
+.flip-top    .flip-digit { top: 0; }
+.flip-bottom .flip-digit { bottom: 0; }
+
+/* Subtle ink-darkening near the mid line — adds depth */
+.flip-top::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.06) 100%);
+  pointer-events: none;
+}
+.flip-bottom::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(0deg, transparent 70%, rgba(0,0,0,0.04) 100%);
+  pointer-events: none;
+}
+
+.flip-mid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: color-mix(in srgb, var(--ink) 50%, transparent);
+  transform: translateY(-1px);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Animated flaps */
+.flip-anim {
+  z-index: 4;
+}
+
+.flip-anim-top {
+  transform-origin: center bottom;
+  animation: flap-top 280ms linear forwards;
+  box-shadow: 0 6px 18px -6px rgba(0,0,0,0.35);
+}
+.flip-anim-bot {
+  transform-origin: center top;
+  animation: flap-bot 280ms 280ms linear forwards;
+  box-shadow: 0 -6px 18px -6px rgba(0,0,0,0.25);
+  transform: rotateX(90deg);
+}
+@keyframes flap-top {
+  0%   { transform: rotateX(0deg); }
+  100% { transform: rotateX(-90deg); }
+}
+@keyframes flap-bot {
+  0%   { transform: rotateX(90deg); }
+  100% { transform: rotateX(0deg); }
+}
+
+/* Seconds: schneller damit's in <1s passt */
+.flip-anim-top.is-seconds { animation-duration: 200ms; }
+.flip-anim-bot.is-seconds { animation-duration: 200ms; animation-delay: 200ms; }
+
+/* Stil-Anpassungen */
+.wedding-site-wrapper[data-style="modern"] .flip-card {
+  background: #fff;
+  border-radius: 0;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05), 0 1px 0 rgba(0,0,0,0.04) inset;
+}
+.wedding-site-wrapper[data-style="modern"] .flip-mid {
+  background: color-mix(in srgb, var(--ink) 30%, transparent);
+}
+
+.wedding-site-wrapper[data-style="floral"] .flip-card {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--bg-soft) 80%, white) 0%,
+    color-mix(in srgb, var(--bg-soft) 90%, white) 50%,
+    color-mix(in srgb, var(--bg-soft) 95%, var(--ink)) 100%);
+  border-radius: 8px;
+}
+
+.wedding-site-wrapper[data-style="minimal"] .flip-card {
+  background: transparent;
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+.wedding-site-wrapper[data-style="minimal"] .flip-mid {
+  background: var(--border);
+  height: 1px;
+}
+
+.wedding-site-wrapper[data-style="festlich"] .flip-card {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--ink) 95%, transparent) 0%,
+    color-mix(in srgb, var(--ink) 92%, transparent) 50%,
+    color-mix(in srgb, var(--ink) 88%, transparent) 100%);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+}
+.wedding-site-wrapper[data-style="festlich"] .flip-mid {
+  background: color-mix(in srgb, var(--gold) 50%, transparent);
+}

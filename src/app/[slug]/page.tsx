@@ -46,8 +46,14 @@ export default async function WeddingSitePage({ params }: PageProps) {
     spacingMultiplier: SPACING_MULTIPLIER[tokens.dna_spacing],
   };
 
+  const styleHint = (tokens as typeof tokens & { start_style_id?: string }).start_style_id ?? 'klassisch';
+
   return (
-    <div style={cssVars} className="wedding-site-wrapper min-h-screen">
+    <div
+      style={cssVars}
+      className="wedding-site-wrapper min-h-screen"
+      data-style={styleHint}
+    >
       <DnaProvider dna={dna}>
         <main>
           {bereiche.map((bereich, index) => {
