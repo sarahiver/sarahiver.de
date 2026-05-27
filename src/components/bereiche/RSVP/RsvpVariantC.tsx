@@ -122,8 +122,6 @@ export default function RsvpVariantC({ tokens, content }: Props) {
   const stateRef = useRef(state);
   stateRef.current = state;
   const threadEndRef = useRef<HTMLDivElement>(null);
-  // Verhindert, dass das useEffect mehrmals dieselbe Bot-Message verarbeitet
-  const processedIdxRef = useRef<number>(-1);
 
   // Deadline-Check nach Hydration (SSR-safe)
   useEffect(() => {
@@ -140,20 +138,31 @@ export default function RsvpVariantC({ tokens, content }: Props) {
   const currentStep: FlowStep | undefined = flow[flowIdx];
 
   // Bot-Messages auto-pushen mit Typing-Animation
-  useEffect(() => {
-    if (closed || submitted || !currentStep) return;
-    if (currentStep.kind !== 'them') return;
-    if (processedIdxRef.current >= flowIdx) return;
+  //
+  // Wichtig: `flow` und `currentStep` sind bei jedem Render neue Object-
+  // References. Wenn wir sie als Effect-Dependencies nehmen, feuert der
+  // Effect bei JEDEM Render — der Cleanup clear't den Timeout, und der
+  // Guard via processedIdxRef verhindert ein erneutes Schedulen → wir
+  // hängen im Typing-State fest.
+  //
+  // Lösung: nur auf `flowIdx`/`closed`/`submitted` reagieren. Den Step
+  // im Effect-Body via flowRef.current[flowIdx] holen.
+  const flowRef = useRef(flow);
+  flowRef.current = flow;
 
-    processedIdxRef.current = flowIdx;
+  useEffect(() => {
+    if (closed || submitted) return;
+    const step = flowRef.current[flowIdx];
+    if (!step || step.kind !== 'them') return;
+
     setTyping(true);
     const id = window.setTimeout(() => {
       setTyping(false);
-      setThread((t) => [...t, { side: 'them', text: (currentStep as { kind: 'them'; text: string }).text }]);
+      setThread((t) => [...t, { side: 'them', text: step.text }]);
       setFlowIdx((i) => i + 1);
     }, 700);
     return () => window.clearTimeout(id);
-  }, [flowIdx, currentStep, closed, submitted]);
+  }, [flowIdx, closed, submitted]);
 
   // Reset textInput beim Step-Wechsel
   useEffect(() => {
@@ -249,7 +258,6 @@ export default function RsvpVariantC({ tokens, content }: Props) {
             setSubmitted(false);
             setThread([]);
             setFlowIdx(0);
-            processedIdxRef.current = -1;
           }}
         />
       </div>
