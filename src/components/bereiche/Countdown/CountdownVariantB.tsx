@@ -49,9 +49,11 @@ function FlipCard({ digit, isSeconds }: { digit: string; isSeconds: boolean }) {
     setPrevious(current);
     setCurrent(digit);
 
-    // Cleanup nach Animation
+    // Cleanup nach Animation (Dauer muss zu CSS-Animationen passen)
+    // Normal: top 280ms + bot delay 140ms + bot 280ms = 420ms → +20ms buffer
+    // Seconds: top 180ms + bot delay 90ms + bot 180ms = 270ms → +20ms buffer
     if (cleanupTimer.current) clearTimeout(cleanupTimer.current);
-    const totalDuration = isSeconds ? 420 : 580;
+    const totalDuration = isSeconds ? 290 : 440;
     cleanupTimer.current = setTimeout(() => {
       setPrevious(null);
     }, totalDuration);

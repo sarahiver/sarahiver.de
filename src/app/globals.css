@@ -177,25 +177,28 @@ html, body {
    Wird auf der Wedding-Page genutzt (innerhalb .wedding-site-wrapper)
    ========================================================= */
 
+/* ---------------------------------------------------------------------
+   Z-Index-Hierarchie (wichtig fürs Verständnis):
+     1  = statische Halbschalen (.flip-top, .flip-bottom)         → Hintergrund
+     2  = Trennlinie (.flip-mid)                                  → über den Halbschalen
+     3  = animierte Flaps (.flip-anim)                            → über der Trennlinie
+   --------------------------------------------------------------------- */
+
 .flip-card {
   position: relative;
   width: clamp(50px, 9vw, 90px);
   height: clamp(72px, 13vw, 124px);
-  background: linear-gradient(180deg,
-    color-mix(in srgb, var(--bg-soft) 88%, white) 0%,
-    var(--bg-soft) 50%,
-    color-mix(in srgb, var(--bg-soft) 90%, var(--ink)) 100%);
   border-radius: 6px;
-  box-shadow:
-    0 2px 12px rgba(0,0,0,0.08),
-    0 1px 0 rgba(255,255,255,0.4) inset;
   font-family: var(--font-mono);
   font-weight: 500;
   font-size: clamp(2.2rem, 7vw, 3.8rem);
   line-height: 1;
   color: var(--ink);
   transform-style: preserve-3d;
-  overflow: hidden;
+  /* Kein eigener background hier — sitzt auf den Halbschalen, sonst doppelte Tönung */
+  background: transparent;
+  box-shadow:
+    0 2px 12px rgba(0,0,0,0.08);
 }
 
 .flip-half {
@@ -204,28 +207,45 @@ html, body {
   right: 0;
   height: 50%;
   overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   backface-visibility: hidden;
+  z-index: 1;
+  /* Karten-Hintergrund kommt auf die Halbschalen (jeweils eigener Gradient-Ausschnitt) */
 }
-.flip-top    { top: 0; }
-.flip-bottom { bottom: 0; }
 
+.flip-top {
+  top: 0;
+  border-radius: 6px 6px 0 0;
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--bg-soft) 88%, white) 0%,
+    var(--bg-soft) 100%);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.4) inset;
+}
+
+.flip-bottom {
+  bottom: 0;
+  border-radius: 0 0 6px 6px;
+  background: linear-gradient(180deg,
+    var(--bg-soft) 0%,
+    color-mix(in srgb, var(--bg-soft) 90%, var(--ink)) 100%);
+}
+
+/* Ziffer füllt die VOLLE Kartenhöhe — Halbschale schneidet sie via overflow:hidden ab.
+   Dadurch sitzt das Zeichen optisch auf der Karten-Mitte und wird beim Flip
+   sauber halbiert. */
 .flip-digit {
   position: absolute;
   left: 0;
   right: 0;
-  height: clamp(72px, 13vw, 124px);
   display: flex;
   justify-content: center;
   align-items: center;
   font-variant-numeric: tabular-nums;
+  height: clamp(72px, 13vw, 124px); /* = volle Kartenhöhe */
 }
-.flip-top    .flip-digit { top: 0; }
-.flip-bottom .flip-digit { bottom: 0; }
+.flip-top    .flip-digit { top: 0; }       /* obere Hälfte zeigt obere Hälfte der Ziffer */
+.flip-bottom .flip-digit { bottom: 0; }    /* untere Hälfte zeigt untere Hälfte der Ziffer */
 
-/* Subtle ink-darkening near the mid line — adds depth */
+/* Subtile Schatten an der Mittellinie für Tiefe */
 .flip-top::after {
   content: ""; position: absolute; inset: 0;
   background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.06) 100%);
@@ -242,29 +262,37 @@ html, body {
   left: 0;
   right: 0;
   top: 50%;
-  height: 2px;
-  background: color-mix(in srgb, var(--ink) 50%, transparent);
-  transform: translateY(-1px);
-  z-index: 5;
+  height: 1px;
+  background: color-mix(in srgb, var(--ink) 22%, transparent);
+  transform: translateY(-0.5px);
+  z-index: 2;
   pointer-events: none;
 }
 
-/* Animated flaps */
+/* ---------------------------------------------------------------------
+   Animierte Flaps
+   - liegen ÜBER der Trennlinie (z-index: 3)
+   - übernehmen denselben Halbschalen-Hintergrund (da sie .flip-top / .flip-bottom haben)
+   - top-Flap rotiert von 0° → -90° (klappt nach unten weg)
+   - bot-Flap rotiert von 90° → 0° (klappt von oben hervor)
+   - überlappende Animation: bot startet bei 50%, nicht erst nach top
+   --------------------------------------------------------------------- */
 .flip-anim {
-  z-index: 4;
+  z-index: 3;
 }
 
 .flip-anim-top {
   transform-origin: center bottom;
-  animation: flap-top 280ms linear forwards;
-  box-shadow: 0 6px 18px -6px rgba(0,0,0,0.35);
+  animation: flap-top 280ms cubic-bezier(0.36, 0, 0.66, -0.18) forwards;
+  box-shadow: 0 6px 14px -6px rgba(0,0,0,0.35);
 }
 .flip-anim-bot {
   transform-origin: center top;
-  animation: flap-bot 280ms 280ms linear forwards;
-  box-shadow: 0 -6px 18px -6px rgba(0,0,0,0.25);
-  transform: rotateX(90deg);
+  animation: flap-bot 280ms 140ms cubic-bezier(0.34, 1.16, 0.64, 1) forwards;
+  box-shadow: 0 -6px 14px -6px rgba(0,0,0,0.25);
+  transform: rotateX(90deg); /* Startzustand vor Animation */
 }
+
 @keyframes flap-top {
   0%   { transform: rotateX(0deg); }
   100% { transform: rotateX(-90deg); }
@@ -274,9 +302,9 @@ html, body {
   100% { transform: rotateX(0deg); }
 }
 
-/* Seconds: schneller damit's in <1s passt */
-.flip-anim-top.is-seconds { animation-duration: 200ms; }
-.flip-anim-bot.is-seconds { animation-duration: 200ms; animation-delay: 200ms; }
+/* Sekunden: schneller, leicht überlappend damit's in <1s passt */
+.flip-anim-top.is-seconds { animation-duration: 180ms; }
+.flip-anim-bot.is-seconds { animation-duration: 180ms; animation-delay: 90ms; }
 
 /* Stil-Anpassungen */
 .wedding-site-wrapper[data-style="modern"] .flip-card {
