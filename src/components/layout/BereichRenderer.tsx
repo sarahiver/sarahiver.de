@@ -8,6 +8,9 @@ import CountdownVariantC from '@/components/bereiche/Countdown/CountdownVariantC
 import LovestoryVariantA from '@/components/bereiche/Lovestory/LovestoryVariantA';
 import LovestoryVariantB from '@/components/bereiche/Lovestory/LovestoryVariantB';
 import LovestoryVariantC from '@/components/bereiche/Lovestory/LovestoryVariantC';
+import GalleryVariantA from '@/components/bereiche/Gallery/GalleryVariantA';
+import GalleryVariantB from '@/components/bereiche/Gallery/GalleryVariantB';
+import GalleryVariantC from '@/components/bereiche/Gallery/GalleryVariantC';
 import BereichPlaceholder from '@/components/layout/BereichPlaceholder';
 
 /**
@@ -47,6 +50,13 @@ export function BereichRenderer({ bereich, tokens }: BereichRendererProps) {
     if (variant === 'a') return <LovestoryVariantA {...props} />;
     if (variant === 'b') return <LovestoryVariantB {...props} />;
     if (variant === 'c') return <LovestoryVariantC {...props} />;
+  }
+
+  // === GALLERY ===
+  if (bereich_key === 'gallery') {
+    if (variant === 'a') return <GalleryVariantA {...props} />;
+    if (variant === 'b') return <GalleryVariantB {...props} />;
+    if (variant === 'c') return <GalleryVariantC {...props} />;
   }
 
   // === Alle anderen Bereiche: noch nicht gebaut → Placeholder ===
