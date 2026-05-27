@@ -4,14 +4,7 @@ import Decor from '@/components/ui/Decor';
 /**
  * Hero Variante A — "Großes Hintergrundbild"
  *
- * Wedding-Magazin-Look: Bild füllt die volle Fläche, Text liegt darüber mit
- * Vignette für Lesbarkeit.
- *
- * Token-Abhängigkeiten:
- *   --align        → Text-Position (center vs links via margin)
- *   --img-filter   → Bildanmutung pro Stil
- *   --pad-*        → Padding-Stufen
- *   --accent       → "&"-Farbe
+ * Wedding-Magazin-Look. Bild + Vignette + Text mit Shadow.
  */
 
 interface HeroVariantAProps {
@@ -28,7 +21,6 @@ export default function HeroVariantA({ tokens, content }: HeroVariantAProps) {
     year: 'numeric',
   });
 
-  // Padding-Token je Stil — wird unten via inline CSS gewählt
   const padding =
     tokens.dna_spacing === 'tight'
       ? 'var(--pad-tight)'
@@ -38,11 +30,14 @@ export default function HeroVariantA({ tokens, content }: HeroVariantAProps) {
       ? 'var(--pad-wide)'
       : 'var(--pad-regular)';
 
-  // Inner-Block-Alignment
   const innerAlign: React.CSSProperties =
     tokens.dna_align === 'center'
       ? { textAlign: 'center', marginInline: 'auto' }
       : { textAlign: 'left', marginLeft: 0, marginRight: 'auto' };
+
+  // Background-Gradient als Fallback (CSS, gerendert hinter dem Bild)
+  const fallbackBg =
+    'radial-gradient(ellipse 60% 50% at 50% 35%, color-mix(in srgb, var(--accent) 45%, transparent), transparent 65%), linear-gradient(160deg, var(--bg-soft) 0%, var(--accent) 50%, var(--accent-deep) 100%)';
 
   return (
     <div
@@ -56,41 +51,31 @@ export default function HeroVariantA({ tokens, content }: HeroVariantAProps) {
         display: 'grid',
         alignItems: 'end',
         padding,
+        // Fallback-Gradient liegt IMMER unten — Bild blendet darüber
+        background: fallbackBg,
       }}
     >
-      {/* Background Image mit Filter */}
-      {tokens.hero_image_url ? (
-        <img
-          src={tokens.hero_image_url}
-          alt={`${tokens.couple_name_1} und ${tokens.couple_name_2}`}
-          loading="eager"
+      {/* Hero Image als Background, NICHT als <img> — sicher gegen broken URLs */}
+      {tokens.hero_image_url && (
+        <div
+          aria-label={`${tokens.couple_name_1} und ${tokens.couple_name_2}`}
+          role="img"
           data-editable="hero.image"
           data-edit-type="image"
           style={{
             position: 'absolute',
             inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
             zIndex: 0,
+            backgroundImage: `url(${tokens.hero_image_url})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
             filter: 'var(--img-filter)',
-            display: 'block',
-          }}
-        />
-      ) : (
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            inset: 0,
-            zIndex: 0,
-            background:
-              'radial-gradient(ellipse 60% 50% at 50% 35%, color-mix(in srgb, var(--accent) 45%, transparent), transparent 65%), linear-gradient(160deg, var(--bg-soft) 0%, var(--accent) 50%, var(--accent-deep) 100%)',
           }}
         />
       )}
 
-      {/* Vignette für Text-Lesbarkeit */}
+      {/* Vignette */}
       <div
         aria-hidden="true"
         style={{

@@ -3,12 +3,6 @@ import Decor from '@/components/ui/Decor';
 
 /**
  * Hero Variante B — "Split — Text links, Bild rechts"
- *
- * Editorial-Layout mit zwei klaren Zonen. Spaltenproportion folgt dem
- * Spacing-Token (klassisch/floral/festlich = 1:1, modern = 0.95:1.05,
- * minimal = 0.85:1.15).
- *
- * Mobile: Stack-Layout (Text oben, Bild unten — 4/5 ratio).
  */
 
 interface HeroVariantBProps {
@@ -25,7 +19,6 @@ export default function HeroVariantB({ tokens, content }: HeroVariantBProps) {
     year: 'numeric',
   });
 
-  // Grid-Template-Columns je Spacing-Stufe
   const gridCols =
     tokens.dna_spacing === 'airy'
       ? '0.95fr 1.05fr'
@@ -33,7 +26,6 @@ export default function HeroVariantB({ tokens, content }: HeroVariantBProps) {
       ? '0.85fr 1.15fr'
       : '1fr 1fr';
 
-  // Padding-Skala
   const padding =
     tokens.dna_spacing === 'tight'
       ? 'var(--pad-tight)'
@@ -44,6 +36,9 @@ export default function HeroVariantB({ tokens, content }: HeroVariantBProps) {
       : 'var(--pad-regular)';
 
   const textAlignItems = tokens.dna_align === 'center' ? 'center' : 'flex-start';
+
+  const fallbackBg =
+    'radial-gradient(ellipse 60% 50% at 50% 35%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 65%), linear-gradient(160deg, var(--bg-soft) 0%, var(--accent) 100%)';
 
   return (
     <div
@@ -167,47 +162,27 @@ export default function HeroVariantB({ tokens, content }: HeroVariantBProps) {
         )}
       </div>
 
-      {/* === RECHTS: Bild === */}
+      {/* === RECHTS: Bild als Background-Div (broken-link-safe) === */}
       <div
+        aria-label={tokens.hero_image_url ? `${tokens.couple_name_1} und ${tokens.couple_name_2}` : undefined}
+        role={tokens.hero_image_url ? 'img' : undefined}
+        data-editable="hero.image"
+        data-edit-type="image"
         style={{
           position: 'relative',
           overflow: 'hidden',
           aspectRatio: '4 / 5',
-          background: 'var(--bg-soft)',
           width: '100%',
           alignSelf: 'stretch',
           height: '100%',
+          backgroundImage: tokens.hero_image_url
+            ? `url(${tokens.hero_image_url}), ${fallbackBg}`
+            : fallbackBg,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: tokens.hero_image_url ? 'var(--img-filter)' : 'none',
         }}
-      >
-        {tokens.hero_image_url ? (
-          <img
-            src={tokens.hero_image_url}
-            alt={`${tokens.couple_name_1} und ${tokens.couple_name_2}`}
-            loading="eager"
-            data-editable="hero.image"
-            data-edit-type="image"
-            style={{
-              position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              filter: 'var(--img-filter)',
-              display: 'block',
-            }}
-          />
-        ) : (
-          <div
-            aria-hidden="true"
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background:
-                'radial-gradient(ellipse 60% 50% at 50% 35%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 65%), linear-gradient(160deg, var(--bg-soft) 0%, var(--accent) 100%)',
-            }}
-          />
-        )}
-      </div>
+      />
     </div>
   );
 }
