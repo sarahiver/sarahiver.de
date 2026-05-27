@@ -1,12 +1,17 @@
-# sarahiver.de — Wedding Site Repo
+# sarahiver.de — Marketing + Wedding-Plattform (v5 unified)
 
-Multi-Tenant Next.js 15 App, die Hochzeitsseiten via Subdomain ausliefert:
+**Eine Codebase, ein Vercel-Projekt, eine Domain für alles:**
 
 ```
-sarah-und-iver.sarahiver.de   →   /site/sarah-und-iver
-anna-und-lukas.sarahiver.de   →   /site/anna-und-lukas
-sarahiver.de                  →   Landing-Verweis auf Marketing-Repo
+sarahiver.de                    → Marketing-Landing (Hero, Features, Pricing, ...)
+sarahiver.de/impressum          → Marketing-Pages (statisch)
+sarahiver.de/datenschutz        → Marketing-Pages (statisch)
+sarahiver.de/sarah-und-iver     → Hochzeitsseite eines Brautpaars (dynamisch via Slug)
+sarahiver.de/julia-tom          → Demo-Hochzeit
+sarahiver.de/api/waitlist       → Brevo-API für Warteliste
 ```
+
+**sarahiver.com** ist das **Premium / Done-for-you-Produkt** und hat mit diesem Repo nichts zu tun.
 
 ## Stack
 
@@ -15,114 +20,94 @@ sarahiver.de                  →   Landing-Verweis auf Marketing-Repo
 - **TypeScript 5** (strict)
 - **Tailwind CSS v4**
 - **Supabase** (SSR via `@supabase/ssr`)
-- **Subdomain-Multi-Tenant** via Middleware
+- **Brevo** für Wartelisten-Email-Sammlung
 
-## Architektur
+## Routing-Architektur
 
-### Datenfluss
+Path-basiert, keine Middleware nötig:
 
 ```
-[Subdomain] → [Middleware] → [/site/[slug] Server Component]
-                                      ↓
-                              [loadWeddingSite(slug)]
-                                      ↓
-                          [v_effective_tokens View]
-                                      ↓
-                      [tokensToCSSVariables(tokens)]
-                                      ↓
-                      [CSS-Variablen ins <div style>]
-                                      ↓
-                        [Bereich-Komponenten erben]
+/                       → app/page.tsx                 (Marketing-Landing, statisch)
+/impressum              → app/impressum/page.tsx       (Marketing, statisch)
+/datenschutz            → app/datenschutz/page.tsx     (Marketing, statisch)
+/api/waitlist           → app/api/waitlist/route.ts    (API-Route)
+/[slug]                 → app/[slug]/page.tsx          (Wedding-Site, dynamisch)
+                          └─ Reserved-Slugs werden via isReservedSlug() abgefangen → 404
 ```
 
-### Verzeichnis-Struktur
+**Wichtig:** Next.js priorisiert statische Routes (`/impressum`) über dynamische (`/[slug]`). Wenn ein Brautpaar versucht, einen reservierten Slug zu nehmen (`impressum`, `pricing`, etc.), greift die Reserved-Words-Liste in `lib/slug-validation.ts`.
+
+## Datenfluss für Hochzeitsseiten
+
+```
+User ruft auf:   sarahiver.de/sarah-und-iver
+        ↓
+Next.js Routing: app/[slug]/page.tsx (slug = "sarah-und-iver")
+        ↓
+isReservedSlug?  → Wenn ja: 404
+                   Wenn nein: weiter
+        ↓
+loadWeddingSite("sarah-und-iver")
+        ↓
+Supabase: SELECT * FROM v_effective_tokens WHERE slug = 'sarah-und-iver'
+          UND   SELECT * FROM wedding_bereiche ORDER BY display_order
+        ↓
+tokensToCSSVariables(tokens) → React.CSSProperties
+        ↓
+<div style={cssVars}>
+  <DnaProvider>
+    {bereiche.map(BereichRenderer)}
+  </DnaProvider>
+</div>
+```
+
+## Verzeichnis-Struktur
 
 ```
 src/
 ├── app/
 │   ├── layout.tsx              # Root-Layout mit Google Fonts
-│   ├── page.tsx                # Homepage auf sarahiver.de (Hauptdomain)
-│   ├── not-found.tsx           # 404
-│   ├── globals.css             # Tailwind v4 + Token-Defaults
-│   └── site/[slug]/page.tsx    # Multi-Tenant Hochzeitsseite
+│   ├── page.tsx                # Marketing-Landing (v4)
+│   ├── not-found.tsx           # 404 (für reserved/unbekannte Slugs)
+│   ├── globals.css             # Tailwind v4 + Marketing-Tokens + Wedding-Tokens
+│   ├── api/waitlist/route.ts   # Brevo-Integration
+│   ├── impressum/page.tsx      # Statische Marketing-Page
+│   ├── datenschutz/page.tsx    # Statische Marketing-Page
+│   ├── sitemap.ts              # SEO-Sitemap
+│   └── [slug]/page.tsx         # Dynamische Wedding-Site
 │
 ├── components/
-│   ├── bereiche/
+│   ├── bereiche/               # Wedding-Bereich-Komponenten
 │   │   └── Hero/
-│   │       ├── HeroVariantA.tsx   # Großes Hintergrundbild
-│   │       ├── HeroVariantB.tsx   # Bild rechts, Text links
-│   │       └── HeroVariantC.tsx   # Polaroid Editorial
+│   │       ├── HeroVariantA.tsx
+│   │       ├── HeroVariantB.tsx
+│   │       └── HeroVariantC.tsx
 │   ├── layout/
-│   │   ├── BereichRenderer.tsx    # wählt Variante pro Bereich
-│   │   └── BereichPlaceholder.tsx # Stub für not-yet-built
+│   │   ├── Sidebar.tsx          # Marketing-Sidebar (Desktop)
+│   │   ├── MobileNav.tsx        # Marketing-MobileNav
+│   │   ├── Footer.tsx           # Marketing-Footer
+│   │   ├── BereichRenderer.tsx  # Wedding: wählt Variante pro Bereich
+│   │   └── BereichPlaceholder.tsx # Wedding: Stub für not-yet-built
+│   ├── sections/                # Marketing-Sektionen (Hero/Features/Pricing/...)
+│   │   └── (alle v4-Sektionen)
 │   └── ui/
-│       └── Decor.tsx              # Decor je nach DNA (sprig/gold/rule/...)
+│       ├── Section.tsx          # Marketing-Wrapper
+│       ├── WaitlistForm.tsx     # Marketing-Form (Brevo)
+│       └── Decor.tsx            # Wedding-Decor (DNA-basiert)
 │
 ├── lib/
-│   ├── supabase-server.ts      # Supabase-Client (SSR)
+│   ├── bereiche.ts              # Bereiche-Daten (Marketing + Wedding)
+│   ├── content.ts               # Marketing-Copy
+│   ├── customizer.ts            # DNA-System (Paletten/Schriften/Stile)
+│   ├── demos.ts                 # Demo-Hochzeiten für Marketing-Examples
+│   ├── pricing.ts               # Marketing-Preis-Logik
+│   ├── slug-validation.ts       # Reserved-Words + Slug-Format
+│   ├── supabase-server.ts       # Supabase-Client (SSR)
 │   ├── tokens.ts                # Token-Loader + CSS-Variable-Generator
 │   └── dna-context.tsx          # DnaProvider + useDna() für Client Components
 │
-├── types/
-│   └── supabase.ts              # TypeScript-Types fürs Schema
-│
-└── middleware.ts                # Subdomain → /site/[slug] Rewrite
-```
-
-## Wie eine Hochzeitsseite gerendert wird
-
-1. **Middleware** fängt `sarah-und-iver.sarahiver.de` ab
-2. Rewrite zu `/site/sarah-und-iver`
-3. **Server Component** in `app/site/[slug]/page.tsx`:
-   - Lädt `v_effective_tokens` für den Slug
-   - Lädt alle aktiven `wedding_bereiche` der Seite
-   - Generiert CSS-Variablen via `tokensToCSSVariables()`
-   - Wrappt alles in `<div style={cssVars}>`
-   - Wrappt mit `<DnaProvider>` für Client-Components
-4. **BereichRenderer** wählt für jeden Bereich die richtige Komponente
-   basierend auf `bereich_key` + `variant`
-5. **Background-Rhythmus** via `getBereichBackground(index, key, isLast)`:
-   - Bereich 0 (Hero): `--bg`
-   - Bereich 1: `--bg-soft`
-   - Bereich 2: `--bg`
-   - …
-   - Featured (`lovestory`, `gifts`): immer `--bg-soft`
-   - Letzter Bereich: immer `--bg`
-
-## Token-System
-
-Jede Bereich-Komponente nutzt AUSSCHLIESSLICH CSS-Variablen:
-
-```tsx
-// ✅ RICHTIG
-<h1 style={{ color: 'var(--accent-deep)', fontFamily: 'var(--font-display)' }}>
-
-// ❌ FALSCH
-<h1 className="text-[#8E574E] font-serif">
-```
-
-Verfügbare Token (kommen aus Supabase + werden injiziert):
-
-```
---bg            Hauptfläche-Hintergrund
---bg-soft       Sekundär-Hintergrund (alternierende Sektionen)
---accent        Primärer Akzent (Buttons, Icons, "&"-Symbol)
---accent-deep   Tiefer Akzent (Headlines, Borders)
---ink           Haupttext
---ink-soft      Sekundär-Text (auto-berechnet)
---muted         Tertiär-Text (auto-berechnet)
---border        Standard-Border (auto-berechnet)
---border-soft   Subtile Border (auto-berechnet)
-
---font-display  Headlines
---font-body     Fließtext
---font-script   Handschrift-Akzente (Caveat)
---font-mono     Eyebrows, Tags
-
---align         center | left
---spacing       tight | regular | airy | wide
---decor         none | rule | sprig | hairline | gold
---contrast      warm | clean | soft | neutral | high
+└── types/
+    └── supabase.ts              # TypeScript-Types fürs Schema
 ```
 
 ## Setup
@@ -142,7 +127,9 @@ cp .env.example .env.local
 Fülle ein:
 - `NEXT_PUBLIC_SUPABASE_URL` — deine sarahiver.de-Supabase-Projekt-URL
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Anon-Key
-- `NEXT_PUBLIC_APP_DOMAIN` — `sarahiver.de` (oder lokaler Wert)
+- `BREVO_API_KEY` — für die Warteliste
+- `BREVO_WAITLIST_LIST_ID` — Brevo-List-ID
+- `NEXT_PUBLIC_APP_DOMAIN` — `sarahiver.de`
 
 ### 3. Dev-Server
 
@@ -150,16 +137,10 @@ Fülle ein:
 npm run dev
 ```
 
-Zwei Wege zum Testen:
-
-**A) Mit lokalem Subdomain-Setup:**
-- Trage in `/etc/hosts` ein: `127.0.0.1 sarah-und-iver-demo.sarahiver.local`
-- Setze `NEXT_PUBLIC_APP_DOMAIN=sarahiver.local`
-- Browse zu `http://sarah-und-iver-demo.sarahiver.local:3000`
-
-**B) Mit Query-Param (einfacher für Dev):**
-- Browse zu `http://localhost:3000?slug=sarah-und-iver-demo`
-- Middleware rewriting nutzt automatisch den Slug
+Test-URLs lokal:
+- http://localhost:3000/ → Marketing-Landing
+- http://localhost:3000/sarah-und-iver-demo → Demo-Hochzeit
+- http://localhost:3000/impressum → Marketing-Page
 
 ### 4. Production-Build
 
@@ -173,23 +154,31 @@ npm run build && npm start
 vercel
 ```
 
-### Domain-Setup in Vercel
+Environment Variables im Vercel-Dashboard setzen (alle aus `.env.example`).
 
-1. Project Settings → Domains → Add Domain
-2. Hauptdomain: `sarahiver.de`
-3. **Wildcard:** `*.sarahiver.de` (Wedding-Subdomains)
-4. DNS bei deinem Registrar:
-   - `A` Record: `sarahiver.de` → Vercel IPs
-   - `CNAME` Record: `*.sarahiver.de` → `cname.vercel-dns.com`
+**Domain-Setup (nach 04.07.2026):**
+1. Vercel Settings → Domains → Add `sarahiver.de`
+2. DNS bei deinem Registrar: A-Record auf Vercel-IP (zeigt Vercel an)
+3. Auto-HTTPS funktioniert sofort
 
-### Environment Variables in Vercel
+**Keine Wildcard-DNS nötig** — wir nutzen Path-basiertes Multi-Tenant statt Subdomain.
 
-- `NEXT_PUBLIC_SUPABASE_URL` ✅ (visible)
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` ✅ (visible)
-- `NEXT_PUBLIC_APP_DOMAIN` = `sarahiver.de`
-- `SUPABASE_SERVICE_ROLE_KEY` 🔒 (Sensitive)
+## Reserved Slugs
+
+Folgende Wörter dürfen NICHT als Hochzeit-Slug verwendet werden (in `lib/slug-validation.ts`):
+
+- Marketing-Pages: `impressum`, `datenschutz`, `agb`, `kontakt`
+- System-Routes: `api`, `admin`, `dashboard`, `login`, `auth`
+- Static Assets: `static`, `_next`, `public`, `favicon`
+- Häufige Konflikte: `pricing`, `features`, `baukasten`, `demo`
+- Vollständige Liste in `src/lib/slug-validation.ts`
 
 ## Komponenten-Status
+
+**Marketing-Sektionen (v4, alle fertig):**
+- Hero, Features, Examples, Structure, Customizer, Print, How, Pricing, Voices, FAQ, CTA
+
+**Wedding-Bereich-Komponenten:**
 
 | Bereich | Variante A | Variante B | Variante C |
 |---------|------------|------------|------------|
@@ -198,28 +187,16 @@ vercel
 | Timeline | ⏳ Open | ⏳ Open | ⏳ Open |
 | Infos | ⏳ Open | ⏳ Open | ⏳ Open |
 | Lovestory | ⏳ Open | ⏳ Open | ⏳ Open |
-| Galerie | ⏳ Open | ⏳ Open | ⏳ Open |
-| Foto-Upload | ⏳ Open | ⏳ Open | ⏳ Open |
-| Geschenke | ⏳ Open | ⏳ Open | ⏳ Open |
-| Übernachtung | ⏳ Open | ⏳ Open | ⏳ Open |
-| Countdown | ⏳ Open | ⏳ Open | ⏳ Open |
-| Gästebuch | ⏳ Open | ⏳ Open | ⏳ Open |
-| FAQ | ⏳ Open | ⏳ Open | ⏳ Open |
-| Musikwünsche | ⏳ Open | ⏳ Open | ⏳ Open |
-| Trauzeugen | ⏳ Open | ⏳ Open | ⏳ Open |
-| Hochzeits-ABC | ⏳ Open | ⏳ Open | ⏳ Open |
-
-⚠️ Stub = funktioniert, aber rudimentäres Design (warten auf Claude-Design-Output)
-⏳ Open = noch nicht angefangen
+| ... (11 weitere) | ⏳ Open | ⏳ Open | ⏳ Open |
 
 ## Roadmap
 
-- [ ] Hero-Komponenten via Claude Design final designen
-- [ ] RSVP mit Supabase-Insert (Form-Backend)
-- [ ] Galerie mit Cloudinary-Upload
-- [ ] PhotoUpload mit Supabase-Storage + Approval
-- [ ] Customer-Dashboard (separates `/dashboard` Subdomain oder eigenes Repo)
-- [ ] Editor-Mode (`?edit=true` zeigt editierbare Felder visuell)
+- [ ] Hero-Design finalisieren (via Claude Design)
+- [ ] RSVP-Komponente mit Form-Submit zu Supabase
+- [ ] Customer-Dashboard für Brautpaare (auf eigener Route `/dashboard`)
+- [ ] Auth-Flow (Email + Magic-Link via Supabase Auth)
+- [ ] OG-Image-Generator pro Hochzeit
+- [ ] EN-Übersetzung (Phase 2 ab 2027)
 
 ## License
 

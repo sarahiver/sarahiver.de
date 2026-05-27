@@ -26,7 +26,7 @@ export const DEMO_WEDDINGS: DemoWedding[] = [
     location: 'Schloss Wackerbarth, Sachsen',
     start: 'klassisch',
     config: 'Komplettpaket · 9 Bereiche · Sandstein-Palette · Fraunces · 34 € / Monat',
-    url: 'julia-tom.sarahiver.de',
+    url: 'sarahiver.de/julia-tom',
     featured: true,
     tagline: 'Klassisch & warm',
   },
@@ -37,7 +37,7 @@ export const DEMO_WEDDINGS: DemoWedding[] = [
     location: 'Schwarzwald, Forsthaus Sonne',
     start: 'floral',
     config: 'Erweitert · 7 Bereiche · Salbei & Rosé · Fraunces Italic · 28 € / Monat',
-    url: 'anna-und-lukas.sarahiver.de',
+    url: 'sarahiver.de/anna-und-lukas',
     tagline: 'Verspielt & floral',
   },
   {
@@ -47,7 +47,7 @@ export const DEMO_WEDDINGS: DemoWedding[] = [
     location: 'Speicherstadt, Hamburg',
     start: 'modern',
     config: 'Standard · 5 Bereiche · Olive & Honig · Inter Tight · 25 € / Monat',
-    url: 'mia-und-noah.sarahiver.de',
+    url: 'sarahiver.de/mia-und-noah',
     tagline: 'Modern & klar',
   },
   {
@@ -57,7 +57,7 @@ export const DEMO_WEDDINGS: DemoWedding[] = [
     location: 'München, Bayerischer Hof',
     start: 'festlich',
     config: 'Komplettpaket · 9 Bereiche · Burgund & Creme · Fraunces 700 · 34 € / Monat',
-    url: 'elena-und-felix.sarahiver.de',
+    url: 'sarahiver.de/elena-und-felix',
     tagline: 'Bold & festlich',
   },
 ];
