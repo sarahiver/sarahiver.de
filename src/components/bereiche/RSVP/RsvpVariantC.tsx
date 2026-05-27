@@ -282,7 +282,7 @@ export default function RsvpVariantC({ tokens, content }: Props) {
               }}
               placeholder={currentStep.placeholder ?? ''}
               autoComplete="off"
-              autoFocus
+
             />
             <button
               type="button"

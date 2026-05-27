@@ -169,7 +169,7 @@ export default function RsvpVariantB({ tokens, content }: Props) {
                     onChange={(e) => updateField('name', e.target.value)}
                     onKeyDown={handleEnterKey}
                     placeholder="Vor- und Nachname"
-                    autoFocus
+
                   />
                 </div>
                 <div className="field">
@@ -254,7 +254,7 @@ export default function RsvpVariantB({ tokens, content }: Props) {
                   onChange={(e) => updateGuest(step.guestIndex!, 'name', e.target.value)}
                   onKeyDown={handleEnterKey}
                   placeholder="Name"
-                  autoFocus
+
                 />
               </div>
             </>
@@ -301,7 +301,7 @@ export default function RsvpVariantB({ tokens, content }: Props) {
                   onChange={(e) => updateField('custom_answer', e.target.value)}
                   onKeyDown={handleEnterKey}
                   placeholder="kurze Antwort genügt"
-                  autoFocus
+
                 />
               </div>
             </>
