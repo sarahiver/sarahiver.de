@@ -1,19 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { SITE_CONFIG } from '@/lib/content';
 
 export const metadata: Metadata = {
-  title: `${SITE_CONFIG.name} — ${SITE_CONFIG.tagline}`,
-  description: SITE_CONFIG.description,
-  openGraph: {
-    title: SITE_CONFIG.name,
-    description: SITE_CONFIG.description,
-    url: `https://${SITE_CONFIG.domain}`,
-    siteName: SITE_CONFIG.name,
-    locale: 'de_DE',
-    type: 'website',
-  },
-  robots: { index: true, follow: true },
+  title: 'sarahiver.de',
+  description: 'Wedding sites for couples in DACH.',
+  robots: { index: false, follow: false }, // pro Subdomain im site-layout überschrieben
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -27,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body className="bg-paper text-ink">{children}</body>
+      <body>{children}</body>
     </html>
   );
 }

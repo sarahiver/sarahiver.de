@@ -1,137 +1,225 @@
-# sarahiver.de — Marketing & Waitlist Site (v4)
+# sarahiver.de — Wedding Site Repo
 
-Pre-Launch Landing Page für die Self-Service-Hochzeitsseiten-Plattform für den DACH-Raum.
+Multi-Tenant Next.js 15 App, die Hochzeitsseiten via Subdomain ausliefert:
 
-## Was v4 anders macht als v3
-
-Diese Iteration fokussiert auf Reviewer-Feedback + Mobile-Tauglichkeit:
-
-| # | Change | Begründung |
-|---|--------|-----------|
-| 1 | **Bereich-Katalog auf 15 erweitert** (4 Basis + 11 Zusatz) | Analog zum si-wedding-themes Repo |
-| 2 | **Customizer-Live-Preview entfernt** → Coming-Soon-Placeholder | Reviewer: kollabiert auf Mobile |
-| 3 | **Customizer mobile-tauglich** mit Summary-Card statt Split-Screen | Reviewer: Mobile-First |
-| 4 | **Pricing: Laufzeit-Erklärung** (12 Monate / 18 Monate / Archiv) | Reviewer: Abo-Falle-Reflex |
-| 5 | **Pricing: Streichpreis-Logik** sichtbar (z.B. "~~28€~~ 19€") | Reviewer: Rabatt-Beweis |
-| 6 | **Pricing: Gesamtkosten-Anzeige** über 12 Monate | Reviewer: Transparenz |
-| 7 | **Bereich-Empfehlungen pro Start-Stil** | Reviewer: Choice Overload lösen |
-| 8 | **Redundanz "je mehr desto günstiger"** nur noch 1× | Reviewer: IA |
-| 9 | **Volume-Discount-Tabelle erweitert** für 11 Bereiche | Notwendig durch #1 |
-| 10 | **FAQ: neue Frage zu Abo-Modell** ganz oben | Reviewer: Transparenz |
-
-### Was bewusst NICHT geändert wurde
-
-- **Recurring Subscription beibehalten** (SaaS-Bewertung, RankBrief-Konsistenz)
-- **Hero-Mockup** weiterhin als fertige Hochzeitsseite (Entscheidung User)
-- **Modulares Bereich-System** (Differenzierung vs. Joy/Zola)
+```
+sarah-und-iver.sarahiver.de   →   /site/sarah-und-iver
+anna-und-lukas.sarahiver.de   →   /site/anna-und-lukas
+sarahiver.de                  →   Landing-Verweis auf Marketing-Repo
+```
 
 ## Stack
 
-- **Next.js 15** (App Router, RSC + Client Components)
+- **Next.js 15** (App Router, Server Components)
 - **React 19**
 - **TypeScript 5** (strict)
-- **Tailwind CSS v4** (@theme tokens)
-- **Brevo** für Waitlist
-- **Fraunces + Inter + Caveat + DM Mono** (Google Fonts)
+- **Tailwind CSS v4**
+- **Supabase** (SSR via `@supabase/ssr`)
+- **Subdomain-Multi-Tenant** via Middleware
 
-## Sektions-Reihenfolge
+## Architektur
 
-1. **Hero** — Email-Sammlung + Pre-Launch-Hint, Julia-Tom-Demo-Mockup
-2. **Features** — 6 Werkzeuge
-3. **Examples** — 4 Demo-Hochzeiten
-4. **Structure** — **15 Bereiche** erklärt (4 Basis + 11 Zusatz)
-5. **Customizer** — Baukasten ohne fragile Live-Preview, mit Empfehlungen pro Stil
-6. **Print** — PDF kostenlos + 300€ Done-For-You
-7. **How** — 3 Schritte
-8. **Pricing** — Konfigurator mit Streichpreis + Laufzeit-Erklärung
-9. **Voices** — Beta-Stimmen
-10. **FAQ** — 9 Fragen (neu: Abo-Frage ganz oben)
-11. **CTA** — Finale Email-Sammlung
+### Datenfluss
 
-## Bereich-Katalog (15 total)
-
-**4 Basis-Bereiche (immer dabei):**
-- Hero, RSVP, Timeline, Infos
-
-**11 Zusatz-Bereiche (frei wählbar):**
-- Lovestory ⭐, Galerie, Foto-Upload, Geschenke ⭐, Übernachtung, Countdown,
-  Gästebuch, FAQ, Musikwünsche, Trauzeugen, Hochzeits-ABC
-
-Namen synchron mit `si-wedding-themes` Repo (Hero.js, RSVP.js, Timeline.js, ...).
-
-## Pricing-Tabelle (Volume Discount)
-
-| # Zusatz | Aufpreis | Gesamt/Monat | 12-Monate-Total |
-|----------|----------|--------------|-----------------|
-| 0 | – | 19€ | 228€ |
-| 1 | +4€ | 23€ | 276€ |
-| 2 | +7€ | 26€ | 312€ |
-| 3 | +9€ ⭐ | 28€ | 336€ |
-| 4 | +11€ | 30€ | 360€ |
-| 5 | +13€ | 32€ | 384€ |
-| 6 | +15€ | 34€ | 408€ |
-| 7 | +17€ | 36€ | 432€ |
-| **8+** | **+20€ (Cap)** | **39€** | **468€** |
-
-## Setup
-
-```bash
-npm install
-cp .env.example .env.local
-# BREVO_API_KEY + BREVO_WAITLIST_LIST_ID eintragen
-npm run dev
+```
+[Subdomain] → [Middleware] → [/site/[slug] Server Component]
+                                      ↓
+                              [loadWeddingSite(slug)]
+                                      ↓
+                          [v_effective_tokens View]
+                                      ↓
+                      [tokensToCSSVariables(tokens)]
+                                      ↓
+                      [CSS-Variablen ins <div style>]
+                                      ↓
+                        [Bereich-Komponenten erben]
 ```
 
-Build:
-```bash
-npm run build && npm start
-```
-
-## Bereich-Empfehlungen pro Start-Stil
-
-Definiert in `src/lib/customizer.ts` — `recommendedBereiche`:
-
-| Stil | Empfohlene Zusatz-Bereiche | Anzahl |
-|------|---------------------------|--------|
-| Klassisch & Warm | Lovestory, Galerie, Übernachtung, Geschenke, FAQ | 5 |
-| Modern & Klar | Lovestory, Foto-Upload, Geschenke, Musikwünsche | 4 |
-| Verspielt & Floral | Lovestory, Galerie, Gästebuch, Geschenke, Hochzeits-ABC | 5 |
-| Minimal & Ruhig | Countdown, Geschenke, FAQ | 3 |
-| Bold & Festlich | Lovestory, Galerie, Foto-Upload, Geschenke, Übernachtung, Trauzeugen, Musikwünsche | 7 |
-
-Diese Empfehlung wird in Step 4 ("Bereiche") automatisch vorgewählt — User kann ergänzen oder abwählen.
-
-## File Structure
+### Verzeichnis-Struktur
 
 ```
 src/
 ├── app/
-│   ├── api/waitlist/route.ts
-│   ├── datenschutz/page.tsx
-│   ├── impressum/page.tsx
-│   ├── globals.css
-│   ├── layout.tsx
-│   ├── page.tsx
-│   └── sitemap.ts
+│   ├── layout.tsx              # Root-Layout mit Google Fonts
+│   ├── page.tsx                # Homepage auf sarahiver.de (Hauptdomain)
+│   ├── not-found.tsx           # 404
+│   ├── globals.css             # Tailwind v4 + Token-Defaults
+│   └── site/[slug]/page.tsx    # Multi-Tenant Hochzeitsseite
+│
 ├── components/
+│   ├── bereiche/
+│   │   └── Hero/
+│   │       ├── HeroVariantA.tsx   # Großes Hintergrundbild
+│   │       ├── HeroVariantB.tsx   # Bild rechts, Text links
+│   │       └── HeroVariantC.tsx   # Polaroid Editorial
 │   ├── layout/
-│   ├── sections/  (11 Sektionen)
+│   │   ├── BereichRenderer.tsx    # wählt Variante pro Bereich
+│   │   └── BereichPlaceholder.tsx # Stub für not-yet-built
 │   └── ui/
-└── lib/
-    ├── bereiche.ts        (15 Bereiche)
-    ├── content.ts          (Copy + Pricing-Terms)
-    ├── customizer.ts       (DNA + Empfehlungen)
-    ├── demos.ts            (4 Demo-Hochzeiten)
-    └── pricing.ts          (Volume Discount + Laufzeit)
+│       └── Decor.tsx              # Decor je nach DNA (sprig/gold/rule/...)
+│
+├── lib/
+│   ├── supabase-server.ts      # Supabase-Client (SSR)
+│   ├── tokens.ts                # Token-Loader + CSS-Variable-Generator
+│   └── dna-context.tsx          # DnaProvider + useDna() für Client Components
+│
+├── types/
+│   └── supabase.ts              # TypeScript-Types fürs Schema
+│
+└── middleware.ts                # Subdomain → /site/[slug] Rewrite
 ```
 
-## Roadmap nach Launch
+## Wie eine Hochzeitsseite gerendert wird
 
-- [ ] Live-Preview im Customizer einbauen, sobald die echten Bereich-Komponenten fertig sind
-- [ ] Hero-Mockup mit Tool-Hint anreichern (Customizer-Tooltip-Overlay)
-- [ ] 4 Demo-Subdomains live schalten
-- [ ] OG-Image + Favicon
-- [ ] EN-Übersetzung (Phase 2 ab 2027)
+1. **Middleware** fängt `sarah-und-iver.sarahiver.de` ab
+2. Rewrite zu `/site/sarah-und-iver`
+3. **Server Component** in `app/site/[slug]/page.tsx`:
+   - Lädt `v_effective_tokens` für den Slug
+   - Lädt alle aktiven `wedding_bereiche` der Seite
+   - Generiert CSS-Variablen via `tokensToCSSVariables()`
+   - Wrappt alles in `<div style={cssVars}>`
+   - Wrappt mit `<DnaProvider>` für Client-Components
+4. **BereichRenderer** wählt für jeden Bereich die richtige Komponente
+   basierend auf `bereich_key` + `variant`
+5. **Background-Rhythmus** via `getBereichBackground(index, key, isLast)`:
+   - Bereich 0 (Hero): `--bg`
+   - Bereich 1: `--bg-soft`
+   - Bereich 2: `--bg`
+   - …
+   - Featured (`lovestory`, `gifts`): immer `--bg-soft`
+   - Letzter Bereich: immer `--bg`
+
+## Token-System
+
+Jede Bereich-Komponente nutzt AUSSCHLIESSLICH CSS-Variablen:
+
+```tsx
+// ✅ RICHTIG
+<h1 style={{ color: 'var(--accent-deep)', fontFamily: 'var(--font-display)' }}>
+
+// ❌ FALSCH
+<h1 className="text-[#8E574E] font-serif">
+```
+
+Verfügbare Token (kommen aus Supabase + werden injiziert):
+
+```
+--bg            Hauptfläche-Hintergrund
+--bg-soft       Sekundär-Hintergrund (alternierende Sektionen)
+--accent        Primärer Akzent (Buttons, Icons, "&"-Symbol)
+--accent-deep   Tiefer Akzent (Headlines, Borders)
+--ink           Haupttext
+--ink-soft      Sekundär-Text (auto-berechnet)
+--muted         Tertiär-Text (auto-berechnet)
+--border        Standard-Border (auto-berechnet)
+--border-soft   Subtile Border (auto-berechnet)
+
+--font-display  Headlines
+--font-body     Fließtext
+--font-script   Handschrift-Akzente (Caveat)
+--font-mono     Eyebrows, Tags
+
+--align         center | left
+--spacing       tight | regular | airy | wide
+--decor         none | rule | sprig | hairline | gold
+--contrast      warm | clean | soft | neutral | high
+```
+
+## Setup
+
+### 1. Dependencies
+
+```bash
+npm install
+```
+
+### 2. Environment
+
+```bash
+cp .env.example .env.local
+```
+
+Fülle ein:
+- `NEXT_PUBLIC_SUPABASE_URL` — deine sarahiver.de-Supabase-Projekt-URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Anon-Key
+- `NEXT_PUBLIC_APP_DOMAIN` — `sarahiver.de` (oder lokaler Wert)
+
+### 3. Dev-Server
+
+```bash
+npm run dev
+```
+
+Zwei Wege zum Testen:
+
+**A) Mit lokalem Subdomain-Setup:**
+- Trage in `/etc/hosts` ein: `127.0.0.1 sarah-und-iver-demo.sarahiver.local`
+- Setze `NEXT_PUBLIC_APP_DOMAIN=sarahiver.local`
+- Browse zu `http://sarah-und-iver-demo.sarahiver.local:3000`
+
+**B) Mit Query-Param (einfacher für Dev):**
+- Browse zu `http://localhost:3000?slug=sarah-und-iver-demo`
+- Middleware rewriting nutzt automatisch den Slug
+
+### 4. Production-Build
+
+```bash
+npm run build && npm start
+```
+
+## Deployment auf Vercel
+
+```bash
+vercel
+```
+
+### Domain-Setup in Vercel
+
+1. Project Settings → Domains → Add Domain
+2. Hauptdomain: `sarahiver.de`
+3. **Wildcard:** `*.sarahiver.de` (Wedding-Subdomains)
+4. DNS bei deinem Registrar:
+   - `A` Record: `sarahiver.de` → Vercel IPs
+   - `CNAME` Record: `*.sarahiver.de` → `cname.vercel-dns.com`
+
+### Environment Variables in Vercel
+
+- `NEXT_PUBLIC_SUPABASE_URL` ✅ (visible)
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` ✅ (visible)
+- `NEXT_PUBLIC_APP_DOMAIN` = `sarahiver.de`
+- `SUPABASE_SERVICE_ROLE_KEY` 🔒 (Sensitive)
+
+## Komponenten-Status
+
+| Bereich | Variante A | Variante B | Variante C |
+|---------|------------|------------|------------|
+| Hero | ⚠️ Stub | ⚠️ Stub | ⚠️ Stub |
+| RSVP | ⏳ Open | ⏳ Open | ⏳ Open |
+| Timeline | ⏳ Open | ⏳ Open | ⏳ Open |
+| Infos | ⏳ Open | ⏳ Open | ⏳ Open |
+| Lovestory | ⏳ Open | ⏳ Open | ⏳ Open |
+| Galerie | ⏳ Open | ⏳ Open | ⏳ Open |
+| Foto-Upload | ⏳ Open | ⏳ Open | ⏳ Open |
+| Geschenke | ⏳ Open | ⏳ Open | ⏳ Open |
+| Übernachtung | ⏳ Open | ⏳ Open | ⏳ Open |
+| Countdown | ⏳ Open | ⏳ Open | ⏳ Open |
+| Gästebuch | ⏳ Open | ⏳ Open | ⏳ Open |
+| FAQ | ⏳ Open | ⏳ Open | ⏳ Open |
+| Musikwünsche | ⏳ Open | ⏳ Open | ⏳ Open |
+| Trauzeugen | ⏳ Open | ⏳ Open | ⏳ Open |
+| Hochzeits-ABC | ⏳ Open | ⏳ Open | ⏳ Open |
+
+⚠️ Stub = funktioniert, aber rudimentäres Design (warten auf Claude-Design-Output)
+⏳ Open = noch nicht angefangen
+
+## Roadmap
+
+- [ ] Hero-Komponenten via Claude Design final designen
+- [ ] RSVP mit Supabase-Insert (Form-Backend)
+- [ ] Galerie mit Cloudinary-Upload
+- [ ] PhotoUpload mit Supabase-Storage + Approval
+- [ ] Customer-Dashboard (separates `/dashboard` Subdomain oder eigenes Repo)
+- [ ] Editor-Mode (`?edit=true` zeigt editierbare Felder visuell)
 
 ## License
 
