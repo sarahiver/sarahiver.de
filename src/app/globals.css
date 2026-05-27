@@ -347,3 +347,440 @@ html, body {
 .wedding-site-wrapper[data-style="festlich"] .flip-mid {
   background: color-mix(in srgb, var(--gold) 50%, transparent);
 }
+
+/* =========================================================
+   LOVESTORY — drei Varianten (A, B, C)
+   ========================================================= */
+
+/* --- Shared (Header + Layout-Skeleton) --- */
+.ls {
+  padding: clamp(48px, 8vw, 88px) clamp(24px, 5vw, 64px);
+  background: var(--bg);
+  color: var(--ink);
+  text-align: var(--align, center);
+}
+.wedding-site-wrapper[data-style="modern"]  .ls,
+.wedding-site-wrapper[data-style="minimal"] .ls { text-align: left; }
+.wedding-site-wrapper[data-style="festlich"] .ls {
+  padding: clamp(36px, 6vw, 64px) clamp(20px, 4vw, 48px);
+}
+.wedding-site-wrapper[data-style="minimal"] .ls {
+  padding: clamp(64px, 10vw, 112px) clamp(36px, 6vw, 80px);
+}
+
+.ls-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--ink) 65%, transparent);
+  margin: 0 0 12px;
+}
+.ls-title {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style);
+  font-size: clamp(32px, 4.6vw, 56px);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: 0 0 16px;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.ls-title em {
+  font-family: var(--font-script);
+  font-style: normal;
+  color: var(--accent);
+  font-weight: 500;
+  font-size: 1.08em;
+}
+.ls-intro {
+  font-family: var(--font-body);
+  font-size: clamp(15px, 1.4vw, 17px);
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--ink) 65%, transparent);
+  max-width: 60ch;
+  margin: 0 auto;
+}
+.wedding-site-wrapper[data-style="modern"]  .ls-intro,
+.wedding-site-wrapper[data-style="minimal"] .ls-intro { margin-left: 0; }
+.ls-head-decor-wrap { margin: 18px 0 6px; display: flex; justify-content: center; }
+.wedding-site-wrapper[data-style="modern"]  .ls-head-decor-wrap,
+.wedding-site-wrapper[data-style="minimal"] .ls-head-decor-wrap { justify-content: flex-start; }
+
+/* =========================================================
+   VARIANTE A — Editorial-Stapel
+   ========================================================= */
+.lsA-single {
+  margin: clamp(28px, 4vw, 48px) auto 0;
+  max-width: 1100px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 72px);
+  align-items: center;
+}
+.lsA-images {
+  position: relative;
+  aspect-ratio: 5 / 4;
+  min-height: 280px;
+}
+.lsA-img {
+  position: absolute;
+  background: var(--bg-soft);
+  box-shadow:
+    0 1px 0 rgba(20,16,12,0.04),
+    0 14px 36px -16px rgba(20,16,12,0.22);
+  overflow: hidden;
+  border: 8px solid #fff;
+  transition: transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.lsA-img img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  filter: var(--img-filter);
+}
+.lsA-img--1 { left: 4%;   top: 6%;    width: 58%; aspect-ratio: 4/5; transform: rotate(-2deg);  z-index: 1; }
+.lsA-img--2 { right: 6%;  top: 24%;   width: 52%; aspect-ratio: 3/4; transform: rotate(2.5deg); z-index: 2; }
+.lsA-img--3 { left: 30%;  bottom: 4%; width: 42%; aspect-ratio: 4/3; transform: rotate(-1deg);  z-index: 3; }
+.lsA-single:hover .lsA-img--1 { transform: rotate(-2deg)  translateY(-3px); }
+.lsA-single:hover .lsA-img--2 { transform: rotate(2.5deg) translateY(-2px); }
+.lsA-single:hover .lsA-img--3 { transform: rotate(-1deg)  translateY(-4px); }
+
+/* Style-Variationen für A */
+.wedding-site-wrapper[data-style="minimal"] .lsA-img {
+  border: 1px solid var(--border);
+  box-shadow: none;
+  transform: none !important;
+}
+.wedding-site-wrapper[data-style="minimal"] .lsA-img--1 { left: 0;  top: 0;   width: 60%; }
+.wedding-site-wrapper[data-style="minimal"] .lsA-img--2 { right: 0; top: 16%; width: 54%; }
+.wedding-site-wrapper[data-style="minimal"] .lsA-img--3 { display: none; }
+.wedding-site-wrapper[data-style="modern"] .lsA-img {
+  border-width: 4px; border-radius: 2px;
+}
+.wedding-site-wrapper[data-style="modern"] .lsA-img--1,
+.wedding-site-wrapper[data-style="modern"] .lsA-img--2,
+.wedding-site-wrapper[data-style="modern"] .lsA-img--3 { transform: rotate(0deg); }
+.wedding-site-wrapper[data-style="festlich"] .lsA-img {
+  border-color: #fff;
+  box-shadow: 0 20px 40px -16px rgba(20,16,12,0.28);
+}
+
+.lsA-text {
+  text-align: var(--align, center);
+  min-width: 0;
+}
+.wedding-site-wrapper[data-style="modern"]  .lsA-text,
+.wedding-site-wrapper[data-style="minimal"] .lsA-text { text-align: left; }
+
+.lsA-eyebrow {
+  font-family: var(--font-script);
+  color: var(--accent);
+  font-size: clamp(22px, 2.2vw, 28px);
+  line-height: 1;
+  margin: 0 0 12px;
+}
+.wedding-site-wrapper[data-style="minimal"] .lsA-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--ink) 45%, transparent);
+}
+.wedding-site-wrapper[data-style="modern"] .lsA-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.lsA-moment-title {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style);
+  font-size: clamp(26px, 3.4vw, 44px);
+  line-height: 1.06;
+  letter-spacing: -0.018em;
+  margin: 0 0 14px;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.lsA-desc {
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1.3vw, 16px);
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--ink) 65%, transparent);
+  max-width: 44ch;
+  margin: 0 0 18px;
+}
+.wedding-site-wrapper[data-style="klassisch"] .lsA-desc,
+.wedding-site-wrapper[data-style="floral"]    .lsA-desc,
+.wedding-site-wrapper[data-style="festlich"]  .lsA-desc {
+  margin-left: auto; margin-right: auto;
+}
+.lsA-sig {
+  font-family: var(--font-script);
+  color: var(--accent-deep);
+  font-size: clamp(20px, 1.8vw, 24px);
+  line-height: 1;
+}
+.wedding-site-wrapper[data-style="minimal"] .lsA-sig {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--ink) 65%, transparent);
+}
+
+/* A — Mobile */
+@media (max-width: 720px) {
+  .lsA-single {
+    grid-template-columns: 1fr;
+    gap: clamp(20px, 5vw, 32px);
+  }
+  .lsA-images { aspect-ratio: 4/3; min-height: 240px; }
+  .lsA-img--1 { left: 2%;  top: 4%;    width: 62%; transform: rotate(-1deg);   }
+  .lsA-img--2 { right: 2%; top: 20%;   width: 56%; transform: rotate(1.5deg);  }
+  .lsA-img--3 { left: 22%; bottom: 2%; width: 50%; transform: rotate(-0.5deg); }
+  .lsA-text { text-align: left; }
+  .lsA-desc { margin-left: 0; margin-right: 0; }
+}
+
+/* =========================================================
+   VARIANTE B — Versetztes Raster mit Nummern
+   ========================================================= */
+.lsB-list {
+  margin: clamp(40px, 5vw, 72px) auto 0;
+  max-width: 1180px;
+}
+.lsB-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: center;
+  padding: clamp(40px, 5vw, 72px) 0;
+}
+.lsB-item:nth-child(even) .lsB-img-wrap { order: 2; }
+.lsB-item:nth-child(even) .lsB-text     { order: 1; }
+.lsB-img-wrap {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--bg-soft);
+  border-radius: 6px;
+}
+.lsB-img-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  filter: var(--img-filter);
+  transition: transform 480ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.lsB-item:hover .lsB-img-wrap img { transform: scale(1.02); }
+.lsB-date {
+  position: absolute;
+  top: 16px; left: 16px;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 999px;
+  z-index: 2;
+}
+.wedding-site-wrapper[data-style="festlich"] .lsB-date {
+  background: var(--gold); color: var(--ink);
+}
+.wedding-site-wrapper[data-style="minimal"]  .lsB-date {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 0;
+}
+.wedding-site-wrapper[data-style="modern"]  .lsB-img-wrap,
+.wedding-site-wrapper[data-style="minimal"] .lsB-img-wrap { border-radius: 0; }
+
+.lsB-text { text-align: left; min-width: 0; }
+.lsB-num {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style);
+  font-size: clamp(80px, 12vw, 200px);
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  margin: 0 0 -0.08em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--accent);
+  opacity: 0.7;
+}
+.wedding-site-wrapper[data-style="modern"] .lsB-num {
+  -webkit-text-stroke: 1px var(--accent);
+}
+.wedding-site-wrapper[data-style="floral"] .lsB-num {
+  -webkit-text-stroke: 1.5px var(--accent);
+  opacity: 0.5;
+}
+.wedding-site-wrapper[data-style="minimal"] .lsB-num {
+  -webkit-text-stroke: 1px var(--ink);
+  opacity: 0.3;
+}
+.wedding-site-wrapper[data-style="festlich"] .lsB-num {
+  -webkit-text-stroke: 2px var(--gold);
+  opacity: 0.85;
+}
+.lsB-title {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style);
+  font-size: clamp(26px, 3.2vw, 44px);
+  line-height: 1.05;
+  letter-spacing: -0.018em;
+  margin: 12px 0 14px;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.lsB-desc {
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1.3vw, 16px);
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--ink) 65%, transparent);
+  max-width: 45ch;
+  margin: 0;
+}
+
+/* B — Mobile */
+@media (max-width: 720px) {
+  .lsB-item {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding: clamp(28px, 5vw, 48px) 0;
+  }
+  .lsB-item:nth-child(even) .lsB-img-wrap { order: 0; }
+  .lsB-item:nth-child(even) .lsB-text     { order: 0; }
+  .lsB-img-wrap { aspect-ratio: 4/3; }
+  .lsB-num { font-size: clamp(56px, 18vw, 96px); margin: 0 0 -0.06em; }
+}
+
+/* =========================================================
+   VARIANTE C — Kachel-Karten mit Timeline
+   ========================================================= */
+.lsC-wrap {
+  position: relative;
+  margin: clamp(40px, 5vw, 56px) auto 0;
+  max-width: 720px;
+  padding-left: 56px;
+}
+.lsC-line {
+  position: absolute;
+  left: 19px; top: 16px; bottom: 16px;
+  width: 1px;
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.lsC-item {
+  position: relative;
+  padding: 28px 0;
+}
+.lsC-item + .lsC-item { padding-top: 20px; }
+.lsC-item::before {
+  content: "";
+  position: absolute;
+  left: -45px; top: 56px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 5px var(--bg);
+  z-index: 2;
+}
+.wedding-site-wrapper[data-style="festlich"] .lsC-item::before { background: var(--gold); }
+.wedding-site-wrapper[data-style="minimal"]  .lsC-item::before {
+  width: 6px; height: 6px; border-radius: 0;
+  background: var(--ink); top: 58px; left: -43px;
+}
+
+.lsC-card {
+  background: color-mix(in srgb, var(--bg-soft) 40%, var(--bg));
+  border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+  border-radius: 12px;
+  padding: clamp(24px, 3vw, 36px);
+  overflow: hidden;
+  transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
+              box-shadow 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.lsC-card:hover {
+  box-shadow:
+    0 1px 0 rgba(20,16,12,0.04),
+    0 20px 50px -20px rgba(20,16,12,0.18);
+}
+.wedding-site-wrapper[data-style="modern"]  .lsC-card {
+  border-radius: 0; background: var(--bg);
+}
+.wedding-site-wrapper[data-style="minimal"] .lsC-card {
+  background: transparent;
+  border: 1px solid var(--border, color-mix(in srgb, var(--ink) 15%, transparent));
+  border-radius: 0;
+}
+.wedding-site-wrapper[data-style="floral"] .lsC-card {
+  background: color-mix(in srgb, var(--bg-soft) 30%, var(--bg));
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+  border-radius: 16px;
+}
+.wedding-site-wrapper[data-style="festlich"] .lsC-card {
+  background: color-mix(in srgb, var(--ink) 4%, var(--bg));
+  border: 1px solid color-mix(in srgb, var(--gold) 30%, transparent);
+}
+
+.lsC-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--ink) 45%, transparent);
+  margin: 0 0 10px;
+}
+.lsC-title {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style);
+  font-size: clamp(22px, 2.4vw, 30px);
+  line-height: 1.1;
+  letter-spacing: -0.012em;
+  margin: 0 0 10px;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.lsC-desc {
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--ink) 65%, transparent);
+  margin: 0 0 18px;
+  max-width: 56ch;
+}
+.lsC-img {
+  /* Bild bricht aus dem Karten-Padding aus, sodass es bündig mit der Kartenkante steht */
+  margin-left:   calc(-1 * clamp(24px, 3vw, 36px) - 1px);
+  margin-right:  calc(-1 * clamp(24px, 3vw, 36px) - 1px);
+  margin-bottom: calc(-1 * clamp(24px, 3vw, 36px) - 1px);
+  margin-top: 4px;
+  aspect-ratio: 16 / 9;
+  background: var(--bg-soft);
+  overflow: hidden;
+  border-radius: 0 0 11px 11px;
+}
+.wedding-site-wrapper[data-style="modern"]  .lsC-img,
+.wedding-site-wrapper[data-style="minimal"] .lsC-img { border-radius: 0; }
+.wedding-site-wrapper[data-style="floral"]  .lsC-img { border-radius: 0 0 15px 15px; }
+.lsC-img img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  filter: var(--img-filter);
+}
+
+/* C — Mobile */
+@media (max-width: 640px) {
+  .lsC-wrap { padding-left: 36px; }
+  .lsC-line { display: none; }
+  .lsC-item::before { left: -28px; top: 50px; }
+  .wedding-site-wrapper[data-style="minimal"] .lsC-item::before { left: -26px; }
+}
