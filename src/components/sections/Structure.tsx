@@ -3,8 +3,9 @@ import { BEREICHE } from '@/lib/bereiche';
 import Section from '@/components/ui/Section';
 
 /**
- * Aufbau-Sektion — erklärt das Bereich-Konzept BEVOR die Pricing-Sektion kommt.
- * 9 Bereich-Karten in Grid, Basis-Bereiche mit Sage-Akzent hervorgehoben.
+ * Aufbau-Sektion v4 — 4 Basis + 11 Zusatz = 15 Bereiche.
+ * Grid responsive: 1 → 2 → 3 → 4 Spalten.
+ * v4: Footer-Wiederholung entfernt (Reviewer-Punkt #6).
  */
 export default function Structure() {
   return (
@@ -17,7 +18,7 @@ export default function Structure() {
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap gap-4 mb-8 font-mono text-[10px] tracking-[0.18em] uppercase">
+      <div className="flex flex-wrap gap-3 mb-8 font-mono text-[10px] tracking-[0.18em] uppercase">
         <span
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full"
           style={{
@@ -29,7 +30,7 @@ export default function Structure() {
             className="w-1.5 h-1.5 rounded-full"
             style={{ background: 'var(--color-sage-deep)' }}
           />
-          {STRUCTURE.legend.basis}
+          {STRUCTURE.legend.basis} · 4 dabei
         </span>
         <span
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full"
@@ -42,7 +43,7 @@ export default function Structure() {
             className="w-1.5 h-1.5 rounded-full"
             style={{ background: 'var(--color-muted)' }}
           />
-          {STRUCTURE.legend.zusatz}
+          {STRUCTURE.legend.zusatz} · 11 frei wählbar
         </span>
         <span
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-white"
@@ -53,48 +54,46 @@ export default function Structure() {
         </span>
       </div>
 
-      {/* Bereich Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Bereich Grid — 4 Spalten für 15 Items */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
         {BEREICHE.map((b) => {
           const isBasis = b.tier === 'basis';
           return (
             <div
               key={b.key}
-              className="relative p-6 rounded-2xl border bg-white transition-all hover:-translate-y-0.5 hover:shadow-card"
+              className="relative p-5 rounded-xl border transition-all hover:-translate-y-0.5 hover:shadow-card"
               style={{
                 borderColor: isBasis ? 'var(--color-sage)' : 'var(--color-rule-soft)',
-                background: isBasis ? 'var(--color-sage-soft)' : 'var(--color-paper-warm, #fff)',
+                background: isBasis
+                  ? 'var(--color-sage-soft)'
+                  : 'var(--color-paper-warm, #fff)',
               }}
             >
-              {/* Featured badge */}
               {b.featured && (
                 <div
-                  className="absolute -top-2 right-4 px-2 py-0.5 rounded-full text-[9px] font-mono tracking-[0.18em] uppercase text-white"
+                  className="absolute -top-2 right-3 px-2 py-0.5 rounded-full text-[9px] font-mono tracking-[0.18em] uppercase text-white"
                   style={{ background: 'var(--color-terra)' }}
                 >
                   Bestseller
                 </div>
               )}
 
-              {/* Mini-Mockup */}
+              {/* Mini-Icon */}
               <div
-                className="aspect-[5/3] rounded-lg mb-4 flex items-center justify-center text-3xl"
+                className="aspect-[5/3] rounded-md mb-3 flex items-center justify-center"
                 style={{
                   background: isBasis
                     ? 'rgba(94,110,80,0.12)'
                     : 'var(--color-paper-soft)',
-                  fontFamily: 'var(--font-serif)',
-                  color: isBasis ? 'var(--color-sage-deep)' : 'var(--color-muted)',
                 }}
                 aria-hidden="true"
               >
                 <BereichIcon kind={b.key} basis={isBasis} />
               </div>
 
-              {/* Name + Tag */}
-              <div className="flex items-baseline justify-between gap-2 mb-2">
+              <div className="flex items-baseline justify-between gap-2 mb-1">
                 <h3
-                  className="text-lg font-medium"
+                  className="text-base font-medium"
                   style={{
                     fontFamily: 'var(--font-serif)',
                     color: isBasis ? 'var(--color-sage-deep)' : 'var(--color-ink)',
@@ -103,7 +102,7 @@ export default function Structure() {
                   {b.name}
                 </h3>
                 <span
-                  className="font-mono text-[9px] tracking-[0.18em] uppercase"
+                  className="font-mono text-[9px] tracking-[0.18em] uppercase whitespace-nowrap"
                   style={{
                     color: isBasis ? 'var(--color-sage-deep)' : 'var(--color-muted)',
                   }}
@@ -118,65 +117,60 @@ export default function Structure() {
         })}
       </div>
 
-      {/* Footer-Text mit Script-Em */}
-      <p
-        className="mt-10 text-center text-lg max-w-2xl mx-auto"
-        style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-ink-soft)' }}
-      >
-        {STRUCTURE.footPart1}
-        <em
-          style={{
-            fontFamily: 'var(--font-script)',
-            fontStyle: 'normal',
-            color: 'var(--color-terra)',
-            fontSize: '1.06em',
-          }}
-        >
-          {STRUCTURE.footEm}
-        </em>
-        {STRUCTURE.footPart2}
-      </p>
+      {/* KEIN Footer-Text mehr — Lede sagt es bereits einmal */}
     </Section>
   );
 }
 
 /**
- * Mini-SVG-Icons pro Bereich-Typ.
+ * SVG-Icons pro Bereich-Typ — auf 15 erweitert.
  */
 function BereichIcon({ kind, basis }: { kind: string; basis: boolean }) {
   const stroke = basis ? 'var(--color-sage-deep)' : 'var(--color-muted)';
-  const common = { stroke, fill: 'none', strokeWidth: 1.2, strokeLinecap: 'round' as const };
+  const common = {
+    stroke,
+    fill: 'none',
+    strokeWidth: 1.2,
+    strokeLinecap: 'round' as const,
+  };
 
   const icons: Record<string, React.ReactNode> = {
     hero: (
-      <svg width="56" height="40" viewBox="0 0 56 40">
+      <svg width="48" height="34" viewBox="0 0 56 40">
         <rect x="4" y="4" width="48" height="32" rx="3" {...common} />
         <path d="M4 26 L18 14 L28 20 L40 10 L52 22" {...common} />
         <circle cx="42" cy="12" r="2.5" {...common} />
       </svg>
     ),
     rsvp: (
-      <svg width="48" height="40" viewBox="0 0 48 40">
+      <svg width="42" height="34" viewBox="0 0 48 40">
         <rect x="4" y="6" width="40" height="28" rx="2" {...common} />
         <path d="M4 14 L44 14" {...common} />
         <path d="M12 22 L16 26 L24 18" {...common} />
         <path d="M30 22 L36 22 M30 26 L40 26" {...common} />
       </svg>
     ),
-    prog: (
-      <svg width="48" height="40" viewBox="0 0 48 40">
-        <circle cx="24" cy="20" r="14" {...common} />
-        <path d="M24 10 L24 20 L32 24" {...common} />
+    timeline: (
+      <svg width="42" height="34" viewBox="0 0 48 40">
+        <path d="M8 20 L40 20" {...common} />
+        <circle cx="12" cy="20" r="3" {...common} />
+        <circle cx="24" cy="20" r="3" {...common} />
+        <circle cx="36" cy="20" r="3" {...common} />
+        <path d="M12 14 L12 11 M24 14 L24 11 M36 14 L36 11" {...common} />
       </svg>
     ),
-    info: (
-      <svg width="40" height="40" viewBox="0 0 40 40">
+    infos: (
+      <svg width="34" height="34" viewBox="0 0 40 40">
         <circle cx="20" cy="20" r="14" {...common} />
-        <path d="M20 13 L20 14 M20 18 L20 27" {...common} strokeWidth={1.6} />
+        <path
+          d="M20 13 L20 14 M20 18 L20 27"
+          {...common}
+          strokeWidth={1.6}
+        />
       </svg>
     ),
-    love: (
-      <svg width="48" height="40" viewBox="0 0 48 40">
+    lovestory: (
+      <svg width="42" height="34" viewBox="0 0 48 40">
         <path
           d="M24 32 C 16 24, 8 20, 8 14 A 6 6 0 0 1 20 12 A 6 6 0 0 1 24 16 A 6 6 0 0 1 28 12 A 6 6 0 0 1 40 14 C 40 20, 32 24, 24 32 Z"
           {...common}
@@ -184,15 +178,21 @@ function BereichIcon({ kind, basis }: { kind: string; basis: boolean }) {
       </svg>
     ),
     gallery: (
-      <svg width="56" height="40" viewBox="0 0 56 40">
+      <svg width="48" height="34" viewBox="0 0 56 40">
         <rect x="4" y="6" width="20" height="28" rx="2" {...common} />
         <rect x="28" y="6" width="14" height="14" rx="2" {...common} />
         <rect x="28" y="22" width="14" height="12" rx="2" {...common} />
         <rect x="46" y="6" width="8" height="28" rx="2" {...common} />
       </svg>
     ),
+    photoupload: (
+      <svg width="42" height="34" viewBox="0 0 48 40">
+        <rect x="6" y="10" width="36" height="22" rx="2" {...common} />
+        <path d="M24 16 L24 26 M19 21 L24 16 L29 21" {...common} />
+      </svg>
+    ),
     gifts: (
-      <svg width="40" height="40" viewBox="0 0 40 40">
+      <svg width="34" height="34" viewBox="0 0 40 40">
         <rect x="6" y="14" width="28" height="20" rx="2" {...common} />
         <path d="M4 14 L36 14 M20 14 L20 34" {...common} />
         <path
@@ -201,16 +201,55 @@ function BereichIcon({ kind, basis }: { kind: string; basis: boolean }) {
         />
       </svg>
     ),
-    faq: (
-      <svg width="40" height="40" viewBox="0 0 40 40">
-        <circle cx="20" cy="20" r="14" {...common} />
-        <path d="M16 16 A 4 4 0 1 1 20 22 L20 25 M20 28 L20 29" {...common} strokeWidth={1.6} />
+    accommodations: (
+      <svg width="42" height="34" viewBox="0 0 48 40">
+        <path d="M8 32 L8 16 L24 6 L40 16 L40 32 Z" {...common} />
+        <rect x="18" y="22" width="12" height="10" {...common} />
+        <path d="M14 20 L14 24 M20 16 L20 18 M28 16 L28 18 M34 20 L34 24" {...common} />
       </svg>
     ),
-    guest: (
-      <svg width="48" height="40" viewBox="0 0 48 40">
+    countdown: (
+      <svg width="34" height="34" viewBox="0 0 40 40">
+        <circle cx="20" cy="22" r="13" {...common} />
+        <path d="M16 6 L24 6 M20 6 L20 9" {...common} />
+        <path d="M20 14 L20 22 L26 26" {...common} />
+      </svg>
+    ),
+    guestbook: (
+      <svg width="42" height="34" viewBox="0 0 48 40">
         <path d="M6 8 L42 8 L42 28 L26 28 L16 36 L16 28 L6 28 Z" {...common} />
         <path d="M14 16 L34 16 M14 21 L28 21" {...common} />
+      </svg>
+    ),
+    faq: (
+      <svg width="34" height="34" viewBox="0 0 40 40">
+        <circle cx="20" cy="20" r="14" {...common} />
+        <path
+          d="M16 16 A 4 4 0 1 1 20 22 L20 25 M20 28 L20 29"
+          {...common}
+          strokeWidth={1.6}
+        />
+      </svg>
+    ),
+    musicwishes: (
+      <svg width="34" height="34" viewBox="0 0 40 40">
+        <circle cx="12" cy="28" r="4" {...common} />
+        <circle cx="30" cy="24" r="4" {...common} />
+        <path d="M16 28 L16 12 L34 8 L34 24" {...common} />
+      </svg>
+    ),
+    witnesses: (
+      <svg width="42" height="34" viewBox="0 0 48 40">
+        <circle cx="16" cy="14" r="5" {...common} />
+        <circle cx="32" cy="14" r="5" {...common} />
+        <path d="M8 32 C 8 26, 12 22, 16 22 C 20 22, 24 26, 24 32" {...common} />
+        <path d="M24 32 C 24 26, 28 22, 32 22 C 36 22, 40 26, 40 32" {...common} />
+      </svg>
+    ),
+    weddingabc: (
+      <svg width="34" height="34" viewBox="0 0 40 40">
+        <path d="M10 30 L14 18 L18 30 M11 26 L17 26" {...common} />
+        <path d="M22 18 L28 18 C 30 18, 30 22, 28 22 L22 22 L28 22 C 30 22, 30 26, 28 26 L22 26 Z" {...common} />
       </svg>
     ),
   };

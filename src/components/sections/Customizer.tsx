@@ -7,21 +7,21 @@ import {
   PALETTES,
   FONTS,
   getStartStyle,
-  getPalette,
-  getFontPair,
-  spacingToPadding,
 } from '@/lib/customizer';
+import { ZUSATZ_BEREICHE } from '@/lib/bereiche';
 import Section from '@/components/ui/Section';
 
 type StepKey = 'start' | 'palette' | 'fonts' | 'blocks';
 
 /**
- * Baukasten-Sektion — der zentrale Wow-Moment der Landing.
+ * Baukasten-Sektion v4 — Mobile-First, ohne fragile Live-Preview.
  *
- * Vier Schritte (Start-Stil → Farben → Schriften → Bereiche),
- * Live-Preview rechts ändert sich anhand der DNA des gewählten Start-Stils.
- *
- * Bei jeder Auswahl: Cheer-Pool-Mikrocopy zeigt sich kurz.
+ * Wesentliche Änderungen vs. v3:
+ * 1. Live-Preview entfernt — Reviewer-Punkt: kollabiert auf Mobile
+ *    Stattdessen: dezenter Coming-Soon-Placeholder (rechts auf Desktop,
+ *    unter den Steps auf Mobile)
+ * 2. Sequenzielles Layout statt Split-Screen
+ * 3. Empfehlungen pro Start-Stil — gegen Choice Overload
  */
 export default function Customizer() {
   const [step, setStep] = useState<StepKey>('start');
@@ -32,7 +32,6 @@ export default function Customizer() {
 
   const start = useMemo(() => getStartStyle(startId), [startId]);
 
-  // Beim Start-Stil-Wechsel: Defaults für Palette und Fonts übernehmen
   const handleStartChange = (id: string) => {
     setStartId(id);
     const s = getStartStyle(id);
@@ -44,7 +43,7 @@ export default function Customizer() {
   const showCheer = () => {
     const pool = CUSTOMIZER.cheerPool;
     setCheer(pool[Math.floor(Math.random() * pool.length)]);
-    setTimeout(() => setCheer(''), 1600);
+    setTimeout(() => setCheer(''), 1800);
   };
 
   return (
@@ -57,47 +56,47 @@ export default function Customizer() {
         <p className="lede">{CUSTOMIZER.lede}</p>
       </div>
 
-      <div className="grid lg:grid-cols-[1fr_1.1fr] gap-8 lg:gap-12">
-        {/* === LINKS: Schritte + Optionen === */}
-        <div className="space-y-6">
+      {/* Mobile + Desktop: Sequential Stack + Preview-Aside on Desktop only */}
+      <div className="grid lg:grid-cols-[1fr_1.05fr] gap-8 lg:gap-12">
+        {/* === LEFT: Steps + Options (always visible) === */}
+        <div className="space-y-6 min-w-0">
           {/* Step Tabs */}
-          <div
-            className="flex gap-2 p-1.5 rounded-2xl border w-fit"
-            style={{
-              background: 'var(--color-paper-soft)',
-              borderColor: 'var(--color-rule)',
-            }}
-          >
-            {CUSTOMIZER.steps.map((s, i) => (
-              <button
-                key={s.key}
-                onClick={() => setStep(s.key as StepKey)}
-                className={`px-4 py-2 text-sm font-medium rounded-xl transition-all ${
-                  step === s.key ? 'text-white shadow-card' : 'text-ink-soft hover:text-ink'
-                }`}
-                style={step === s.key ? { background: 'var(--color-ink)' } : undefined}
-              >
-                <span
-                  className="font-mono text-[10px] tracking-[0.12em] mr-1.5"
-                  style={{
-                    color:
-                      step === s.key ? 'var(--color-honey)' : 'var(--color-muted-2)',
-                  }}
+          <div className="overflow-x-auto -mx-2 px-2 lg:overflow-visible lg:mx-0 lg:px-0">
+            <div
+              className="flex gap-1.5 p-1.5 rounded-2xl border w-fit whitespace-nowrap"
+              style={{
+                background: 'var(--color-paper-soft)',
+                borderColor: 'var(--color-rule)',
+              }}
+            >
+              {CUSTOMIZER.steps.map((s, i) => (
+                <button
+                  key={s.key}
+                  onClick={() => setStep(s.key as StepKey)}
+                  className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-xl transition-all ${
+                    step === s.key ? 'text-white shadow-card' : 'text-ink-soft hover:text-ink'
+                  }`}
+                  style={step === s.key ? { background: 'var(--color-ink)' } : undefined}
                 >
-                  0{i + 1}
-                </span>
-                {s.label}
-              </button>
-            ))}
+                  <span
+                    className="font-mono text-[10px] tracking-[0.12em] mr-1.5"
+                    style={{
+                      color:
+                        step === s.key ? 'var(--color-honey)' : 'var(--color-muted-2)',
+                    }}
+                  >
+                    0{i + 1}
+                  </span>
+                  {s.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Step Content */}
           <div className="min-h-[380px]">
             {step === 'start' && (
-              <StartStep
-                selected={startId}
-                onSelect={handleStartChange}
-              />
+              <StartStep selected={startId} onSelect={handleStartChange} />
             )}
             {step === 'palette' && (
               <PaletteStep
@@ -117,19 +116,22 @@ export default function Customizer() {
                 }}
               />
             )}
-            {step === 'blocks' && <BlocksStep onChange={showCheer} />}
+            {step === 'blocks' && <BlocksStep startId={startId} onChange={showCheer} />}
           </div>
         </div>
 
-        {/* === RECHTS: Live-Preview === */}
-        <div className="lg:sticky lg:top-8 self-start">
+        {/* === RIGHT: Coming-Soon Preview Placeholder (Desktop only) === */}
+        <div className="hidden lg:block lg:sticky lg:top-8 self-start">
           <div className="relative">
-            <LivePreview startId={startId} paletteId={paletteId} fontsId={fontsId} />
+            <PreviewPlaceholder
+              startName={start.name}
+              paletteId={paletteId}
+              fontsId={fontsId}
+            />
 
-            {/* Cheer-Toast */}
             {cheer && (
               <div
-                className="absolute -top-3 right-4 px-3 py-1.5 rounded-full text-sm text-white shadow-card animate-fade-in"
+                className="absolute -top-3 right-4 px-3 py-1.5 rounded-full text-sm text-white shadow-card"
                 style={{
                   background: 'var(--color-terra)',
                   fontFamily: 'var(--font-script)',
@@ -145,8 +147,18 @@ export default function Customizer() {
             className="mt-4 text-xs text-center text-muted"
             style={{ fontFamily: 'var(--font-mono)' }}
           >
-            Live-Vorschau · Stil: {start.name}
+            Eure aktuelle Auswahl · Stil: {start.name}
           </p>
+        </div>
+
+        {/* === MOBILE: Inline Summary === */}
+        <div className="lg:hidden">
+          <MobileSummary
+            startName={start.name}
+            paletteId={paletteId}
+            fontsId={fontsId}
+            cheer={cheer}
+          />
         </div>
       </div>
     </Section>
@@ -156,16 +168,22 @@ export default function Customizer() {
 /* ===================================================
    Step 1: Start-Stil
    =================================================== */
-function StartStep({ selected, onSelect }: { selected: string; onSelect: (id: string) => void }) {
+function StartStep({
+  selected,
+  onSelect,
+}: {
+  selected: string;
+  onSelect: (id: string) => void;
+}) {
   return (
     <div>
       <p className="text-sm text-ink-soft mb-5 leading-relaxed">
-        Wählt einen Start-Stil — Farben, Schriften und Layout-Eigenheiten werden
-        automatisch passend gesetzt. Ihr könnt später alles anpassen.
+        Wählt einen Start-Stil — Farben, Schriften und passende Bereiche werden
+        automatisch vorgeschlagen. Ihr könnt später alles anpassen.
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {START_STYLES.map((s) => {
-          const palette = getPalette(s.defaultPalette);
+          const palette = PALETTES.find((p) => p.id === s.defaultPalette)!;
           const isSelected = selected === s.id;
           return (
             <button
@@ -176,12 +194,9 @@ function StartStep({ selected, onSelect }: { selected: string; onSelect: (id: st
                   ? 'border-ink shadow-card -translate-y-px'
                   : 'border-rule hover:border-ink/40'
               }`}
-              style={{
-                background: isSelected ? 'var(--color-paper-warm, #fff)' : 'var(--color-paper-warm, #fff)',
-              }}
+              style={{ background: 'var(--color-paper-warm, #fff)' }}
               aria-pressed={isSelected}
             >
-              {/* Palette preview */}
               <div className="flex gap-1 mb-3">
                 {palette.colors.map((c, i) => (
                   <span
@@ -334,9 +349,7 @@ function FontsStep({
               </div>
               <div className="flex items-baseline justify-between gap-3">
                 <p className="text-xs text-muted">{f.meta}</p>
-                <span
-                  className="text-[10px] font-mono tracking-[0.18em] uppercase text-ink-soft"
-                >
+                <span className="text-[10px] font-mono tracking-[0.18em] uppercase text-ink-soft">
                   {f.name}
                 </span>
               </div>
@@ -349,138 +362,129 @@ function FontsStep({
 }
 
 /* ===================================================
-   Step 4: Bereiche-Beispiel (vereinfacht für Landing)
+   Step 4: Bereiche — mit Empfehlungen pro Stil
    =================================================== */
-function BlocksStep({ onChange }: { onChange: () => void }) {
-  const [heroVariant, setHeroVariant] = useState<'A' | 'B' | 'C'>('B');
-  const [loveVariant, setLoveVariant] = useState<'A' | 'B' | 'C'>('A');
-  const [rsvpVariant, setRsvpVariant] = useState<'A' | 'B' | 'C'>('A');
+function BlocksStep({
+  startId,
+  onChange,
+}: {
+  startId: string;
+  onChange: () => void;
+}) {
+  const start = getStartStyle(startId);
+  const recommended = new Set(start.recommendedBereiche);
 
-  const blocks = [
-    {
-      key: 'hero',
-      title: 'Hero-Bereich',
-      meta: 'Die erste Sektion eurer Seite',
-      options: [
-        { id: 'A', name: 'Foto-zentriert' },
-        { id: 'B', name: 'Klassisch zentriert' },
-        { id: 'C', name: 'Asymmetrisch minimal' },
-      ],
-      selected: heroVariant,
-      onSelect: (v: 'A' | 'B' | 'C') => {
-        setHeroVariant(v);
-        onChange();
-      },
-    },
-    {
-      key: 'love',
-      title: 'Lovestory-Bereich',
-      meta: 'Wie ihr euch kennengelernt habt',
-      options: [
-        { id: 'A', name: 'Zeitstrahl' },
-        { id: 'B', name: 'Foto-Galerie' },
-        { id: 'C', name: 'Brief-Format' },
-      ],
-      selected: loveVariant,
-      onSelect: (v: 'A' | 'B' | 'C') => {
-        setLoveVariant(v);
-        onChange();
-      },
-    },
-    {
-      key: 'rsvp',
-      title: 'RSVP-Bereich',
-      meta: 'Wie eure Gäste antworten',
-      options: [
-        { id: 'A', name: 'Klassisch Card' },
-        { id: 'B', name: 'Vollbild' },
-        { id: 'C', name: 'Casual Chat-Style' },
-      ],
-      selected: rsvpVariant,
-      onSelect: (v: 'A' | 'B' | 'C') => {
-        setRsvpVariant(v);
-        onChange();
-      },
-    },
-  ];
+  // Selected = automatisch die Empfehlungen, aber Nutzer kann toggeln
+  const [selected, setSelected] = useState<Set<string>>(
+    new Set(start.recommendedBereiche)
+  );
+
+  const toggle = (key: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+    onChange();
+  };
+
+  // Bei Stil-Wechsel: setzt auf Empfehlung zurück
+  useMemo(() => {
+    setSelected(new Set(start.recommendedBereiche));
+  }, [start.id, start.recommendedBereiche]);
 
   return (
     <div>
-      <p className="text-sm text-ink-soft mb-5 leading-relaxed">
-        Pro Bereich gibt es drei Layout-Varianten. Klickt durch — hier ein
-        Beispiel für drei der neun Bereiche.
+      <p className="text-sm text-ink-soft mb-3 leading-relaxed">
+        {CUSTOMIZER.recommendedLabel}{' '}
+        <strong className="text-ink">{recommended.size} Zusatz-Bereiche</strong>{' '}
+        für „{start.name}". Toggelt sie an oder aus — alle 11 Zusatz-Bereiche
+        sind verfügbar.
       </p>
-      <div className="space-y-4">
-        {blocks.map((b) => (
-          <div
-            key={b.key}
-            className="p-4 rounded-xl border border-rule"
-            style={{ background: 'var(--color-paper-warm, #fff)' }}
-          >
-            <div className="flex items-baseline justify-between mb-3">
-              <div>
-                <div
-                  className="text-base font-medium text-ink"
-                  style={{ fontFamily: 'var(--font-serif)' }}
-                >
-                  {b.title}
-                </div>
-                <div className="text-xs text-muted">{b.meta}</div>
-              </div>
-            </div>
-            <div className="flex gap-2">
-              {b.options.map((o) => {
-                const isActive = b.selected === o.id;
-                return (
-                  <button
-                    key={o.id}
-                    onClick={() => b.onSelect(o.id as 'A' | 'B' | 'C')}
-                    className={`flex-1 px-3 py-2 text-xs font-medium rounded-lg border transition-all ${
-                      isActive
-                        ? 'text-white border-ink'
-                        : 'text-ink-soft border-rule hover:border-ink/40'
-                    }`}
-                    style={isActive ? { background: 'var(--color-ink)' } : undefined}
+      <p
+        className="text-xs mb-5 italic"
+        style={{ color: 'var(--color-terra-deep)' }}
+      >
+        {selected.size} von 11 Zusatz-Bereichen gewählt
+      </p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {ZUSATZ_BEREICHE.map((b) => {
+          const isSelected = selected.has(b.key);
+          const isRecommended = recommended.has(b.key);
+          return (
+            <button
+              key={b.key}
+              onClick={() => toggle(b.key)}
+              className={`text-left p-3 rounded-lg border text-sm transition-all relative ${
+                isSelected ? 'shadow-card' : 'hover:border-ink/40'
+              }`}
+              style={{
+                background: isSelected ? 'var(--color-ink)' : 'var(--color-paper-warm, #fff)',
+                borderColor: isSelected ? 'var(--color-ink)' : 'var(--color-rule)',
+                color: isSelected ? 'var(--color-paper-warm)' : 'var(--color-ink)',
+              }}
+              aria-pressed={isSelected}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span
+                    className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{
+                      border: `1.5px solid ${
+                        isSelected ? 'var(--color-paper-warm)' : 'var(--color-rule)'
+                      }`,
+                      background: isSelected ? 'var(--color-paper-warm)' : 'transparent',
+                    }}
                   >
-                    <span
-                      className="block font-mono text-[9px] tracking-wider opacity-60 mb-0.5"
-                    >
-                      Var. {o.id}
-                    </span>
-                    {o.name}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        ))}
+                    {isSelected && (
+                      <span className="text-[8px]" style={{ color: 'var(--color-ink)' }}>
+                        ✓
+                      </span>
+                    )}
+                  </span>
+                  <span className="font-medium truncate">{b.name}</span>
+                </div>
+                {isRecommended && !isSelected && (
+                  <span
+                    className="text-[8px] font-mono tracking-[0.18em] uppercase px-1.5 py-0.5 rounded flex-shrink-0"
+                    style={{
+                      background: 'var(--color-honey-soft)',
+                      color: 'var(--color-terra-deep)',
+                    }}
+                  >
+                    Tipp
+                  </span>
+                )}
+              </div>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
 }
 
 /* ===================================================
-   Live-Preview — DNA-basiert
+   Preview Placeholder — ersetzt Live-Vorschau
    =================================================== */
-function LivePreview({
-  startId,
+function PreviewPlaceholder({
+  startName,
   paletteId,
   fontsId,
 }: {
-  startId: string;
+  startName: string;
   paletteId: string;
   fontsId: string;
 }) {
-  const start = getStartStyle(startId);
-  const palette = getPalette(paletteId);
-  const fonts = getFontPair(fontsId);
-  const padding = spacingToPadding(start.dna.spacing);
-  const align = start.dna.align;
+  const palette = PALETTES.find((p) => p.id === paletteId)!;
+  const fonts = FONTS.find((f) => f.id === fontsId)!;
 
   return (
     <div
-      className="rounded-2xl overflow-hidden shadow-lift border border-rule-soft"
-      style={{ background: '#fff' }}
+      className="rounded-2xl border border-rule overflow-hidden"
+      style={{ background: 'var(--color-paper-warm, #fff)' }}
     >
       {/* Browser bar */}
       <div className="h-9 bg-[#efece6] border-b border-[#e3dfd5] flex items-center px-3.5 gap-2">
@@ -493,145 +497,166 @@ function LivePreview({
           className="ml-3.5 bg-white rounded-md px-3 py-1 font-mono text-[10px] flex-1 max-w-[60%] border border-[#e3dfd5]"
           style={{ color: 'var(--color-muted)' }}
         >
-          <span style={{ color: 'var(--color-sage-deep)' }}>🔒</span> eure-seite.sarahiver.de
+          <span style={{ color: 'var(--color-sage-deep)' }}>🔒</span>{' '}
+          eure-seite.sarahiver.de
         </div>
       </div>
 
-      {/* Live Hero preview */}
+      {/* Coming-Soon Visual */}
       <div
-        className="overflow-hidden transition-all duration-300"
+        className="px-8 py-12 text-center"
         style={{
           background: `linear-gradient(180deg, ${palette.colors[0]} 0%, ${palette.colors[1]} 100%)`,
-          padding,
-          textAlign: align,
           minHeight: 360,
         }}
       >
-        {/* Decor element above */}
-        <DnaDecor decor={start.dna.decor} accent={palette.colors[2]} align={align} />
-
-        {/* Eyebrow */}
+        {/* Pulse-Badge */}
         <div
-          className="font-mono text-[10px] tracking-[0.3em] uppercase mt-3 mb-4"
-          style={{ color: palette.colors[3] }}
+          className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 rounded-full"
+          style={{
+            background: 'rgba(255,255,255,0.65)',
+            border: `1px solid ${palette.colors[2]}`,
+          }}
         >
-          {start.name}
+          <span className="pre-launch-pulse" />
+          <span
+            className="font-mono text-[10px] tracking-[0.2em] uppercase"
+            style={{ color: palette.colors[3] }}
+          >
+            {CUSTOMIZER.previewComingSoon}
+          </span>
         </div>
 
-        {/* Title */}
+        {/* Aktuelle Wahl-Display */}
         <h3
-          className="leading-[0.98] tracking-[-0.015em]"
+          className="leading-tight mb-3"
           style={{
             fontFamily: fonts.display,
             fontWeight: fonts.weight,
             fontStyle: fonts.style,
-            fontSize:
-              start.dna.contrast === 'high' ? 'clamp(34px, 4.2vw, 58px)' : 'clamp(28px, 3.4vw, 48px)',
+            fontSize: 'clamp(28px, 3.4vw, 42px)',
             color: palette.colors[palette.colors.length - 1],
           }}
         >
-          Sarah{' '}
-          <span
-            style={{
-              fontFamily: fonts.style === 'italic' ? 'var(--font-script)' : fonts.display,
-              fontStyle: 'normal',
-              color: palette.colors[2],
-              fontWeight: 500,
-            }}
-          >
-            &
-          </span>
-          <br />
-          Iver
+          {startName}
         </h3>
 
-        {/* Date */}
         <p
-          className="mt-3 text-xs tracking-[0.04em]"
-          style={{
-            color: palette.colors[3],
-            fontFamily: fonts.body,
-          }}
+          className="text-sm mb-8"
+          style={{ color: palette.colors[3], fontFamily: fonts.body }}
         >
-          27. Juni 2026 · Hamburg
+          {palette.name} · {fonts.name}
         </p>
 
-        {/* Decor element below for symmetric layouts */}
-        {align === 'center' && start.dna.decor !== 'none' && (
-          <div className="mt-5">
-            <DnaDecor decor={start.dna.decor} accent={palette.colors[2]} align={align} />
-          </div>
-        )}
+        {/* Erklärung */}
+        <div
+          className="mx-auto max-w-xs p-4 rounded-xl border"
+          style={{
+            background: 'rgba(255,255,255,0.5)',
+            borderColor: palette.colors[2],
+          }}
+        >
+          <p
+            className="text-xs leading-relaxed"
+            style={{ color: palette.colors[4] }}
+          >
+            {CUSTOMIZER.previewExplain}
+          </p>
+        </div>
       </div>
     </div>
   );
 }
 
 /* ===================================================
-   DNA Decor — verschiedene Stil-Akzente
+   Mobile Summary — kompakte Anzeige unter den Steps
    =================================================== */
-function DnaDecor({
-  decor,
-  accent,
-  align,
+function MobileSummary({
+  startName,
+  paletteId,
+  fontsId,
+  cheer,
 }: {
-  decor: string;
-  accent: string;
-  align: 'center' | 'left';
+  startName: string;
+  paletteId: string;
+  fontsId: string;
+  cheer: string;
 }) {
-  const justifyClass = align === 'center' ? 'justify-center' : 'justify-start';
+  const palette = PALETTES.find((p) => p.id === paletteId)!;
+  const fonts = FONTS.find((f) => f.id === fontsId)!;
 
-  if (decor === 'none') return null;
+  return (
+    <div
+      className="rounded-2xl border p-5 relative"
+      style={{
+        background: 'var(--color-paper-soft)',
+        borderColor: 'var(--color-rule)',
+      }}
+    >
+      {cheer && (
+        <div
+          className="absolute -top-3 right-4 px-3 py-1.5 rounded-full text-sm text-white shadow-card"
+          style={{
+            background: 'var(--color-terra)',
+            fontFamily: 'var(--font-script)',
+            transform: 'rotate(-3deg)',
+          }}
+        >
+          {cheer}
+        </div>
+      )}
 
-  if (decor === 'rule') {
-    return (
-      <div className={`flex items-center gap-3 ${justifyClass}`}>
-        <span className="h-px w-12" style={{ background: accent }} />
-        <span
-          className="w-2 h-2 rounded-full"
-          style={{ background: accent }}
-        />
-        <span className="h-px w-12" style={{ background: accent }} />
+      <div className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted mb-3">
+        Eure aktuelle Auswahl
       </div>
-    );
-  }
 
-  if (decor === 'hairline') {
-    return <div className={`flex ${justifyClass}`}><span className="h-px w-20" style={{ background: accent }} /></div>;
-  }
+      <div className="space-y-2 text-sm">
+        <div className="flex items-baseline justify-between gap-3">
+          <span className="text-muted">Stil</span>
+          <span
+            className="text-ink font-medium"
+            style={{ fontFamily: 'var(--font-serif)' }}
+          >
+            {startName}
+          </span>
+        </div>
+        <div className="flex items-baseline justify-between gap-3">
+          <span className="text-muted">Farben</span>
+          <div className="flex items-center gap-2">
+            <div className="flex gap-0.5">
+              {palette.colors.slice(0, 4).map((c, i) => (
+                <span
+                  key={i}
+                  className="w-3 h-3 rounded-full border border-black/10"
+                  style={{ background: c }}
+                />
+              ))}
+            </div>
+            <span className="text-ink text-xs">{palette.name}</span>
+          </div>
+        </div>
+        <div className="flex items-baseline justify-between gap-3">
+          <span className="text-muted">Schriften</span>
+          <span
+            style={{
+              fontFamily: fonts.display,
+              fontWeight: fonts.weight,
+              fontStyle: fonts.style,
+              color: 'var(--color-ink)',
+            }}
+          >
+            {fonts.name}
+          </span>
+        </div>
+      </div>
 
-  if (decor === 'sprig') {
-    return (
-      <svg
-        width="48"
-        height="22"
-        viewBox="0 0 48 22"
-        className={align === 'center' ? 'mx-auto' : ''}
-        style={{ color: accent }}
+      <div
+        className="mt-4 pt-4 border-t text-xs leading-relaxed text-muted"
+        style={{ borderColor: 'var(--color-rule-soft)' }}
       >
-        <path
-          d="M2 11 Q 12 4 24 11 Q 36 18 46 11"
-          stroke="currentColor"
-          strokeWidth="1"
-          fill="none"
-          strokeLinecap="round"
-        />
-        <ellipse cx="13" cy="8" rx="3" ry="1.5" transform="rotate(-30 13 8)" fill="currentColor" opacity="0.6" />
-        <ellipse cx="24" cy="13" rx="3" ry="1.5" fill="currentColor" opacity="0.6" />
-        <ellipse cx="35" cy="8" rx="3" ry="1.5" transform="rotate(30 35 8)" fill="currentColor" opacity="0.6" />
-      </svg>
-    );
-  }
-
-  if (decor === 'gold') {
-    return (
-      <div className={`flex items-center gap-2 ${justifyClass}`}>
-        <span className="h-px w-8" style={{ background: 'var(--color-honey)' }} />
-        <span className="text-[10px]" style={{ color: 'var(--color-honey)' }}>◆</span>
-        <span className="h-px w-8" style={{ background: 'var(--color-honey)' }} />
+        <span className="pre-launch-pulse inline-block mr-2" />
+        {CUSTOMIZER.previewComingSoon} — {CUSTOMIZER.previewExplain}
       </div>
-    );
-  }
-
-  return null;
+    </div>
+  );
 }

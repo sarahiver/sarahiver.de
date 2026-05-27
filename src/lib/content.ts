@@ -1,8 +1,12 @@
 /**
- * Zentrale Content-Datei für sarahiver.de v3
+ * Zentrale Content-Datei für sarahiver.de v4
  *
- * Alle Texte hier – Komponenten greifen darauf zu.
- * Tonalität: warm, persönlich, "ihr" statt "Sie/du", emotionale Mikrocopy.
+ * v4 Änderungen gegenüber v3:
+ * - Pricing-Kommunikation: Mindestlaufzeit + Zugriffsdauer prominent
+ * - Streichpreis-Logik in Pricing-Aside
+ * - Redundanz "je mehr desto günstiger" nur einmal
+ * - Customizer: Live-Preview entfernt → Coming-Soon-Placeholder
+ * - Hero-Mockup: bleibt vorerst pur (Tool-Hints kommen später)
  */
 
 import type { ReactNode } from 'react';
@@ -69,9 +73,9 @@ export const FEATURES = {
     },
     {
       tone: 'honey',
-      title: 'Wirklich anpassbar',
+      title: 'Wirklich anpassbar — wenn ihr wollt',
       body:
-        'Start-Stil wählen, dann Farben, Schriften und jeden Bereich einzeln. Keine starren Vorlagen, kein Stil-Korsett.',
+        'Start-Stil wählen, fertig. Oder vertiefen: Farben, Schriften und jeden Bereich einzeln. Wir geben gute Vorschläge, ihr habt das letzte Wort.',
     },
     {
       tone: '',
@@ -109,15 +113,14 @@ export const STRUCTURE = {
   titlePart1: 'Bausteine —',
   titleEm: 'nicht starre Vorlagen.',
   lede:
-    'Eure Hochzeitsseite besteht aus einzelnen Bereichen. Vier sind immer dabei, weitere wählt ihr nach Bedarf. Je mehr Bereiche ihr kombiniert, desto günstiger wird jeder einzelne.',
+    'Eure Hochzeitsseite besteht aus einzelnen Bereichen. Vier sind immer dabei, elf wählt ihr nach Bedarf. Je mehr Bereiche ihr kombiniert, desto günstiger wird jeder einzelne.',
   legend: {
     basis: 'IMMER DABEI',
     zusatz: '+4 € / Monat',
     featured: 'BESTSELLER',
   },
-  footPart1: 'Je mehr Bereiche ihr kombiniert, desto günstiger wird ',
-  footEm: 'jeder einzelne',
-  footPart2: '.',
+  // KEINE Wiederholung mehr am Footer — der Lede sagt es schon einmal
+  foot: null,
 };
 
 export const CUSTOMIZER = {
@@ -127,7 +130,10 @@ export const CUSTOMIZER = {
   titlePart2: ' Seite —',
   titleSage: 'nicht eine Vorlage.',
   lede:
-    'Startet mit einem Stil, der zu euch passt. Mischt dann Farben, Schriften und das Design jedes einzelnen Bereichs. Probiert ein paar Klicks rechts — die Vorschau ändert sich live mit.',
+    'Startet mit einem Stil, der zu euch passt. Wir empfehlen euch passende Bereiche — ihr nehmt sie, oder mischt selbst. Farben, Schriften und jeder Bereich später frei anpassbar.',
+  previewComingSoon: 'Live-Vorschau kommt mit dem Launch',
+  previewExplain:
+    'Sobald die ersten Bereiche fertig sind, seht ihr hier eure Auswahl in Echtzeit zusammengebaut.',
   cheerPool: [
     'Schöne Wahl!',
     'Das passt!',
@@ -144,6 +150,7 @@ export const CUSTOMIZER = {
     { key: 'fonts', label: 'Schriften' },
     { key: 'blocks', label: 'Bereiche' },
   ],
+  recommendedLabel: 'Für diesen Stil empfehlen wir',
 };
 
 export const PRINT = {
@@ -204,13 +211,40 @@ export const HOW = {
   ],
 };
 
+/**
+ * PRICING v4 — der wichtigste Bereich nach Reviewer-Feedback.
+ * Neu: Klare Laufzeit-Erklärung, Streichpreis-Logik.
+ */
 export const PRICING = {
   eyebrow: 'Paket & Preis',
   titlePart1: 'Faire Preise —',
   titleEm: 'so wie ihr es braucht.',
   lede:
-    'Basis-Preis mit den vier wichtigsten Bereichen. Pro zusätzlichem Bereich ein bisschen mehr — und ab 6 ist Schluss mit Aufpreis.',
+    'Ein Basis-Preis für die vier wichtigsten Bereiche. Pro Zusatz-Bereich ein bisschen mehr — und ab 8 ist Schluss mit Aufpreis. 12 Monate Mindestlaufzeit, 18 Monate Zugriff insgesamt.',
   pill: 'Pre-Launch-Preis',
+
+  // Klare Laufzeit-Kommunikation
+  termsExplained: {
+    title: 'Wie lange zahlt ihr?',
+    items: [
+      {
+        label: 'Mindestlaufzeit',
+        value: '12 Monate',
+        desc: 'Üblicher Hochzeits-Planungs-Horizont',
+      },
+      {
+        label: 'Seite bleibt online',
+        value: '18 Monate',
+        desc: '6 Monate Nachbereitung inklusive',
+      },
+      {
+        label: 'Danach',
+        value: 'Archiv',
+        desc: 'CSV-Export aller Daten · Galerie als ZIP',
+      },
+    ],
+  },
+
   asideTitle: 'Im Pre-Launch-Plan enthalten',
   asideList: [
     '4 Basis-Bereiche im Basis-Preis',
@@ -252,11 +286,19 @@ export const VOICES = {
   footPart2: 'Empfehlungswahrscheinlichkeit',
 };
 
+/**
+ * FAQ v4 — neue Frage zu Abo-Kommunikation
+ */
 export const FAQ = {
   eyebrow: 'Häufige Fragen',
   titlePart1: 'Vor dem Start —',
   titleEm: 'noch eine Sache?',
   items: [
+    {
+      q: 'Ist das ein Abo? Wie lange muss ich zahlen?',
+      a:
+        '12 Monate Mindestlaufzeit — das ist der typische Hochzeits-Planungs-Horizont. Eure Seite bleibt insgesamt 18 Monate online (6 Monate Nachbereitung für Galerie + Gästebuch). Danach bekommt ihr alle Daten als Export und die Seite geht ins Archiv. Keine versteckte Verlängerung, keine Abo-Falle — wir wissen, dass eine Hochzeit kein Streaming-Dienst ist.',
+    },
     {
       q: 'Wann startet sarahiver.de denn nun?',
       a:
@@ -275,7 +317,7 @@ export const FAQ = {
     {
       q: 'Können wir wirklich ALLES anpassen?',
       a:
-        'Farben, Schriften, Spacing und das Layout jedes einzelnen Bereichs — ja. Was wir bewusst nicht erlauben: HTML-Eingabe oder Custom-CSS. Damit eure Seite immer gut aussieht, auch wenn ihr ein bisschen experimentiert.',
+        'Farben, Schriften, Spacing und das Layout jedes einzelnen Bereichs — ja. Aber wir geben euch zu jedem Start-Stil eine kuratierte Empfehlung, damit ihr nicht bei null anfangt. So bleibt eure Seite stimmig, auch wenn ihr experimentiert. Was wir bewusst nicht erlauben: HTML-Eingabe oder Custom-CSS.',
     },
     {
       q: 'Funktioniert die Seite auch auf Englisch?',

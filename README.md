@@ -1,154 +1,137 @@
-# sarahiver.de — Marketing & Waitlist Site (v3)
+# sarahiver.de — Marketing & Waitlist Site (v4)
 
 Pre-Launch Landing Page für die Self-Service-Hochzeitsseiten-Plattform für den DACH-Raum.
+
+## Was v4 anders macht als v3
+
+Diese Iteration fokussiert auf Reviewer-Feedback + Mobile-Tauglichkeit:
+
+| # | Change | Begründung |
+|---|--------|-----------|
+| 1 | **Bereich-Katalog auf 15 erweitert** (4 Basis + 11 Zusatz) | Analog zum si-wedding-themes Repo |
+| 2 | **Customizer-Live-Preview entfernt** → Coming-Soon-Placeholder | Reviewer: kollabiert auf Mobile |
+| 3 | **Customizer mobile-tauglich** mit Summary-Card statt Split-Screen | Reviewer: Mobile-First |
+| 4 | **Pricing: Laufzeit-Erklärung** (12 Monate / 18 Monate / Archiv) | Reviewer: Abo-Falle-Reflex |
+| 5 | **Pricing: Streichpreis-Logik** sichtbar (z.B. "~~28€~~ 19€") | Reviewer: Rabatt-Beweis |
+| 6 | **Pricing: Gesamtkosten-Anzeige** über 12 Monate | Reviewer: Transparenz |
+| 7 | **Bereich-Empfehlungen pro Start-Stil** | Reviewer: Choice Overload lösen |
+| 8 | **Redundanz "je mehr desto günstiger"** nur noch 1× | Reviewer: IA |
+| 9 | **Volume-Discount-Tabelle erweitert** für 11 Bereiche | Notwendig durch #1 |
+| 10 | **FAQ: neue Frage zu Abo-Modell** ganz oben | Reviewer: Transparenz |
+
+### Was bewusst NICHT geändert wurde
+
+- **Recurring Subscription beibehalten** (SaaS-Bewertung, RankBrief-Konsistenz)
+- **Hero-Mockup** weiterhin als fertige Hochzeitsseite (Entscheidung User)
+- **Modulares Bereich-System** (Differenzierung vs. Joy/Zola)
 
 ## Stack
 
 - **Next.js 15** (App Router, RSC + Client Components)
 - **React 19**
 - **TypeScript 5** (strict)
-- **Tailwind CSS v4** (@theme tokens, no PostCSS legacy)
-- **Brevo** (für Waitlist-Anmeldung)
+- **Tailwind CSS v4** (@theme tokens)
+- **Brevo** für Waitlist
 - **Fraunces + Inter + Caveat + DM Mono** (Google Fonts)
-
-## Was v3 vs. v2 unterscheidet
-
-Zwei neue Sektionen, Vokabular-Umstellung, DNA-System im Customizer:
-
-| Bereich | v2 | v3 |
-|---------|----|----|
-| Sektionen | 8 + Print | **10 Sektionen** (+ Examples + Structure) |
-| UI-Wortwahl | "Komponente" | **"Bereich"** durchgängig |
-| Customizer | Theme-Wechsel | **DNA-System** (Layout, Spacing, Decor pro Stil) |
-| Demo-Beispiele | fehlten | **4 Demo-Hochzeiten** mit echten Subdomain-Links |
-| Aufbau-Erklärung | fehlte | **Structure-Sektion** mit allen 9 Bereichen |
 
 ## Sektions-Reihenfolge
 
 1. **Hero** — Email-Sammlung + Pre-Launch-Hint, Julia-Tom-Demo-Mockup
-2. **Features** — 6 Werkzeuge (RSVP, Gästeliste, Anpassbar, Privacy, EN/DE, Hosting)
-3. **Examples** — 4 Demo-Hochzeiten (Featured + 3 Compact)
-4. **Structure** — 9 Bereiche erklärt (4 Basis sage-akzentuiert + 5 Zusatz)
-5. **Customizer** — Baukasten mit 4 Schritten + Live-Preview (DNA-basiert)
-6. **Print** — PDF-Vorlagen kostenlos + 300€ Done-For-You
-7. **How** — 3 Schritte mit Caveat-Tips
-8. **Pricing** — Konfigurator (Basis 19€ + 0/4/7/9/11/13/15 Aufpreis)
-9. **Voices** — 2 Beta-Stimmen + 9,4/10 Empfehlungswahrscheinlichkeit
-10. **FAQ** — Accordion mit 8 Fragen
-11. **CTA** — Finale Email-Sammlung in dark-warm
+2. **Features** — 6 Werkzeuge
+3. **Examples** — 4 Demo-Hochzeiten
+4. **Structure** — **15 Bereiche** erklärt (4 Basis + 11 Zusatz)
+5. **Customizer** — Baukasten ohne fragile Live-Preview, mit Empfehlungen pro Stil
+6. **Print** — PDF kostenlos + 300€ Done-For-You
+7. **How** — 3 Schritte
+8. **Pricing** — Konfigurator mit Streichpreis + Laufzeit-Erklärung
+9. **Voices** — Beta-Stimmen
+10. **FAQ** — 9 Fragen (neu: Abo-Frage ganz oben)
+11. **CTA** — Finale Email-Sammlung
 
-## DNA-System (Customizer)
+## Bereich-Katalog (15 total)
 
-Jeder Start-Stil hat eigene "DNA" — beim Wechsel ändert sich nicht nur die Farbe:
+**4 Basis-Bereiche (immer dabei):**
+- Hero, RSVP, Timeline, Infos
 
-| Stil | Alignment | Spacing | Decor | Schrift |
-|------|-----------|---------|-------|---------|
-| Klassisch | center | regular | rule (Linie + Punkt) | Fraunces |
-| Modern | left | airy | none | Inter Bold |
-| Floral | center | regular | sprig (Ranken) | Fraunces Italic |
-| Minimal | left | wide | hairline | DM Mono |
-| Festlich | center | tight | gold | Fraunces 700 |
+**11 Zusatz-Bereiche (frei wählbar):**
+- Lovestory ⭐, Galerie, Foto-Upload, Geschenke ⭐, Übernachtung, Countdown,
+  Gästebuch, FAQ, Musikwünsche, Trauzeugen, Hochzeits-ABC
 
-Siehe `src/lib/customizer.ts`.
+Namen synchron mit `si-wedding-themes` Repo (Hero.js, RSVP.js, Timeline.js, ...).
+
+## Pricing-Tabelle (Volume Discount)
+
+| # Zusatz | Aufpreis | Gesamt/Monat | 12-Monate-Total |
+|----------|----------|--------------|-----------------|
+| 0 | – | 19€ | 228€ |
+| 1 | +4€ | 23€ | 276€ |
+| 2 | +7€ | 26€ | 312€ |
+| 3 | +9€ ⭐ | 28€ | 336€ |
+| 4 | +11€ | 30€ | 360€ |
+| 5 | +13€ | 32€ | 384€ |
+| 6 | +15€ | 34€ | 408€ |
+| 7 | +17€ | 36€ | 432€ |
+| **8+** | **+20€ (Cap)** | **39€** | **468€** |
 
 ## Setup
 
-### 1. Dependencies installieren
-
 ```bash
 npm install
-```
-
-### 2. Environment-Variablen
-
-Kopiere `.env.example` zu `.env.local` und fülle die Werte:
-
-```bash
-BREVO_API_KEY=xkeysib-...
-BREVO_WAITLIST_LIST_ID=42
-```
-
-**Brevo-Setup:**
-1. Bei Brevo eine neue Kontaktliste anlegen: `sarahiver-de-waitlist`
-2. List-ID kopieren (`Contacts → Lists`)
-3. API-Key erstellen (`Settings → SMTP & API → API Keys`)
-
-### 3. Dev-Server
-
-```bash
+cp .env.example .env.local
+# BREVO_API_KEY + BREVO_WAITLIST_LIST_ID eintragen
 npm run dev
 ```
 
-Lokal unter http://localhost:3000
-
-### 4. Production-Build
-
+Build:
 ```bash
-npm run build
-npm start
+npm run build && npm start
 ```
 
-## Deployment auf Vercel
+## Bereich-Empfehlungen pro Start-Stil
 
-```bash
-vercel deploy --prod
-```
+Definiert in `src/lib/customizer.ts` — `recommendedBereiche`:
 
-**Wichtig:** Environment-Variablen im Vercel-Dashboard setzen. `BREVO_API_KEY` sollte als **Sensitive** markiert sein.
+| Stil | Empfohlene Zusatz-Bereiche | Anzahl |
+|------|---------------------------|--------|
+| Klassisch & Warm | Lovestory, Galerie, Übernachtung, Geschenke, FAQ | 5 |
+| Modern & Klar | Lovestory, Foto-Upload, Geschenke, Musikwünsche | 4 |
+| Verspielt & Floral | Lovestory, Galerie, Gästebuch, Geschenke, Hochzeits-ABC | 5 |
+| Minimal & Ruhig | Countdown, Geschenke, FAQ | 3 |
+| Bold & Festlich | Lovestory, Galerie, Foto-Upload, Geschenke, Übernachtung, Trauzeugen, Musikwünsche | 7 |
 
-## Domain-Setup
-
-- Hauptdomain: `sarahiver.de`
-- Demo-Subdomains (zukünftig): `julia-tom.sarahiver.de`, `anna-und-lukas.sarahiver.de`, `mia-und-noah.sarahiver.de`, `elena-und-felix.sarahiver.de`
-
-Demo-Subdomains werden im `si-wedding-themes`-System angelegt. Bis dahin führen die Links auf 404.
+Diese Empfehlung wird in Step 4 ("Bereiche") automatisch vorgewählt — User kann ergänzen oder abwählen.
 
 ## File Structure
 
 ```
 src/
 ├── app/
-│   ├── api/waitlist/route.ts    # Brevo-Integration
+│   ├── api/waitlist/route.ts
 │   ├── datenschutz/page.tsx
 │   ├── impressum/page.tsx
-│   ├── globals.css              # Tailwind v4 + @theme tokens
+│   ├── globals.css
 │   ├── layout.tsx
-│   ├── page.tsx                 # Landing (11 Sektionen)
+│   ├── page.tsx
 │   └── sitemap.ts
 ├── components/
-│   ├── layout/                  # Sidebar, MobileNav, Footer
-│   ├── sections/                # 11 Sektions-Komponenten
-│   └── ui/                      # Section-Wrapper, WaitlistForm
+│   ├── layout/
+│   ├── sections/  (11 Sektionen)
+│   └── ui/
 └── lib/
-    ├── bereiche.ts              # 9 Bereiche (4 basis + 5 zusatz)
-    ├── content.ts               # Zentrale Copy-Datei
-    ├── customizer.ts            # DNA-System (Paletten, Schriften, Stile)
-    ├── demos.ts                 # 4 Demo-Hochzeiten
-    └── pricing.ts               # Volumen-Rabatt (4-7-9-11-13-15)
+    ├── bereiche.ts        (15 Bereiche)
+    ├── content.ts          (Copy + Pricing-Terms)
+    ├── customizer.ts       (DNA + Empfehlungen)
+    ├── demos.ts            (4 Demo-Hochzeiten)
+    └── pricing.ts          (Volume Discount + Laufzeit)
 ```
 
 ## Roadmap nach Launch
 
-- [ ] Echte Demo-Subdomains im `si-wedding-themes`-System
-- [ ] 90-Sek Demo-Video für Hero (Loom/Riverside)
-- [ ] OG-Image
-- [ ] favicon.ico
-- [ ] Vollständiges Impressum + Datenschutz
+- [ ] Live-Preview im Customizer einbauen, sobald die echten Bereich-Komponenten fertig sind
+- [ ] Hero-Mockup mit Tool-Hint anreichern (Customizer-Tooltip-Overlay)
+- [ ] 4 Demo-Subdomains live schalten
+- [ ] OG-Image + Favicon
 - [ ] EN-Übersetzung (Phase 2 ab 2027)
-
-## Wortwahl-Regel
-
-**Im Code:** `component`, `block`, `tier` sind OK (Dev-Sprache)
-**Im UI:** Niemals "Komponente" → immer "Bereich"
-
-| Tech (intern) | Marketing (UI) |
-|---------------|----------------|
-| Component | Bereich |
-| Customizer | Baukasten |
-| Plan/Tier | Paket |
-| Subscription | Abo |
-| Subdomain | Eure Adresse |
-| Custom Domain | Eigene Domain |
 
 ## License
 

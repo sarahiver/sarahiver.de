@@ -1,11 +1,11 @@
 /**
- * Customizer DNA System
+ * Customizer DNA System v4
  *
- * Jeder Start-Stil hat eine eigene "DNA": Palette + Schriften + Layout + Spacing + Decor.
- * Beim Wechsel des Start-Stils ändern sich Live-Vorschau und Sub-Auswahl-Defaults.
+ * Jeder Start-Stil hat eigene DNA: Palette + Schriften + Layout + Spacing + Decor.
+ * NEU in v4: Pro Start-Stil eine kuratierte Bereich-Empfehlung (recommendedBereiche).
  *
- * Das ist der Kern der visuellen Differenzierung — nicht nur Farben tauschen,
- * sondern auch Alignment, Spacing, Schriftgewichte und Decor-Elemente.
+ * Das löst Choice Overload — User bekommt eine sinnvolle Vorauswahl,
+ * kann aber jederzeit zu/abwählen.
  */
 
 // === PALETTEN ===
@@ -107,7 +107,7 @@ export const FONTS: FontPair[] = [
   },
 ];
 
-// === START-STILE mit DNA ===
+// === START-STILE mit DNA + Empfehlungen ===
 export type Alignment = 'center' | 'left';
 export type Spacing = 'tight' | 'regular' | 'airy' | 'wide';
 export type Decor = 'none' | 'rule' | 'sprig' | 'hairline' | 'gold';
@@ -119,6 +119,8 @@ export interface StartStyle {
   meta: string;
   defaultPalette: string;
   defaultFonts: string;
+  /** Empfohlene Zusatz-Bereiche (typische Konfig für diesen Stil) */
+  recommendedBereiche: string[];
   dna: {
     align: Alignment;
     spacing: Spacing;
@@ -134,6 +136,7 @@ export const START_STYLES: StartStyle[] = [
     meta: 'Symmetrisch, Serifen, Sandtöne',
     defaultPalette: 'sand-terra',
     defaultFonts: 'klassisch-serif',
+    recommendedBereiche: ['lovestory', 'gallery', 'accommodations', 'gifts', 'faq'],
     dna: { align: 'center', spacing: 'regular', decor: 'rule', contrast: 'warm' },
   },
   {
@@ -142,6 +145,7 @@ export const START_STYLES: StartStyle[] = [
     meta: 'Asymmetrisch, Sans, viel Weiß',
     defaultPalette: 'olive-honig',
     defaultFonts: 'modern-sans',
+    recommendedBereiche: ['lovestory', 'photoupload', 'gifts', 'musicwishes'],
     dna: { align: 'left', spacing: 'airy', decor: 'none', contrast: 'clean' },
   },
   {
@@ -150,6 +154,7 @@ export const START_STYLES: StartStyle[] = [
     meta: 'Geschwungen, Italic + Caveat, Ranken',
     defaultPalette: 'salbei-rose',
     defaultFonts: 'handschrift',
+    recommendedBereiche: ['lovestory', 'gallery', 'guestbook', 'gifts', 'weddingabc'],
     dna: { align: 'center', spacing: 'regular', decor: 'sprig', contrast: 'soft' },
   },
   {
@@ -158,6 +163,7 @@ export const START_STYLES: StartStyle[] = [
     meta: 'Mono, Hairlines, kein Schmuck',
     defaultPalette: 'pur-schiefer',
     defaultFonts: 'minimal-mono',
+    recommendedBereiche: ['countdown', 'gifts', 'faq'],
     dna: { align: 'left', spacing: 'wide', decor: 'hairline', contrast: 'neutral' },
   },
   {
@@ -166,6 +172,15 @@ export const START_STYLES: StartStyle[] = [
     meta: 'Großes Display, Kontrast, Gold',
     defaultPalette: 'burgund',
     defaultFonts: 'editorial-mix',
+    recommendedBereiche: [
+      'lovestory',
+      'gallery',
+      'photoupload',
+      'gifts',
+      'accommodations',
+      'witnesses',
+      'musicwishes',
+    ],
     dna: { align: 'center', spacing: 'tight', decor: 'gold', contrast: 'high' },
   },
 ];

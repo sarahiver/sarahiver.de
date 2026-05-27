@@ -8,10 +8,19 @@ import {
   calculateAddonPrice,
   calculateSavings,
   calculateTotal,
+  calculateLifetimeCost,
+  MIN_TERM_MONTHS,
 } from '@/lib/pricing';
 import Section from '@/components/ui/Section';
 import WaitlistForm from '@/components/ui/WaitlistForm';
 
+/**
+ * Pricing v4 — Reviewer-Fixes umgesetzt:
+ * 1. Laufzeit-Erklärung als prominenter Info-Block (oben)
+ * 2. Streichpreis-Logik: ohne Rabatt vs. mit Rabatt nebeneinander
+ * 3. Gesamtkosten-Anzeige (über 12 Monate) für Klarheit
+ * 4. "8+ Bereiche = Komplettpaket" Cap deutlicher kommuniziert
+ */
 export default function Pricing() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
@@ -28,16 +37,16 @@ export default function Pricing() {
 
   const count = selected.size;
   const addonPrice = useMemo(() => calculateAddonPrice(count), [count]);
+  const addonWithoutDiscount = useMemo(() => count * 4, [count]);
   const savings = useMemo(() => calculateSavings(count), [count]);
   const total = useMemo(() => calculateTotal(count), [count]);
+  const lifetimeCost = useMemo(() => calculateLifetimeCost(count), [count]);
 
-  const showCompleteUpsell = count >= 3 && count < ZUSATZ_BEREICHE.length;
-  const completeExtra =
-    calculateAddonPrice(ZUSATZ_BEREICHE.length) - addonPrice;
+  const showCompleteUpsell = count >= 5 && count < ZUSATZ_BEREICHE.length;
+  const completeExtra = calculateAddonPrice(ZUSATZ_BEREICHE.length) - addonPrice;
 
   return (
     <Section id="pricing" eyebrow={PRICING.eyebrow} eyebrowNumber="08">
-      {/* Pre-Launch-Pill */}
       <div
         className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 rounded-full"
         style={{
@@ -54,11 +63,42 @@ export default function Pricing() {
         </span>
       </div>
 
-      <div className="grid lg:grid-cols-[1.2fr_1fr] gap-10 mb-12 items-end">
+      <div className="grid lg:grid-cols-[1.2fr_1fr] gap-10 mb-10 items-end">
         <h2 className="h2-editorial">
           {PRICING.titlePart1} <em>{PRICING.titleEm}</em>
         </h2>
         <p className="lede">{PRICING.lede}</p>
+      </div>
+
+      {/* === NEUE LAUFZEIT-ERKLÄRUNG === */}
+      <div
+        className="mb-10 p-6 rounded-2xl border"
+        style={{
+          background: 'var(--color-paper-soft)',
+          borderColor: 'var(--color-rule)',
+        }}
+      >
+        <div className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted mb-4">
+          {PRICING.termsExplained.title}
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {PRICING.termsExplained.items.map((item) => (
+            <div key={item.label}>
+              <div
+                className="text-2xl mb-1"
+                style={{
+                  fontFamily: 'var(--font-serif)',
+                  color: 'var(--color-terra-deep)',
+                  fontWeight: 500,
+                }}
+              >
+                {item.value}
+              </div>
+              <div className="text-xs font-medium text-ink mb-1">{item.label}</div>
+              <div className="text-xs text-muted leading-snug">{item.desc}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-[1.4fr_1fr] gap-8 lg:gap-12">
@@ -66,13 +106,13 @@ export default function Pricing() {
         <div className="space-y-6">
           {/* Basis-Paket */}
           <div
-            className="border-2 rounded-2xl p-8"
+            className="border-2 rounded-2xl p-6 lg:p-8"
             style={{
               borderColor: 'var(--color-ink)',
               background: 'var(--color-paper-warm, #fff)',
             }}
           >
-            <div className="flex items-start justify-between mb-5 gap-4">
+            <div className="flex items-start justify-between mb-5 gap-4 flex-wrap">
               <div>
                 <div
                   className="font-mono text-[10px] tracking-[0.22em] uppercase mb-2"
@@ -81,7 +121,7 @@ export default function Pricing() {
                   Basis-Paket · 4 Bereiche · immer dabei
                 </div>
                 <h3
-                  className="text-3xl leading-tight text-ink"
+                  className="text-2xl lg:text-3xl leading-tight text-ink"
                   style={{ fontFamily: 'var(--font-serif)', fontWeight: 500 }}
                 >
                   Eure Hochzeitsseite
@@ -89,8 +129,12 @@ export default function Pricing() {
               </div>
               <div className="text-right whitespace-nowrap">
                 <div
-                  className="text-4xl"
-                  style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-ink)', fontWeight: 500 }}
+                  className="text-3xl lg:text-4xl"
+                  style={{
+                    fontFamily: 'var(--font-serif)',
+                    color: 'var(--color-ink)',
+                    fontWeight: 500,
+                  }}
                 >
                   {BASE_PRICE}€
                 </div>
@@ -129,7 +173,7 @@ export default function Pricing() {
 
           {/* Zusatz-Bereiche */}
           <div>
-            <div className="flex items-baseline justify-between mb-4">
+            <div className="flex items-baseline justify-between mb-4 flex-wrap gap-2">
               <h3 className="text-xl font-medium text-ink">Zusatz-Bereiche</h3>
               <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted">
                 {count} von {ZUSATZ_BEREICHE.length} gewählt
@@ -144,12 +188,12 @@ export default function Pricing() {
                     key={b.key}
                     onClick={() => toggle(b.key)}
                     className={`text-left p-4 rounded-xl border transition-all ${
-                      isSelected
-                        ? 'shadow-card -translate-y-px'
-                        : 'hover:border-ink/40'
+                      isSelected ? 'shadow-card -translate-y-px' : 'hover:border-ink/40'
                     }`}
                     style={{
-                      background: isSelected ? 'var(--color-ink)' : 'var(--color-paper-warm, #fff)',
+                      background: isSelected
+                        ? 'var(--color-ink)'
+                        : 'var(--color-paper-warm, #fff)',
                       borderColor: isSelected ? 'var(--color-ink)' : 'var(--color-rule)',
                       color: isSelected ? 'var(--color-paper-warm)' : 'var(--color-ink)',
                     }}
@@ -178,9 +222,13 @@ export default function Pricing() {
                         className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
                         style={{
                           border: `2px solid ${
-                            isSelected ? 'var(--color-paper-warm)' : 'var(--color-rule)'
+                            isSelected
+                              ? 'var(--color-paper-warm)'
+                              : 'var(--color-rule)'
                           }`,
-                          background: isSelected ? 'var(--color-paper-warm)' : 'transparent',
+                          background: isSelected
+                            ? 'var(--color-paper-warm)'
+                            : 'transparent',
                           color: 'var(--color-ink)',
                         }}
                       >
@@ -204,10 +252,10 @@ export default function Pricing() {
           </div>
         </div>
 
-        {/* === RECHTS: Live-Summary (sticky) === */}
+        {/* === RECHTS: Sticky Summary mit Streichpreis === */}
         <div className="lg:sticky lg:top-8 self-start">
           <div
-            className="border rounded-2xl p-7"
+            className="border rounded-2xl p-6 lg:p-7"
             style={{
               borderColor: 'var(--color-rule-soft)',
               background: 'var(--color-paper-soft)',
@@ -217,53 +265,67 @@ export default function Pricing() {
               Eure Konfiguration
             </div>
 
-            {/* Basis */}
             <div className="flex items-baseline justify-between py-3 border-b border-rule-soft">
               <span className="text-sm text-ink">Basis-Paket (4 Bereiche)</span>
               <span
                 className="text-lg"
-                style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-ink)', fontWeight: 500 }}
+                style={{
+                  fontFamily: 'var(--font-serif)',
+                  color: 'var(--color-ink)',
+                  fontWeight: 500,
+                }}
               >
                 {BASE_PRICE}€
               </span>
             </div>
 
-            {/* Zusatz */}
-            <div className="flex items-baseline justify-between py-3 border-b border-rule-soft">
-              <span className="text-sm text-ink">
-                {count === 0
-                  ? 'Keine Zusatz-Bereiche'
-                  : `${count} Zusatz-${count === 1 ? 'Bereich' : 'Bereiche'}`}
-              </span>
-              <span
-                className="text-lg"
-                style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-ink)', fontWeight: 500 }}
-              >
-                {count === 0 ? '—' : `+${addonPrice}€`}
-              </span>
-            </div>
+            {/* === STREICHPREIS-LOGIK === */}
+            {count > 0 && (
+              <div className="py-3 border-b border-rule-soft">
+                <div className="flex items-baseline justify-between mb-1">
+                  <span className="text-sm text-ink">
+                    {count} Zusatz-{count === 1 ? 'Bereich' : 'Bereiche'}
+                  </span>
+                  <div className="text-right">
+                    {savings.monthly > 0 && (
+                      <span className="text-sm text-muted line-through mr-2">
+                        +{addonWithoutDiscount}€
+                      </span>
+                    )}
+                    <span
+                      className="text-lg"
+                      style={{
+                        fontFamily: 'var(--font-serif)',
+                        color:
+                          savings.monthly > 0
+                            ? 'var(--color-sage-deep)'
+                            : 'var(--color-ink)',
+                        fontWeight: 500,
+                      }}
+                    >
+                      +{addonPrice}€
+                    </span>
+                  </div>
+                </div>
+                {savings.monthly > 0 && (
+                  <p className="text-xs" style={{ color: 'var(--color-sage-deep)' }}>
+                    Ihr spart {savings.monthly}€/Monat · {savings.percentage}% Rabatt
+                  </p>
+                )}
+              </div>
+            )}
 
-            {/* Ersparnis */}
-            {savings.monthly > 0 && (
-              <div
-                className="my-4 p-3 rounded-lg text-sm flex items-center justify-between"
-                style={{
-                  background: 'rgba(138,154,123,0.18)',
-                  color: 'var(--color-sage-deep)',
-                }}
-              >
-                <span className="font-medium flex items-center gap-2">
-                  <span aria-hidden="true">💚</span>
-                  Ihr spart {savings.monthly}€/Monat
-                </span>
-                <span className="font-mono text-xs">{savings.percentage}%</span>
+            {count === 0 && (
+              <div className="flex items-baseline justify-between py-3 border-b border-rule-soft">
+                <span className="text-sm text-muted">Keine Zusatz-Bereiche</span>
+                <span className="text-lg text-muted">—</span>
               </div>
             )}
 
             {/* Total */}
             <div className="flex items-baseline justify-between py-4 mt-2">
               <span className="text-sm font-medium text-ink uppercase tracking-wider">
-                Gesamt
+                Pro Monat
               </span>
               <div className="text-right">
                 <div
@@ -276,24 +338,54 @@ export default function Pricing() {
                 >
                   {total}€
                 </div>
-                <div className="text-xs text-muted font-mono uppercase tracking-wider">
-                  pro Monat
-                </div>
               </div>
             </div>
 
-            {/* Yearly */}
-            <div className="text-xs text-muted text-right mb-5">
-              = {total * 12}€ pro Jahr
-              {savings.yearly > 0 && (
+            {/* Gesamtkosten über 12 Monate === NEU === */}
+            <div
+              className="p-3 rounded-lg mb-4 text-xs"
+              style={{
+                background: 'var(--color-paper-warm, #fff)',
+                border: '1px dashed var(--color-rule)',
+              }}
+            >
+              <div className="flex items-baseline justify-between mb-1">
+                <span className="text-muted">Über {MIN_TERM_MONTHS} Monate</span>
                 <span
-                  className="block font-medium mt-1"
-                  style={{ color: 'var(--color-sage-deep)' }}
+                  className="text-base font-medium"
+                  style={{
+                    fontFamily: 'var(--font-serif)',
+                    color: 'var(--color-ink)',
+                  }}
                 >
-                  Jährlich gespart: {savings.yearly}€
+                  {lifetimeCost}€
                 </span>
-              )}
+              </div>
+              <p className="text-muted leading-relaxed">
+                Mindestlaufzeit = typischer Hochzeits-Planungs-Horizont. Danach
+                läuft die Seite noch 6 Monate weiter (Galerie, Gästebuch).
+              </p>
             </div>
+
+            {savings.yearly > 0 && (
+              <div
+                className="mb-4 p-2.5 rounded-lg text-xs flex items-center justify-between"
+                style={{
+                  background: 'rgba(138,154,123,0.18)',
+                  color: 'var(--color-sage-deep)',
+                }}
+              >
+                <span className="font-medium">
+                  Gesamt-Ersparnis ({MIN_TERM_MONTHS} Monate)
+                </span>
+                <span
+                  className="font-medium"
+                  style={{ fontFamily: 'var(--font-serif)' }}
+                >
+                  {savings.yearly}€
+                </span>
+              </div>
+            )}
 
             {/* Komplett-Upsell */}
             {showCompleteUpsell && (
@@ -326,7 +418,9 @@ export default function Pricing() {
 
             {/* Waitlist */}
             <div className="border-t border-rule-soft pt-5 mt-2">
-              <p className="text-xs text-muted leading-relaxed mb-4">{PRICING.asideNote}</p>
+              <p className="text-xs text-muted leading-relaxed mb-4">
+                {PRICING.asideNote}
+              </p>
               <WaitlistForm cta={PRICING.asideCta} showPrivacy={false} />
             </div>
           </div>
@@ -346,7 +440,7 @@ export default function Pricing() {
               {PRICING.asideList.map((item) => (
                 <li key={item} className="flex items-start gap-2">
                   <span
-                    className="text-sage-deep mt-0.5 flex-shrink-0"
+                    className="mt-0.5 flex-shrink-0"
                     style={{ color: 'var(--color-sage-deep)' }}
                   >
                     ✓

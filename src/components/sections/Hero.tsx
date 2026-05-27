@@ -241,7 +241,7 @@ export default function Hero() {
             }}
             aria-hidden="true"
           >
-            Beispiel
+            Demo-Hochzeit
           </div>
         </div>
       </div>
