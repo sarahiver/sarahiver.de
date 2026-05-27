@@ -44,7 +44,7 @@ export default function HeroVariantA({ tokens, content }: HeroVariantAProps) {
       style={{
         position: 'relative',
         minHeight: 600,
-        height: 'min(85vh, 720px)',
+        height: '100vh',
         width: '100%',
         overflow: 'hidden',
         color: '#FAF6F0',
