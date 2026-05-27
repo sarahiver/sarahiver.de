@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Fragment } from 'react';
 import type { EffectiveTokens } from '@/types/supabase';
 import { useCountdown } from './use-countdown';
 import { formatDateStamp } from '@/lib/countdown';
@@ -42,12 +42,16 @@ function pad2(n: number): string {
 function FlipCard({ digit, isSeconds }: { digit: string; isSeconds: boolean }) {
   const [current, setCurrent] = useState(digit);
   const [previous, setPrevious] = useState<string | null>(null);
+  // animKey zwingt React, bei jedem Flip die Anim-Divs neu zu mounten,
+  // damit die CSS-Animation tatsächlich neu startet (sonst läuft sie nur einmal).
+  const [animKey, setAnimKey] = useState(0);
   const cleanupTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (digit === current) return;
     setPrevious(current);
     setCurrent(digit);
+    setAnimKey((k) => k + 1);
 
     // Cleanup nach Animation (Dauer muss zu CSS-Animationen passen)
     // Normal: top 280ms + bot delay 140ms + bot 280ms = 420ms → +20ms buffer
@@ -78,16 +82,16 @@ function FlipCard({ digit, isSeconds }: { digit: string; isSeconds: boolean }) {
       {/* Trennlinie */}
       <div className="flip-mid" />
 
-      {/* Animierte Flaps (nur während Wechsel) */}
+      {/* Animierte Flaps (nur während Wechsel) — key erzwingt Remount bei jedem Tick */}
       {previous !== null && (
-        <>
+        <Fragment key={animKey}>
           <div className={`flip-half flip-top flip-anim flip-anim-top ${isSeconds ? 'is-seconds' : ''}`}>
             <div className="flip-digit">{previous}</div>
           </div>
           <div className={`flip-half flip-bottom flip-anim flip-anim-bot ${isSeconds ? 'is-seconds' : ''}`}>
             <div className="flip-digit">{current}</div>
           </div>
-        </>
+        </Fragment>
       )}
     </div>
   );
