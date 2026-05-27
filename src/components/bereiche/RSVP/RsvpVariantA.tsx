@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { EffectiveTokens } from '@/types/supabase';
 import {
   INITIAL_STATE,
@@ -18,6 +18,11 @@ import { RsvpHeader, RsvpClosed, RsvpSuccess } from './shared-ui';
  * Alle Felder auf einer Seite. Toggle für Zusage/Absage,
  * konditionale Felder werden bei Zusage eingeblendet (max-height-Transition).
  * Begleitpersonen-Cards erscheinen dynamisch bei persons > 1.
+ *
+ * Hydration-Note: `closed` wird NICHT serverseitig evaluiert (würde
+ * Date.now() benötigen → SSR-Mismatch). Stattdessen erst nach Hydration
+ * in einem useEffect — wenn die Deadline schon vorbei ist, gibt es einen
+ * kurzen "Flash" des Formulars, das ist akzeptabel.
  */
 
 interface Props {
@@ -30,9 +35,14 @@ export default function RsvpVariantA({ tokens, content }: Props) {
     name1: tokens.couple_name_1,
     name2: tokens.couple_name_2,
   });
-  const closed = isDeadlinePassed(config.deadline);
   const [state, setState] = useState<RsvpState>(INITIAL_STATE);
   const [submitted, setSubmitted] = useState(false);
+  const [closed, setClosed] = useState(false);
+
+  // Deadline-Check nur nach Hydration (SSR-safe)
+  useEffect(() => {
+    setClosed(isDeadlinePassed(config.deadline, new Date()));
+  }, [config.deadline]);
 
   if (closed) {
     return (

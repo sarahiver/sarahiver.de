@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { EffectiveTokens } from '@/types/supabase';
 import {
   INITIAL_STATE,
@@ -60,10 +60,15 @@ export default function RsvpVariantB({ tokens, content }: Props) {
     name1: tokens.couple_name_1,
     name2: tokens.couple_name_2,
   });
-  const closed = isDeadlinePassed(config.deadline);
   const [state, setState] = useState<RsvpState>(INITIAL_STATE);
   const [submitted, setSubmitted] = useState(false);
   const [stepIdx, setStepIdx] = useState(0);
+  const [closed, setClosed] = useState(false);
+
+  // Deadline-Check nach Hydration (SSR-safe)
+  useEffect(() => {
+    setClosed(isDeadlinePassed(config.deadline, new Date()));
+  }, [config.deadline]);
 
   const steps = useMemo(() => buildSteps(state, config), [state, config]);
   const safeIdx = Math.max(0, Math.min(steps.length - 1, stepIdx));

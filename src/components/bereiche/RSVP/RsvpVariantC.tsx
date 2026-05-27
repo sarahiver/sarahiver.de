@@ -111,7 +111,6 @@ export default function RsvpVariantC({ tokens, content }: Props) {
     name1: tokens.couple_name_1,
     name2: tokens.couple_name_2,
   });
-  const closed = isDeadlinePassed(config.deadline);
 
   const [state, setState] = useState<RsvpState>(INITIAL_STATE);
   const [submitted, setSubmitted] = useState(false);
@@ -119,11 +118,17 @@ export default function RsvpVariantC({ tokens, content }: Props) {
   const [flowIdx, setFlowIdx] = useState(0);
   const [typing, setTyping] = useState(false);
   const [textInput, setTextInput] = useState('');
+  const [closed, setClosed] = useState(false);
   const stateRef = useRef(state);
   stateRef.current = state;
   const threadEndRef = useRef<HTMLDivElement>(null);
   // Verhindert, dass das useEffect mehrmals dieselbe Bot-Message verarbeitet
   const processedIdxRef = useRef<number>(-1);
+
+  // Deadline-Check nach Hydration (SSR-safe)
+  useEffect(() => {
+    setClosed(isDeadlinePassed(config.deadline, new Date()));
+  }, [config.deadline]);
 
   // Auto-Scroll zum Thread-Ende
   useEffect(() => {

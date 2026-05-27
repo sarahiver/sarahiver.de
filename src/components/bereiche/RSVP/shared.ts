@@ -103,32 +103,58 @@ export function readConfig(
 
 /**
  * Formatiert das Deadline-Datum (ISO oder bereits formatiert) zu DE-Format.
- * Wenn ungültig: gibt den ursprünglichen String zurück.
+ *
+ * SSR-SAFE: nutzt KEIN `toLocaleDateString()` (das verhält sich auf Server
+ * und Client unterschiedlich je nach installierter Locale). Stattdessen
+ * eine deterministische Formatierung mit hardgecodeten Monatsnamen.
+ *
+ * Wenn input ungültig ist oder schon formatiert aussieht: gibt original
+ * zurück.
  */
+const MONATE_DE = [
+  'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+  'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember',
+];
+
 export function formatDeadline(input: string): string {
   if (!input) return '';
-  // Versuche ISO-Datum zu parsen
-  const d = new Date(input);
-  if (!isNaN(d.getTime()) && input.includes('-')) {
-    return d.toLocaleDateString('de-DE', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
+  // Reines ISO-Date? (YYYY-MM-DD)
+  const match = input.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (match) {
+    const year = match[1];
+    const month = parseInt(match[2], 10);
+    const day = parseInt(match[3], 10);
+    if (month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+      return `${day}. ${MONATE_DE[month - 1]} ${year}`;
+    }
   }
+  // Schon formatiert (oder unparsbar) → unverändert zurück
   return input;
 }
 
 /**
  * Prüft ob die Deadline überschritten ist.
+ *
+ * SSR-SAFE: nimmt `now` als optionalen Parameter. Wird ohne `now`-Parameter
+ * aufgerufen, gibt es false zurück — das ist absichtlich. Auf Server soll
+ * der Check NICHT laufen (Date.now() würde Hydration-Mismatch verursachen).
+ * Stattdessen ruft die Komponente diese Funktion erst NACH Hydration in
+ * einem useEffect auf und übergibt explizit `new Date()`.
+ *
+ * Vergleich rein über ISO-String — keine Timezone-Probleme.
  */
-export function isDeadlinePassed(deadline: string): boolean {
+export function isDeadlinePassed(deadline: string, now?: Date): boolean {
   if (!deadline) return false;
-  const d = new Date(deadline);
-  if (isNaN(d.getTime())) return false;
-  // Bis Ende des Deadline-Tages erlauben
-  d.setHours(23, 59, 59, 999);
-  return Date.now() > d.getTime();
+  if (!now) return false; // SSR-safe: ohne explicit now → immer false
+
+  // ISO-Date parsen
+  const match = deadline.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return false;
+
+  // Vergleich als YYYY-MM-DD String — kein Timezone-Drama
+  const today = now.toISOString().slice(0, 10);
+  // "today > deadline" als String-Vergleich funktioniert für YYYY-MM-DD
+  return today > deadline;
 }
 
 /**
