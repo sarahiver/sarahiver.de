@@ -11,6 +11,9 @@ import LovestoryVariantC from '@/components/bereiche/Lovestory/LovestoryVariantC
 import GalleryVariantA from '@/components/bereiche/Gallery/GalleryVariantA';
 import GalleryVariantB from '@/components/bereiche/Gallery/GalleryVariantB';
 import GalleryVariantC from '@/components/bereiche/Gallery/GalleryVariantC';
+import RsvpVariantA from '@/components/bereiche/RSVP/RsvpVariantA';
+import RsvpVariantB from '@/components/bereiche/RSVP/RsvpVariantB';
+import RsvpVariantC from '@/components/bereiche/RSVP/RsvpVariantC';
 import BereichPlaceholder from '@/components/layout/BereichPlaceholder';
 
 /**
@@ -57,6 +60,13 @@ export function BereichRenderer({ bereich, tokens }: BereichRendererProps) {
     if (variant === 'a') return <GalleryVariantA {...props} />;
     if (variant === 'b') return <GalleryVariantB {...props} />;
     if (variant === 'c') return <GalleryVariantC {...props} />;
+  }
+
+  // === RSVP ===
+  if (bereich_key === 'rsvp') {
+    if (variant === 'a') return <RsvpVariantA {...props} />;
+    if (variant === 'b') return <RsvpVariantB {...props} />;
+    if (variant === 'c') return <RsvpVariantC {...props} />;
   }
 
   // === Alle anderen Bereiche: noch nicht gebaut → Placeholder ===
