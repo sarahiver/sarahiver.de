@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, Fragment } from 'react';
 import type { EffectiveTokens } from '@/types/supabase';
 import { useCountdown } from './use-countdown';
 import { formatDateStamp } from '@/lib/countdown';
+import { parseWallClock } from '@/lib/date-format';
 import { COUNTDOWN_DEFAULTS } from '@/lib/defaults';
 import Decor from '@/components/ui/Decor';
 
@@ -98,7 +99,10 @@ function FlipCard({ digit, isSeconds }: { digit: string; isSeconds: boolean }) {
 }
 
 export default function CountdownVariantB({ tokens, content }: Props) {
+  // echtes Date für Countdown-Berechnung (Differenz zu now)
   const target = new Date(tokens.wedding_date);
+  // SSR-stabile Date für die Anzeige des Datums-Stempels
+  const targetDisplay = parseWallClock(tokens.wedding_date) ?? target;
   const cd = useCountdown(target);
 
   const eyebrow = (content.eyebrow as string) ?? COUNTDOWN_DEFAULTS.eyebrow;
@@ -168,7 +172,7 @@ export default function CountdownVariantB({ tokens, content }: Props) {
             borderRadius: 2,
           }}
         >
-          {formatDateStamp(target)}
+          {formatDateStamp(targetDisplay)}
         </span>
       </div>
 

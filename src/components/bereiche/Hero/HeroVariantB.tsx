@@ -1,5 +1,6 @@
 import type { EffectiveTokens } from '@/types/supabase';
 import Decor from '@/components/ui/Decor';
+import { formatLongDateDE } from '@/lib/date-format';
 
 /**
  * Hero Variante B — "Split — Text links, Bild rechts"
@@ -12,12 +13,7 @@ interface HeroVariantBProps {
 
 export default function HeroVariantB({ tokens, content }: HeroVariantBProps) {
   const eyebrow = (content.eyebrow as string) ?? 'Wir heiraten';
-  const dateLong = new Date(tokens.wedding_date).toLocaleDateString('de-DE', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
+  const dateLong = formatLongDateDE(tokens.wedding_date);
 
   const gridCols =
     tokens.dna_spacing === 'airy'

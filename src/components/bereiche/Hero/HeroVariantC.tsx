@@ -1,5 +1,6 @@
 import type { EffectiveTokens } from '@/types/supabase';
 import Decor from '@/components/ui/Decor';
+import { getDateParts } from '@/lib/date-format';
 
 /**
  * Hero Variante C — "Polaroid Editorial"
@@ -13,11 +14,7 @@ interface HeroVariantCProps {
 export default function HeroVariantC({ tokens, content }: HeroVariantCProps) {
   const eyebrow = (content.eyebrow as string) ?? 'Save the date — sarahiver.de';
 
-  const dateObj = new Date(tokens.wedding_date);
-  const weekdayShort = dateObj.toLocaleDateString('de-DE', { weekday: 'short' }).toUpperCase().replace('.', '');
-  const day = String(dateObj.getDate()).padStart(2, '0');
-  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-  const year = dateObj.getFullYear();
+  const { weekdayShort, day, month, year } = getDateParts(tokens.wedding_date);
   const dateStamp = `${weekdayShort} · ${day} · ${month} · ${year}`;
 
   const styleHint = (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'klassisch';

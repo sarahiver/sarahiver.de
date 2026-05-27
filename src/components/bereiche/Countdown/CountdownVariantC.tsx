@@ -3,6 +3,7 @@
 import type { EffectiveTokens } from '@/types/supabase';
 import { useCountdown } from './use-countdown';
 import { formatDateStamp } from '@/lib/countdown';
+import { parseWallClock } from '@/lib/date-format';
 import { COUNTDOWN_DEFAULTS } from '@/lib/defaults';
 import Decor from '@/components/ui/Decor';
 
@@ -20,6 +21,7 @@ interface Props {
 
 export default function CountdownVariantC({ tokens, content }: Props) {
   const target = new Date(tokens.wedding_date);
+  const targetDisplay = parseWallClock(tokens.wedding_date) ?? target;
   const cd = useCountdown(target);
 
   const eyebrow = (content.eyebrow as string) ?? COUNTDOWN_DEFAULTS.eyebrow;
@@ -95,7 +97,7 @@ export default function CountdownVariantC({ tokens, content }: Props) {
             borderRadius: 2,
           }}
         >
-          {formatDateStamp(target)}
+          {formatDateStamp(targetDisplay)}
         </span>
       </div>
 
