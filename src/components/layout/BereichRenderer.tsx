@@ -23,6 +23,9 @@ import FaqVariantC from '@/components/bereiche/FAQ/FaqVariantC';
 import WeddingABCVariantA from '@/components/bereiche/WeddingABC/WeddingABCVariantA';
 import WeddingABCVariantB from '@/components/bereiche/WeddingABC/WeddingABCVariantB';
 import WeddingABCVariantC from '@/components/bereiche/WeddingABC/WeddingABCVariantC';
+import AccommodationsVariantA from '@/components/bereiche/Accommodations/AccommodationsVariantA';
+import AccommodationsVariantB from '@/components/bereiche/Accommodations/AccommodationsVariantB';
+import AccommodationsVariantC from '@/components/bereiche/Accommodations/AccommodationsVariantC';
 import BereichPlaceholder from '@/components/layout/BereichPlaceholder';
 
 /**
@@ -97,6 +100,13 @@ export function BereichRenderer({ bereich, tokens }: BereichRendererProps) {
     if (variant === 'a') return <WeddingABCVariantA {...props} />;
     if (variant === 'b') return <WeddingABCVariantB {...props} />;
     if (variant === 'c') return <WeddingABCVariantC {...props} />;
+  }
+
+  // === ÜBERNACHTUNG ===
+  if (bereich_key === 'accommodations') {
+    if (variant === 'a') return <AccommodationsVariantA {...props} />;
+    if (variant === 'b') return <AccommodationsVariantB {...props} />;
+    if (variant === 'c') return <AccommodationsVariantC {...props} />;
   }
 
   // === Alle anderen Bereiche: noch nicht gebaut → Placeholder ===

@@ -2698,3 +2698,173 @@ html, body {
   .abcC-term { font-size: 16px; }
   .abcC-text { font-size: 14.5px; }
 }
+
+/* =========================================================
+   ÜBERNACHTUNG — drei Varianten (A Foto-Karten, B Listen, C Karte+Liste)
+   ========================================================= */
+.acc {
+  --acc-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  padding: clamp(40px, 7vw, 80px) clamp(20px, 4vw, 56px);
+  background: var(--bg); color: var(--ink);
+}
+.acc-head { text-align: var(--align, center); max-width: 640px; margin: 0 auto clamp(28px, 4.5vw, 48px); }
+.wedding-site-wrapper[data-style="modern"]  .acc-head,
+.wedding-site-wrapper[data-style="minimal"] .acc-head { text-align: left; margin-left: 0; max-width: none; }
+.acc-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 10px; }
+.acc-title { font-family: var(--font-display); font-weight: var(--display-weight); font-style: var(--display-style); font-size: clamp(30px, 4vw, 48px); line-height: 1.02; letter-spacing: -0.018em; margin: 0 0 12px; text-wrap: balance; color: var(--ink); }
+.acc-title em { font-family: var(--font-script); font-style: normal; color: var(--accent); font-weight: 500; font-size: 1.06em; }
+.wedding-site-wrapper[data-style="festlich"] .acc-title em { color: var(--gold); }
+.acc-desc { font-family: var(--font-body); font-size: clamp(14px, 1.4vw, 16px); line-height: 1.55; color: var(--ink-soft); margin: 0; }
+.acc-head-decor-wrap { margin: 14px 0; display: flex; justify-content: center; }
+.wedding-site-wrapper[data-style="modern"]  .acc-head-decor-wrap,
+.wedding-site-wrapper[data-style="minimal"] .acc-head-decor-wrap { justify-content: flex-start; }
+
+.acc a.acc-inline-link { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; transition: color 180ms ease; }
+.acc a.acc-inline-link:hover { color: var(--accent-deep); text-decoration-thickness: 2px; }
+.wedding-site-wrapper[data-style="minimal"] .acc a.acc-inline-link { color: var(--ink); text-decoration-color: var(--ink); }
+.wedding-site-wrapper[data-style="festlich"] .acc a.acc-inline-link { color: var(--gold); }
+
+/* Meta-Zeile */
+.acc-meta { display: flex; flex-wrap: wrap; gap: 10px 16px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em; color: var(--ink-soft); }
+.acc-meta .meta-item { display: inline-flex; align-items: center; gap: 6px; line-height: 1; }
+.acc-meta .meta-item svg { width: 13px; height: 13px; color: var(--accent); flex: 0 0 13px; }
+.wedding-site-wrapper[data-style="festlich"] .acc-meta .meta-item svg { color: var(--gold); }
+
+/* Code-Badge */
+.acc-code { display: inline-flex; align-items: center; gap: 10px; padding: 9px 12px; background: var(--bg-soft); border: 1px dashed var(--accent); border-radius: 8px; font-family: var(--font-mono); font-size: 12px; color: var(--ink); line-height: 1; cursor: pointer; transition: background 180ms ease, border-color 180ms ease; text-align: left; }
+.acc-code:hover { background: color-mix(in srgb, var(--accent) 14%, var(--bg-soft)); }
+.acc-code .lab { letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-soft); font-size: 10px; }
+.acc-code .val { font-weight: 600; letter-spacing: 0.06em; color: var(--ink); }
+.acc-code .copy-hint { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); opacity: 0; transition: opacity 200ms ease; margin-left: auto; }
+.acc-code:hover .copy-hint { opacity: 1; }
+.acc-code.copied .copy-hint { opacity: 1; color: var(--accent-deep); }
+.wedding-site-wrapper[data-style="modern"]  .acc-code { border-radius: 0; border-style: solid; }
+.wedding-site-wrapper[data-style="floral"]  .acc-code { border-radius: 14px; }
+.wedding-site-wrapper[data-style="minimal"] .acc-code { background: transparent; border-color: var(--ink); border-style: solid; border-radius: 0; }
+.wedding-site-wrapper[data-style="minimal"] .acc-code .copy-hint { color: var(--ink); }
+.wedding-site-wrapper[data-style="festlich"] .acc-code { border-color: var(--gold); }
+.wedding-site-wrapper[data-style="festlich"] .acc-code .copy-hint { color: var(--gold); }
+
+/* Buchungs-Button */
+.acc-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; background: var(--accent); color: var(--bg); border: 1px solid var(--accent); border-radius: 10px; font-family: var(--font-body); font-weight: 600; font-size: 14px; letter-spacing: 0.02em; text-decoration: none; transition: background 200ms var(--acc-ease), color 200ms ease, transform 200ms var(--acc-ease); line-height: 1; }
+.acc-btn:hover { background: var(--accent-deep); border-color: var(--accent-deep); transform: translateY(-1px); }
+.acc-btn svg { width: 14px; height: 14px; }
+.wedding-site-wrapper[data-style="modern"]  .acc-btn { border-radius: 0; text-transform: uppercase; letter-spacing: 0.14em; font-size: 12px; }
+.wedding-site-wrapper[data-style="floral"]  .acc-btn { border-radius: 999px; }
+.wedding-site-wrapper[data-style="minimal"] .acc-btn { background: transparent; color: var(--ink); border-color: var(--ink); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px; border-radius: 0; }
+.wedding-site-wrapper[data-style="minimal"] .acc-btn:hover { background: var(--ink); color: var(--bg); }
+.wedding-site-wrapper[data-style="festlich"] .acc-btn { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+.wedding-site-wrapper[data-style="festlich"] .acc-btn:hover { background: var(--accent-deep); border-color: var(--accent-deep); color: var(--bg); }
+
+/* Foto */
+.acc-photo-img { width: 100%; height: 100%; object-fit: cover; display: block; filter: var(--img-filter); }
+.acc-photo-empty { width: 100%; height: 100%; background: var(--bg-soft); display: grid; place-items: center; color: var(--accent); }
+.acc-photo-empty svg { width: 36px; height: 36px; opacity: 0.55; }
+
+.acc-empty { text-align: center; padding: clamp(36px, 6vw, 56px) clamp(20px, 5vw, 56px); background: var(--bg-soft); border-radius: 16px; max-width: 520px; margin: 0 auto; color: var(--ink-soft); font-family: var(--font-display); font-style: italic; font-size: 17px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.wedding-site-wrapper[data-style="modern"]  .acc-empty,
+.wedding-site-wrapper[data-style="minimal"] .acc-empty { border-radius: 0; }
+
+/* ============ VARIANTE A — Foto-Karten ============ */
+.accA-wrap { max-width: 1200px; margin: 0 auto; }
+.accA-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: stretch; }
+.accA-grid.is-one  { grid-template-columns: minmax(0, 520px); justify-content: center; }
+.accA-grid.is-two  { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 880px; margin: 0 auto; }
+.accA-card { background: var(--bg); border: 1px solid var(--border-soft); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: transform 280ms var(--acc-ease), box-shadow 280ms var(--acc-ease), border-color 220ms ease; }
+.accA-card:hover { transform: translateY(-3px); box-shadow: 0 22px 50px -28px rgba(0,0,0,0.3); border-color: var(--accent); }
+.accA-photo { aspect-ratio: 16 / 10; background: var(--bg-soft); position: relative; }
+.accA-body { padding: 18px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+.accA-name { font-family: var(--font-display); font-weight: 500; font-style: var(--display-style); font-size: 19px; line-height: 1.2; color: var(--ink); margin: 0; letter-spacing: -0.01em; }
+.accA-desc { font-family: var(--font-body); font-size: 14px; line-height: 1.55; color: var(--ink-soft); margin: 0; }
+.accA-desc p { margin: 0 0 0.5em; }
+.accA-desc p:last-child { margin-bottom: 0; }
+.accA-footer { margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
+.accA-card .acc-btn { width: 100%; }
+.wedding-site-wrapper[data-style="modern"]  .accA-card { border-radius: 0; }
+.wedding-site-wrapper[data-style="modern"]  .accA-name { font-family: var(--font-body); font-weight: 700; }
+.wedding-site-wrapper[data-style="floral"]  .accA-card { border-radius: 20px; }
+.wedding-site-wrapper[data-style="minimal"] .accA-card { background: transparent; border-radius: 0; border-width: 0; border-top: 1px solid var(--border); padding-top: 18px; }
+.wedding-site-wrapper[data-style="minimal"] .accA-card:hover { transform: none; box-shadow: none; border-color: var(--ink); }
+.wedding-site-wrapper[data-style="minimal"] .accA-photo { aspect-ratio: 4 / 3; }
+.wedding-site-wrapper[data-style="minimal"] .accA-name { font-family: var(--font-mono); font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; }
+.wedding-site-wrapper[data-style="festlich"] .accA-card { border-color: var(--gold); }
+@media (max-width: 900px) { .accA-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .accA-grid, .accA-grid.is-one, .accA-grid.is-two { grid-template-columns: 1fr; max-width: none; } }
+
+/* ============ VARIANTE B — Horizontale Listen ============ */
+.accB-wrap { max-width: 900px; margin: 0 auto; }
+.accB-list { display: flex; flex-direction: column; gap: 12px; }
+.accB-item { display: grid; grid-template-columns: 120px 1fr auto; gap: 20px; align-items: center; padding: 16px; background: var(--bg); border: 1px solid var(--border-soft); border-radius: 14px; transition: border-color 220ms ease, box-shadow 240ms ease, transform 200ms var(--acc-ease); }
+.accB-item.no-photo { grid-template-columns: 1fr auto; }
+.accB-item:hover { border-color: var(--accent); box-shadow: 0 14px 36px -22px rgba(0,0,0,0.25); }
+.accB-photo { width: 120px; height: 120px; border-radius: 10px; overflow: hidden; background: var(--bg-soft); }
+.accB-body { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.accB-name { font-family: var(--font-display); font-weight: 500; font-style: var(--display-style); font-size: 18px; line-height: 1.2; color: var(--ink); margin: 0; letter-spacing: -0.01em; }
+.accB-desc { font-family: var(--font-body); font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.accB-metaRow { margin-top: 2px; }
+.accB-cta { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+.wedding-site-wrapper[data-style="modern"]  .accB-item { border-radius: 0; }
+.wedding-site-wrapper[data-style="modern"]  .accB-photo { border-radius: 0; }
+.wedding-site-wrapper[data-style="modern"]  .accB-name { font-family: var(--font-body); font-weight: 700; }
+.wedding-site-wrapper[data-style="floral"]  .accB-item { border-radius: 18px; }
+.wedding-site-wrapper[data-style="floral"]  .accB-photo { border-radius: 14px; }
+.wedding-site-wrapper[data-style="minimal"] .accB-item { background: transparent; border-radius: 0; border-width: 0; border-top: 1px solid var(--border); padding: 16px 0; }
+.wedding-site-wrapper[data-style="minimal"] .accB-item:hover { transform: none; box-shadow: none; border-color: var(--ink); }
+.wedding-site-wrapper[data-style="minimal"] .accB-photo { border-radius: 0; }
+.wedding-site-wrapper[data-style="minimal"] .accB-name { font-family: var(--font-mono); font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; }
+.wedding-site-wrapper[data-style="festlich"] .accB-item { border-color: var(--gold); }
+@media (max-width: 700px) {
+  .accB-item, .accB-item.no-photo { grid-template-columns: 1fr; gap: 14px; }
+  .accB-photo { width: 100%; height: 180px; }
+  .accB-cta { align-items: stretch; }
+  .accB-cta .acc-btn { width: 100%; }
+}
+
+/* ============ VARIANTE C — Karte + Liste ============ */
+.accC-wrap { max-width: 1200px; margin: 0 auto; }
+.accC-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 18px; align-items: stretch; }
+.accC-mapwrap { position: relative; border-radius: 16px; overflow: hidden; background: var(--bg-soft); border: 1px solid var(--border-soft); min-height: 480px; align-self: stretch; }
+.accC-mapwrap iframe { width: 100%; height: 100%; border: 0; display: block; position: absolute; inset: 0; filter: var(--img-filter); }
+.wedding-site-wrapper[data-style="minimal"] .accC-mapwrap iframe { filter: grayscale(1) contrast(1.05); }
+.accC-pin { position: absolute; width: 32px; height: 32px; transform: translate(-50%, -100%); pointer-events: auto; cursor: pointer; z-index: 2; transition: transform 220ms var(--acc-ease); }
+.accC-pin:hover, .accC-pin.is-hover { transform: translate(-50%, -100%) scale(1.12); z-index: 4; }
+.accC-pin-bubble { width: 32px; height: 32px; background: var(--accent); color: var(--bg); border-radius: 50% 50% 50% 0; transform: rotate(-45deg); border: 2px solid var(--bg); display: grid; place-items: center; box-shadow: 0 8px 20px -6px rgba(0,0,0,0.4); }
+.accC-pin-num { transform: rotate(45deg); font-family: var(--font-mono); font-weight: 600; font-size: 13px; color: var(--bg); line-height: 1; }
+.accC-pin.is-venue .accC-pin-bubble { background: var(--ink); }
+.accC-pin.is-venue svg { transform: rotate(45deg); width: 14px; height: 14px; color: var(--bg); }
+.wedding-site-wrapper[data-style="festlich"] .accC-pin-bubble { background: var(--gold); }
+.wedding-site-wrapper[data-style="festlich"] .accC-pin-num { color: var(--ink); }
+.wedding-site-wrapper[data-style="minimal"] .accC-pin-bubble { background: var(--ink); }
+.accC-maplegend { position: absolute; top: 12px; left: 12px; background: rgba(255,255,255,0.92); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border-radius: 10px; padding: 8px 12px; font-family: var(--font-mono); font-size: 10px; color: #2D2520; letter-spacing: 0.04em; display: flex; align-items: center; gap: 8px; z-index: 3; box-shadow: 0 6px 20px -10px rgba(0,0,0,0.3); }
+.accC-maplegend .heart { color: #B5746A; display: inline-flex; }
+.accC-maplegend .heart svg { width: 12px; height: 12px; }
+.accC-list { display: flex; flex-direction: column; gap: 10px; }
+.accC-row { display: grid; grid-template-columns: 36px 1fr; gap: 14px; align-items: start; padding: 16px; background: var(--bg); border: 1px solid var(--border-soft); border-radius: 14px; transition: border-color 220ms ease, transform 200ms var(--acc-ease), background 220ms ease; }
+.accC-row:hover, .accC-row.is-hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 5%, var(--bg)); transform: translateY(-1px); }
+.accC-num { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: var(--bg); display: grid; place-items: center; font-family: var(--font-mono); font-weight: 600; font-size: 14px; line-height: 1; }
+.wedding-site-wrapper[data-style="festlich"] .accC-num { background: var(--gold); color: var(--ink); }
+.wedding-site-wrapper[data-style="minimal"] .accC-num { background: var(--ink); border-radius: 0; font-size: 12px; }
+.accC-content { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.accC-name { font-family: var(--font-display); font-weight: 500; font-style: var(--display-style); font-size: 17px; line-height: 1.2; color: var(--ink); margin: 0; letter-spacing: -0.01em; }
+.wedding-site-wrapper[data-style="modern"]  .accC-name { font-family: var(--font-body); font-weight: 700; }
+.wedding-site-wrapper[data-style="minimal"] .accC-name { font-family: var(--font-mono); font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; }
+.accC-bookline { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin-top: 2px; font-family: var(--font-mono); font-size: 11px; }
+.accC-booklink { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent); padding-bottom: 1px; display: inline-flex; align-items: center; gap: 4px; transition: color 180ms ease; }
+.accC-booklink:hover { color: var(--accent-deep); border-color: var(--accent-deep); }
+.accC-booklink svg { width: 11px; height: 11px; }
+.wedding-site-wrapper[data-style="festlich"] .accC-booklink { color: var(--gold); border-color: var(--gold); }
+.wedding-site-wrapper[data-style="minimal"] .accC-booklink { color: var(--ink); border-color: var(--ink); }
+.accC-row .acc-code { padding: 6px 10px; font-size: 11px; }
+.accC-row .acc-code .lab { font-size: 9px; }
+.wedding-site-wrapper[data-style="modern"]  .accC-row { border-radius: 0; }
+.wedding-site-wrapper[data-style="modern"]  .accC-mapwrap { border-radius: 0; }
+.wedding-site-wrapper[data-style="floral"]  .accC-row { border-radius: 18px; }
+.wedding-site-wrapper[data-style="floral"]  .accC-mapwrap { border-radius: 22px; }
+.wedding-site-wrapper[data-style="minimal"] .accC-row { background: transparent; border-radius: 0; border-width: 0; border-top: 1px solid var(--border); padding: 14px 0; }
+.wedding-site-wrapper[data-style="minimal"] .accC-row:hover { transform: none; background: transparent; border-color: var(--ink); }
+.wedding-site-wrapper[data-style="minimal"] .accC-mapwrap { border-radius: 0; }
+.wedding-site-wrapper[data-style="festlich"] .accC-row { border-color: var(--gold); }
+@media (max-width: 900px) {
+  .accC-grid { grid-template-columns: 1fr; }
+  .accC-mapwrap { min-height: 220px; height: 220px; }
+}
