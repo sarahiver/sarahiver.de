@@ -38,6 +38,9 @@ import GuestbookVariantC from '@/components/bereiche/Guestbook/GuestbookVariantC
 import MusicWishesVariantA from '@/components/bereiche/MusicWishes/MusicWishesVariantA';
 import MusicWishesVariantB from '@/components/bereiche/MusicWishes/MusicWishesVariantB';
 import MusicWishesVariantC from '@/components/bereiche/MusicWishes/MusicWishesVariantC';
+import GiftsVariantA from '@/components/bereiche/Gifts/GiftsVariantA';
+import GiftsVariantB from '@/components/bereiche/Gifts/GiftsVariantB';
+import GiftsVariantC from '@/components/bereiche/Gifts/GiftsVariantC';
 import BereichPlaceholder from '@/components/layout/BereichPlaceholder';
 
 /**
@@ -148,6 +151,13 @@ export function BereichRenderer({ bereich, tokens, weddingSlug }: BereichRendere
     if (variant === 'a') return <MusicWishesVariantA {...props} weddingSlug={weddingSlug} />;
     if (variant === 'b') return <MusicWishesVariantB {...props} weddingSlug={weddingSlug} />;
     if (variant === 'c') return <MusicWishesVariantC {...props} weddingSlug={weddingSlug} />;
+  }
+
+  // === GESCHENKE ===
+  if (bereich_key === 'gifts') {
+    if (variant === 'a') return <GiftsVariantA {...props} weddingSlug={weddingSlug} />;
+    if (variant === 'b') return <GiftsVariantB {...props} weddingSlug={weddingSlug} />;
+    if (variant === 'c') return <GiftsVariantC {...props} weddingSlug={weddingSlug} />;
   }
 
   // === Alle anderen Bereiche: noch nicht gebaut → Placeholder ===
