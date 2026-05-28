@@ -34,6 +34,22 @@ export async function loadWeddingSite(slug: string): Promise<{
 
   const tokens = tokensResult.data as EffectiveTokens;
 
+  // nav_variant separat aus wedding_sites laden (nicht in der View).
+  // Defensive: wenn Spalte/Query fehlschlägt, Fallback auf 'a'.
+  let navVariant: string = 'a';
+  try {
+    const navResult = await supabase
+      .from('wedding_sites')
+      .select('nav_variant')
+      .eq('id', tokens.wedding_site_id)
+      .maybeSingle();
+    const v = (navResult.data as { nav_variant?: string } | null)?.nav_variant;
+    if (v === 'a' || v === 'b' || v === 'c' || v === 'none') navVariant = v;
+  } catch {
+    // Spalte existiert evtl. noch nicht — Fallback bleibt 'a'
+  }
+  (tokens as EffectiveTokens & { nav_variant?: string }).nav_variant = navVariant;
+
   const bereiche = (bereicheResult.data ?? []).filter(
     (b) => b.wedding_site_id === tokens.wedding_site_id
   ) as WeddingBereich[];

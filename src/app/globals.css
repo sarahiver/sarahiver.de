@@ -2156,3 +2156,208 @@ html, body {
   .tlC-card:not(.is-active) .tlC-titlelab { font-size: 8px; }
   .tlC-card.is-active .tlC-time { font-size: clamp(40px, 14vw, 56px); }
 }
+
+/* =========================================================
+   SITE-NAV — drei Varianten (A Pill, B Top-Bar, C Dots)
+   Pro Stil angepasst. Desktop + Mobile.
+   ========================================================= */
+.snav { font-family: var(--font-body); }
+.snav button { font-family: inherit; cursor: pointer; border: 0; background: none; }
+
+/* Mobile/Desktop-Sichtbarkeit */
+.snavA, .snavB-links, .snavC { display: block; }
+.snavA-mobile, .snavC-mobile { display: none; }
+@media (max-width: 768px) {
+  .snavA { display: none; }
+  .snavA-mobile { display: block; }
+  .snavC { display: none; }
+  .snavC-mobile { display: block; }
+}
+
+/* ============ VARIANTE A — Floating Pill ============ */
+.snavA {
+  position: fixed; top: 18px; left: 50%; transform: translateX(-50%);
+  z-index: 1000;
+}
+.snavA-pill {
+  display: flex; gap: 2px; align-items: center;
+  padding: 6px;
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-soft);
+  border-radius: 999px;
+  box-shadow: 0 8px 28px -12px rgba(20,16,12,0.4);
+}
+.snavA-link {
+  font-size: 13px; color: var(--ink-soft);
+  padding: 7px 15px; border-radius: 999px;
+  white-space: nowrap; transition: color 200ms ease, background 200ms ease;
+}
+.snavA-link:hover { color: var(--ink); }
+.snavA-link.is-active { color: var(--bg); background: var(--accent); }
+
+.snavA-mobile {
+  position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+  z-index: 1000;
+}
+.snavA-dots {
+  display: flex; gap: 6px; align-items: center;
+  padding: 9px 12px;
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-soft); border-radius: 999px;
+  box-shadow: 0 8px 28px -12px rgba(20,16,12,0.4);
+}
+.snavA-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: color-mix(in srgb, var(--ink) 28%, transparent);
+  padding: 0; transition: background 200ms ease, transform 200ms ease;
+}
+.snavA-dot.is-active { background: var(--accent); transform: scale(1.35); }
+
+/* Stil A */
+.wedding-site-wrapper[data-style="modern"]  .snavA-pill,
+.wedding-site-wrapper[data-style="minimal"] .snavA-pill { border-radius: 0; }
+.wedding-site-wrapper[data-style="modern"]  .snavA-link.is-active,
+.wedding-site-wrapper[data-style="minimal"] .snavA-link.is-active { border-radius: 0; }
+.wedding-site-wrapper[data-style="minimal"] .snavA-link.is-active { background: var(--ink); }
+.wedding-site-wrapper[data-style="minimal"] .snavA-dot.is-active { background: var(--ink); }
+.wedding-site-wrapper[data-style="festlich"] .snavA-link.is-active { background: var(--gold); color: var(--ink); }
+.wedding-site-wrapper[data-style="festlich"] .snavA-dot.is-active { background: var(--gold); }
+.wedding-site-wrapper[data-style="minimal"] .snavA-link,
+.wedding-site-wrapper[data-style="modern"]  .snavA-link {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+}
+
+/* ============ VARIANTE B — Top-Bar mit Monogramm ============ */
+.snavB {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  transition: background 280ms ease, box-shadow 280ms ease, border-color 280ms ease;
+  background: transparent; border-bottom: 1px solid transparent;
+}
+.snavB.is-scrolled {
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom-color: var(--border-soft);
+}
+.snavB-inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: clamp(14px, 2vw, 20px) clamp(20px, 4vw, 40px);
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+}
+.snavB-logo {
+  font-family: var(--font-display); font-style: var(--display-style);
+  font-weight: var(--display-weight); font-size: clamp(18px, 2vw, 24px);
+  color: var(--ink); letter-spacing: 0.02em; padding: 0;
+}
+.wedding-site-wrapper[data-style="festlich"] .snavB-logo { color: var(--gold); }
+.snavB-links { display: flex; gap: clamp(14px, 1.8vw, 26px); align-items: center; }
+.snavB-link {
+  font-size: 13px; color: var(--ink-soft);
+  padding: 4px 0; position: relative;
+  transition: color 200ms ease;
+}
+.snavB-link::after {
+  content: ""; position: absolute; left: 0; right: 100%; bottom: -2px;
+  height: 1.5px; background: var(--accent);
+  transition: right 220ms ease;
+}
+.snavB-link:hover { color: var(--ink); }
+.snavB-link.is-active { color: var(--ink); }
+.snavB-link.is-active::after { right: 0; }
+.wedding-site-wrapper[data-style="festlich"] .snavB-link.is-active::after { background: var(--gold); }
+.wedding-site-wrapper[data-style="minimal"] .snavB-link,
+.wedding-site-wrapper[data-style="modern"]  .snavB-link {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+}
+
+.snavB-burger { display: none; flex-direction: column; gap: 4px; padding: 6px; }
+.snavB-burger span { width: 22px; height: 1.5px; background: var(--ink); display: block; transition: all 200ms ease; }
+
+.snavB-overlay {
+  position: fixed; inset: 0; z-index: 1100;
+  background: var(--bg);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px;
+  opacity: 0; pointer-events: none; transform: translateY(-8px);
+  transition: opacity 280ms ease, transform 280ms ease;
+}
+.snavB-overlay.is-open { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.snavB-close {
+  position: absolute; top: 20px; right: 24px;
+  font-size: 24px; color: var(--ink); line-height: 1; padding: 8px;
+}
+.snavB-overlay-links { display: flex; flex-direction: column; gap: 4px; text-align: center; }
+.snavB-overlay-link {
+  font-family: var(--font-display); font-style: var(--display-style);
+  font-size: clamp(28px, 7vw, 40px); color: var(--ink-soft);
+  padding: 10px 20px; transition: color 200ms ease;
+}
+.snavB-overlay-link.is-active { color: var(--accent); }
+.wedding-site-wrapper[data-style="festlich"] .snavB-overlay-link.is-active { color: var(--gold); }
+
+@media (max-width: 768px) {
+  .snavB-links { display: none; }
+  .snavB-burger { display: flex; }
+}
+
+/* ============ VARIANTE C — Vertikale Dots / Bottom-Tabs ============ */
+.snavC {
+  position: fixed; top: 50%; right: clamp(16px, 2.5vw, 32px); transform: translateY(-50%);
+  z-index: 1000;
+}
+.snavC-rail { display: flex; flex-direction: column; gap: 14px; align-items: flex-end; }
+.snavC-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 4px 0;
+}
+.snavC-label {
+  font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink); background: color-mix(in srgb, var(--bg) 86%, transparent);
+  padding: 3px 9px; border-radius: 4px;
+  opacity: 0; transform: translateX(6px);
+  transition: opacity 200ms ease, transform 200ms ease;
+  pointer-events: none; white-space: nowrap;
+}
+.snavC-item:hover .snavC-label,
+.snavC-item.is-active .snavC-label { opacity: 1; transform: translateX(0); }
+.snavC-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: color-mix(in srgb, var(--ink) 28%, transparent);
+  transition: background 200ms ease, transform 200ms ease;
+  flex: 0 0 auto;
+}
+.snavC-item:hover .snavC-dot { background: color-mix(in srgb, var(--accent) 60%, transparent); }
+.snavC-item.is-active .snavC-dot { background: var(--accent); transform: scale(1.5); }
+.wedding-site-wrapper[data-style="minimal"] .snavC-dot { border-radius: 0; }
+.wedding-site-wrapper[data-style="minimal"] .snavC-item.is-active .snavC-dot { background: var(--ink); }
+.wedding-site-wrapper[data-style="festlich"] .snavC-item.is-active .snavC-dot { background: var(--gold); }
+
+.snavC-mobile {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border-soft);
+}
+.snavC-tabs {
+  display: flex; align-items: center; justify-content: space-around;
+  padding: 8px 4px calc(8px + env(safe-area-inset-bottom, 0px));
+  max-width: 520px; margin: 0 auto;
+}
+.snavC-tab {
+  display: grid; place-items: center;
+  width: 44px; height: 44px; border-radius: 12px;
+  color: color-mix(in srgb, var(--ink) 45%, transparent);
+  transition: color 200ms ease, background 200ms ease;
+}
+.snavC-tab.is-active { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.wedding-site-wrapper[data-style="minimal"] .snavC-tab { border-radius: 0; }
+.wedding-site-wrapper[data-style="minimal"] .snavC-tab.is-active { color: var(--ink); background: color-mix(in srgb, var(--ink) 8%, transparent); }
+.wedding-site-wrapper[data-style="festlich"] .snavC-tab.is-active { color: var(--gold); background: color-mix(in srgb, var(--gold) 14%, transparent); }
+
+/* Body-Padding für fixed-Navs, damit nichts verdeckt wird */
+@media (max-width: 768px) {
+  .wedding-site-wrapper:has(.snavC-mobile) main { padding-bottom: 64px; }
+  .wedding-site-wrapper:has(.snavA-mobile) main { padding-bottom: 72px; }
+}

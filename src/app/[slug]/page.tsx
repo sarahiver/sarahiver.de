@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation';
 import { loadWeddingSite, tokensToCSSVariables, getBereichBackground, SPACING_MULTIPLIER } from '@/lib/tokens';
 import { DnaProvider } from '@/lib/dna-context';
 import { BereichRenderer } from '@/components/layout/BereichRenderer';
+import { SiteNav } from '@/components/layout/SiteNav';
+import { buildNavItems } from '@/components/layout/nav-config';
 import { isReservedSlug, isValidSlugFormat } from '@/lib/slug-validation';
 import type { Metadata } from 'next';
 
@@ -47,6 +49,12 @@ export default async function WeddingSitePage({ params }: PageProps) {
   };
 
   const styleHint = (tokens as typeof tokens & { start_style_id?: string }).start_style_id ?? 'klassisch';
+  const navVariant = (tokens as typeof tokens & { nav_variant?: string }).nav_variant ?? 'a';
+  const navItems = buildNavItems(bereiche.map((b) => b.bereich_key));
+  const coupleShort =
+    tokens.couple_name_1 && tokens.couple_name_2
+      ? `${tokens.couple_name_1[0]} & ${tokens.couple_name_2[0]}`
+      : 'S & I';
 
   return (
     <div
@@ -55,6 +63,13 @@ export default async function WeddingSitePage({ params }: PageProps) {
       data-style={styleHint}
     >
       <DnaProvider dna={dna}>
+        {navVariant !== 'none' && navItems.length > 0 && (
+          <SiteNav
+            variant={navVariant as 'a' | 'b' | 'c'}
+            items={navItems}
+            coupleShort={coupleShort}
+          />
+        )}
         <main>
           {bereiche.map((bereich, index) => {
             const isLast = index === bereiche.length - 1;
@@ -62,6 +77,7 @@ export default async function WeddingSitePage({ params }: PageProps) {
             return (
               <section
                 key={bereich.id}
+                id={`bereich-${bereich.bereich_key}`}
                 style={{ background: bgKind === 'bg' ? 'var(--bg)' : 'var(--bg-soft)' }}
                 data-bereich={bereich.bereich_key}
                 data-variant={bereich.variant}

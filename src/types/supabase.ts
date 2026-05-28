@@ -117,6 +117,9 @@ export interface EffectiveTokens {
   // Start-Stil-Hint (wird zum Image-Filter gemappt)
   start_style_id?: string;
 
+  // Navigations-Variante ('a' | 'b' | 'c' | 'none')
+  nav_variant?: string;
+
   // Farben (effective: custom > preset)
   color_bg: string;
   color_bg_soft: string;
