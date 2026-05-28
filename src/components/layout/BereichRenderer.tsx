@@ -20,6 +20,9 @@ import TimelineVariantC from '@/components/bereiche/Timeline/TimelineVariantC';
 import FaqVariantA from '@/components/bereiche/FAQ/FaqVariantA';
 import FaqVariantB from '@/components/bereiche/FAQ/FaqVariantB';
 import FaqVariantC from '@/components/bereiche/FAQ/FaqVariantC';
+import WeddingABCVariantA from '@/components/bereiche/WeddingABC/WeddingABCVariantA';
+import WeddingABCVariantB from '@/components/bereiche/WeddingABC/WeddingABCVariantB';
+import WeddingABCVariantC from '@/components/bereiche/WeddingABC/WeddingABCVariantC';
 import BereichPlaceholder from '@/components/layout/BereichPlaceholder';
 
 /**
@@ -87,6 +90,13 @@ export function BereichRenderer({ bereich, tokens }: BereichRendererProps) {
     if (variant === 'a') return <FaqVariantA {...props} />;
     if (variant === 'b') return <FaqVariantB {...props} />;
     if (variant === 'c') return <FaqVariantC {...props} />;
+  }
+
+  // === HOCHZEITS-ABC ===
+  if (bereich_key === 'weddingabc') {
+    if (variant === 'a') return <WeddingABCVariantA {...props} />;
+    if (variant === 'b') return <WeddingABCVariantB {...props} />;
+    if (variant === 'c') return <WeddingABCVariantC {...props} />;
   }
 
   // === Alle anderen Bereiche: noch nicht gebaut → Placeholder ===
