@@ -140,6 +140,14 @@ export function SiteNav({ variant, items, coupleShort }: Props) {
       <>
         <nav className="snav snavA" aria-label="Seiten-Navigation">
           <div className="snavA-pill">
+            <button
+              type="button"
+              className="snavA-home"
+              onClick={scrollTop}
+              aria-label="Zum Seitenanfang"
+            >
+              <NavIcon name="ti-home" />
+            </button>
             {items.map((it) => (
               <button
                 key={it.key}
@@ -156,6 +164,14 @@ export function SiteNav({ variant, items, coupleShort }: Props) {
         {/* Mobile: Dot-Reihe unten */}
         <nav className="snav snavA-mobile" aria-label="Seiten-Navigation">
           <div className="snavA-dots">
+            <button
+              type="button"
+              className="snavA-home-dot"
+              onClick={scrollTop}
+              aria-label="Zum Seitenanfang"
+            >
+              <NavIcon name="ti-home" />
+            </button>
             {items.map((it) => (
               <button
                 key={it.key}
@@ -239,6 +255,17 @@ export function SiteNav({ variant, items, coupleShort }: Props) {
       {/* Desktop: vertikale Dots rechts */}
       <nav className="snav snavC" aria-label="Seiten-Navigation">
         <div className="snavC-rail">
+          <button
+            type="button"
+            className="snavC-item snavC-home"
+            onClick={scrollTop}
+            aria-label="Zum Seitenanfang"
+          >
+            <span className="snavC-label">Start</span>
+            <span className="snavC-dot snavC-home-dot">
+              <NavIcon name="ti-home" />
+            </span>
+          </button>
           {items.map((it) => (
             <button
               key={it.key}
@@ -257,6 +284,14 @@ export function SiteNav({ variant, items, coupleShort }: Props) {
       {/* Mobile: Bottom-Tab-Bar mit Icons */}
       <nav className="snav snavC-mobile" aria-label="Seiten-Navigation">
         <div className="snavC-tabs">
+          <button
+            type="button"
+            className="snavC-tab snavC-tab-home"
+            onClick={scrollTop}
+            aria-label="Zum Seitenanfang"
+          >
+            <NavIcon name="ti-home" />
+          </button>
           {items.map((it) => (
             <button
               key={it.key}
