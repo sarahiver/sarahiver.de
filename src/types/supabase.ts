@@ -88,6 +88,7 @@ export type BereichKey =
   | 'photoupload'
   | 'gifts'
   | 'accommodations'
+  | 'directions'
   | 'countdown'
   | 'guestbook'
   | 'faq'
