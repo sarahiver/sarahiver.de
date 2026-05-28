@@ -14,6 +14,9 @@ import GalleryVariantC from '@/components/bereiche/Gallery/GalleryVariantC';
 import RsvpVariantA from '@/components/bereiche/RSVP/RsvpVariantA';
 import RsvpVariantB from '@/components/bereiche/RSVP/RsvpVariantB';
 import RsvpVariantC from '@/components/bereiche/RSVP/RsvpVariantC';
+import TimelineVariantA from '@/components/bereiche/Timeline/TimelineVariantA';
+import TimelineVariantB from '@/components/bereiche/Timeline/TimelineVariantB';
+import TimelineVariantC from '@/components/bereiche/Timeline/TimelineVariantC';
 import BereichPlaceholder from '@/components/layout/BereichPlaceholder';
 
 /**
@@ -67,6 +70,13 @@ export function BereichRenderer({ bereich, tokens }: BereichRendererProps) {
     if (variant === 'a') return <RsvpVariantA {...props} />;
     if (variant === 'b') return <RsvpVariantB {...props} />;
     if (variant === 'c') return <RsvpVariantC {...props} />;
+  }
+
+  // === TIMELINE ===
+  if (bereich_key === 'timeline') {
+    if (variant === 'a') return <TimelineVariantA {...props} />;
+    if (variant === 'b') return <TimelineVariantB {...props} />;
+    if (variant === 'c') return <TimelineVariantC {...props} />;
   }
 
   // === Alle anderen Bereiche: noch nicht gebaut → Placeholder ===

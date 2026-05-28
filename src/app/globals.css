@@ -1818,3 +1818,341 @@ html, body {
 }
 .wedding-site-wrapper[data-style="modern"]  .rsvpB-choice-wrap,
 .wedding-site-wrapper[data-style="minimal"] .rsvpB-choice-wrap { justify-content: flex-start; }
+
+/* =========================================================
+   TIMELINE — drei Varianten (A Contemporary, B Editorial, C Classic)
+   ========================================================= */
+.tl {
+  --tl-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  padding: clamp(40px, 7vw, 80px) clamp(20px, 4vw, 56px);
+  background: var(--bg);
+  color: var(--ink);
+}
+.tl-head {
+  text-align: var(--align, center);
+  max-width: 640px;
+  margin: 0 auto clamp(24px, 4vw, 40px);
+}
+.wedding-site-wrapper[data-style="modern"]  .tl-head,
+.wedding-site-wrapper[data-style="minimal"] .tl-head { text-align: left; margin-left: 0; }
+.tl-eyebrow {
+  font-family: var(--font-mono); font-size: 11px;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--ink-soft); margin: 0 0 10px;
+}
+.tl-title {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight); font-style: var(--display-style);
+  font-size: clamp(30px, 4vw, 48px);
+  line-height: 1.02; letter-spacing: -0.018em;
+  margin: 0 0 12px; text-wrap: balance; color: var(--ink);
+}
+.tl-title em {
+  font-family: var(--font-script); font-style: normal;
+  color: var(--accent); font-weight: 500; font-size: 1.06em;
+}
+.tl-desc {
+  font-family: var(--font-body); font-size: clamp(14px, 1.5vw, 16px);
+  line-height: 1.55; color: var(--ink-soft); margin: 0;
+}
+.tl-head-decor-wrap { margin: 14px 0; display: flex; justify-content: center; }
+.wedding-site-wrapper[data-style="modern"]  .tl-head-decor-wrap,
+.wedding-site-wrapper[data-style="minimal"] .tl-head-decor-wrap { justify-content: flex-start; }
+
+.tl-empty {
+  text-align: center; padding: clamp(36px, 6vw, 56px) clamp(20px, 5vw, 56px);
+  background: var(--bg-soft); border-radius: 16px; max-width: 520px; margin: 0 auto;
+  color: var(--ink-soft); font-family: var(--font-display); font-style: italic; font-size: 17px;
+}
+.wedding-site-wrapper[data-style="modern"]  .tl-empty,
+.wedding-site-wrapper[data-style="minimal"] .tl-empty { border-radius: 0; }
+
+/* --- Shared: now-tag + loc-pill --- */
+.now-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: 9px;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--accent);
+  padding: 4px 8px; border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.wedding-site-wrapper[data-style="festlich"] .now-tag {
+  color: var(--gold); background: color-mix(in srgb, var(--gold) 18%, transparent);
+}
+.now-tag .pulse {
+  width: 6px; height: 6px; border-radius: 50%; background: currentColor;
+  animation: tl-pulse-dot 1.4s ease-in-out infinite;
+}
+@keyframes tl-pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 currentColor; }
+  50%      { box-shadow: 0 0 0 5px transparent; }
+}
+
+.tl .loc-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 999px;
+  font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-soft);
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  border: 1px solid var(--border-soft);
+  text-decoration: none;
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+.tl .loc-pill:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.tl .loc-pill .pin { width: 12px; height: 12px; color: var(--accent); flex: 0 0 12px; }
+.tl .loc-pill:hover .pin { color: var(--bg); }
+.wedding-site-wrapper[data-style="festlich"] .tl .loc-pill .pin { color: var(--gold); }
+.wedding-site-wrapper[data-style="festlich"] .tl .loc-pill:hover { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+.wedding-site-wrapper[data-style="festlich"] .tl .loc-pill:hover .pin { color: var(--ink); }
+.wedding-site-wrapper[data-style="minimal"] .tl .loc-pill {
+  background: transparent; border: 0; padding: 0;
+  color: var(--ink); text-decoration: underline; text-underline-offset: 3px; letter-spacing: 0.12em;
+}
+.wedding-site-wrapper[data-style="minimal"] .tl .loc-pill:hover { color: var(--accent-deep); background: transparent; }
+.tl .loc-pill.glass {
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  color: #fff; border-color: rgba(255,255,255,0.3);
+}
+.tl .loc-pill.glass .pin { color: #fff; }
+.tl .loc-pill.glass:hover { background: rgba(255,255,255,0.32); color: #fff; }
+
+/* =========================================================
+   VARIANT A — Contemporary horizontale Karten
+   ========================================================= */
+.wedding-site-wrapper                         { --tlA-c1: var(--accent); --tlA-c2: var(--accent-deep); --tlA-c3: var(--bg-soft); }
+.wedding-site-wrapper[data-style="minimal"]   { --tlA-c1: var(--ink);    --tlA-c2: #6E6E6E;            --tlA-c3: var(--bg-soft); }
+.wedding-site-wrapper[data-style="festlich"]  { --tlA-c1: var(--accent); --tlA-c2: var(--gold);        --tlA-c3: var(--accent-deep); }
+
+.tlA-wrap {
+  max-width: 1280px; margin: 0 auto;
+  padding: clamp(20px, 3vw, 32px) 0 clamp(40px, 5vw, 56px);
+  position: relative;
+}
+.tlA-cards {
+  display: flex; justify-content: center; align-items: flex-end;
+  gap: clamp(-40px, -2.6vw, -14px);
+  padding: 24px 24px 56px;
+  overflow: visible; min-height: 280px;
+}
+.tlA-card {
+  flex: 0 1 clamp(170px, 16vw, 210px);
+  background: var(--bg);
+  border: 1.5px solid var(--ink);
+  border-radius: 4px;
+  padding: 14px;
+  transform-origin: 50% 100%;
+  transform: rotate(var(--r, 0deg));
+  cursor: pointer; position: relative;
+  box-shadow: 5px 5px 0 0 var(--ink);
+  transition: transform 320ms var(--tl-ease), box-shadow 240ms ease;
+  z-index: 1;
+}
+.tlA-card:hover { transform: rotate(0deg) translateY(-6px) scale(1.04); z-index: 8; box-shadow: 6px 8px 0 0 var(--ink); }
+.tlA-card.is-active { transform: rotate(0deg) translateY(-10px) scale(1.08); z-index: 20; box-shadow: 7px 10px 0 0 var(--ink); }
+.tlA-card.is-active:hover { transform: rotate(0deg) translateY(-12px) scale(1.1); }
+.tlA-card:nth-child(3n+1) { --r: -2.5deg; --c: var(--tlA-c1); }
+.tlA-card:nth-child(3n+2) { --r:  2deg;   --c: var(--tlA-c2); }
+.tlA-card:nth-child(3n+3) { --r: -1.5deg; --c: var(--tlA-c3); }
+
+.tlA-card-head { display: flex; gap: 8px; margin-bottom: 12px; align-items: stretch; }
+.tlA-time-badge {
+  background: var(--c, var(--accent)); color: #fff;
+  font-family: var(--font-mono); font-weight: 600; font-size: 12px;
+  padding: 8px 10px; border-radius: 4px; border: 1.5px solid var(--ink);
+  line-height: 1; letter-spacing: 0.02em; flex: 1;
+  text-align: center; display: flex; align-items: center; justify-content: center;
+}
+.tlA-card:nth-child(3n+3) .tlA-time-badge { color: var(--ink); }
+.tlA-emoji-badge {
+  width: 36px; height: 36px; background: var(--bg); border: 1.5px solid var(--ink);
+  border-radius: 4px; display: grid; place-items: center; font-size: 16px; flex: 0 0 36px;
+}
+.tlA-title {
+  font-family: var(--font-display); font-weight: 700; font-size: 14px;
+  letter-spacing: 0.04em; text-transform: uppercase; margin: 0 0 6px;
+  color: var(--ink); line-height: 1.15; text-wrap: balance;
+}
+.tlA-loc-inline {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--font-body); font-size: 11px; color: var(--ink-soft); margin-bottom: 6px;
+}
+.tlA-loc-inline .pin { width: 11px; height: 11px; color: var(--c, var(--accent)); flex: 0 0 11px; }
+.tlA-card:nth-child(3n+3) .tlA-loc-inline .pin { color: var(--accent-deep); }
+.tlA-desc { font-family: var(--font-body); font-size: 12px; line-height: 1.4; color: var(--ink-soft); margin: 0; }
+.tlA-card::after {
+  content: ""; position: absolute; left: 50%; bottom: -56px;
+  width: 1.5px; height: 56px; background: var(--ink);
+  transform: translateX(-50%) rotate(calc(-1 * var(--r, 0deg)));
+  transform-origin: top center; z-index: -1;
+}
+.tlA-rail { position: relative; height: 16px; margin: 0 24px; }
+.tlA-rail-line { position: absolute; left: 0; right: 0; top: 50%; height: 1.5px; background: var(--ink); transform: translateY(-50%); }
+.tlA-rail-dot {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  width: 14px; height: 14px; background: var(--c, var(--accent));
+  border: 1.5px solid var(--ink); border-radius: 2px;
+}
+.tlA-rail-dot:nth-of-type(3n+1) { --c: var(--tlA-c1); }
+.tlA-rail-dot:nth-of-type(3n+2) { --c: var(--tlA-c2); }
+.tlA-rail-dot:nth-of-type(3n+3) { --c: var(--tlA-c3); }
+.tlA-rail-dot.is-current { animation: tlA-pulse-square 1.6s ease-in-out infinite; }
+@keyframes tlA-pulse-square {
+  0%, 100% { box-shadow: 0 0 0 0 var(--c); }
+  50%      { box-shadow: 0 0 0 6px transparent; }
+}
+.tlA-hint {
+  text-align: center; margin-top: 28px;
+  font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted);
+}
+.wedding-site-wrapper[data-style="modern"] .tlA-card { border-radius: 0; box-shadow: 4px 4px 0 0 var(--ink); }
+.wedding-site-wrapper[data-style="modern"] .tlA-card.is-active { box-shadow: 6px 8px 0 0 var(--ink); }
+.wedding-site-wrapper[data-style="floral"] .tlA-card { border-radius: 10px; }
+.wedding-site-wrapper[data-style="minimal"] .tlA-card { background: var(--bg); box-shadow: none; border-color: var(--ink); border-width: 1px; }
+.wedding-site-wrapper[data-style="minimal"] .tlA-card.is-active { box-shadow: 0 0 0 1px var(--ink); }
+.wedding-site-wrapper[data-style="minimal"] .tlA-emoji-badge { border-width: 1px; }
+.wedding-site-wrapper[data-style="festlich"] .tlA-card { box-shadow: 4px 4px 0 0 var(--gold), 4px 4px 0 1.5px var(--ink); }
+.wedding-site-wrapper[data-style="festlich"] .tlA-card.is-active { box-shadow: 6px 8px 0 0 var(--gold), 6px 8px 0 1.5px var(--ink); }
+
+@media (max-width: 700px) {
+  .tlA-cards {
+    justify-content: flex-start; gap: 12px; padding: 24px 16px 56px;
+    overflow-x: auto; overflow-y: visible;
+    scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .tlA-cards::-webkit-scrollbar { display: none; }
+  .tlA-card { flex: 0 0 78%; max-width: 280px; scroll-snap-align: center; transform: rotate(0deg); }
+  .tlA-card:hover { transform: rotate(0deg) translateY(-6px) scale(1.02); }
+  .tlA-card.is-active { transform: rotate(0deg) translateY(-6px) scale(1.02); }
+  .tlA-card::after { display: none; }
+  .tlA-rail { margin: 0 16px; }
+  .tlA-hint { padding: 0 16px; }
+}
+
+/* =========================================================
+   VARIANT B — Editorial vertikaler Zeitstrahl
+   ========================================================= */
+.tlB-wrap { max-width: 980px; margin: 0 auto; position: relative; }
+.tlB-line {
+  position: absolute; top: 28px; bottom: 28px;
+  left: clamp(180px, 22vw, 280px); width: 2px; background: var(--accent);
+}
+.wedding-site-wrapper[data-style="festlich"] .tlB-line { background: var(--gold); }
+.wedding-site-wrapper[data-style="minimal"]  .tlB-line { background: var(--ink); width: 1px; }
+.tlB-event {
+  display: grid;
+  grid-template-columns: clamp(180px, 22vw, 280px) 0 1fr;
+  gap: 0; padding: clamp(24px, 3.4vw, 44px) 0;
+  align-items: flex-start; position: relative;
+}
+.tlB-event-time { padding-right: clamp(36px, 4vw, 56px); display: flex; align-items: baseline; gap: 8px; justify-content: flex-end; }
+.tlB-event-time .t {
+  font-family: var(--font-display); font-weight: 700; font-style: var(--display-style);
+  font-size: clamp(40px, 6vw, 80px); line-height: 0.95; letter-spacing: -0.03em; color: var(--ink);
+}
+.tlB-event-time .u {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--muted); align-self: flex-end; margin-bottom: clamp(8px, 1.2vw, 16px);
+}
+.tlB-knode { position: absolute; left: clamp(180px, 22vw, 280px); top: clamp(36px, 4vw, 56px); transform: translateX(-50%); z-index: 2; }
+.tlB-knode .dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--accent); background: var(--bg); }
+.wedding-site-wrapper[data-style="festlich"] .tlB-knode .dot { border-color: var(--gold); }
+.wedding-site-wrapper[data-style="minimal"]  .tlB-knode .dot { border-color: var(--ink); border-radius: 0; width: 14px; height: 14px; border-width: 1.5px; }
+.tlB-event.is-current .tlB-knode .dot { background: var(--accent); animation: tlB-pulse-knode 1.6s ease-in-out infinite; }
+@keyframes tlB-pulse-knode {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent); }
+  50%      { box-shadow: 0 0 0 12px transparent; }
+}
+.wedding-site-wrapper[data-style="festlich"] .tlB-event.is-current .tlB-knode .dot { background: var(--gold); animation-name: tlB-pulse-knode-gold; }
+@keyframes tlB-pulse-knode-gold {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--gold) 60%, transparent); }
+  50%      { box-shadow: 0 0 0 12px transparent; }
+}
+.tlB-event-content { padding-left: clamp(36px, 4vw, 56px); }
+.tlB-event-content .ttl {
+  font-family: var(--font-display); font-weight: 700; font-style: var(--display-style);
+  font-size: clamp(20px, 2.6vw, 30px); line-height: 1.1; letter-spacing: 0.02em;
+  text-transform: uppercase; margin: 0 0 10px; color: var(--ink);
+}
+.tlB-event-content .dsc {
+  font-family: var(--font-body); font-size: 15px; line-height: 1.55;
+  color: var(--ink-soft); margin: 0 0 16px; max-width: 44ch;
+}
+.tlB-event-content .pills { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+@media (max-width: 720px) {
+  .tlB-wrap { padding-left: 0; }
+  .tlB-line { left: 20px; }
+  .tlB-event { grid-template-columns: 40px 1fr; gap: 14px; padding: 18px 0; }
+  .tlB-event-time { grid-column: 2; padding: 0; justify-content: flex-start; }
+  .tlB-event-time .t { font-size: clamp(36px, 11vw, 56px); }
+  .tlB-event-content { grid-column: 2; padding: 0; margin-top: 8px; }
+  .tlB-knode { left: 20px; top: 30px; }
+}
+
+/* =========================================================
+   VARIANT C — Classic size-jump
+   ========================================================= */
+.tlC-wrap { max-width: 1400px; margin: 0 auto; overflow: hidden; padding: clamp(20px, 3vw, 36px) 4px; }
+.tlC-row { display: flex; gap: 14px; align-items: flex-end; min-height: clamp(380px, 50vw, 560px); }
+.tlC-card {
+  flex: 1 1 0; min-width: 80px; position: relative; overflow: hidden;
+  border-radius: 6px; cursor: pointer; aspect-ratio: 9 / 16; background: var(--bg-soft);
+  transition: flex-grow 460ms var(--tl-ease), aspect-ratio 460ms var(--tl-ease), filter 320ms ease;
+  filter: brightness(0.55) saturate(0.9);
+}
+.tlC-card:hover { filter: brightness(0.75) saturate(0.95); }
+.tlC-card.is-active {
+  flex-grow: 5; aspect-ratio: 5 / 6; filter: brightness(1) saturate(1);
+  box-shadow: 0 24px 64px -16px rgba(20,16,12,0.4);
+}
+.tlC-card .tlC-img { position: absolute; inset: 0; background-size: cover; background-position: center; filter: var(--img-filter); }
+.tlC-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 65%); pointer-events: none; }
+.tlC-content { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 18px 18px; color: #fff; text-align: center; }
+.tlC-card:not(.is-active) .tlC-content { padding: 12px 8px; }
+.tlC-time {
+  font-family: var(--font-display); font-weight: var(--display-weight); font-style: var(--display-style);
+  font-size: clamp(20px, 2.4vw, 32px); line-height: 1; letter-spacing: -0.012em;
+  margin-bottom: 6px; text-shadow: 0 1px 12px rgba(0,0,0,0.4);
+}
+.tlC-uhr { font-size: 0.4em; letter-spacing: 0.04em; margin-left: 6px; opacity: 0.78; }
+.tlC-card.is-active .tlC-time { font-size: clamp(48px, 6.4vw, 84px); font-style: italic; font-weight: 500; margin-bottom: 4px; }
+.tlC-titlelab { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; opacity: 0.9; }
+.tlC-card.is-active .tlC-titlelab { display: none; }
+.tlC-bigtitle { display: none; font-family: var(--font-display); font-weight: 500; font-size: clamp(18px, 2.2vw, 24px); letter-spacing: -0.01em; margin-bottom: 8px; }
+.tlC-card.is-active .tlC-bigtitle { display: block; }
+.tlC-descpill {
+  display: none; margin: 8px auto 0; padding: 8px 14px; border-radius: 999px;
+  background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  font-family: var(--font-body); font-size: 12px; color: rgba(255,255,255,0.95);
+  max-width: max-content; line-height: 1.4;
+}
+.tlC-card.is-active .tlC-descpill { display: inline-block; }
+.tlC-card.is-active .tlC-loc { margin-top: 10px; display: inline-flex; }
+.tlC-card:not(.is-active) .tlC-loc { display: none; }
+.tlC-now-row { display: none; }
+.tlC-card.is-active .tlC-now-row { display: block; position: absolute; top: 14px; left: 50%; transform: translateX(-50%); z-index: 2; }
+.tlC-card.is-active .tlC-now-row .now-tag { background: rgba(255,255,255,0.18); color: #fff; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.wedding-site-wrapper[data-style="modern"]  .tlC-card { border-radius: 0; }
+.wedding-site-wrapper[data-style="floral"]  .tlC-card { border-radius: 18px; }
+.wedding-site-wrapper[data-style="festlich"] .tlC-card.is-active { box-shadow: 0 24px 64px -16px rgba(20,16,12,0.4), 0 0 0 1px var(--gold); }
+.wedding-site-wrapper[data-style="minimal"] .tlC-card { background: transparent; }
+
+@media (max-width: 700px) {
+  .tlC-wrap { padding: 0; }
+  .tlC-row {
+    gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory;
+    padding: 16px clamp(8px, 8vw, 32px); min-height: 0; align-items: stretch;
+    scrollbar-width: none;
+  }
+  .tlC-row::-webkit-scrollbar { display: none; }
+  .tlC-card { flex: 0 0 80%; aspect-ratio: 4/5; scroll-snap-align: center; filter: brightness(1) saturate(1); }
+  .tlC-card.is-active { flex: 0 0 80%; aspect-ratio: 4/5; }
+  .tlC-card:not(.is-active) { flex: 0 0 18%; aspect-ratio: 9/16; filter: brightness(0.7); }
+  .tlC-card:not(.is-active) .tlC-content { padding: 6px 4px; }
+  .tlC-card:not(.is-active) .tlC-time { font-size: 13px; }
+  .tlC-card:not(.is-active) .tlC-titlelab { font-size: 8px; }
+  .tlC-card.is-active .tlC-time { font-size: clamp(40px, 14vw, 56px); }
+}
