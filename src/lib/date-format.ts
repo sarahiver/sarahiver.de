@@ -27,6 +27,10 @@ const MONATE_LANG = [
   'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
   'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember',
 ];
+const MONATE_KURZ = [
+  'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez',
+];
 
 /**
  * Parst einen DB-Timestamp ("2026-11-15T14:00:00+01:00") als
@@ -70,6 +74,18 @@ export function formatLongDateDE(input: string | Date): string {
   const month = MONATE_LANG[d.getUTCMonth()];
   const year = d.getUTCFullYear();
   return `${wd}, ${day}. ${month} ${year}`;
+}
+
+/**
+ * "15. Nov 2026" (kurzes Datum, SSR-safe)
+ */
+export function formatShortDateDE(input: string | Date): string {
+  const d = parseWallClock(input);
+  if (!d) return '';
+  const day = d.getUTCDate();
+  const month = MONATE_KURZ[d.getUTCMonth()];
+  const year = d.getUTCFullYear();
+  return `${day}. ${month} ${year}`;
 }
 
 /**

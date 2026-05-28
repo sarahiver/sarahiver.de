@@ -32,6 +32,9 @@ import DirectionsVariantC from '@/components/bereiche/Directions/DirectionsVaria
 import PhotoUploadVariantA from '@/components/bereiche/PhotoUpload/PhotoUploadVariantA';
 import PhotoUploadVariantB from '@/components/bereiche/PhotoUpload/PhotoUploadVariantB';
 import PhotoUploadVariantC from '@/components/bereiche/PhotoUpload/PhotoUploadVariantC';
+import GuestbookVariantA from '@/components/bereiche/Guestbook/GuestbookVariantA';
+import GuestbookVariantB from '@/components/bereiche/Guestbook/GuestbookVariantB';
+import GuestbookVariantC from '@/components/bereiche/Guestbook/GuestbookVariantC';
 import BereichPlaceholder from '@/components/layout/BereichPlaceholder';
 
 /**
@@ -128,6 +131,13 @@ export function BereichRenderer({ bereich, tokens, weddingSlug }: BereichRendere
     if (variant === 'a') return <PhotoUploadVariantA {...props} weddingSlug={weddingSlug} />;
     if (variant === 'b') return <PhotoUploadVariantB {...props} weddingSlug={weddingSlug} />;
     if (variant === 'c') return <PhotoUploadVariantC {...props} weddingSlug={weddingSlug} />;
+  }
+
+  // === GÄSTEBUCH ===
+  if (bereich_key === 'guestbook') {
+    if (variant === 'a') return <GuestbookVariantA {...props} weddingSlug={weddingSlug} />;
+    if (variant === 'b') return <GuestbookVariantB {...props} weddingSlug={weddingSlug} />;
+    if (variant === 'c') return <GuestbookVariantC {...props} weddingSlug={weddingSlug} />;
   }
 
   // === Alle anderen Bereiche: noch nicht gebaut → Placeholder ===
