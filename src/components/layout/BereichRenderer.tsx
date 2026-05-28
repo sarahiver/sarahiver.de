@@ -35,6 +35,9 @@ import PhotoUploadVariantC from '@/components/bereiche/PhotoUpload/PhotoUploadVa
 import GuestbookVariantA from '@/components/bereiche/Guestbook/GuestbookVariantA';
 import GuestbookVariantB from '@/components/bereiche/Guestbook/GuestbookVariantB';
 import GuestbookVariantC from '@/components/bereiche/Guestbook/GuestbookVariantC';
+import MusicWishesVariantA from '@/components/bereiche/MusicWishes/MusicWishesVariantA';
+import MusicWishesVariantB from '@/components/bereiche/MusicWishes/MusicWishesVariantB';
+import MusicWishesVariantC from '@/components/bereiche/MusicWishes/MusicWishesVariantC';
 import BereichPlaceholder from '@/components/layout/BereichPlaceholder';
 
 /**
@@ -138,6 +141,13 @@ export function BereichRenderer({ bereich, tokens, weddingSlug }: BereichRendere
     if (variant === 'a') return <GuestbookVariantA {...props} weddingSlug={weddingSlug} />;
     if (variant === 'b') return <GuestbookVariantB {...props} weddingSlug={weddingSlug} />;
     if (variant === 'c') return <GuestbookVariantC {...props} weddingSlug={weddingSlug} />;
+  }
+
+  // === MUSIKWÜNSCHE ===
+  if (bereich_key === 'musicwishes') {
+    if (variant === 'a') return <MusicWishesVariantA {...props} weddingSlug={weddingSlug} />;
+    if (variant === 'b') return <MusicWishesVariantB {...props} weddingSlug={weddingSlug} />;
+    if (variant === 'c') return <MusicWishesVariantC {...props} weddingSlug={weddingSlug} />;
   }
 
   // === Alle anderen Bereiche: noch nicht gebaut → Placeholder ===
