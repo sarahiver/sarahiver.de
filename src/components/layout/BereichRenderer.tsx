@@ -29,6 +29,9 @@ import AccommodationsVariantC from '@/components/bereiche/Accommodations/Accommo
 import DirectionsVariantA from '@/components/bereiche/Directions/DirectionsVariantA';
 import DirectionsVariantB from '@/components/bereiche/Directions/DirectionsVariantB';
 import DirectionsVariantC from '@/components/bereiche/Directions/DirectionsVariantC';
+import PhotoUploadVariantA from '@/components/bereiche/PhotoUpload/PhotoUploadVariantA';
+import PhotoUploadVariantB from '@/components/bereiche/PhotoUpload/PhotoUploadVariantB';
+import PhotoUploadVariantC from '@/components/bereiche/PhotoUpload/PhotoUploadVariantC';
 import BereichPlaceholder from '@/components/layout/BereichPlaceholder';
 
 /**
@@ -43,9 +46,10 @@ import BereichPlaceholder from '@/components/layout/BereichPlaceholder';
 interface BereichRendererProps {
   bereich: WeddingBereich;
   tokens: EffectiveTokens;
+  weddingSlug?: string;
 }
 
-export function BereichRenderer({ bereich, tokens }: BereichRendererProps) {
+export function BereichRenderer({ bereich, tokens, weddingSlug }: BereichRendererProps) {
   const { bereich_key, variant, content } = bereich;
   const props = { tokens, content };
 
@@ -117,6 +121,13 @@ export function BereichRenderer({ bereich, tokens }: BereichRendererProps) {
     if (variant === 'a') return <DirectionsVariantA {...props} />;
     if (variant === 'b') return <DirectionsVariantB {...props} />;
     if (variant === 'c') return <DirectionsVariantC {...props} />;
+  }
+
+  // === FOTOUPLOAD ===
+  if (bereich_key === 'photoupload') {
+    if (variant === 'a') return <PhotoUploadVariantA {...props} weddingSlug={weddingSlug} />;
+    if (variant === 'b') return <PhotoUploadVariantB {...props} weddingSlug={weddingSlug} />;
+    if (variant === 'c') return <PhotoUploadVariantC {...props} weddingSlug={weddingSlug} />;
   }
 
   // === Alle anderen Bereiche: noch nicht gebaut → Placeholder ===

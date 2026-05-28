@@ -82,7 +82,7 @@ export default async function WeddingSitePage({ params }: PageProps) {
                 data-bereich={bereich.bereich_key}
                 data-variant={bereich.variant}
               >
-                <BereichRenderer bereich={bereich} tokens={tokens} />
+                <BereichRenderer bereich={bereich} tokens={tokens} weddingSlug={slug} />
               </section>
             );
           })}
