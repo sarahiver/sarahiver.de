@@ -1,7 +1,80 @@
 'use client';
 
 import Decor from '@/components/ui/Decor';
-import { formatDeadline, renderTitleWithEm, type RsvpConfig } from './shared';
+import {
+  formatDeadline,
+  renderTitleWithEm,
+  type RsvpConfig,
+  type CustomQuestion,
+} from './shared';
+
+/**
+ * CustomQuestionField — rendert eine einzelne Custom-Frage je nach Typ.
+ * Genutzt von Variante A (und sinngemäß B/C mit eigenem Styling).
+ *
+ *   text    → Text-Input
+ *   boolean → Ja/Nein Pill-Toggle
+ *   choice  → Options als Pills (single-select)
+ */
+export function CustomQuestionField({
+  question,
+  value,
+  onChange,
+}: {
+  question: CustomQuestion;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="field rsvp-cq">
+      <label>
+        {question.label}
+        {question.required && <span className="rsvp-req"> *</span>}
+      </label>
+
+      {question.type === 'text' && (
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Eure Antwort"
+        />
+      )}
+
+      {question.type === 'boolean' && (
+        <div className="rsvp-cq-pills">
+          {['Ja', 'Nein'].map((opt) => (
+            <button
+              key={opt}
+              type="button"
+              className={`rsvp-cq-pill ${value === opt ? 'is-on' : ''}`}
+              onClick={() => onChange(opt)}
+              aria-pressed={value === opt}
+            >
+              {opt}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {question.type === 'choice' && question.options && (
+        <div className="rsvp-cq-pills">
+          {question.options.map((opt) => (
+            <button
+              key={opt}
+              type="button"
+              className={`rsvp-cq-pill ${value === opt ? 'is-on' : ''}`}
+              onClick={() => onChange(opt)}
+              aria-pressed={value === opt}
+            >
+              {opt}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 /**
  * RSVP-Header: Eyebrow + Titel + Decor + Description + Deadline-Pill

@@ -79,15 +79,30 @@ function buildFlow(state: RsvpState, config: RsvpConfig): FlowStep[] {
         allowCustom: true,
       });
     }
-    if (config.custom_question) {
-      f.push({ kind: 'them', text: config.custom_question });
-      f.push({
-        kind: 'me-text',
-        field: 'custom_answer',
-        placeholder: 'Kurze Antwort',
-        allowSkip: true,
-      });
-    }
+    config.custom_questions.forEach((q) => {
+      f.push({ kind: 'them', text: q.label });
+      if (q.type === 'boolean') {
+        f.push({
+          kind: 'me-quick',
+          field: `custom.${q.id}`,
+          options: ['Ja', 'Nein'],
+        });
+      } else if (q.type === 'choice' && q.options) {
+        f.push({
+          kind: 'me-quick',
+          field: `custom.${q.id}`,
+          options: q.options,
+          allowCustom: true,
+        });
+      } else {
+        f.push({
+          kind: 'me-text',
+          field: `custom.${q.id}`,
+          placeholder: 'Eure Antwort',
+          allowSkip: !q.required,
+        });
+      }
+    });
   }
   f.push({ kind: 'them', text: 'Eine Nachricht für uns? (Kannst du auch überspringen)' });
   f.push({
@@ -178,6 +193,13 @@ export default function RsvpVariantC({ tokens, content }: Props) {
         const guests = s.guests.map((g, i) => (i === idx ? { ...g, [field]: value } : g));
         return { ...s, guests };
       }
+      if (parts[0] === 'custom') {
+        const qid = parts[1];
+        return {
+          ...s,
+          custom_answers: { ...s.custom_answers, [qid]: String(value) },
+        };
+      }
       return { ...s, [parts[0]]: value };
     });
   }, []);
@@ -233,10 +255,10 @@ export default function RsvpVariantC({ tokens, content }: Props) {
   );
 
   const handleSubmit = useCallback(() => {
-    const payload = buildSubmitPayload(stateRef.current);
+    const payload = buildSubmitPayload(stateRef.current, config);
     console.log('[RSVP C submit]', payload);
     setSubmitted(true);
-  }, []);
+  }, [config]);
 
   if (closed) {
     return (

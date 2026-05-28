@@ -10,7 +10,7 @@ import {
   syncGuests,
   type RsvpState,
 } from './shared';
-import { RsvpHeader, RsvpClosed, RsvpSuccess } from './shared-ui';
+import { RsvpHeader, RsvpClosed, RsvpSuccess, CustomQuestionField } from './shared-ui';
 
 /**
  * RSVP Variante A — Klassisches Formular
@@ -79,6 +79,13 @@ export default function RsvpVariantA({ tokens, content }: Props) {
     }));
   };
 
+  const updateCustomAnswer = (questionId: string, value: string) => {
+    setState((s) => ({
+      ...s,
+      custom_answers: { ...s.custom_answers, [questionId]: value },
+    }));
+  };
+
   const handlePersonsChange = (delta: number) => {
     setState((s) => {
       const persons = Math.max(1, Math.min(20, s.persons + delta));
@@ -93,7 +100,7 @@ export default function RsvpVariantA({ tokens, content }: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (state.attending === null || !state.name.trim()) return;
-    const payload = buildSubmitPayload(state);
+    const payload = buildSubmitPayload(state, config);
     // TODO: Submit-Call zu Supabase (lib/supabase.ts -> submitRSVP)
     // Vorerst: optimistisches Success-State
     console.log('[RSVP A submit]', payload);
@@ -244,17 +251,14 @@ export default function RsvpVariantA({ tokens, content }: Props) {
             </div>
           )}
 
-          {config.custom_question && (
-            <div className="field">
-              <label>{config.custom_question}</label>
-              <input
-                type="text"
-                value={state.custom_answer}
-                onChange={(e) => updateField('custom_answer', e.target.value)}
-                placeholder="kurze Antwort genügt"
-              />
-            </div>
-          )}
+          {config.custom_questions.map((q) => (
+            <CustomQuestionField
+              key={q.id}
+              question={q}
+              value={state.custom_answers[q.id] ?? ''}
+              onChange={(val) => updateCustomAnswer(q.id, val)}
+            />
+          ))}
         </div>
 
         <div className="field">

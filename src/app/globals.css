@@ -1771,3 +1771,50 @@ html, body {
   background: var(--gold) !important; color: var(--ink) !important;
   border-color: var(--gold) !important;
 }
+
+/* =========================================================
+   RSVP — Custom-Question Felder (text/boolean/choice)
+   ========================================================= */
+.rsvp-cq .rsvp-req { color: var(--accent); }
+
+.rsvp-cq-pills {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.rsvp-cq-pill {
+  padding: 9px 16px;
+  border: 1.5px solid color-mix(in srgb, var(--ink) 18%, transparent);
+  background: var(--bg);
+  color: var(--ink);
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+.rsvp-cq-pill:hover { border-color: var(--accent); }
+.rsvp-cq-pill.is-on {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--bg));
+  color: var(--accent-deep);
+  font-weight: 500;
+}
+.wedding-site-wrapper[data-style="modern"]  .rsvp-cq-pill,
+.wedding-site-wrapper[data-style="minimal"] .rsvp-cq-pill { border-radius: 0; }
+.wedding-site-wrapper[data-style="festlich"] .rsvp-cq-pill.is-on {
+  border-color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 14%, var(--bg));
+  color: var(--gold);
+}
+.wedding-site-wrapper[data-style="minimal"] .rsvp-cq-pill.is-on {
+  border-color: var(--ink); background: transparent;
+  box-shadow: inset 0 0 0 1px var(--ink); color: var(--ink);
+}
+
+/* Variante B — Choice-Pills zentriert im Slide */
+.rsvpB-choice-wrap {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  justify-content: center;
+  max-width: 480px; margin: 0 auto;
+}
+.wedding-site-wrapper[data-style="modern"]  .rsvpB-choice-wrap,
+.wedding-site-wrapper[data-style="minimal"] .rsvpB-choice-wrap { justify-content: flex-start; }

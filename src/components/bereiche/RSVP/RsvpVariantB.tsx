@@ -38,6 +38,7 @@ type StepId =
 interface Step {
   id: StepId;
   guestIndex?: number;
+  questionId?: string;
 }
 
 function buildSteps(state: RsvpState, config: RsvpConfig): Step[] {
@@ -48,7 +49,7 @@ function buildSteps(state: RsvpState, config: RsvpConfig): Step[] {
     steps.push({ id: 'persons' });
     state.guests.forEach((_, i) => steps.push({ id: 'guest', guestIndex: i }));
     if (config.ask_dietary || config.ask_allergies) steps.push({ id: 'dietary' });
-    if (config.custom_question) steps.push({ id: 'custom' });
+    config.custom_questions.forEach((q) => steps.push({ id: 'custom', questionId: q.id }));
   }
   steps.push({ id: 'message' });
   steps.push({ id: 'summary' });
@@ -112,6 +113,13 @@ export default function RsvpVariantB({ tokens, content }: Props) {
     }));
   };
 
+  const updateCustomAnswer = (questionId: string, value: string) => {
+    setState((s) => ({
+      ...s,
+      custom_answers: { ...s.custom_answers, [questionId]: value },
+    }));
+  };
+
   const handlePersonsChange = (delta: number) => {
     setState((s) => {
       const persons = Math.max(1, Math.min(20, s.persons + delta));
@@ -129,7 +137,7 @@ export default function RsvpVariantB({ tokens, content }: Props) {
   const goBack = () => setStepIdx((i) => Math.max(0, i - 1));
 
   const handleSubmit = () => {
-    const payload = buildSubmitPayload(state);
+    const payload = buildSubmitPayload(state, config);
     console.log('[RSVP B submit]', payload);
     setSubmitted(true);
   };
@@ -291,21 +299,55 @@ export default function RsvpVariantB({ tokens, content }: Props) {
             </>
           )}
 
-          {step.id === 'custom' && (
-            <>
-              <p className="q">{config.custom_question}</p>
-              <div className="field">
-                <input
-                  type="text"
-                  value={state.custom_answer}
-                  onChange={(e) => updateField('custom_answer', e.target.value)}
-                  onKeyDown={handleEnterKey}
-                  placeholder="kurze Antwort genügt"
-
-                />
-              </div>
-            </>
-          )}
+          {step.id === 'custom' && step.questionId && (() => {
+            const q = config.custom_questions.find((cq) => cq.id === step.questionId);
+            if (!q) return null;
+            const val = state.custom_answers[q.id] ?? '';
+            return (
+              <>
+                <p className="q">{q.label}</p>
+                {q.type === 'text' && (
+                  <div className="field" style={{ maxWidth: 420, margin: '0 auto' }}>
+                    <input
+                      type="text"
+                      value={val}
+                      onChange={(e) => updateCustomAnswer(q.id, e.target.value)}
+                      onKeyDown={handleEnterKey}
+                      placeholder="Eure Antwort"
+                    />
+                  </div>
+                )}
+                {q.type === 'boolean' && (
+                  <div className="rsvpB-grid2" style={{ gridTemplateColumns: '1fr 1fr' }}>
+                    {['Ja', 'Nein'].map((opt) => (
+                      <button
+                        key={opt}
+                        type="button"
+                        className={`toggle-opt ${val === opt ? 'is-on' : ''}`}
+                        onClick={() => updateCustomAnswer(q.id, opt)}
+                      >
+                        <span className="opt-text">{opt}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {q.type === 'choice' && q.options && (
+                  <div className="rsvpB-choice-wrap">
+                    {q.options.map((opt) => (
+                      <button
+                        key={opt}
+                        type="button"
+                        className={`rsvp-cq-pill ${val === opt ? 'is-on' : ''}`}
+                        onClick={() => updateCustomAnswer(q.id, opt)}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </>
+            );
+          })()}
 
           {step.id === 'message' && (
             <>
@@ -366,12 +408,18 @@ export default function RsvpVariantB({ tokens, content }: Props) {
                     <span>{state.allergies}</span>
                   </div>
                 )}
-                {state.attending && state.custom_answer && (
-                  <div>
-                    <span>{config.custom_question.slice(0, 18)}…</span>
-                    <span>{state.custom_answer}</span>
-                  </div>
-                )}
+                {state.attending &&
+                  config.custom_questions.map((q) => {
+                    const val = state.custom_answers[q.id];
+                    if (!val) return null;
+                    const shortLabel = q.label.length > 20 ? q.label.slice(0, 18) + '…' : q.label;
+                    return (
+                      <div key={q.id}>
+                        <span>{shortLabel}</span>
+                        <span>{val}</span>
+                      </div>
+                    );
+                  })}
                 {state.message && (
                   <div>
                     <span>Nachricht</span>
