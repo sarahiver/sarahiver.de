@@ -49,6 +49,8 @@ function NavIcon({ name }: { name: string }) {
       return <svg {...common}><path d="M5 7h3l1.5-2h5L16 7h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z" /><circle cx="12" cy="13" r="3" /></svg>;
     case 'ti-list':
       return <svg {...common}><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01" /></svg>;
+    case 'ti-map-pin':
+      return <svg {...common}><path d="M12 21s-6-5.2-6-10a6 6 0 1 1 12 0c0 4.8-6 10-6 10z" /><circle cx="12" cy="11" r="2.2" /></svg>;
     default:
       return <svg {...common}><circle cx="12" cy="12" r="2" /></svg>;
   }

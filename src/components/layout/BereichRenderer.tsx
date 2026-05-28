@@ -26,6 +26,9 @@ import WeddingABCVariantC from '@/components/bereiche/WeddingABC/WeddingABCVaria
 import AccommodationsVariantA from '@/components/bereiche/Accommodations/AccommodationsVariantA';
 import AccommodationsVariantB from '@/components/bereiche/Accommodations/AccommodationsVariantB';
 import AccommodationsVariantC from '@/components/bereiche/Accommodations/AccommodationsVariantC';
+import DirectionsVariantA from '@/components/bereiche/Directions/DirectionsVariantA';
+import DirectionsVariantB from '@/components/bereiche/Directions/DirectionsVariantB';
+import DirectionsVariantC from '@/components/bereiche/Directions/DirectionsVariantC';
 import BereichPlaceholder from '@/components/layout/BereichPlaceholder';
 
 /**
@@ -107,6 +110,13 @@ export function BereichRenderer({ bereich, tokens }: BereichRendererProps) {
     if (variant === 'a') return <AccommodationsVariantA {...props} />;
     if (variant === 'b') return <AccommodationsVariantB {...props} />;
     if (variant === 'c') return <AccommodationsVariantC {...props} />;
+  }
+
+  // === ANFAHRT ===
+  if (bereich_key === 'directions') {
+    if (variant === 'a') return <DirectionsVariantA {...props} />;
+    if (variant === 'b') return <DirectionsVariantB {...props} />;
+    if (variant === 'c') return <DirectionsVariantC {...props} />;
   }
 
   // === Alle anderen Bereiche: noch nicht gebaut → Placeholder ===
