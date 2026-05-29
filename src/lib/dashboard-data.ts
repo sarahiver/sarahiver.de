@@ -35,6 +35,7 @@ export interface WeddingSiteRecord {
 export interface DashboardData {
   site: WeddingSiteRecord;
   bereiche: WeddingBereich[]; // alle, sortiert nach display_order
+  purchasedKeys: BereichKey[]; // gebuchte Komponenten (aus wedding_purchases)
 }
 
 /**
@@ -55,20 +56,33 @@ export async function loadDashboardData(slug: string): Promise<DashboardData | n
     return null;
   }
 
-  const { data: bereiche, error: bErr } = await supabase
-    .from('wedding_bereiche')
-    .select('*')
-    .eq('wedding_site_id', site.id)
-    .order('display_order', { ascending: true });
+  const [bereicheRes, purchasesRes] = await Promise.all([
+    supabase
+      .from('wedding_bereiche')
+      .select('*')
+      .eq('wedding_site_id', site.id)
+      .order('display_order', { ascending: true }),
+    supabase
+      .from('wedding_purchases')
+      .select('bereich_key')
+      .eq('wedding_site_id', site.id),
+  ]);
 
-  if (bErr) {
-    console.error('[dashboard] failed to load bereiche:', bErr);
-    return { site: site as WeddingSiteRecord, bereiche: [] };
+  if (bereicheRes.error) {
+    console.error('[dashboard] failed to load bereiche:', bereicheRes.error);
   }
+  // Tabelle könnte noch nicht existieren — defensiv leerer Fallback
+  if (purchasesRes.error) {
+    console.warn('[dashboard] failed to load purchases (table missing?):', purchasesRes.error);
+  }
+
+  const purchasedKeys: BereichKey[] = (purchasesRes.data || [])
+    .map((p) => (p as { bereich_key: string }).bereich_key as BereichKey);
 
   return {
     site: site as WeddingSiteRecord,
-    bereiche: (bereiche || []) as WeddingBereich[],
+    bereiche: (bereicheRes.data || []) as WeddingBereich[],
+    purchasedKeys,
   };
 }
 

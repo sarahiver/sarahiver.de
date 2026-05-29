@@ -64,6 +64,8 @@ const PATHS: Record<string, ReactElement> = {
   ),
   menu: <path d="M3 6h18M3 12h18M3 18h18" />,
   close: <path d="m4 4 16 16M20 4 4 20" />,
+  plus: <path d="M12 5v14M5 12h14" />,
+  check: <path d="m4 12 5 5L20 7" />,
 };
 
 export default function DashboardIcon({ name, size = 18 }: IconProps) {

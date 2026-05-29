@@ -30,11 +30,19 @@ export interface DashboardNavSection {
 
 /**
  * Baut die komplette Navigation für ein Brautpaar.
- * 'inhalte' wird dynamisch aus den vorhandenen Bereichen befüllt — Editor
- * pro Bereich-Key, in display_order-Reihenfolge.
+ *
+ * Filter: Es werden NUR Editoren für Bereich-Keys gezeigt, die wirklich
+ * GEBUCHT wurden (purchasedKeys aus wedding_purchases). Auch eingehende
+ * Daten (RSVP, Gästebuch, Musik, Fotos, Geschenke) erscheinen nur, wenn
+ * der zugehörige Bereich gebucht ist — selbst falls is_active=true wäre.
+ *
+ * Reihenfolge der Inhalte-Editoren: nach dem display_order des Bereichs.
+ * Wenn ein gebuchter Bereich noch nicht in wedding_bereiche existiert
+ * (Pre-Setup), wird er an den Schluss gesetzt.
  */
 export function buildDashboardNav(args: {
   bereiche: Array<{ bereich_key: string; is_active: boolean; display_order: number }>;
+  purchasedKeys: BereichKey[];
   stats?: {
     rsvpTotal?: number;
     guestbookPending?: number;
@@ -43,23 +51,30 @@ export function buildDashboardNav(args: {
     giftsReserved?: number;
   };
 }): DashboardNavSection[] {
-  const { bereiche, stats } = args;
+  const { bereiche, purchasedKeys, stats } = args;
   const s = stats ?? {};
 
-  const hasBereich = (k: BereichKey) =>
-    bereiche.some((b) => b.bereich_key === k && b.is_active);
+  const isPurchased = (k: BereichKey) => purchasedKeys.includes(k);
 
-  // Editor-Items dynamisch aus aktiven Bereichen
-  const editorOrder = [...bereiche]
-    .filter((b) => b.is_active)
-    .sort((a, b) => a.display_order - b.display_order);
-
-  const editorItems: DashboardNavItem[] = editorOrder.map((b) => ({
-    id: `edit-${b.bereich_key}`,
-    label: bereichLabel(b.bereich_key as BereichKey),
-    href: `bereiche/${b.bereich_key}`,
-    icon: 'pencil',
-  }));
+  // Editor-Items: nur gebuchte Bereiche. Sortiert nach display_order — falls
+  // ein gebuchter Bereich noch keinen wedding_bereiche-Eintrag hat, hängen
+  // wir ihn ans Ende (Pre-Setup-Stand).
+  const editorItems: DashboardNavItem[] = purchasedKeys
+    .map((k) => {
+      const b = bereiche.find((b) => b.bereich_key === k);
+      return {
+        key: k,
+        order: b?.display_order ?? 999,
+        item: {
+          id: `edit-${k}`,
+          label: bereichLabel(k),
+          href: `bereiche/${k}`,
+          icon: 'pencil',
+        } as DashboardNavItem,
+      };
+    })
+    .sort((a, b) => a.order - b.order)
+    .map((x) => x.item);
 
   return [
     {
@@ -71,14 +86,14 @@ export function buildDashboardNav(args: {
       id: 'inbox',
       label: 'Eingehende Daten',
       items: [
-        hasBereich('rsvp') && {
+        isPurchased('rsvp') && {
           id: 'rsvp',
           label: 'RSVP',
           href: 'rsvp',
           icon: 'envelope',
           badge: s.rsvpTotal,
         },
-        hasBereich('guestbook') && {
+        isPurchased('guestbook') && {
           id: 'guestbook',
           label: 'Gästebuch',
           href: 'guestbook',
@@ -86,21 +101,21 @@ export function buildDashboardNav(args: {
           badge: s.guestbookPending,
           warning: (s.guestbookPending ?? 0) > 0,
         },
-        hasBereich('musicwishes') && {
+        isPurchased('musicwishes') && {
           id: 'music',
           label: 'Musikwünsche',
           href: 'music',
           icon: 'music',
           badge: s.musicWishes,
         },
-        hasBereich('photoupload') && {
+        isPurchased('photoupload') && {
           id: 'photos',
           label: 'Foto-Uploads',
           href: 'photos',
           icon: 'camera',
           badge: s.photoUploads,
         },
-        hasBereich('gifts') && {
+        isPurchased('gifts') && {
           id: 'gifts',
           label: 'Geschenke',
           href: 'gifts',
@@ -120,6 +135,13 @@ export function buildDashboardNav(args: {
       items: [
         { id: 'bereiche', label: 'Bereiche & Reihenfolge', href: 'bereiche', icon: 'layers' },
         { id: 'settings', label: 'Stil & Stammdaten', href: 'settings', icon: 'sliders' },
+      ],
+    },
+    {
+      id: 'upgrade',
+      label: 'Pakete & Upgrades',
+      items: [
+        { id: 'upgrade', label: 'Komponenten dazubuchen', href: 'upgrade', icon: 'plus' },
       ],
     },
   ].filter((s) => s.items.length > 0);

@@ -4447,3 +4447,263 @@ html, body {
   .dash-sidebar-backdrop.is-open { opacity: 1; pointer-events: auto; }
   .dash-topbar-burger { display: inline-grid; place-items: center; }
 }
+
+/* =========================================================
+   DASHBOARD — Editor-Shell mit Live-Vorschau (Dreispalten-Layout)
+   ========================================================= */
+.dash-editor-shell {
+  display: grid;
+  grid-template-columns: minmax(440px, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+/* Ab 1280px: Editor + Vorschau nebeneinander */
+@media (min-width: 1280px) {
+  .dash-editor-shell {
+    grid-template-columns: minmax(440px, 560px) minmax(520px, 1fr);
+  }
+}
+
+.dash-editor-pane {
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-border);
+  border-radius: var(--dash-radius);
+  padding: 20px 22px 24px;
+  box-shadow: var(--dash-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.dash-editor-pane-head { display: flex; flex-direction: column; gap: 4px; }
+.dash-editor-pane-title {
+  font-family: ui-serif, Georgia, serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--dash-ink);
+  margin: 0;
+}
+.dash-editor-pane-desc { font-size: 13px; color: var(--dash-ink-soft); margin: 0; }
+.dash-editor-pane-body { display: flex; flex-direction: column; gap: 16px; }
+
+.dash-preview-pane {
+  display: none;
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-border);
+  border-radius: var(--dash-radius);
+  overflow: hidden;
+  box-shadow: var(--dash-shadow);
+  position: sticky;
+  top: calc(var(--dash-topbar-h) + 20px);
+  /* Höhe so, dass die Vorschau fast den ganzen Viewport nutzt */
+  height: calc(100vh - var(--dash-topbar-h) - 40px);
+  min-height: 600px;
+}
+@media (min-width: 1280px) {
+  .dash-preview-pane { display: flex; flex-direction: column; }
+}
+.dash-preview-pane-bar {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--dash-border-soft);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--dash-surface-soft);
+}
+.dash-preview-pane-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--dash-font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dash-muted);
+}
+.dash-preview-pane-open {
+  font-family: var(--dash-font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dash-accent);
+  text-decoration: none;
+}
+.dash-preview-pane-open:hover { text-decoration: underline; }
+.dash-preview-pane-frame {
+  flex: 1;
+  background: var(--dash-bg);
+  position: relative;
+}
+.dash-preview-pane-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* Mobile-Block für Editor-Seiten */
+.dash-mobile-block {
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-border);
+  border-radius: var(--dash-radius);
+  padding: 36px 28px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 480px;
+  margin: 24px auto;
+  box-shadow: var(--dash-shadow);
+}
+.dash-mobile-block-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--dash-accent-soft);
+  color: var(--dash-accent);
+  display: grid;
+  place-items: center;
+  margin-bottom: 4px;
+}
+.dash-mobile-block-title {
+  font-family: ui-serif, Georgia, serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--dash-ink);
+  margin: 0;
+}
+.dash-mobile-block-desc {
+  font-size: 14px;
+  color: var(--dash-ink-soft);
+  margin: 0;
+  max-width: 38ch;
+  line-height: 1.55;
+}
+.dash-mobile-block-cta { margin-top: 4px; }
+.dash-mobile-block-hint {
+  font-size: 12px;
+  color: var(--dash-muted);
+  margin: 8px 0 0;
+  max-width: 36ch;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   DASHBOARD — Pakete & Upgrades
+   ========================================================= */
+.dash-upgrade-block {
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-border);
+  border-radius: var(--dash-radius);
+  padding: 20px 22px 22px;
+  box-shadow: var(--dash-shadow);
+}
+.dash-upgrade-block + .dash-upgrade-block { margin-top: 18px; }
+.dash-upgrade-block-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+.dash-upgrade-count {
+  font-family: var(--dash-font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dash-muted);
+}
+.dash-upgrade-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.dash-upgrade-card {
+  background: var(--dash-bg);
+  border: 1px solid var(--dash-border);
+  border-radius: 10px;
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dash-upgrade-card.is-purchased {
+  background: var(--dash-accent-soft);
+  border-color: color-mix(in srgb, var(--dash-accent) 30%, transparent);
+}
+.dash-upgrade-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.dash-upgrade-card-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--dash-surface);
+  display: grid;
+  place-items: center;
+  color: var(--dash-accent);
+  flex: 0 0 28px;
+}
+.is-purchased .dash-upgrade-card-icon { background: var(--dash-surface); }
+.dash-upgrade-card-title {
+  font-family: ui-serif, Georgia, serif;
+  font-size: 15.5px;
+  font-weight: 600;
+  color: var(--dash-ink);
+  flex: 1;
+  min-width: 0;
+}
+.dash-upgrade-card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--dash-font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dash-success);
+  background: var(--dash-success-soft);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+.dash-upgrade-card-price {
+  font-family: var(--dash-font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--dash-ink);
+  background: var(--dash-surface);
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--dash-border);
+}
+.dash-upgrade-card-desc {
+  font-size: 13px;
+  color: var(--dash-ink-soft);
+  line-height: 1.5;
+  margin: 0;
+  flex: 1;
+}
+.dash-upgrade-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+.dash-upgrade-card-link {
+  font-size: 13px;
+  color: var(--dash-accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+.dash-upgrade-card-link:hover { text-decoration: underline; }
+.dash-upgrade-card .dash-btn { width: 100%; justify-content: center; }

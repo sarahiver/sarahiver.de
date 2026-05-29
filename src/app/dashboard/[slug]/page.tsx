@@ -29,7 +29,10 @@ export default async function DashboardOverviewPage({
 
   const stats = await loadDashboardStats(data.site.id, data.bereiche);
   const status = data.site.status ?? 'in_progress';
-  const activeBereiche = data.bereiche.filter((b) => b.is_active);
+  const purchased = new Set(data.purchasedKeys);
+  const visibleBereiche = data.bereiche.filter(
+    (b) => b.is_active && purchased.has(b.bereich_key as BereichKey),
+  );
 
   return (
     <DashboardSection
@@ -57,7 +60,7 @@ export default async function DashboardOverviewPage({
           value={stats.giftsReserved}
           sub={`von ${stats.giftsTotal} reserviert`}
         />
-        <StatCard label="Aktive Bereiche" value={activeBereiche.length} sub="auf der Gäste-Seite" />
+        <StatCard label="Aktive Bereiche" value={visibleBereiche.length} sub="auf der Gäste-Seite" />
       </div>
 
       <div className="dash-bereiche-overview">
@@ -66,7 +69,7 @@ export default async function DashboardOverviewPage({
           Klickt auf einen Bereich, um seine Inhalte zu bearbeiten.
         </p>
         <ul className="dash-bereich-list">
-          {activeBereiche.map((b) => (
+          {visibleBereiche.map((b) => (
             <li key={b.id} className="dash-bereich-item">
               <a href={`/dashboard/${slug}/bereiche/${b.bereich_key}`}>
                 <span className="dash-bereich-name">{bereichLabel(b.bereich_key as BereichKey)}</span>

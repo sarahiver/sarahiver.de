@@ -36,6 +36,7 @@ export default async function DashboardLayout({
       is_active: b.is_active,
       display_order: b.display_order,
     })),
+    purchasedKeys: data.purchasedKeys,
     stats,
   });
 
@@ -52,7 +53,12 @@ export default async function DashboardLayout({
         />
         <main className="dash-content">
           <DashboardErrorBoundary>
-            <DashboardDataProvider site={data.site} bereiche={data.bereiche} stats={stats}>
+            <DashboardDataProvider
+              site={data.site}
+              bereiche={data.bereiche}
+              purchasedKeys={data.purchasedKeys}
+              stats={stats}
+            >
               {children}
             </DashboardDataProvider>
           </DashboardErrorBoundary>

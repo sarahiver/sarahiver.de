@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, type ReactNode } from 'react';
-import type { WeddingBereich } from '@/types/supabase';
+import type { WeddingBereich, BereichKey } from '@/types/supabase';
 import type { WeddingSiteRecord, DashboardStats } from '@/lib/dashboard-data';
 
 /**
@@ -16,6 +16,7 @@ import type { WeddingSiteRecord, DashboardStats } from '@/lib/dashboard-data';
 interface DashboardContextValue {
   site: WeddingSiteRecord;
   bereiche: WeddingBereich[];
+  purchasedKeys: BereichKey[];
   stats: DashboardStats;
 }
 
@@ -24,10 +25,13 @@ const Ctx = createContext<DashboardContextValue | null>(null);
 export function DashboardDataProvider({
   site,
   bereiche,
+  purchasedKeys,
   stats,
   children,
 }: DashboardContextValue & { children: ReactNode }) {
-  return <Ctx.Provider value={{ site, bereiche, stats }}>{children}</Ctx.Provider>;
+  return (
+    <Ctx.Provider value={{ site, bereiche, purchasedKeys, stats }}>{children}</Ctx.Provider>
+  );
 }
 
 export function useDashboardData(): DashboardContextValue {
