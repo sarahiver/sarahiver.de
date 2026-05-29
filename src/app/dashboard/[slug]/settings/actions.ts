@@ -62,7 +62,7 @@ export async function updateStammdaten(p: StammdatenPayload): Promise<ActionResu
       wedding_date: wedding_date_utc,
       wedding_location: p.wedding_location.trim() || null,
       updated_at: new Date().toISOString(),
-    })
+    } as never)
     .eq('slug', p.slug);
 
   if (error) {
@@ -119,7 +119,7 @@ export async function updateStil(p: StilPayload): Promise<ActionResult> {
       palette_custom_accent_deep: p.custom_accent_deep,
       palette_custom_ink: p.custom_ink,
       updated_at: new Date().toISOString(),
-    })
+    } as never)
     .eq('slug', p.slug);
 
   if (error) {
@@ -155,7 +155,7 @@ export async function updateNavigation(p: NavPayload): Promise<ActionResult> {
     .update({
       nav_variant: p.nav_variant,
       updated_at: new Date().toISOString(),
-    })
+    } as never)
     .eq('slug', p.slug);
 
   if (error) {
