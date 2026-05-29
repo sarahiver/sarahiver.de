@@ -40,12 +40,6 @@ export const BEREICHE: Bereich[] = [
     desc: 'Tagesablauf — von der Trauung bis zum letzten Tanz.',
     tier: 'basis',
   },
-  {
-    key: 'infos',
-    name: 'Infos',
-    desc: 'Anreise, Locations, Dresscode und Wetter — alles auf einen Blick.',
-    tier: 'basis',
-  },
 
   // === 11 ZUSATZ-BEREICHE (frei wählbar) ===
   {

@@ -82,7 +82,6 @@ export type BereichKey =
   | 'hero'
   | 'rsvp'
   | 'timeline'
-  | 'infos'
   | 'lovestory'
   | 'gallery'
   | 'photoupload'

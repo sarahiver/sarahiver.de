@@ -41,6 +41,9 @@ import MusicWishesVariantC from '@/components/bereiche/MusicWishes/MusicWishesVa
 import GiftsVariantA from '@/components/bereiche/Gifts/GiftsVariantA';
 import GiftsVariantB from '@/components/bereiche/Gifts/GiftsVariantB';
 import GiftsVariantC from '@/components/bereiche/Gifts/GiftsVariantC';
+import WitnessesVariantA from '@/components/bereiche/Witnesses/WitnessesVariantA';
+import WitnessesVariantB from '@/components/bereiche/Witnesses/WitnessesVariantB';
+import WitnessesVariantC from '@/components/bereiche/Witnesses/WitnessesVariantC';
 import BereichPlaceholder from '@/components/layout/BereichPlaceholder';
 
 /**
@@ -158,6 +161,13 @@ export function BereichRenderer({ bereich, tokens, weddingSlug }: BereichRendere
     if (variant === 'a') return <GiftsVariantA {...props} weddingSlug={weddingSlug} />;
     if (variant === 'b') return <GiftsVariantB {...props} weddingSlug={weddingSlug} />;
     if (variant === 'c') return <GiftsVariantC {...props} weddingSlug={weddingSlug} />;
+  }
+
+  // === TRAUZEUGEN ===
+  if (bereich_key === 'witnesses') {
+    if (variant === 'a') return <WitnessesVariantA {...props} weddingSlug={weddingSlug} />;
+    if (variant === 'b') return <WitnessesVariantB {...props} weddingSlug={weddingSlug} />;
+    if (variant === 'c') return <WitnessesVariantC {...props} weddingSlug={weddingSlug} />;
   }
 
   // === Alle anderen Bereiche: noch nicht gebaut → Placeholder ===

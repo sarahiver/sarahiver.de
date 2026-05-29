@@ -159,16 +159,6 @@ function BereichIcon({ kind, basis }: { kind: string; basis: boolean }) {
         <path d="M12 14 L12 11 M24 14 L24 11 M36 14 L36 11" {...common} />
       </svg>
     ),
-    infos: (
-      <svg width="34" height="34" viewBox="0 0 40 40">
-        <circle cx="20" cy="20" r="14" {...common} />
-        <path
-          d="M20 13 L20 14 M20 18 L20 27"
-          {...common}
-          strokeWidth={1.6}
-        />
-      </svg>
-    ),
     lovestory: (
       <svg width="42" height="34" viewBox="0 0 48 40">
         <path

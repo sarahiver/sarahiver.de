@@ -12,7 +12,6 @@ const BEREICH_LABELS: Record<string, string> = {
   hero: 'Hero',
   rsvp: 'RSVP',
   timeline: 'Timeline',
-  infos: 'Infos',
   lovestory: 'Lovestory',
   gallery: 'Galerie',
   photoupload: 'Foto-Upload',

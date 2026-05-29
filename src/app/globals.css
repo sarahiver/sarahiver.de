@@ -3814,3 +3814,141 @@ html, body {
 .gift-modal-actions .gift-btn { flex: 1; min-width: 140px; }
 .gift-modal-actions .gift-btn-out { padding: 11px 18px; }
 .gift-modal-esc { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin: 4px 0 0; text-align: center; }
+
+/* =========================================================
+   TRAUZEUGEN — drei Varianten (A Foto-Karten, B Zeilen-Liste, C Editorial)
+   ⚠ SPAM-SCHUTZ: Kontaktwerte nur base64-kodiert in data-c, kein tel:/
+   mailto: im Markup. Dekodierung erst im Klick-Handler (WitContacts).
+   ========================================================= */
+.wit {
+  --wit-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  padding: clamp(40px, 7vw, 80px) clamp(20px, 4vw, 56px);
+  background: var(--bg); color: var(--ink);
+  position: relative;
+}
+.wit-head { text-align: var(--align, center); max-width: 640px; margin: 0 auto clamp(28px, 4.5vw, 40px); }
+.wedding-site-wrapper[data-style="modern"]  .wit-head,
+.wedding-site-wrapper[data-style="minimal"] .wit-head { text-align: left; margin-left: 0; max-width: none; }
+.wit-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 10px; }
+.wit-title { font-family: var(--font-display); font-weight: var(--display-weight); font-style: var(--display-style); font-size: clamp(30px, 4vw, 48px); line-height: 1.02; letter-spacing: -0.018em; margin: 0 0 12px; text-wrap: balance; color: var(--ink); }
+.wit-title em { font-family: var(--font-script); font-style: normal; color: var(--accent); font-weight: 500; font-size: 1.12em; }
+.wedding-site-wrapper[data-style="festlich"] .wit-title em { color: var(--gold); }
+.wit-desc { font-family: var(--font-body); font-size: clamp(14px, 1.4vw, 16px); line-height: 1.55; color: var(--ink-soft); margin: 0; }
+.wit-head-decor-wrap { margin: 14px 0; display: flex; justify-content: center; }
+.wedding-site-wrapper[data-style="modern"]  .wit-head-decor-wrap,
+.wedding-site-wrapper[data-style="minimal"] .wit-head-decor-wrap { justify-content: flex-start; }
+
+/* Photo / initials */
+.wit-photo { width: 100%; aspect-ratio: 1; border-radius: 50%; overflow: hidden; background: var(--bg-soft); border: 1px solid var(--border-soft); display: grid; place-items: center; position: relative; }
+.wedding-site-wrapper[data-style="modern"]  .wit-photo { border-radius: 0; }
+.wedding-site-wrapper[data-style="minimal"] .wit-photo { border-radius: 0; border-color: var(--ink); }
+.wit-photo img { width: 100%; height: 100%; object-fit: cover; filter: var(--img-filter); }
+.wit-photo-initials { font-family: var(--font-display); font-weight: 600; color: var(--accent-deep); background: color-mix(in srgb, var(--accent) 22%, var(--bg-soft)); width: 100%; height: 100%; display: grid; place-items: center; font-size: clamp(20px, 5vw, 40px); letter-spacing: -0.02em; }
+.wedding-site-wrapper[data-style="modern"]  .wit-photo-initials { font-family: var(--font-body); font-weight: 700; }
+.wedding-site-wrapper[data-style="minimal"] .wit-photo-initials { font-family: var(--font-mono); background: var(--bg-soft); color: var(--ink); }
+.wedding-site-wrapper[data-style="festlich"] .wit-photo-initials { background: color-mix(in srgb, var(--gold) 28%, var(--bg-soft)); color: var(--accent-deep); }
+
+/* Contact buttons (Spam-Schutz: kodiert in data-c) */
+.wit-contacts { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.wedding-site-wrapper[data-style="modern"]  .wit-contacts,
+.wedding-site-wrapper[data-style="minimal"] .wit-contacts { justify-content: flex-start; }
+.wit-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; background: transparent; color: var(--accent); border: 1px solid var(--accent); border-radius: 999px; font-family: var(--font-body); font-weight: 500; font-size: 13px; letter-spacing: 0.01em; line-height: 1; cursor: pointer; white-space: nowrap; transition: background 200ms var(--wit-ease), color 200ms ease, transform 200ms var(--wit-ease), border-color 200ms ease; position: relative; }
+.wit-btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.wit-btn:active { transform: translateY(1px); }
+.wit-btn svg { width: 14px; height: 14px; }
+.wedding-site-wrapper[data-style="modern"]  .wit-btn { border-radius: 0; text-transform: uppercase; letter-spacing: 0.12em; font-size: 11.5px; }
+.wedding-site-wrapper[data-style="minimal"] .wit-btn { border-radius: 0; color: var(--ink); border-color: var(--ink); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.16em; font-size: 11px; }
+.wedding-site-wrapper[data-style="minimal"] .wit-btn:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.wedding-site-wrapper[data-style="festlich"] .wit-btn { color: var(--gold); border-color: var(--gold); }
+.wedding-site-wrapper[data-style="festlich"] .wit-btn:hover { background: var(--gold); color: var(--ink); }
+.wit-btn.is-revealed::after { content: attr(data-reveal-label); position: absolute; left: 50%; bottom: calc(100% + 8px); transform: translateX(-50%); background: var(--ink); color: var(--bg); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 6px 10px; border-radius: 6px; white-space: nowrap; pointer-events: none; z-index: 5; }
+
+/* Empty */
+.wit-empty { text-align: center; padding: clamp(32px, 5vw, 48px); background: var(--bg-soft); border-radius: 16px; max-width: 520px; margin: 0 auto; color: var(--ink-soft); font-family: var(--font-display); font-style: italic; font-size: 16px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.wedding-site-wrapper[data-style="modern"]  .wit-empty,
+.wedding-site-wrapper[data-style="minimal"] .wit-empty { border-radius: 0; }
+
+/* ============ VARIANTE A — Foto-Karten ============ */
+.witA-wrap { max-width: 980px; margin: 0 auto; }
+.witA-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: clamp(20px, 3vw, 32px); }
+.witA-card { background: var(--bg-soft); border: 1px solid var(--border-soft); border-radius: 18px; padding: 24px 22px 22px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+.wedding-site-wrapper[data-style="modern"]  .witA-card { border-radius: 0; text-align: left; align-items: flex-start; }
+.wedding-site-wrapper[data-style="floral"]  .witA-card { border-radius: 24px; }
+.wedding-site-wrapper[data-style="minimal"] .witA-card { background: transparent; border-radius: 0; border-width: 0; border-top: 1px solid var(--border); padding: 24px 0; text-align: left; align-items: flex-start; }
+.wedding-site-wrapper[data-style="festlich"] .witA-card { border-color: var(--border-soft); }
+.witA-photo { width: 130px; }
+.witA-headings { display: flex; flex-direction: column; gap: 4px; align-items: inherit; }
+.witA-name { font-family: var(--font-display); font-weight: var(--display-weight); font-style: var(--display-style); font-size: 20px; line-height: 1.15; color: var(--ink); margin: 0; letter-spacing: -0.01em; }
+.wedding-site-wrapper[data-style="modern"]  .witA-name { font-family: var(--font-body); font-weight: 700; }
+.wedding-site-wrapper[data-style="minimal"] .witA-name { font-family: var(--font-mono); font-size: 15px; letter-spacing: 0.02em; }
+.witA-role { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin: 0; }
+.wedding-site-wrapper[data-style="festlich"] .witA-role { color: var(--gold); }
+@media (max-width: 560px) {
+  .witA-grid { grid-template-columns: 1fr 1fr; gap: 18px; }
+  .witA-card { padding: 18px 14px 16px; }
+  .witA-photo { width: 96px; }
+  .witA-card .wit-contacts { justify-content: center; }
+  .witA-card .wit-btn { padding: 8px 12px; font-size: 12px; }
+  .witA-card .wit-btn span { display: none; }
+}
+
+/* ============ VARIANTE B — Zeilen-Liste ============ */
+.witB-wrap { max-width: 820px; margin: 0 auto; }
+.witB-list { background: var(--bg-soft); border: 1px solid var(--border-soft); border-radius: 16px; padding: 6px 20px; }
+.wedding-site-wrapper[data-style="modern"]  .witB-list { border-radius: 0; }
+.wedding-site-wrapper[data-style="floral"]  .witB-list { border-radius: 22px; }
+.wedding-site-wrapper[data-style="minimal"] .witB-list { background: transparent; border-radius: 0; border-width: 0; border-top: 1px solid var(--ink); padding: 0; }
+.wedding-site-wrapper[data-style="festlich"] .witB-list { border-color: var(--gold); }
+.witB-row { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 18px; align-items: center; padding: 18px 0; border-bottom: 1px solid var(--border-soft); }
+.witB-row:last-child { border-bottom: 0; }
+.wedding-site-wrapper[data-style="minimal"] .witB-row { border-bottom-color: var(--border); }
+.witB-photo { width: 56px; }
+.witB-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.witB-name { font-family: var(--font-display); font-weight: 600; font-size: 17px; line-height: 1.2; color: var(--ink); margin: 0; letter-spacing: -0.005em; }
+.wedding-site-wrapper[data-style="modern"]  .witB-name { font-family: var(--font-body); font-weight: 700; }
+.wedding-site-wrapper[data-style="minimal"] .witB-name { font-family: var(--font-mono); font-size: 14.5px; }
+.witB-role { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+.wedding-site-wrapper[data-style="festlich"] .witB-role { color: var(--gold); }
+.witB-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.witB-actions .wit-contacts { justify-content: flex-end; }
+@media (max-width: 560px) {
+  .witB-row { grid-template-columns: 48px minmax(0, 1fr); gap: 14px; }
+  .witB-photo { width: 48px; }
+  .witB-actions { grid-column: 1 / -1; justify-content: flex-start; }
+  .witB-actions .wit-contacts { justify-content: flex-start; }
+  .witB-row .wit-btn { padding: 8px 12px; font-size: 11.5px; }
+}
+
+/* ============ VARIANTE C — Editorial mit intro ============ */
+.witC-wrap { max-width: 1080px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(40px, 6vw, 72px); }
+.witC-block { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(28px, 4vw, 56px); align-items: center; }
+.witC-block:nth-child(even) .witC-photo-wrap { order: 2; }
+.witC-photo-wrap { display: grid; place-items: center; }
+.witC-photo { width: 100%; max-width: 320px; aspect-ratio: 4 / 5; border-radius: 0; overflow: hidden; background: var(--bg-soft); border: 6px solid var(--bg); box-shadow: 0 18px 40px -22px rgba(0,0,0,0.35); position: relative; }
+.witC-photo img { width: 100%; height: 100%; object-fit: cover; filter: var(--img-filter); }
+.witC-photo-initials { width: 100%; height: 100%; background: color-mix(in srgb, var(--accent) 22%, var(--bg-soft)); color: var(--accent-deep); font-family: var(--font-display); font-weight: 600; font-size: 72px; letter-spacing: -0.02em; display: grid; place-items: center; }
+.wedding-site-wrapper[data-style="modern"]  .witC-photo { border-width: 0; border: 1px solid var(--border); box-shadow: 0 12px 24px -16px rgba(0,0,0,0.2); }
+.wedding-site-wrapper[data-style="floral"]  .witC-photo { border-radius: 8px; }
+.wedding-site-wrapper[data-style="minimal"] .witC-photo { border-width: 0; border: 1px solid var(--ink); box-shadow: none; }
+.wedding-site-wrapper[data-style="festlich"] .witC-photo { border-color: color-mix(in srgb, var(--gold) 50%, var(--bg)); }
+.witC-body { display: flex; flex-direction: column; gap: 14px; }
+.witC-role { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent); margin: 0; }
+.wedding-site-wrapper[data-style="festlich"] .witC-role { color: var(--gold); }
+.witC-name { font-family: var(--font-display); font-weight: var(--display-weight); font-style: var(--display-style); font-size: clamp(28px, 3.6vw, 40px); line-height: 1.05; color: var(--ink); margin: 0; letter-spacing: -0.018em; text-wrap: balance; }
+.wedding-site-wrapper[data-style="modern"]  .witC-name { font-family: var(--font-body); font-weight: 700; }
+.wedding-site-wrapper[data-style="minimal"] .witC-name { font-family: var(--font-mono); font-size: 22px; letter-spacing: 0.02em; }
+.witC-intro { font-family: var(--font-script); font-size: clamp(20px, 2.2vw, 24px); line-height: 1.35; color: var(--ink); margin: 0; max-width: 38ch; text-wrap: pretty; }
+.wedding-site-wrapper[data-style="modern"]  .witC-intro { font-family: var(--font-display); font-style: italic; font-weight: 400; font-size: 18px; line-height: 1.5; }
+.wedding-site-wrapper[data-style="minimal"] .witC-intro { font-family: var(--font-mono); font-size: 14px; line-height: 1.65; }
+.witC-intro::before { content: "\201E"; color: var(--accent); margin-right: 2px; }
+.witC-intro::after  { content: "\201C"; color: var(--accent); margin-left: 2px; }
+.wedding-site-wrapper[data-style="festlich"] .witC-intro::before,
+.wedding-site-wrapper[data-style="festlich"] .witC-intro::after { color: var(--gold); }
+.witC-contacts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; justify-content: flex-start; }
+@media (max-width: 720px) {
+  .witC-block { grid-template-columns: 1fr; gap: 22px; text-align: center; align-items: center; }
+  .witC-block:nth-child(even) .witC-photo-wrap { order: 0; }
+  .witC-photo { max-width: 220px; }
+  .witC-intro { max-width: none; margin-left: auto; margin-right: auto; }
+  .witC-contacts { justify-content: center; }
+}
