@@ -92,6 +92,18 @@ export interface StilPayload {
 }
 
 export async function updateStil(p: StilPayload): Promise<ActionResult> {
+  console.log('[updateStil] payload received:', JSON.stringify({
+    slug: p.slug,
+    start_style_id: p.start_style_id,
+    palette_preset_id: p.palette_preset_id,
+    font_preset_id: p.font_preset_id,
+    custom_bg: p.custom_bg,
+    custom_bg_soft: p.custom_bg_soft,
+    custom_accent: p.custom_accent,
+    custom_accent_deep: p.custom_accent_deep,
+    custom_ink: p.custom_ink,
+  }));
+
   if (!p.slug) return { ok: false, error: 'Slug fehlt.' };
   if (!p.start_style_id) return { ok: false, error: 'Stil-Auswahl fehlt.' };
 
@@ -123,9 +135,18 @@ export async function updateStil(p: StilPayload): Promise<ActionResult> {
     .eq('slug', p.slug);
 
   if (error) {
-    console.error('[updateStil] failed:', error);
+    console.error('[updateStil] update failed:', error);
     return { ok: false, error: error.message };
   }
+
+  // VERIFIKATION: nach dem Update direkt lesen, ob die Custom-Werte
+  // wirklich angekommen sind
+  const verify = await supabase
+    .from('wedding_sites')
+    .select('palette_custom_bg, palette_custom_bg_soft, palette_custom_accent, palette_custom_accent_deep, palette_custom_ink')
+    .eq('slug', p.slug)
+    .maybeSingle();
+  console.log('[updateStil] after update, DB state:', JSON.stringify(verify.data));
 
   revalidatePath(`/dashboard/${p.slug}`, 'layout');
   revalidatePath(`/${p.slug}`, 'layout');
