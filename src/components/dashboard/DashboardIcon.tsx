@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 /**
  * Dashboard-Icons (Inline-SVG, einheitlich gestylt).
  * Pro Icon-Name eine einfache, robuste SVG-Path-Definition.
@@ -8,7 +10,7 @@ interface IconProps {
   size?: number;
 }
 
-const PATHS: Record<string, JSX.Element> = {
+const PATHS: Record<string, ReactElement> = {
   home: <path d="M3 12l9-8 9 8M5 10v10h14V10" />,
   envelope: (
     <>
