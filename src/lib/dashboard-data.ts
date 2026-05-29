@@ -25,9 +25,12 @@ export interface WeddingSiteRecord {
   start_style_id: 'klassisch' | 'modern' | 'floral' | 'minimal' | 'festlich' | null;
   nav_variant: 'a' | 'b' | 'c' | 'none' | null;
   font_preset_id: string | null;
-  palette_bg: string | null;
-  palette_accent: string | null;
-  palette_ink: string | null;
+  palette_preset_id: string | null;
+  palette_custom_bg: string | null;
+  palette_custom_bg_soft: string | null;
+  palette_custom_accent: string | null;
+  palette_custom_accent_deep: string | null;
+  palette_custom_ink: string | null;
   status: 'in_progress' | 'ready_for_review' | 'finalized' | 'live' | null;
   created_at?: string;
 }

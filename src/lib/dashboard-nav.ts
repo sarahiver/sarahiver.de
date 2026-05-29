@@ -135,6 +135,7 @@ export function buildDashboardNav(args: {
       items: [
         { id: 'bereiche', label: 'Bereiche & Reihenfolge', href: 'bereiche', icon: 'layers' },
         { id: 'settings', label: 'Stil & Stammdaten', href: 'settings', icon: 'sliders' },
+        { id: 'navigation', label: 'Navigation', href: 'navigation', icon: 'menu' },
       ],
     },
     {
