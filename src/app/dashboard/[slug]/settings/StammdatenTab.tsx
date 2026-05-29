@@ -1,30 +1,33 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useCallback, useEffect, useRef, useState, useTransition, type ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { updateStammdaten } from './actions';
+import SaveStatusIndicator, { type SaveStatus } from '@/components/dashboard/SaveStatusIndicator';
 
 interface Props {
   slug: string;
   initial: {
     couple_name_1: string;
     couple_name_2: string;
-    wedding_date_local: string; // "2026-11-15"
-    wedding_time_local: string; // "14:00"
+    wedding_date_local: string;
+    wedding_time_local: string;
     wedding_location: string;
   };
 }
 
 /**
- * Stammdaten-Tab — Vornamen, Datum, Uhrzeit, Hauptlocation.
+ * Stammdaten-Tab mit Auto-Save:
+ *  - Text-Inputs: debounced 1500ms nach letzter Eingabe
+ *  - Datum/Zeit: debounced 500ms (Picker liefert einen Final-Wert beim Schließen)
  *
- * Speichert über Server Action, zeigt Erfolgs/Fehler-Notiz, refresht
- * danach (Live-Vorschau aktualisiert sich via revalidatePath).
+ * Kein Speichern-Button. Status-Indikator oben.
  */
 export default function StammdatenTab({ slug, initial }: Props) {
   const router = useRouter();
-  const [pending, startTransition] = useTransition();
-  const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
+  const [, startTransition] = useTransition();
+  const [status, setStatus] = useState<SaveStatus>('idle');
+  const [errText, setErrText] = useState<string | null>(null);
 
   const [name1, setName1] = useState(initial.couple_name_1);
   const [name2, setName2] = useState(initial.couple_name_2);
@@ -32,117 +35,102 @@ export default function StammdatenTab({ slug, initial }: Props) {
   const [time, setTime] = useState(initial.wedding_time_local);
   const [location, setLocation] = useState(initial.wedding_location);
 
-  const dirty =
-    name1 !== initial.couple_name_1 ||
-    name2 !== initial.couple_name_2 ||
-    date !== initial.wedding_date_local ||
-    time !== initial.wedding_time_local ||
-    location !== initial.wedding_location;
+  useEffect(() => {
+    if (status === 'ok') {
+      const t = setTimeout(() => setStatus('idle'), 1800);
+      return () => clearTimeout(t);
+    }
+  }, [status]);
 
-  const save = () => {
-    setMsg(null);
+  const latestRef = useRef({ name1, name2, date, time, location });
+  latestRef.current = { name1, name2, date, time, location };
+
+  const doSave = useCallback(() => {
+    setStatus('saving');
+    setErrText(null);
+    const v = latestRef.current;
     startTransition(async () => {
       const res = await updateStammdaten({
         slug,
-        couple_name_1: name1,
-        couple_name_2: name2,
-        wedding_date_local: date,
-        wedding_time_local: time,
-        wedding_location: location,
+        couple_name_1: v.name1,
+        couple_name_2: v.name2,
+        wedding_date_local: v.date,
+        wedding_time_local: v.time,
+        wedding_location: v.location,
       });
       if (res.ok) {
-        setMsg({ type: 'ok', text: 'Stammdaten gespeichert.' });
+        setStatus('ok');
         window.dispatchEvent(new Event('dashboard:editor-saved'));
         router.refresh();
       } else {
-        setMsg({ type: 'err', text: res.error || 'Konnte nicht gespeichert werden.' });
+        setStatus('err');
+        setErrText(res.error || 'Konnte nicht gespeichert werden.');
       }
     });
+  }, [slug, router]);
+
+  // Debouncer pro Feld-Gruppe
+  const textDebounceRef = useRef<number | null>(null);
+  const triggerTextSave = useCallback(() => {
+    if (textDebounceRef.current) window.clearTimeout(textDebounceRef.current);
+    textDebounceRef.current = window.setTimeout(() => doSave(), 1500);
+  }, [doSave]);
+
+  const dateDebounceRef = useRef<number | null>(null);
+  const triggerDateSave = useCallback(() => {
+    if (dateDebounceRef.current) window.clearTimeout(dateDebounceRef.current);
+    dateDebounceRef.current = window.setTimeout(() => doSave(), 500);
+  }, [doSave]);
+
+  // Cleanup
+  useEffect(() => {
+    return () => {
+      if (textDebounceRef.current) window.clearTimeout(textDebounceRef.current);
+      if (dateDebounceRef.current) window.clearTimeout(dateDebounceRef.current);
+    };
+  }, []);
+
+  const handleText = (setter: (v: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
+    setter(e.target.value);
+    triggerTextSave();
+  };
+  const handleDateTime = (setter: (v: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
+    setter(e.target.value);
+    triggerDateSave();
   };
 
   return (
     <div className="dash-form">
+      <SaveStatusIndicator status={status} errText={errText} />
+
       <div className="dash-form-row">
         <div className="dash-form-field">
           <label className="dash-form-label" htmlFor="cn1">Partner 1 — Vorname</label>
-          <input
-            id="cn1"
-            type="text"
-            className="dash-input"
-            value={name1}
-            onChange={(e) => setName1(e.target.value)}
-            disabled={pending}
-            placeholder="z.B. Sarah"
-          />
+          <input id="cn1" type="text" className="dash-input" value={name1} onChange={handleText(setName1)} placeholder="z.B. Sarah" />
         </div>
         <div className="dash-form-field">
           <label className="dash-form-label" htmlFor="cn2">Partner 2 — Vorname</label>
-          <input
-            id="cn2"
-            type="text"
-            className="dash-input"
-            value={name2}
-            onChange={(e) => setName2(e.target.value)}
-            disabled={pending}
-            placeholder="z.B. Iver"
-          />
+          <input id="cn2" type="text" className="dash-input" value={name2} onChange={handleText(setName2)} placeholder="z.B. Iver" />
         </div>
       </div>
 
       <div className="dash-form-row">
         <div className="dash-form-field">
           <label className="dash-form-label" htmlFor="wd">Datum</label>
-          <input
-            id="wd"
-            type="date"
-            className="dash-input"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            disabled={pending}
-          />
+          <input id="wd" type="date" className="dash-input" value={date} onChange={handleDateTime(setDate)} />
         </div>
         <div className="dash-form-field">
           <label className="dash-form-label" htmlFor="wt">Uhrzeit</label>
-          <input
-            id="wt"
-            type="time"
-            className="dash-input"
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
-            disabled={pending}
-          />
+          <input id="wt" type="time" className="dash-input" value={time} onChange={handleDateTime(setTime)} />
         </div>
       </div>
 
       <div className="dash-form-field">
         <label className="dash-form-label" htmlFor="wl">Hauptlocation</label>
-        <input
-          id="wl"
-          type="text"
-          className="dash-input"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          disabled={pending}
-          placeholder="z.B. Liberté Hamburg"
-        />
+        <input id="wl" type="text" className="dash-input" value={location} onChange={handleText(setLocation)} placeholder="z.B. Liberté Hamburg" />
         <p className="dash-form-hint">
           Kurze Bezeichnung — Adresse und Wegbeschreibung pflegt ihr im Anfahrt-Editor.
         </p>
-      </div>
-
-      {msg && (
-        <div className={`dash-form-msg ${msg.type === 'ok' ? 'is-ok' : 'is-err'}`}>{msg.text}</div>
-      )}
-
-      <div className="dash-form-foot">
-        <button
-          type="button"
-          className="dash-btn"
-          onClick={save}
-          disabled={!dirty || pending}
-        >
-          {pending ? 'Wird gespeichert …' : dirty ? 'Stammdaten speichern' : 'Gespeichert'}
-        </button>
       </div>
     </div>
   );

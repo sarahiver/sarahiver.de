@@ -3,10 +3,9 @@
 import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { updateNavigation } from '../settings/actions';
-import { SaveStatusIndicator } from '../settings/StilTab';
+import SaveStatusIndicator, { type SaveStatus } from '@/components/dashboard/SaveStatusIndicator';
 
 type NavVariant = 'a' | 'b' | 'c' | 'none';
-type SaveStatus = 'idle' | 'saving' | 'ok' | 'err';
 
 const VARIANTS: Array<{ id: NavVariant; label: string; desc: string }> = [
   { id: 'a', label: 'Variante A', desc: 'Klassisch — zentrale Menüleiste mit Markennamen mittig.' },

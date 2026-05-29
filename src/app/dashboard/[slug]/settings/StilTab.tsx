@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { updateStil } from './actions';
 import AutoPalettePicker from './AutoPalettePicker';
+import SaveStatusIndicator, { type SaveStatus } from '@/components/dashboard/SaveStatusIndicator';
 import type { StartStylePreset, PalettePreset, FontPreset } from '@/lib/presets';
 
 interface Props {
@@ -24,17 +25,19 @@ interface Props {
 }
 
 /**
- * Stil-Tab — Karten-Auswahl für Stil, Palette und Font, plus aufklappbarer
- * Custom-Override-Bereich für Brautpaare, die einzelne Farben anpassen wollen.
+ * Stil-Tab mit Auto-Save:
+ *  - Klick auf Stil/Palette/Font-Karte → speichert sofort
+ *  - Tippen in Custom-Farb-Feld → debounced 800ms, dann speichern
+ *  - AutoPalette übernehmen → speichert sofort
  *
- * Verhalten beim Stilwechsel: setzt automatisch default_palette_id und
- * default_font_id aus dem gewählten Stil — kann der User danach aber wieder
- * frei ändern. So fühlt sich der Stilwechsel "passend" an statt zufällig.
+ * Status-Indikator oben rechts (Saving / Gespeichert / Fehler). Kein
+ * "Speichern"-Button mehr.
  */
 export default function StilTab({ slug, initial, styles, palettes, fonts }: Props) {
   const router = useRouter();
-  const [pending, startTransition] = useTransition();
-  const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
+  const [, startTransition] = useTransition();
+  const [status, setStatus] = useState<SaveStatus>('idle');
+  const [errText, setErrText] = useState<string | null>(null);
   const [customOpen, setCustomOpen] = useState(
     Boolean(
       initial.custom_bg ||
@@ -56,18 +59,109 @@ export default function StilTab({ slug, initial, styles, palettes, fonts }: Prop
     ink: initial.custom_ink || '',
   });
 
+  // Status-Auto-Reset nach "ok"
+  useEffect(() => {
+    if (status === 'ok') {
+      const t = setTimeout(() => setStatus('idle'), 1800);
+      return () => clearTimeout(t);
+    }
+  }, [status]);
+
+  // Aktuelle Werte als Ref, damit der debounced Save den letzten State nutzt
+  const latestRef = useRef({ styleId, paletteId, fontId, customs });
+  latestRef.current = { styleId, paletteId, fontId, customs };
+
+  const doSave = useCallback(() => {
+    setStatus('saving');
+    setErrText(null);
+    const { styleId: s, paletteId: p, fontId: f, customs: c } = latestRef.current;
+    startTransition(async () => {
+      const res = await updateStil({
+        slug,
+        start_style_id: s,
+        palette_preset_id: p,
+        font_preset_id: f,
+        custom_bg: c.bg || null,
+        custom_bg_soft: c.bg_soft || null,
+        custom_accent: c.accent || null,
+        custom_accent_deep: c.accent_deep || null,
+        custom_ink: c.ink || null,
+      });
+      if (res.ok) {
+        setStatus('ok');
+        window.dispatchEvent(new Event('dashboard:editor-saved'));
+        router.refresh();
+      } else {
+        setStatus('err');
+        setErrText(res.error || 'Konnte nicht gespeichert werden.');
+      }
+    });
+  }, [slug, router]);
+
+  // === SOFORT-SAVE für diskrete Aktionen (Karten) ===
+  // Sie setzen State UND triggern unmittelbar einen Save.
+  // Damit der State den Save erreicht, nutzen wir flushSync-ähnliches Pattern:
+  // Wir warten einen Microtask (Promise.resolve()), dann ist der State im Ref.
+  const saveSoon = () => {
+    Promise.resolve().then(() => doSave());
+  };
+
   const handleStyleChange = (newStyleId: string) => {
+    const s = styles.find((x) => x.id === newStyleId);
     setStyleId(newStyleId);
-    // Sinnvolle Defaults bei Stilwechsel mitsetzen (User kann überschreiben)
-    const s = styles.find((s) => s.id === newStyleId);
     if (s) {
       setPaletteId(s.default_palette_id);
       setFontId(s.default_font_id);
+      setCustoms({ bg: '', bg_soft: '', accent: '', accent_deep: '', ink: '' });
     }
+    saveSoon();
   };
 
-  // Modus-Erkennung: wenn irgendein Custom-Feld einen Hex-Wert hat, sind wir
-  // im Custom-Mode → die Palette-Karten sind nicht "aktiv".
+  const handlePaletteChange = (newId: string) => {
+    setPaletteId(newId);
+    setCustoms({ bg: '', bg_soft: '', accent: '', accent_deep: '', ink: '' });
+    saveSoon();
+  };
+
+  const handleFontChange = (newId: string) => {
+    setFontId(newId);
+    saveSoon();
+  };
+
+  const handleAutoPaletteApply = (p: {
+    bg: string;
+    bg_soft: string;
+    accent: string;
+    accent_deep: string;
+    ink: string;
+  }) => {
+    setCustoms({ ...p });
+    saveSoon();
+  };
+
+  const resetCustoms = () => {
+    setCustoms({ bg: '', bg_soft: '', accent: '', accent_deep: '', ink: '' });
+    saveSoon();
+  };
+
+  // === DEBOUNCED Save bei Custom-Farb-Änderung ===
+  // 800ms nach letzter Eingabe wird gespeichert.
+  const debounceRef = useRef<number | null>(null);
+  const handleCustomChange = (key: keyof typeof customs, value: string) => {
+    setCustoms((curr) => ({ ...curr, [key]: value }));
+    if (debounceRef.current) window.clearTimeout(debounceRef.current);
+    debounceRef.current = window.setTimeout(() => {
+      doSave();
+    }, 800);
+  };
+
+  // Cleanup beim Unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) window.clearTimeout(debounceRef.current);
+    };
+  }, []);
+
   const isCustomMode =
     Boolean(customs.bg.trim()) ||
     Boolean(customs.bg_soft.trim()) ||
@@ -75,46 +169,10 @@ export default function StilTab({ slug, initial, styles, palettes, fonts }: Prop
     Boolean(customs.accent_deep.trim()) ||
     Boolean(customs.ink.trim());
 
-  const dirty =
-    styleId !== initial.start_style_id ||
-    paletteId !== initial.palette_preset_id ||
-    fontId !== initial.font_preset_id ||
-    customs.bg !== (initial.custom_bg || '') ||
-    customs.bg_soft !== (initial.custom_bg_soft || '') ||
-    customs.accent !== (initial.custom_accent || '') ||
-    customs.accent_deep !== (initial.custom_accent_deep || '') ||
-    customs.ink !== (initial.custom_ink || '');
-
-  const save = () => {
-    setMsg(null);
-    startTransition(async () => {
-      const res = await updateStil({
-        slug,
-        start_style_id: styleId,
-        palette_preset_id: paletteId,
-        font_preset_id: fontId,
-        custom_bg: customs.bg || null,
-        custom_bg_soft: customs.bg_soft || null,
-        custom_accent: customs.accent || null,
-        custom_accent_deep: customs.accent_deep || null,
-        custom_ink: customs.ink || null,
-      });
-      if (res.ok) {
-        setMsg({ type: 'ok', text: 'Stil gespeichert.' });
-        window.dispatchEvent(new Event('dashboard:editor-saved'));
-        router.refresh();
-      } else {
-        setMsg({ type: 'err', text: res.error || 'Konnte nicht gespeichert werden.' });
-      }
-    });
-  };
-
-  const resetCustoms = () => {
-    setCustoms({ bg: '', bg_soft: '', accent: '', accent_deep: '', ink: '' });
-  };
-
   return (
     <div className="dash-form">
+      <SaveStatusIndicator status={status} errText={errText} />
+
       {/* Stil-Karten */}
       <section className="dash-form-section">
         <h3 className="dash-form-section-title">Stil</h3>
@@ -126,7 +184,7 @@ export default function StilTab({ slug, initial, styles, palettes, fonts }: Prop
               type="button"
               className={`dash-style-card ${styleId === s.id ? 'is-active' : ''}`}
               onClick={() => handleStyleChange(s.id)}
-              disabled={pending}
+              disabled={status === 'saving'}
             >
               <span className="dash-style-card-name">{s.name}</span>
               <span className="dash-style-card-meta">{s.meta}</span>
@@ -149,13 +207,8 @@ export default function StilTab({ slug, initial, styles, palettes, fonts }: Prop
               className={`dash-palette-card ${
                 paletteId === p.id && !isCustomMode ? 'is-active' : ''
               }`}
-              onClick={() => {
-                setPaletteId(p.id);
-                // Klick auf Palette = "ich will doch die Preset-Palette":
-                // Customs leeren, damit der Constraint sauber ist
-                setCustoms({ bg: '', bg_soft: '', accent: '', accent_deep: '', ink: '' });
-              }}
-              disabled={pending}
+              onClick={() => handlePaletteChange(p.id)}
+              disabled={status === 'saving'}
             >
               <span className="dash-palette-swatches">
                 <span style={{ background: p.color_bg }} />
@@ -179,28 +232,18 @@ export default function StilTab({ slug, initial, styles, palettes, fonts }: Prop
         <details className="dash-form-details" open={customOpen} onToggle={(e) => setCustomOpen((e.target as HTMLDetailsElement).open)}>
           <summary>Einzelne Farben anpassen</summary>
           <p className="dash-form-hint">
-            Alle fünf Farben müssen gesetzt sein, damit die Custom-Palette greift. Lasst die
-            Felder leer, um die ausgewählte Palette zu nutzen.
+            Alle fünf Farben müssen gesetzt sein, damit die Custom-Palette greift. Änderungen
+            werden automatisch gespeichert.
           </p>
 
-          <AutoPalettePicker
-            onApply={(p) => {
-              setCustoms({
-                bg: p.bg,
-                bg_soft: p.bg_soft,
-                accent: p.accent,
-                accent_deep: p.accent_deep,
-                ink: p.ink,
-              });
-            }}
-          />
+          <AutoPalettePicker onApply={handleAutoPaletteApply} />
 
           <div className="dash-color-grid">
-            <ColorField label="Hintergrund" value={customs.bg} onChange={(v) => setCustoms({ ...customs, bg: v })} />
-            <ColorField label="Hintergrund weich" value={customs.bg_soft} onChange={(v) => setCustoms({ ...customs, bg_soft: v })} />
-            <ColorField label="Akzent" value={customs.accent} onChange={(v) => setCustoms({ ...customs, accent: v })} />
-            <ColorField label="Akzent dunkel" value={customs.accent_deep} onChange={(v) => setCustoms({ ...customs, accent_deep: v })} />
-            <ColorField label="Text" value={customs.ink} onChange={(v) => setCustoms({ ...customs, ink: v })} />
+            <ColorField label="Hintergrund" value={customs.bg} onChange={(v) => handleCustomChange('bg', v)} />
+            <ColorField label="Hintergrund weich" value={customs.bg_soft} onChange={(v) => handleCustomChange('bg_soft', v)} />
+            <ColorField label="Akzent" value={customs.accent} onChange={(v) => handleCustomChange('accent', v)} />
+            <ColorField label="Akzent dunkel" value={customs.accent_deep} onChange={(v) => handleCustomChange('accent_deep', v)} />
+            <ColorField label="Text" value={customs.ink} onChange={(v) => handleCustomChange('ink', v)} />
           </div>
           <button type="button" className="dash-btn-out" onClick={resetCustoms} style={{ marginTop: 10 }}>
             Custom-Farben zurücksetzen
@@ -218,8 +261,8 @@ export default function StilTab({ slug, initial, styles, palettes, fonts }: Prop
               key={f.id}
               type="button"
               className={`dash-font-card ${fontId === f.id ? 'is-active' : ''}`}
-              onClick={() => setFontId(f.id)}
-              disabled={pending}
+              onClick={() => handleFontChange(f.id)}
+              disabled={status === 'saving'}
             >
               <span
                 className="dash-font-preview"
@@ -237,16 +280,6 @@ export default function StilTab({ slug, initial, styles, palettes, fonts }: Prop
           ))}
         </div>
       </section>
-
-      {msg && (
-        <div className={`dash-form-msg ${msg.type === 'ok' ? 'is-ok' : 'is-err'}`}>{msg.text}</div>
-      )}
-
-      <div className="dash-form-foot">
-        <button type="button" className="dash-btn" onClick={save} disabled={!dirty || pending}>
-          {pending ? 'Wird gespeichert …' : dirty ? 'Stil speichern' : 'Gespeichert'}
-        </button>
-      </div>
     </div>
   );
 }
