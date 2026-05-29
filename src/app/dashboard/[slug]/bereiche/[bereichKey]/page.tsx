@@ -1,6 +1,7 @@
 import DashboardSection from '@/components/dashboard/DashboardSection';
 import EditorShell from '@/components/dashboard/EditorShell';
 import ComingSoonSection from '@/components/dashboard/ComingSoonSection';
+import VariantPicker from './VariantPicker';
 import { bereichLabel } from '@/lib/dashboard-nav';
 import { loadDashboardData, findBereich } from '@/lib/dashboard-data';
 import type { BereichKey } from '@/types/supabase';
@@ -13,9 +14,11 @@ import { notFound, redirect } from 'next/navigation';
  * Schutz: Nur wenn der Bereich GEBUCHT ist (purchasedKeys), darf der Editor
  * geladen werden — sonst Redirect auf die Upgrade-Seite.
  *
- * Aktuell: Editor-Inhalt ist "Coming Soon" (bauen wir Komponente für
- * Komponente). Aber die Hülle (Dreispalten-Layout mit Live-Vorschau im
- * iframe rechts) steht schon.
+ * Inhalt:
+ *  - VariantPicker (drei Karten zur Variantenwahl)
+ *  - Editor-Felder für die Bereich-Inhalte (noch Coming-Soon)
+ *
+ * Live-Vorschau rechts via EditorShell.
  */
 
 const KNOWN_KEYS: BereichKey[] = [
@@ -38,16 +41,16 @@ export default async function BereichEditorPage({
   const data = await loadDashboardData(slug);
   if (!data) notFound();
 
-  // Wenn nicht gebucht → ab zur Upgrade-Seite
   if (!data.purchasedKeys.includes(bereichKey as BereichKey)) {
     redirect(`/dashboard/${slug}/upgrade`);
   }
 
   const bereich = findBereich(data.bereiche, bereichKey as BereichKey);
   const label = bereichLabel(bereichKey as BereichKey);
+  const variant = (bereich?.variant as 'a' | 'b' | 'c') || 'a';
 
   const desc = bereich
-    ? `Variante ${bereich.variant.toUpperCase()} · ${bereich.is_active ? 'aktiv' : 'deaktiviert'}`
+    ? `Variante ${variant.toUpperCase()} · ${bereich.is_active ? 'aktiv' : 'deaktiviert'}`
     : 'Dieser Bereich ist noch nicht angelegt — bitte zuerst aktivieren.';
 
   return (
@@ -56,9 +59,12 @@ export default async function BereichEditorPage({
         bereichKey={bereichKey}
         weddingSlug={slug}
         editorTitle="Inhalte"
-        editorDescription="Hier bearbeitet ihr die Felder dieses Bereichs. Rechts seht ihr die Live-Vorschau."
+        editorDescription="Variante wählen und Felder pflegen. Rechts seht ihr die Live-Vorschau."
       >
-        <ComingSoonSection what={`Editor für „${label}"`} />
+        <VariantPicker slug={slug} bereichKey={bereichKey as BereichKey} initial={variant} />
+        <div style={{ marginTop: 20 }}>
+          <ComingSoonSection what={`Editor-Felder für „${label}"`} />
+        </div>
       </EditorShell>
     </DashboardSection>
   );
