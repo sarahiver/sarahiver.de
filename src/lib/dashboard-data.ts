@@ -11,7 +11,7 @@
  * SSR — wird in Server Components verwendet (Dashboard-Layout).
  */
 
-import { createSupabaseServerClient } from './supabase-server';
+import { createSupabaseAdminClient } from './supabase-admin';
 import type { BereichKey, WeddingBereich } from '@/types/supabase';
 
 export interface WeddingSiteRecord {
@@ -43,7 +43,7 @@ export interface DashboardData {
  * Liefert null, wenn die Site nicht existiert.
  */
 export async function loadDashboardData(slug: string): Promise<DashboardData | null> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
 
   const { data: site, error: siteErr } = await supabase
     .from('wedding_sites')
