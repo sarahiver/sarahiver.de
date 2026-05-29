@@ -33,6 +33,7 @@ export default function NavigationForm({
       const res = await updateNavigation({ slug, nav_variant: variant });
       if (res.ok) {
         setMsg({ type: 'ok', text: 'Navigation gespeichert.' });
+        window.dispatchEvent(new Event('dashboard:editor-saved'));
         router.refresh();
       } else {
         setMsg({ type: 'err', text: res.error || 'Konnte nicht gespeichert werden.' });

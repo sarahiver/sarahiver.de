@@ -1,4 +1,5 @@
 import DashboardSection from '@/components/dashboard/DashboardSection';
+import EditorShell from '@/components/dashboard/EditorShell';
 import NavigationForm from './NavigationForm';
 import { loadDashboardData } from '@/lib/dashboard-data';
 import { notFound } from 'next/navigation';
@@ -8,6 +9,9 @@ import { notFound } from 'next/navigation';
  *
  * Bisher ein einzelnes Setting (nav_variant). Später erweiterbar um
  * Sticky-Verhalten, Logo-Position, Mobile-Verhalten.
+ *
+ * Dreispaltig mit Live-Vorschau rechts — Nav-Wechsel ist im iframe direkt
+ * sichtbar.
  */
 export default async function NavigationPage({
   params,
@@ -25,7 +29,9 @@ export default async function NavigationPage({
       title="Navigation"
       description="Wie die Menüleiste auf eurer Hochzeitsseite aussieht."
     >
-      <NavigationForm slug={slug} initialVariant={current} />
+      <EditorShell weddingSlug={slug} mobileBlock={false}>
+        <NavigationForm slug={slug} initialVariant={current} />
+      </EditorShell>
     </DashboardSection>
   );
 }

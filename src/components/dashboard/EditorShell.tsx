@@ -4,32 +4,36 @@ import { useEffect, useState, type ReactNode } from 'react';
 import DashboardIcon from './DashboardIcon';
 
 /**
- * Hülle für Bereich-Editoren.
+ * Hülle für Editor-Seiten (Bereich-Editoren UND globale Editoren wie
+ * Stammdaten/Stil/Navigation).
  *
- * Desktop ≥ 1280px: dreispaltig
- *   ├─ (Sidebar liegt schon im Layout darüber)
- *   ├─ Editor-Felder (Mitte, ~480-560px)
- *   └─ Live-Vorschau rechts (iframe auf /[slug], scrollt zum Bereich)
+ * Desktop ≥ 1280px: dreispaltig (Sidebar | Editor | Live-Vorschau-iframe).
+ * Desktop 880-1279px: nur Editor, Topbar-"Vorschau"-Link öffnet im neuen Tab.
+ * Mobile < 880px:
+ *   - mobileBlock=true (Bereich-Editoren): zeigt "nur Desktop"-Hinweis
+ *   - mobileBlock=false (Stammdaten/Stil/Navigation): rendert den Editor
+ *     auch auf Mobile, ohne Vorschau (das ist auf Mobile eh sinnlos).
  *
- * Desktop 880-1279px: nur Editor-Felder + Topbar-"Vorschau"-Link.
- * Mobile < 880px: Mobile-Block ("Editor nur am Desktop").
- *
- * Die Live-Vorschau lädt /[slug]?preview=1#bereich-{bereichKey} und scrollt
- * dorthin. Nach einem Save kannst du via reloadKey ein refresh erzwingen.
+ * Die iframe-Quelle ist /[slug]?preview=1 — wenn bereichKey angegeben ist,
+ * scrollt sie zum entsprechenden Anker. Sonst zeigt sie die Seite von oben.
  */
 
 interface Props {
-  bereichKey: string;
   weddingSlug: string;
+  /** Optional — wenn gesetzt, scrollt die Vorschau zu #bereich-{key}. */
+  bereichKey?: string;
+  /** Standard true (Bereich-Editoren). False für globale Settings. */
+  mobileBlock?: boolean;
   editorTitle?: string;
   editorDescription?: string;
-  reloadKey?: number; // bei Änderung wird die Vorschau neu geladen
+  reloadKey?: number;
   children: ReactNode;
 }
 
 export default function EditorShell({
-  bereichKey,
   weddingSlug,
+  bereichKey,
+  mobileBlock = true,
   editorTitle,
   editorDescription,
   reloadKey = 0,
@@ -38,7 +42,6 @@ export default function EditorShell({
   const [isMobile, setIsMobile] = useState(false);
   const [previewKey, setPreviewKey] = useState(0);
 
-  // Mobile-Detection nur clientseitig (SSR sieht "nicht-mobile", Fix nach Mount)
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 880);
     check();
@@ -46,16 +49,29 @@ export default function EditorShell({
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  // iframe-Reload, wenn der Editor speichert (reloadKey ändert sich)
   useEffect(() => {
     setPreviewKey((k) => k + 1);
   }, [reloadKey]);
 
-  if (isMobile) {
+  // Custom Event von Editor-Forms: nach erfolgreichem Save reloaden wir das
+  // Vorschau-iframe. Die Forms feuern window.dispatchEvent(new Event(
+  // 'dashboard:editor-saved')) bei Erfolg.
+  useEffect(() => {
+    const onSaved = () => setPreviewKey((k) => k + 1);
+    window.addEventListener('dashboard:editor-saved', onSaved);
+    return () => window.removeEventListener('dashboard:editor-saved', onSaved);
+  }, []);
+
+  if (isMobile && mobileBlock) {
     return <MobileBlock weddingSlug={weddingSlug} />;
   }
 
-  const previewSrc = `/${weddingSlug}?preview=1#bereich-${bereichKey}`;
+  const previewSrc = bereichKey
+    ? `/${weddingSlug}?preview=1#bereich-${bereichKey}`
+    : `/${weddingSlug}?preview=1`;
+  const previewLinkSrc = bereichKey
+    ? `/${weddingSlug}#bereich-${bereichKey}`
+    : `/${weddingSlug}`;
 
   return (
     <div className="dash-editor-shell">
@@ -63,9 +79,7 @@ export default function EditorShell({
         {editorTitle && (
           <header className="dash-editor-pane-head">
             <h2 className="dash-editor-pane-title">{editorTitle}</h2>
-            {editorDescription && (
-              <p className="dash-editor-pane-desc">{editorDescription}</p>
-            )}
+            {editorDescription && <p className="dash-editor-pane-desc">{editorDescription}</p>}
           </header>
         )}
         <div className="dash-editor-pane-body">{children}</div>
@@ -78,7 +92,7 @@ export default function EditorShell({
             <span>Live-Vorschau</span>
           </span>
           <a
-            href={`/${weddingSlug}#bereich-${bereichKey}`}
+            href={previewLinkSrc}
             target="_blank"
             rel="noopener noreferrer"
             className="dash-preview-pane-open"

@@ -50,9 +50,45 @@ export async function loadWeddingSite(slug: string): Promise<{
   }
   (tokens as EffectiveTokens & { nav_variant?: string }).nav_variant = navVariant;
 
-  const bereiche = (bereicheResult.data ?? []).filter(
-    (b) => b.wedding_site_id === tokens.wedding_site_id
+  let bereiche = (bereicheResult.data ?? []).filter(
+    (b) => b.wedding_site_id === tokens.wedding_site_id,
   ) as WeddingBereich[];
+
+  // Purchase-Filter: nur Bereiche zeigen, die wirklich gebucht sind. So bleibt
+  // Gäste-Seite konsistent zum Dashboard (welches denselben Filter macht).
+  //
+  // Defensiv: Wenn die Query keine Ergebnisse liefert (Tabelle fehlt, RLS
+  // blockiert, leere Booking-Liste eines Pre-Funnel-Datensatzes), filtern wir
+  // NICHT — sonst zeigt die Gäste-Seite gar nichts. Erst wenn Purchases
+  // gefunden werden, wenden wir den Filter an. Das vermeidet das Worst-Case-
+  // Szenario "leere Hochzeitsseite wegen Misskonfiguration".
+  try {
+    const purchasesResult = await supabase
+      .from('wedding_purchases')
+      .select('bereich_key')
+      .eq('wedding_site_id', tokens.wedding_site_id);
+
+    if (purchasesResult.error) {
+      console.warn(
+        '[loadWeddingSite] purchases query failed, showing all active bereiche:',
+        purchasesResult.error.message,
+      );
+    } else {
+      const purchased = new Set(
+        (purchasesResult.data || []).map((p) => (p as { bereich_key: string }).bereich_key),
+      );
+      if (purchased.size > 0) {
+        bereiche = bereiche.filter((b) => purchased.has(b.bereich_key));
+      } else {
+        console.warn(
+          '[loadWeddingSite] no purchases found for slug, showing all active bereiche (pre-funnel default):',
+          slug,
+        );
+      }
+    }
+  } catch (err) {
+    console.warn('[loadWeddingSite] purchases lookup threw, showing all active bereiche:', err);
+  }
 
   return { tokens, bereiche };
 }

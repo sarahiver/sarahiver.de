@@ -52,6 +52,7 @@ export default function StammdatenTab({ slug, initial }: Props) {
       });
       if (res.ok) {
         setMsg({ type: 'ok', text: 'Stammdaten gespeichert.' });
+        window.dispatchEvent(new Event('dashboard:editor-saved'));
         router.refresh();
       } else {
         setMsg({ type: 'err', text: res.error || 'Konnte nicht gespeichert werden.' });

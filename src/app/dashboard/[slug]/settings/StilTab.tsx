@@ -91,6 +91,7 @@ export default function StilTab({ slug, initial, styles, palettes, fonts }: Prop
       });
       if (res.ok) {
         setMsg({ type: 'ok', text: 'Stil gespeichert.' });
+        window.dispatchEvent(new Event('dashboard:editor-saved'));
         router.refresh();
       } else {
         setMsg({ type: 'err', text: res.error || 'Konnte nicht gespeichert werden.' });

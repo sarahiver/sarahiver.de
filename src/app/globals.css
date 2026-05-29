@@ -4957,3 +4957,15 @@ html, body {
   color: var(--dash-ink);
 }
 .dash-nav-variant-desc { font-size: 12.5px; color: var(--dash-ink-soft); line-height: 1.4; }
+
+/* =========================================================
+   DASHBOARD — Section-Width-Override für Editor-Seiten
+   ========================================================= */
+/* Wenn EditorShell drin ist, soll Section so breit wie möglich werden */
+.dash-section:has(.dash-editor-shell) {
+  max-width: none;
+}
+/* Tab-Panel innerhalb EditorShell: nicht das ganze Editor-Pane sprengen */
+.dash-editor-pane .dash-tabs-panel {
+  padding: 18px 20px 22px;
+}
