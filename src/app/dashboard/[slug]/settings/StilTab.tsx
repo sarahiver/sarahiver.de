@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { updateStil } from './actions';
+import AutoPalettePicker from './AutoPalettePicker';
 import type { StartStylePreset, PalettePreset, FontPreset } from '@/lib/presets';
 
 interface Props {
@@ -158,6 +159,19 @@ export default function StilTab({ slug, initial, styles, palettes, fonts }: Prop
             Lasst die Felder leer, um die Palette unverändert zu nutzen. Eingetragene Farben
             überschreiben die ausgewählte Palette.
           </p>
+
+          <AutoPalettePicker
+            onApply={(p) => {
+              setCustoms({
+                bg: p.bg,
+                bg_soft: p.bg_soft,
+                accent: p.accent,
+                accent_deep: p.accent_deep,
+                ink: p.ink,
+              });
+            }}
+          />
+
           <div className="dash-color-grid">
             <ColorField label="Hintergrund" value={customs.bg} onChange={(v) => setCustoms({ ...customs, bg: v })} />
             <ColorField label="Hintergrund weich" value={customs.bg_soft} onChange={(v) => setCustoms({ ...customs, bg_soft: v })} />
