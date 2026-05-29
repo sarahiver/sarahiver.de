@@ -4000,6 +4000,8 @@ html, body {
   flex: 1;
   padding: clamp(20px, 3vw, 36px) clamp(16px, 3vw, 40px);
   max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 /* Sidebar */
@@ -4179,7 +4181,7 @@ html, body {
 }
 
 /* Section-Hülle */
-.dash-section { max-width: 1080px; }
+.dash-section { max-width: 1080px; min-width: 0; }
 .dash-section-head {
   display: flex;
   justify-content: space-between;
@@ -4453,15 +4455,17 @@ html, body {
    ========================================================= */
 .dash-editor-shell {
   display: grid;
-  grid-template-columns: minmax(440px, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 24px;
   align-items: start;
+  /* min-width: 0 erlaubt Schrumpfen unterhalb des Inhalts (sonst overflow) */
+  min-width: 0;
 }
 
 /* Ab 1280px: Editor + Vorschau nebeneinander */
 @media (min-width: 1280px) {
   .dash-editor-shell {
-    grid-template-columns: minmax(440px, 560px) minmax(520px, 1fr);
+    grid-template-columns: minmax(0, 560px) minmax(520px, 1fr);
   }
 }
 

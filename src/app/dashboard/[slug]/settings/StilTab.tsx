@@ -66,6 +66,15 @@ export default function StilTab({ slug, initial, styles, palettes, fonts }: Prop
     }
   };
 
+  // Modus-Erkennung: wenn irgendein Custom-Feld einen Hex-Wert hat, sind wir
+  // im Custom-Mode → die Palette-Karten sind nicht "aktiv".
+  const isCustomMode =
+    Boolean(customs.bg.trim()) ||
+    Boolean(customs.bg_soft.trim()) ||
+    Boolean(customs.accent.trim()) ||
+    Boolean(customs.accent_deep.trim()) ||
+    Boolean(customs.ink.trim());
+
   const dirty =
     styleId !== initial.start_style_id ||
     paletteId !== initial.palette_preset_id ||
@@ -137,8 +146,15 @@ export default function StilTab({ slug, initial, styles, palettes, fonts }: Prop
             <button
               key={p.id}
               type="button"
-              className={`dash-palette-card ${paletteId === p.id ? 'is-active' : ''}`}
-              onClick={() => setPaletteId(p.id)}
+              className={`dash-palette-card ${
+                paletteId === p.id && !isCustomMode ? 'is-active' : ''
+              }`}
+              onClick={() => {
+                setPaletteId(p.id);
+                // Klick auf Palette = "ich will doch die Preset-Palette":
+                // Customs leeren, damit der Constraint sauber ist
+                setCustoms({ bg: '', bg_soft: '', accent: '', accent_deep: '', ink: '' });
+              }}
               disabled={pending}
             >
               <span className="dash-palette-swatches">
@@ -153,11 +169,18 @@ export default function StilTab({ slug, initial, styles, palettes, fonts }: Prop
           ))}
         </div>
 
+        {isCustomMode && (
+          <p className="dash-form-hint" style={{ marginTop: 6 }}>
+            <strong>Aktuell aktiv:</strong> eigene Farben. Klickt eine Palette an, um zur
+            Standardpalette zurückzukehren.
+          </p>
+        )}
+
         <details className="dash-form-details" open={customOpen} onToggle={(e) => setCustomOpen((e.target as HTMLDetailsElement).open)}>
           <summary>Einzelne Farben anpassen</summary>
           <p className="dash-form-hint">
-            Lasst die Felder leer, um die Palette unverändert zu nutzen. Eingetragene Farben
-            überschreiben die ausgewählte Palette.
+            Alle fünf Farben müssen gesetzt sein, damit die Custom-Palette greift. Lasst die
+            Felder leer, um die ausgewählte Palette zu nutzen.
           </p>
 
           <AutoPalettePicker

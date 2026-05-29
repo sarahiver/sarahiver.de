@@ -107,7 +107,7 @@ export async function updateStil(p: StilPayload): Promise<ActionResult> {
   if (!p.slug) return { ok: false, error: 'Slug fehlt.' };
   if (!p.start_style_id) return { ok: false, error: 'Stil-Auswahl fehlt.' };
 
-  // Hex-Validierung für Custom-Farben (optional)
+  // Hex-Validierung für Custom-Farben
   const hex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
   const customs = [p.custom_bg, p.custom_bg_soft, p.custom_accent, p.custom_accent_deep, p.custom_ink];
   for (const c of customs) {
@@ -116,14 +116,31 @@ export async function updateStil(p: StilPayload): Promise<ActionResult> {
     }
   }
 
-  const supabase = createSupabaseAdminClient();
-  if (!supabase) return { ok: false, error: 'Datenbankverbindung nicht verfügbar.' };
+  // DB-Constraint "palette_source_check":
+  //   ENTWEDER palette_preset_id NOT NULL + alle Custom NULL
+  //   ODER     palette_preset_id NULL     + Custom gefüllt
+  //
+  // → Wenn IRGENDEINE Custom-Farbe gesetzt ist, gehen wir in "Custom-Modus":
+  //   palette_preset_id wird auf NULL gesetzt, alle 5 Customs müssen gefüllt
+  //   sein (sonst hätten wir eine unvollständige Palette).
+  // → Wenn keine Custom gesetzt ist, bleibt es bei der Preset-Palette und
+  //   alle Customs werden auf NULL gesetzt.
+  const hasAnyCustom = customs.some((c) => c && c.trim().length > 0);
+  const hasAllCustoms = customs.every((c) => c && c.trim().length > 0);
 
-  const { error } = await supabase
-    .from('wedding_sites')
-    .update({
+  let updatePayload: Record<string, unknown>;
+
+  if (hasAnyCustom) {
+    if (!hasAllCustoms) {
+      return {
+        ok: false,
+        error:
+          'Wenn einzelne Farben angepasst werden, müssen alle fünf gesetzt sein (Hintergrund, Hintergrund weich, Akzent, Akzent dunkel, Text).',
+      };
+    }
+    updatePayload = {
       start_style_id: p.start_style_id,
-      palette_preset_id: p.palette_preset_id,
+      palette_preset_id: null,
       font_preset_id: p.font_preset_id,
       palette_custom_bg: p.custom_bg,
       palette_custom_bg_soft: p.custom_bg_soft,
@@ -131,7 +148,35 @@ export async function updateStil(p: StilPayload): Promise<ActionResult> {
       palette_custom_accent_deep: p.custom_accent_deep,
       palette_custom_ink: p.custom_ink,
       updated_at: new Date().toISOString(),
-    } as never)
+    };
+  } else {
+    // Kein Custom → Preset muss gesetzt sein (sonst verletzt das Constraint
+    // den "oder"-Fall andersrum)
+    if (!p.palette_preset_id) {
+      return {
+        ok: false,
+        error: 'Bitte eine Palette wählen oder alle fünf Farben individuell setzen.',
+      };
+    }
+    updatePayload = {
+      start_style_id: p.start_style_id,
+      palette_preset_id: p.palette_preset_id,
+      font_preset_id: p.font_preset_id,
+      palette_custom_bg: null,
+      palette_custom_bg_soft: null,
+      palette_custom_accent: null,
+      palette_custom_accent_deep: null,
+      palette_custom_ink: null,
+      updated_at: new Date().toISOString(),
+    };
+  }
+
+  const supabase = createSupabaseAdminClient();
+  if (!supabase) return { ok: false, error: 'Datenbankverbindung nicht verfügbar.' };
+
+  const { error } = await supabase
+    .from('wedding_sites')
+    .update(updatePayload as never)
     .eq('slug', p.slug);
 
   if (error) {
@@ -139,11 +184,12 @@ export async function updateStil(p: StilPayload): Promise<ActionResult> {
     return { ok: false, error: error.message };
   }
 
-  // VERIFIKATION: nach dem Update direkt lesen, ob die Custom-Werte
-  // wirklich angekommen sind
+  // VERIFIKATION: nach dem Update direkt lesen, ob die Werte angekommen sind
   const verify = await supabase
     .from('wedding_sites')
-    .select('palette_custom_bg, palette_custom_bg_soft, palette_custom_accent, palette_custom_accent_deep, palette_custom_ink')
+    .select(
+      'palette_preset_id, palette_custom_bg, palette_custom_bg_soft, palette_custom_accent, palette_custom_accent_deep, palette_custom_ink',
+    )
     .eq('slug', p.slug)
     .maybeSingle();
   console.log('[updateStil] after update, DB state:', JSON.stringify(verify.data));
