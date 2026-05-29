@@ -1,4 +1,3 @@
-import { notFound } from 'next/navigation';
 import { loadDashboardData, loadDashboardStats } from '@/lib/dashboard-data';
 import { buildDashboardNav } from '@/lib/dashboard-nav';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
@@ -27,7 +26,24 @@ export default async function DashboardLayout({
 }) {
   const { slug } = await params;
   const data = await loadDashboardData(slug);
-  if (!data) notFound();
+  if (!data) {
+    return (
+      <div style={{ padding: 40, fontFamily: 'system-ui, sans-serif', maxWidth: 640, margin: '40px auto' }}>
+        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 24 }}>Dashboard konnte nicht geladen werden</h1>
+        <p style={{ color: '#5f5e5a', lineHeight: 1.6 }}>
+          Für den Slug <code>{slug}</code> konnten keine Daten geladen werden. Mögliche Ursachen:
+        </p>
+        <ul style={{ color: '#5f5e5a', lineHeight: 1.7 }}>
+          <li>Die Site existiert nicht (falscher Slug?)</li>
+          <li>Der Service-Role-Key ist nicht oder falsch in den Vercel-Environment-Variablen gesetzt</li>
+          <li>Die Supabase-Verbindung schlägt fehl</li>
+        </ul>
+        <p style={{ color: '#5f5e5a', fontSize: 13 }}>
+          Details stehen im Vercel-Runtime-Log (Tag <code>[dashboard-data]</code> oder <code>[supabase-admin]</code>).
+        </p>
+      </div>
+    );
+  }
 
   const stats = await loadDashboardStats(data.site.id, data.bereiche);
   const navSections = buildDashboardNav({

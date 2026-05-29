@@ -44,6 +44,10 @@ export interface DashboardData {
  */
 export async function loadDashboardData(slug: string): Promise<DashboardData | null> {
   const supabase = createSupabaseAdminClient();
+  if (!supabase) {
+    console.error('[dashboard-data] Admin client unavailable. See logs above.');
+    return null;
+  }
 
   const { data: siteRaw, error: siteErr } = await supabase
     .from('wedding_sites')
@@ -51,8 +55,18 @@ export async function loadDashboardData(slug: string): Promise<DashboardData | n
     .eq('slug', slug)
     .maybeSingle();
 
-  if (siteErr || !siteRaw) {
-    if (siteErr) console.error('[dashboard] failed to load site:', siteErr);
+  if (siteErr) {
+    console.error('[dashboard-data] wedding_sites query failed:', {
+      slug,
+      message: siteErr.message,
+      details: siteErr.details,
+      hint: siteErr.hint,
+      code: siteErr.code,
+    });
+    return null;
+  }
+  if (!siteRaw) {
+    console.warn('[dashboard-data] no site found for slug:', slug);
     return null;
   }
   const site = siteRaw as WeddingSiteRecord;
@@ -70,15 +84,33 @@ export async function loadDashboardData(slug: string): Promise<DashboardData | n
   ]);
 
   if (bereicheRes.error) {
-    console.error('[dashboard] failed to load bereiche:', bereicheRes.error);
+    console.error('[dashboard-data] wedding_bereiche query failed:', {
+      site_id: site.id,
+      message: bereicheRes.error.message,
+      details: bereicheRes.error.details,
+      hint: bereicheRes.error.hint,
+      code: bereicheRes.error.code,
+    });
   }
-  // Tabelle könnte noch nicht existieren — defensiv leerer Fallback
   if (purchasesRes.error) {
-    console.warn('[dashboard] failed to load purchases (table missing?):', purchasesRes.error);
+    console.error('[dashboard-data] wedding_purchases query failed:', {
+      site_id: site.id,
+      message: purchasesRes.error.message,
+      details: purchasesRes.error.details,
+      hint: purchasesRes.error.hint,
+      code: purchasesRes.error.code,
+    });
   }
 
   const purchasedKeys: BereichKey[] = (purchasesRes.data || [])
     .map((p) => (p as { bereich_key: string }).bereich_key as BereichKey);
+
+  console.log('[dashboard-data] loaded', {
+    slug,
+    site_id: site.id,
+    bereiche_count: bereicheRes.data?.length ?? 0,
+    purchases_count: purchasedKeys.length,
+  });
 
   return {
     site,
