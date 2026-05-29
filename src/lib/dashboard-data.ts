@@ -45,16 +45,17 @@ export interface DashboardData {
 export async function loadDashboardData(slug: string): Promise<DashboardData | null> {
   const supabase = createSupabaseAdminClient();
 
-  const { data: site, error: siteErr } = await supabase
+  const { data: siteRaw, error: siteErr } = await supabase
     .from('wedding_sites')
     .select('*')
     .eq('slug', slug)
     .maybeSingle();
 
-  if (siteErr || !site) {
+  if (siteErr || !siteRaw) {
     if (siteErr) console.error('[dashboard] failed to load site:', siteErr);
     return null;
   }
+  const site = siteRaw as WeddingSiteRecord;
 
   const [bereicheRes, purchasesRes] = await Promise.all([
     supabase
@@ -80,7 +81,7 @@ export async function loadDashboardData(slug: string): Promise<DashboardData | n
     .map((p) => (p as { bereich_key: string }).bereich_key as BereichKey);
 
   return {
-    site: site as WeddingSiteRecord,
+    site,
     bereiche: (bereicheRes.data || []) as WeddingBereich[],
     purchasedKeys,
   };
