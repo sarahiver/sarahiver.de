@@ -106,6 +106,8 @@ export interface AddRsvpPayload {
   allergies: string;
   message: string;
   custom_answer: string;
+  /** Begleitpersonen (Person 2, 3, ...). Optional. */
+  companions?: Array<{ name: string; dietary: string; allergies: string }>;
 }
 
 export async function addRsvp(p: AddRsvpPayload): Promise<ActionResult> {
@@ -127,14 +129,24 @@ export async function addRsvp(p: AddRsvpPayload): Promise<ActionResult> {
   }
   const siteId = (site as { id: string }).id;
 
-  // guests-Array: Hauptperson als ersten Eintrag, weitere leer (kann per
-  // Edit später ergänzt werden). Falls keine Email → leerer String, das
-  // ist unique-konstraint-fähig solange jede manuell-eingegebene Person
-  // eine echte Email kriegt. Wenn der User mehrere ohne Email einträgt,
-  // wirft der Index — das ist gewollt.
+  // guests-Array bauen: Hauptperson als Index 0, dann alle nicht-leeren
+  // Begleitpersonen anhängen. Wenn keine Begleitpersonen vorhanden, bleibt
+  // das Array eine 1-Element-Liste mit der Hauptperson (Konsistenz mit
+  // Schema und Flatten-Logik).
   const guests: RsvpGuest[] = [
     { name: p.name.trim(), dietary: p.dietary || '', allergies: p.allergies || '' },
   ];
+  if (Array.isArray(p.companions)) {
+    for (const c of p.companions) {
+      if (c.name?.trim() || c.dietary?.trim() || c.allergies?.trim()) {
+        guests.push({
+          name: c.name?.trim() || '',
+          dietary: c.dietary?.trim() || '',
+          allergies: c.allergies?.trim() || '',
+        });
+      }
+    }
+  }
 
   const { error } = await supabase.from('wedding_rsvps').insert({
     wedding_site_id: siteId,
@@ -151,7 +163,6 @@ export async function addRsvp(p: AddRsvpPayload): Promise<ActionResult> {
 
   if (error) {
     console.error('[addRsvp] failed:', error);
-    // Duplicate-Email → freundliche Fehlermeldung
     if (error.code === '23505') {
       return { ok: false, error: 'Diese Email-Adresse hat schon einen RSVP für eure Hochzeit.' };
     }

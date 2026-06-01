@@ -45,6 +45,7 @@ export function buildDashboardNav(args: {
   purchasedKeys: BereichKey[];
   stats?: {
     rsvpTotal?: number;
+    guestListPending?: number;
     guestbookPending?: number;
     musicWishes?: number;
     photoUploads?: number;
@@ -92,6 +93,14 @@ export function buildDashboardNav(args: {
           href: 'rsvp',
           icon: 'envelope',
           badge: s.rsvpTotal,
+        },
+        isPurchased('rsvp') && {
+          id: 'guests',
+          label: 'Gästeliste',
+          href: 'guests',
+          icon: 'users',
+          badge: s.guestListPending,
+          warning: (s.guestListPending ?? 0) > 0,
         },
         isPurchased('guestbook') && {
           id: 'guestbook',

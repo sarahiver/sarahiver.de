@@ -5625,3 +5625,151 @@ html, body {
   .dash-rsvp-toolbar-search { flex-direction: column; }
   .dash-rsvp-toolbar-actions { justify-content: flex-end; }
 }
+
+/* =========================================================
+   DASHBOARD — Gästeliste & Modal
+   ========================================================= */
+.dash-guests { display: flex; flex-direction: column; gap: 18px; }
+
+/* Stat-Card Akzente */
+.dash-rsvp-stat.is-success { background: var(--dash-success-soft); border-color: var(--dash-success); }
+.dash-rsvp-stat.is-success .dash-rsvp-stat-value { color: var(--dash-success); }
+.dash-rsvp-stat.is-warning { background: var(--dash-warning-soft); border-color: var(--dash-warning); }
+.dash-rsvp-stat.is-warning .dash-rsvp-stat-value { color: var(--dash-warning); }
+
+/* Action Bar */
+.dash-guests-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.dash-guests-actions-spacer { flex: 1; min-width: 0; }
+
+/* CSV-Beispiel */
+.dash-guests-csv-example {
+  background: var(--dash-surface-soft);
+  border: 1px solid var(--dash-border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-family: var(--dash-font-mono);
+  font-size: 12px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+.dash-guests-csv-example code { color: var(--dash-ink-soft); }
+
+/* Empty State */
+.dash-guests-empty {
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-border);
+  border-radius: 10px;
+  padding: 32px 28px;
+  text-align: center;
+}
+.dash-guests-empty h3 {
+  font-family: ui-serif, Georgia, serif;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: var(--dash-ink);
+}
+.dash-guests-empty p {
+  font-size: 13.5px;
+  color: var(--dash-ink-soft);
+  margin: 0 auto 18px;
+  max-width: 500px;
+  line-height: 1.5;
+}
+.dash-guests-empty ol {
+  display: inline-block;
+  text-align: left;
+  font-size: 13px;
+  color: var(--dash-ink-soft);
+  margin: 0 0 22px;
+  padding-left: 22px;
+  line-height: 1.7;
+}
+
+.dash-guests-search { max-width: 360px; }
+.dash-guests-table { min-width: 720px; }
+
+/* Status-Badge Pending */
+.dash-rsvp-badge.is-pending {
+  background: var(--dash-warning-soft);
+  color: var(--dash-warning);
+}
+.dash-rsvp-badge.is-confirmed {
+  background: var(--dash-success-soft);
+  color: var(--dash-success);
+}
+.dash-rsvp-badge.is-declined {
+  background: var(--dash-border);
+  color: var(--dash-muted);
+}
+
+/* Companion-Reihe im Add-Form */
+.dash-rsvp-add-subtitle {
+  font-family: ui-serif, Georgia, serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dash-ink);
+  margin: 4px 0 -2px;
+}
+.dash-rsvp-companion-row {
+  background: var(--dash-bg);
+  border: 1px solid var(--dash-border-soft);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+/* Modal */
+.dash-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 16, 12, 0.45);
+  display: grid;
+  place-items: center;
+  z-index: 200;
+  padding: 16px;
+  animation: dashModalIn 180ms ease;
+}
+.dash-modal {
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-border);
+  border-radius: 12px;
+  padding: 22px 24px 20px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 20px 60px -20px rgba(20, 16, 12, 0.4);
+}
+.dash-modal-wide { max-width: 640px; }
+.dash-modal-title {
+  font-family: ui-serif, Georgia, serif;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: var(--dash-ink);
+}
+.dash-modal-desc {
+  font-size: 13px;
+  color: var(--dash-ink-soft);
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+.dash-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+.dash-btn-danger {
+  background: var(--dash-warning);
+  border-color: var(--dash-warning);
+  color: #fff;
+}
+.dash-btn-danger:hover { background: color-mix(in srgb, var(--dash-warning) 85%, black); }
+@keyframes dashModalIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

@@ -113,6 +113,7 @@ export default function RsvpList({ slug, initialRsvps }: Props) {
     allergies: '',
     message: '',
     custom_answer: '',
+    companions: [],
   });
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -281,7 +282,18 @@ export default function RsvpList({ slug, initialRsvps }: Props) {
       return;
     }
     startTransition(async () => {
-      const res = await addRsvp({ slug, ...newEntry });
+      const res = await addRsvp({
+        slug,
+        name: newEntry.name,
+        email: newEntry.email,
+        persons: newEntry.persons,
+        attending: newEntry.attending,
+        dietary: newEntry.dietary,
+        allergies: newEntry.allergies,
+        message: newEntry.message,
+        custom_answer: newEntry.custom_answer,
+        companions: newEntry.companions,
+      });
       if (res.ok) {
         notify('ok', 'RSVP manuell hinzugefügt.');
         setShowAddForm(false);
@@ -294,6 +306,7 @@ export default function RsvpList({ slug, initialRsvps }: Props) {
           allergies: '',
           message: '',
           custom_answer: '',
+          companions: [],
         });
         router.refresh();
       } else {
@@ -521,6 +534,11 @@ interface AddForm {
   allergies: string;
   message: string;
   custom_answer: string;
+  /**
+   * Zusätzliche Begleitpersonen (Index 0 entspricht Person 2, Index 1 = Person 3, …)
+   * Länge wird im UI mit persons synchronisiert.
+   */
+  companions: Array<{ name: string; dietary: string; allergies: string }>;
 }
 
 function EditRow({
@@ -617,12 +635,30 @@ function AddRsvpForm({
     (k: keyof AddForm) => (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
       u(k, e.target.value);
 
+  // persons ändern → companions-Array auf Länge persons-1 anpassen.
+  // Bestehende Werte werden so weit wie möglich erhalten.
+  const handlePersonsChange = (newPersons: number) => {
+    const p = Math.max(1, Math.min(20, newPersons || 1));
+    const needed = p - 1;
+    const next = entry.companions.slice(0, needed);
+    while (next.length < needed) next.push({ name: '', dietary: '', allergies: '' });
+    onChange({ ...entry, persons: p, companions: next });
+  };
+
+  const updateCompanion = (idx: number, field: 'name' | 'dietary' | 'allergies', value: string) => {
+    const next = entry.companions.map((c, i) => (i === idx ? { ...c, [field]: value } : c));
+    onChange({ ...entry, companions: next });
+  };
+
   return (
     <div className="dash-rsvp-add-form">
       <h3 className="dash-rsvp-add-title">Neuen RSVP manuell hinzufügen</h3>
       <p className="dash-form-hint">
-        Für telefonische Zusagen oder andere RSVPs außerhalb der Website.
+        Für telefonische Zusagen oder andere RSVPs außerhalb der Website. Bei mehr als einer
+        Person erscheinen automatisch Felder für die Begleitpersonen.
       </p>
+
+      <h4 className="dash-rsvp-add-subtitle">Hauptperson</h4>
 
       <div className="dash-form-row">
         <div className="dash-form-field">
@@ -641,7 +677,7 @@ function AddRsvpForm({
             min={1}
             max={20}
             value={entry.persons}
-            onChange={(e) => u('persons', parseInt(e.target.value) || 1)}
+            onChange={(e) => handlePersonsChange(parseInt(e.target.value) || 1)}
           />
         </div>
       </div>
@@ -667,6 +703,46 @@ function AddRsvpForm({
           <input className="dash-input" value={entry.allergies} onChange={h('allergies')} placeholder="Nüsse, Laktose…" />
         </div>
       </div>
+
+      {/* Begleitpersonen-Felder dynamisch */}
+      {entry.companions.length > 0 && (
+        <>
+          <h4 className="dash-rsvp-add-subtitle">Begleitpersonen</h4>
+          {entry.companions.map((c, idx) => (
+            <div key={idx} className="dash-rsvp-companion-row">
+              <div className="dash-form-row">
+                <div className="dash-form-field" style={{ flex: 2 }}>
+                  <label className="dash-form-label">Person {idx + 2} — Name</label>
+                  <input
+                    className="dash-input"
+                    value={c.name}
+                    onChange={(e) => updateCompanion(idx, 'name', e.target.value)}
+                    placeholder={`Begleitperson ${idx + 1}`}
+                  />
+                </div>
+                <div className="dash-form-field">
+                  <label className="dash-form-label">Ernährung</label>
+                  <input
+                    className="dash-input"
+                    value={c.dietary}
+                    onChange={(e) => updateCompanion(idx, 'dietary', e.target.value)}
+                    placeholder="vegetarisch…"
+                  />
+                </div>
+                <div className="dash-form-field">
+                  <label className="dash-form-label">Allergien</label>
+                  <input
+                    className="dash-input"
+                    value={c.allergies}
+                    onChange={(e) => updateCompanion(idx, 'allergies', e.target.value)}
+                    placeholder="Nüsse…"
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </>
+      )}
 
       <div className="dash-form-field">
         <label className="dash-form-label">Nachricht</label>
