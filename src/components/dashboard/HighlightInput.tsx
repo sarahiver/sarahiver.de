@@ -41,26 +41,24 @@ export default function HighlightInput({
   const [plain, setPlain] = useState(initial.current.plain);
   const [highlight, setHighlight] = useState(initial.current.highlight);
 
-  // Wenn value von außen ändert (z.B. nach Save router.refresh), sync'en
-  const lastValueRef = useRef(value);
+  // Tracking welches Feld gerade Focus hat. Solange der User tippt,
+  // ignorieren wir externe value-Updates komplett — sonst kommen
+  // Server-Refreshes mit altem Stand und löschen frisch getippte Zeichen.
+  const focusRef = useRef<'plain' | 'highlight' | null>(null);
+
+  // Wenn value von außen ändert (z.B. nach Save router.refresh), sync'en —
+  // aber nur wenn kein Feld gerade aktiv getippt wird.
   useEffect(() => {
-    if (value !== lastValueRef.current) {
-      const split = splitHighlight(value || '');
-      // Nur updaten wenn unsere lokale Ableitung nicht eh schon passt —
-      // sonst überschreiben wir gerade getipte Eingaben.
-      const ourCurrentHtml = mergeHighlight(plain, highlight);
-      if (ourCurrentHtml !== value) {
-        setPlain(split.plain);
-        setHighlight(split.highlight);
-      }
-      lastValueRef.current = value;
-    }
+    if (focusRef.current !== null) return; // User tippt gerade → nicht stören
+    const split = splitHighlight(value || '');
+    // Nur Updaten wenn sich wirklich was ändert (vermeidet Re-Render-Loops)
+    if (split.plain !== plain) setPlain(split.plain);
+    if (split.highlight !== highlight) setHighlight(split.highlight);
   }, [value, plain, highlight]);
 
   // Bei jeder Änderung das HTML zusammenbauen und propagieren
   const propagate = (nextPlain: string, nextHighlight: string) => {
     const html = mergeHighlight(nextPlain, nextHighlight);
-    lastValueRef.current = html; // Sync-Loop vermeiden
     onChange(html);
   };
 
@@ -98,6 +96,8 @@ export default function HighlightInput({
           className="dash-input"
           value={plain}
           onChange={(e) => handlePlain(e.target.value)}
+          onFocus={() => { focusRef.current = 'plain'; }}
+          onBlur={() => { focusRef.current = null; }}
           placeholder={placeholder}
         />
 
@@ -107,6 +107,8 @@ export default function HighlightInput({
             className="dash-input"
             value={highlight}
             onChange={(e) => handleHighlight(e.target.value)}
+            onFocus={() => { focusRef.current = 'highlight'; }}
+            onBlur={() => { focusRef.current = null; }}
             placeholder={hasPlaceholder ? 'Hervorgehobenes Wort' : 'Platzhalter fehlt'}
             disabled={!hasPlaceholder}
             aria-label="Hervorgehobenes Wort"
