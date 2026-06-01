@@ -6905,3 +6905,73 @@ html, body {
 @media (max-width: 480px) {
   .dash-gifts-stats { grid-template-columns: 1fr; }
 }
+
+/* =========================================================
+   DASHBOARD — Erweiterte Editoren (Galerie, Anfahrt, …)
+   ========================================================= */
+
+/* details / summary für expand-on-demand-Bereiche */
+.dash-details {
+  margin-top: 8px;
+  padding: 8px 0;
+  border-top: 1px solid var(--dash-border-soft);
+}
+.dash-details summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--dash-ink-soft);
+  padding: 6px 0;
+  user-select: none;
+}
+.dash-details summary:hover { color: var(--dash-ink); }
+.dash-details[open] summary {
+  margin-bottom: 8px;
+}
+
+/* Transit-Zeile (Mode-Select + Text + Trash) */
+.dash-transit-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  margin-bottom: 6px;
+}
+.dash-transit-row > input,
+.dash-transit-row > select {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Galerie-Grid (Bilder + Inputs) */
+.dash-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.dash-gallery-card {
+  background: var(--dash-bg);
+  border: 1px solid var(--dash-border);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.dash-gallery-thumb {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--dash-border-soft);
+}
+.dash-gallery-card-body {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dash-gallery-card-actions {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+  padding-top: 8px;
+  border-top: 1px solid var(--dash-border-soft);
+}
