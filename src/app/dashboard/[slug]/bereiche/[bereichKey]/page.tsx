@@ -2,6 +2,7 @@ import DashboardSection from '@/components/dashboard/DashboardSection';
 import EditorShell from '@/components/dashboard/EditorShell';
 import ComingSoonSection from '@/components/dashboard/ComingSoonSection';
 import VariantPicker from './VariantPicker';
+import HeroEditor from './HeroEditor';
 import { bereichLabel } from '@/lib/dashboard-nav';
 import { loadDashboardData, findBereich } from '@/lib/dashboard-data';
 import type { BereichKey } from '@/types/supabase';
@@ -16,7 +17,7 @@ import { notFound, redirect } from 'next/navigation';
  *
  * Inhalt:
  *  - VariantPicker (drei Karten zur Variantenwahl)
- *  - Editor-Felder für die Bereich-Inhalte (noch Coming-Soon)
+ *  - Bereich-spezifischer Editor (z.B. HeroEditor) oder Coming-Soon
  *
  * Live-Vorschau rechts via EditorShell.
  */
@@ -53,6 +54,10 @@ export default async function BereichEditorPage({
     ? `Variante ${variant.toUpperCase()} · ${bereich.is_active ? 'aktiv' : 'deaktiviert'}`
     : 'Dieser Bereich ist noch nicht angelegt — bitte zuerst aktivieren.';
 
+  // Bereich-spezifischer Editor — pro Bereich-Key eine eigene Komponente.
+  // Aktuell nur Hero implementiert.
+  const content = (bereich?.content || {}) as Record<string, unknown>;
+
   return (
     <DashboardSection title={label} description={desc}>
       <EditorShell
@@ -63,7 +68,19 @@ export default async function BereichEditorPage({
       >
         <VariantPicker slug={slug} bereichKey={bereichKey as BereichKey} initial={variant} />
         <div style={{ marginTop: 20 }}>
-          <ComingSoonSection what={`Editor-Felder für „${label}"`} />
+          {bereichKey === 'hero' ? (
+            <HeroEditor
+              slug={slug}
+              variant={variant}
+              initial={{
+                hero_image_url: data.site.hero_image_url,
+                eyebrow: (content.eyebrow as string) || '',
+                image_2: (content.image_2 as string) || null,
+              }}
+            />
+          ) : (
+            <ComingSoonSection what={`Editor-Felder für „${label}"`} />
+          )}
         </div>
       </EditorShell>
     </DashboardSection>

@@ -6006,3 +6006,121 @@ html, body {
   justify-content: center;
   margin: 0 auto;
 }
+
+/* =========================================================
+   DASHBOARD — Image-Uploader (Cloudinary, wiederverwendbar)
+   ========================================================= */
+.dash-uploader { display: flex; flex-direction: column; gap: 6px; }
+
+.dash-uploader-zone {
+  position: relative;
+  border: 1.5px dashed var(--dash-border);
+  border-radius: 10px;
+  background: var(--dash-bg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease;
+  overflow: hidden;
+  min-height: 120px;
+}
+.dash-uploader-zone:hover:not(.has-image) {
+  border-color: var(--dash-accent);
+  background-color: var(--dash-accent-soft);
+}
+.dash-uploader-zone.is-dragging:not(.has-image) {
+  border-color: var(--dash-accent);
+  background-color: var(--dash-accent-soft);
+}
+.dash-uploader-zone.has-image {
+  border-style: solid;
+  border-color: var(--dash-border);
+  cursor: default;
+}
+
+.dash-uploader-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--dash-ink-soft);
+  padding: 16px;
+  text-align: center;
+}
+.dash-uploader-placeholder p {
+  font-size: 13px;
+  margin: 0;
+  line-height: 1.4;
+}
+.dash-uploader-placeholder strong { color: var(--dash-ink); font-weight: 600; }
+.dash-uploader-hint {
+  font-family: var(--dash-font-mono);
+  font-size: 10px !important;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dash-muted);
+  margin-top: 2px !important;
+}
+
+.dash-uploader-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(to bottom, transparent 0%, rgba(20, 16, 12, 0.45) 100%);
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+.dash-uploader-zone.has-image:hover .dash-uploader-overlay { opacity: 1; }
+
+.dash-uploader-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: white;
+  color: var(--dash-ink);
+  border: 0;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 120ms ease, transform 120ms ease;
+}
+.dash-uploader-btn:hover { background: var(--dash-bg); transform: translateY(-1px); }
+.dash-uploader-btn.is-danger { background: var(--dash-warning); color: white; }
+.dash-uploader-btn.is-danger:hover { background: color-mix(in srgb, var(--dash-warning) 85%, black); }
+.dash-uploader-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.dash-uploader-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: rgba(20, 16, 12, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dash-uploader-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--dash-accent);
+  transition: width 200ms ease;
+}
+.dash-uploader-progress-label {
+  font-family: var(--dash-font-mono);
+  font-size: 11px;
+  color: white;
+  letter-spacing: 0.06em;
+}
