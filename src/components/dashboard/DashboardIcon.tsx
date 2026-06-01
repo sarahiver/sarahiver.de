@@ -66,6 +66,8 @@ const PATHS: Record<string, ReactElement> = {
   close: <path d="m4 4 16 16M20 4 4 20" />,
   plus: <path d="M12 5v14M5 12h14" />,
   check: <path d="m4 12 5 5L20 7" />,
+  trash: <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14zM10 11v6M14 11v6" />,
+  download: <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />,
 };
 
 export default function DashboardIcon({ name, size = 18 }: IconProps) {
