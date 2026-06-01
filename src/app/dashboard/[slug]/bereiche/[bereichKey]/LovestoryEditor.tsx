@@ -11,6 +11,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { updateBereichContent } from './actions';
 import ImageUploader from '@/components/dashboard/ImageUploader';
+import HighlightInput from '@/components/dashboard/HighlightInput';
 import DashboardIcon from '@/components/dashboard/DashboardIcon';
 import SaveStatusIndicator, { type SaveStatus } from '@/components/dashboard/SaveStatusIndicator';
 
@@ -199,18 +200,12 @@ function LovestoryEditorA({ slug, initial }: PropsA) {
           </div>
         </div>
 
-        <div className="dash-form-field">
-          <label className="dash-form-label">Titel</label>
-          <input
-            className="dash-input"
-            value={text.title}
-            onChange={onChange('title')}
-            placeholder="Ein Donnerstagabend, <em>Hamburg</em>."
-          />
-          <p className="dash-form-hint">
-            <code>&lt;em&gt;</code>-Tags sind erlaubt für eine kursive Hervorhebung in der Schreibschrift.
-          </p>
-        </div>
+        <HighlightInput
+          label="Titel"
+          value={text.title}
+          onChange={(v) => updateText('title', v)}
+          placeholder="Ein Donnerstagabend, [highlight]."
+        />
 
         <div className="dash-form-field">
           <label className="dash-form-label">Moment-Titel</label>
@@ -438,18 +433,12 @@ function LovestoryEditorBC({ slug, initial }: PropsBC) {
           />
         </div>
 
-        <div className="dash-form-field">
-          <label className="dash-form-label">Titel</label>
-          <input
-            className="dash-input"
-            value={text.title}
-            onChange={onChange('title')}
-            placeholder="Sieben Jahre <em>&amp;</em> ein Tag."
-          />
-          <p className="dash-form-hint">
-            <code>&lt;em&gt;</code>-Tags sind erlaubt für eine kursive Hervorhebung.
-          </p>
-        </div>
+        <HighlightInput
+          label="Titel"
+          value={text.title}
+          onChange={(v) => updateText('title', v)}
+          placeholder="Sieben Jahre [highlight] ein Tag."
+        />
 
         <div className="dash-form-field">
           <label className="dash-form-label">Intro</label>

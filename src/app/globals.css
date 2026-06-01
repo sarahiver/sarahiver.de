@@ -6346,3 +6346,80 @@ html, body {
   color: var(--dash-ink-soft);
   margin: 0;
 }
+
+/* =========================================================
+   DASHBOARD — Highlight-Input (zwei verknüpfte Felder)
+   ========================================================= */
+.dash-highlight-input {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Highlight-Wort-Zeile: Input + optional "Platzhalter einfügen"-Link */
+.dash-highlight-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+.dash-highlight-row > input {
+  flex: 1;
+  min-width: 0;
+  /* Subtiler Look — sekundäres Feld */
+  background: var(--dash-bg);
+  font-style: italic;
+}
+.dash-highlight-row > input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Link-Style-Button: "Platzhalter einfügen" */
+.dash-btn-link {
+  background: transparent;
+  border: 1px dashed var(--dash-border);
+  color: var(--dash-accent);
+  padding: 0 14px;
+  font-size: 12.5px;
+  cursor: pointer;
+  border-radius: 6px;
+  font-family: inherit;
+  transition: background 120ms ease, border-color 120ms ease;
+  white-space: nowrap;
+}
+.dash-btn-link:hover {
+  background: var(--dash-accent-soft);
+  border-color: var(--dash-accent);
+}
+
+/* Live-Vorschau */
+.dash-highlight-preview {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 10px 14px;
+  background: var(--dash-surface-soft);
+  border: 1px solid var(--dash-border-soft);
+  border-radius: 6px;
+}
+.dash-highlight-preview-label {
+  font-family: var(--dash-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dash-muted);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.dash-highlight-preview-text {
+  font-family: ui-serif, Georgia, serif;
+  font-size: 15px;
+  color: var(--dash-ink);
+  line-height: 1.4;
+}
+.dash-highlight-preview-text em {
+  font-style: italic;
+  color: var(--dash-accent);
+  font-weight: 500;
+}

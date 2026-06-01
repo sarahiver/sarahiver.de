@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, useTransition, type ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { updateBereichContent } from './actions';
+import HighlightInput from '@/components/dashboard/HighlightInput';
 import SaveStatusIndicator, { type SaveStatus } from '@/components/dashboard/SaveStatusIndicator';
 
 /**
@@ -103,19 +104,12 @@ export default function PhotoUploadEditor({ slug, initial }: Props) {
           />
         </div>
 
-        <div className="dash-form-field">
-          <label className="dash-form-label" htmlFor="pu-title">Titel</label>
-          <input
-            id="pu-title"
-            className="dash-input"
-            value={form.title}
-            onChange={onTextChange('title')}
-            placeholder="Teilt eure <em>Erinnerungen</em>"
-          />
-          <p className="dash-form-hint">
-            <code>&lt;em&gt;</code>-Tags sind erlaubt für eine kursive Hervorhebung in der Schreibschrift.
-          </p>
-        </div>
+        <HighlightInput
+          label="Titel"
+          value={form.title}
+          onChange={(v) => update('title', v)}
+          placeholder="Teilt eure [highlight]"
+        />
 
         <div className="dash-form-field">
           <label className="dash-form-label" htmlFor="pu-description">Beschreibung</label>
