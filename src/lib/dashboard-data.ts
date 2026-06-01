@@ -12,7 +12,7 @@
  */
 
 import { createSupabaseAdminClient } from './supabase-admin';
-import type { BereichKey, WeddingBereich } from '@/types/supabase';
+import type { BereichKey, WeddingBereich, Variant } from '@/types/supabase';
 
 export interface WeddingSiteRecord {
   id: string;
@@ -32,6 +32,9 @@ export interface WeddingSiteRecord {
   palette_custom_accent_deep: string | null;
   palette_custom_ink: string | null;
   status: 'in_progress' | 'ready_for_review' | 'finalized' | 'live' | null;
+  /** Anzahl Bereiche, deren Draft vom Published abweicht (gefüllt von loadDashboardStats). */
+  site_is_dirty?: boolean;
+  site_published_at?: string | null;
   created_at?: string;
 }
 
@@ -44,6 +47,10 @@ export interface DashboardData {
 /**
  * Lädt das gesamte Dashboard-Datenpaket für einen Slug.
  * Liefert null, wenn die Site nicht existiert.
+ *
+ * Draft/Published-Aware: Die `site`- und `bereiche`-Records werden mit ihren
+ * DRAFT-Werten zurückgegeben (was das Brautpaar gerade bearbeitet). Die
+ * Gäste-Seite liest separat aus den Published-Quellen.
  */
 export async function loadDashboardData(slug: string): Promise<DashboardData | null> {
   const supabase = createSupabaseAdminClient();
@@ -72,23 +79,27 @@ export async function loadDashboardData(slug: string): Promise<DashboardData | n
     console.warn('[dashboard-data] no site found for slug:', slug);
     return null;
   }
-  const site = siteRaw as WeddingSiteRecord;
+
+  // site_draft über die Published-Spalten legen — Dashboard liest und
+  // schreibt die editierbaren Felder in den Draft-Zustand. Die Spalten
+  // selbst bleiben "Published" als Quelle für die Gäste-Seite.
+  const merged = mergeDraftIntoSite(siteRaw as WeddingSiteRecord & { site_draft?: Record<string, unknown> });
 
   const [bereicheRes, purchasesRes] = await Promise.all([
     supabase
       .from('wedding_bereiche')
       .select('*')
-      .eq('wedding_site_id', site.id)
+      .eq('wedding_site_id', merged.id)
       .order('display_order', { ascending: true }),
     supabase
       .from('wedding_purchases')
       .select('bereich_key')
-      .eq('wedding_site_id', site.id),
+      .eq('wedding_site_id', merged.id),
   ]);
 
   if (bereicheRes.error) {
     console.error('[dashboard-data] wedding_bereiche query failed:', {
-      site_id: site.id,
+      site_id: merged.id,
       message: bereicheRes.error.message,
       details: bereicheRes.error.details,
       hint: bereicheRes.error.hint,
@@ -97,7 +108,7 @@ export async function loadDashboardData(slug: string): Promise<DashboardData | n
   }
   if (purchasesRes.error) {
     console.error('[dashboard-data] wedding_purchases query failed:', {
-      site_id: site.id,
+      site_id: merged.id,
       message: purchasesRes.error.message,
       details: purchasesRes.error.details,
       hint: purchasesRes.error.hint,
@@ -108,18 +119,54 @@ export async function loadDashboardData(slug: string): Promise<DashboardData | n
   const purchasedKeys: BereichKey[] = (purchasesRes.data || [])
     .map((p) => (p as { bereich_key: string }).bereich_key as BereichKey);
 
+  // Bereich-Records: Draft-Felder werden auf die Haupt-Felder gespiegelt,
+  // damit bestehende Editor-Komponenten (die `bereich.content`/`.variant`/
+  // `.display_order`/`.is_active` lesen) ohne Änderung weiterlaufen.
+  const bereiche = (bereicheRes.data || []).map((b) => {
+    const raw = b as WeddingBereich;
+    return {
+      ...raw,
+      content: raw.content_draft || raw.content || {},
+      variant: (raw.variant_draft ?? raw.variant) as Variant,
+      display_order: raw.display_order_draft ?? raw.display_order,
+      is_active: raw.is_active_draft ?? raw.is_active,
+    } as WeddingBereich;
+  });
+  // Falls Draft-Order anders ist als Published, müssen wir neu sortieren
+  bereiche.sort((a, b) => a.display_order - b.display_order);
+
   console.log('[dashboard-data] loaded', {
     slug,
-    site_id: site.id,
-    bereiche_count: bereicheRes.data?.length ?? 0,
+    site_id: merged.id,
+    bereiche_count: bereiche.length,
     purchases_count: purchasedKeys.length,
+    dirty_bereiche: bereiche.filter((b) => b.is_dirty).length,
+    site_dirty: merged.site_is_dirty,
   });
 
   return {
-    site,
-    bereiche: (bereicheRes.data || []) as WeddingBereich[],
+    site: merged,
+    bereiche,
     purchasedKeys,
   };
+}
+
+/**
+ * Merged die Werte aus site_draft in die Site-Record, damit das Dashboard
+ * den Bearbeitungszustand sieht. Bei fehlenden Draft-Werten wird der
+ * Published-Wert beibehalten.
+ */
+function mergeDraftIntoSite(
+  raw: WeddingSiteRecord & { site_draft?: Record<string, unknown> },
+): WeddingSiteRecord {
+  const draft = (raw.site_draft || {}) as Record<string, unknown>;
+  // Nur Werte mergen, die wirklich im Draft gesetzt sind (!= undefined).
+  // null ist ein gültiger Wert (z.B. hero_image_url entfernt).
+  const merged: Record<string, unknown> = { ...raw };
+  for (const [key, value] of Object.entries(draft)) {
+    if (value !== undefined) merged[key] = value;
+  }
+  return merged as WeddingSiteRecord;
 }
 
 /**
@@ -158,7 +205,13 @@ export async function loadDashboardStats(
   };
 
   for (const b of bereiche) {
-    const content = (b.content as Record<string, unknown>) || {};
+    // Dashboard zeigt Draft-Stand → Stats müssen auch aus Draft kommen.
+    // loadDashboardData() spiegelt content_draft auf content; falls dieser
+    // Loader umgangen wird, fallback auf content_draft direkt.
+    const content =
+      (b.content as Record<string, unknown>) ||
+      (b.content_draft as Record<string, unknown>) ||
+      {};
 
     if (b.bereich_key === 'guestbook') {
       const entries = (content.entries as unknown[]) || [];

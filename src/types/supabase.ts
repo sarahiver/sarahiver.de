@@ -73,6 +73,15 @@ export interface WeddingSite {
   dna_decor_override: Decor | null;
   dna_contrast_override: Contrast | null;
   status: SiteStatus;
+  /**
+   * JSON-Bündel aller editierbaren Felder im Bearbeitungszustand
+   * (couple_name_1/2, wedding_date, hero_image_url, palette_*, font_preset_id,
+   * nav_variant, dna_*_override, …). Beim Publish wird der Inhalt zurück in
+   * die einzelnen Spalten geschrieben.
+   */
+  site_draft: Record<string, unknown>;
+  site_is_dirty: boolean;
+  site_published_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -104,7 +113,18 @@ export interface WeddingBereich {
   variant: Variant;
   display_order: number;
   is_active: boolean;
+  /**
+   * Veralteter Content-Eintrag — bleibt aus Migrationsgründen erhalten.
+   * Neuer Pfad: content_draft (im Dashboard) + content_published (auf der Gäste-Seite).
+   */
   content: Record<string, unknown>;
+  content_draft: Record<string, unknown>;
+  content_published: Record<string, unknown>;
+  variant_draft: Variant | null;
+  display_order_draft: number | null;
+  is_active_draft: boolean | null;
+  is_dirty: boolean;
+  published_at: string | null;
   created_at: string;
   updated_at: string;
 }

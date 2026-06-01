@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import DashboardIcon from './DashboardIcon';
 
 /**
@@ -8,14 +8,17 @@ import DashboardIcon from './DashboardIcon';
  * Stammdaten/Stil/Navigation).
  *
  * Desktop ≥ 1280px: dreispaltig (Sidebar | Editor | Live-Vorschau-iframe).
+ *   Preview ist sticky, bleibt beim Editor-Scrollen immer im Viewport.
  * Desktop 880-1279px: nur Editor, Topbar-"Vorschau"-Link öffnet im neuen Tab.
  * Mobile < 880px:
  *   - mobileBlock=true (Bereich-Editoren): zeigt "nur Desktop"-Hinweis
- *   - mobileBlock=false (Stammdaten/Stil/Navigation): rendert den Editor
- *     auch auf Mobile, ohne Vorschau (das ist auf Mobile eh sinnlos).
+ *   - mobileBlock=false (Stammdaten/Stil/Navigation): nur Editor, ohne
+ *     Vorschau (auf Mobile eh sinnlos)
  *
- * Die iframe-Quelle ist /[slug]?preview=1 — wenn bereichKey angegeben ist,
- * scrollt sie zum entsprechenden Anker. Sonst zeigt sie die Seite von oben.
+ * Reload-Verhalten: bei jedem Save-Event wird das iframe per src-Trick
+ * (?t=timestamp) neu geladen. Nach dem Load scrollen wir programmatisch
+ * zum Top des iframe-Dokuments — verhindert dass die Vorschau mitten in
+ * der Seite landet.
  */
 
 interface Props {
@@ -40,7 +43,9 @@ export default function EditorShell({
   children,
 }: Props) {
   const [isMobile, setIsMobile] = useState(false);
-  const [previewKey, setPreviewKey] = useState(0);
+  const [previewBust, setPreviewBust] = useState(0);
+  const [previewMode, setPreviewMode] = useState<'draft' | 'published'>('draft');
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 880);
@@ -49,15 +54,13 @@ export default function EditorShell({
     return () => window.removeEventListener('resize', check);
   }, []);
 
+  // Externe Trigger-Quellen: reloadKey-Prop oder Custom-Event "dashboard:editor-saved"
   useEffect(() => {
-    setPreviewKey((k) => k + 1);
+    setPreviewBust((k) => k + 1);
   }, [reloadKey]);
 
-  // Custom Event von Editor-Forms: nach erfolgreichem Save reloaden wir das
-  // Vorschau-iframe. Die Forms feuern window.dispatchEvent(new Event(
-  // 'dashboard:editor-saved')) bei Erfolg.
   useEffect(() => {
-    const onSaved = () => setPreviewKey((k) => k + 1);
+    const onSaved = () => setPreviewBust((k) => k + 1);
     window.addEventListener('dashboard:editor-saved', onSaved);
     return () => window.removeEventListener('dashboard:editor-saved', onSaved);
   }, []);
@@ -66,12 +69,35 @@ export default function EditorShell({
     return <MobileBlock weddingSlug={weddingSlug} />;
   }
 
-  const previewSrc = bereichKey
-    ? `/${weddingSlug}?preview=1#bereich-${bereichKey}`
-    : `/${weddingSlug}?preview=1`;
-  const previewLinkSrc = bereichKey
-    ? `/${weddingSlug}#bereich-${bereichKey}`
-    : `/${weddingSlug}`;
+  // src mit Cache-Bust-Param. Im Draft-Mode zeigen wir den Bearbeitungszustand,
+  // im Live-Mode den von Gästen sichtbaren Stand.
+  const bustSuffix = previewBust > 0 ? `&t=${previewBust}` : '';
+  const anchor = bereichKey ? `#bereich-${bereichKey}` : '';
+  const previewParam = previewMode === 'draft' ? '?preview=draft' : '?preview=1';
+  const previewSrc = `/${weddingSlug}${previewParam}${bustSuffix}${anchor}`;
+  const previewLinkSrc = `/${weddingSlug}${anchor}`;
+
+  // Nach jedem iframe-Load: zum Top des iframe-Dokuments scrollen. Das löst
+  // das Problem, dass Reload manchmal in der Mitte/unten der Seite landet.
+  // Geht nur, wenn Same-Origin — und das ist hier der Fall.
+  const handleLoad = () => {
+    try {
+      const win = iframeRef.current?.contentWindow;
+      if (win) {
+        // wenn ein Anker da war, zum Anker scrollen, sonst zum Top
+        if (bereichKey) {
+          const el = win.document.getElementById(`bereich-${bereichKey}`);
+          if (el) {
+            el.scrollIntoView({ block: 'start', behavior: 'auto' });
+            return;
+          }
+        }
+        win.scrollTo(0, 0);
+      }
+    } catch {
+      // Cross-Origin würde hier werfen — sollte aber nicht passieren
+    }
+  };
 
   return (
     <div className="dash-editor-shell">
@@ -87,10 +113,32 @@ export default function EditorShell({
 
       <div className="dash-preview-pane">
         <div className="dash-preview-pane-bar">
-          <span className="dash-preview-pane-label">
-            <DashboardIcon name="external" size={12} />
-            <span>Live-Vorschau</span>
-          </span>
+          <div className="dash-preview-toggle" role="tablist" aria-label="Vorschau-Modus">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={previewMode === 'draft'}
+              className={`dash-preview-toggle-btn ${previewMode === 'draft' ? 'is-active' : ''}`}
+              onClick={() => {
+                setPreviewMode('draft');
+                setPreviewBust((k) => k + 1);
+              }}
+            >
+              Bearbeitung
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={previewMode === 'published'}
+              className={`dash-preview-toggle-btn ${previewMode === 'published' ? 'is-active' : ''}`}
+              onClick={() => {
+                setPreviewMode('published');
+                setPreviewBust((k) => k + 1);
+              }}
+            >
+              Live
+            </button>
+          </div>
           <a
             href={previewLinkSrc}
             target="_blank"
@@ -102,11 +150,12 @@ export default function EditorShell({
         </div>
         <div className="dash-preview-pane-frame">
           <iframe
-            key={previewKey}
+            ref={iframeRef}
             src={previewSrc}
             title="Vorschau der Gäste-Seite"
             loading="lazy"
             referrerPolicy="strict-origin-when-cross-origin"
+            onLoad={handleLoad}
           />
         </div>
       </div>

@@ -16,6 +16,7 @@ import type { Metadata } from 'next';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ preview?: string }>;
 }
 
 // Cache: 60 Sekunden, falls Brautpaar gerade editiert
@@ -46,9 +47,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function WeddingSitePage({ params }: PageProps) {
+export default async function WeddingSitePage({ params, searchParams }: PageProps) {
   const { slug } = await params;
-  const data = await loadWeddingSite(slug);
+  const sp = await searchParams;
+  const mode: 'draft' | 'published' = sp?.preview === 'draft' ? 'draft' : 'published';
+  const data = await loadWeddingSite(slug, mode);
 
   if (!data) notFound();
 

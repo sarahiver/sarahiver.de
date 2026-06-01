@@ -7,8 +7,13 @@ import type {
 
 /**
  * Token-Loader — lädt für einen Slug alle benötigten Daten.
+ *
+ * @param mode 'published' (Default, Gäste-Seite) oder 'draft' (Preview im Dashboard)
  */
-export async function loadWeddingSite(slug: string): Promise<{
+export async function loadWeddingSite(
+  slug: string,
+  mode: 'published' | 'draft' = 'published',
+): Promise<{
   tokens: EffectiveTokens;
   bereiche: WeddingBereich[];
 } | null> {
@@ -20,11 +25,18 @@ export async function loadWeddingSite(slug: string): Promise<{
       .select('*')
       .eq('slug', slug)
       .maybeSingle(),
-    supabase
-      .from('wedding_bereiche')
-      .select('*')
-      .eq('is_active', true)
-      .order('display_order', { ascending: true }),
+    // Im Published-Mode filtern wir auf is_active. Im Draft-Mode laden wir
+    // alle und filtern erst nach Mapping auf das effektive is_active_draft.
+    mode === 'draft'
+      ? supabase
+          .from('wedding_bereiche')
+          .select('*')
+          .order('display_order', { ascending: true })
+      : supabase
+          .from('wedding_bereiche')
+          .select('*')
+          .eq('is_active', true)
+          .order('display_order', { ascending: true }),
   ]);
 
   if (tokensResult.error || !tokensResult.data) {
@@ -34,25 +46,83 @@ export async function loadWeddingSite(slug: string): Promise<{
 
   const tokens = tokensResult.data as EffectiveTokens;
 
+  // Im Draft-Mode: site_draft über die View-Werte legen, damit Vorschau
+  // den Bearbeitungszustand zeigt. (View v_effective_tokens kennt nur
+  // Published-Spalten.)
+  if (mode === 'draft') {
+    try {
+      const siteRes = await supabase
+        .from('wedding_sites')
+        .select('site_draft, nav_variant, hero_image_url, couple_name_1, couple_name_2, wedding_date, wedding_location')
+        .eq('id', tokens.wedding_site_id)
+        .maybeSingle();
+      const draft = (siteRes.data as { site_draft?: Record<string, unknown> } | null)?.site_draft || {};
+      // Felder, die in EffectiveTokens-Form gemerged werden müssen
+      const t = tokens as Record<string, unknown>;
+      if ('hero_image_url' in draft) t.hero_image_url = draft.hero_image_url;
+      if ('couple_name_1' in draft) t.couple_name_1 = draft.couple_name_1;
+      if ('couple_name_2' in draft) t.couple_name_2 = draft.couple_name_2;
+      if ('wedding_date' in draft) t.wedding_date = draft.wedding_date;
+      if ('wedding_location' in draft) t.wedding_location = draft.wedding_location;
+      // Farben — Custom-Override checken
+      if ('palette_custom_bg' in draft) t.color_bg = draft.palette_custom_bg ?? t.color_bg;
+      if ('palette_custom_bg_soft' in draft) t.color_bg_soft = draft.palette_custom_bg_soft ?? t.color_bg_soft;
+      if ('palette_custom_accent' in draft) t.color_accent = draft.palette_custom_accent ?? t.color_accent;
+      if ('palette_custom_accent_deep' in draft) t.color_accent_deep = draft.palette_custom_accent_deep ?? t.color_accent_deep;
+      if ('palette_custom_ink' in draft) t.color_ink = draft.palette_custom_ink ?? t.color_ink;
+    } catch (err) {
+      console.warn('[loadWeddingSite] draft merge failed, falling back to published:', err);
+    }
+  }
+
   // nav_variant separat aus wedding_sites laden (nicht in der View).
   // Defensive: wenn Spalte/Query fehlschlägt, Fallback auf 'a'.
   let navVariant: string = 'a';
   try {
     const navResult = await supabase
       .from('wedding_sites')
-      .select('nav_variant')
+      .select('nav_variant, site_draft')
       .eq('id', tokens.wedding_site_id)
       .maybeSingle();
-    const v = (navResult.data as { nav_variant?: string } | null)?.nav_variant;
-    if (v === 'a' || v === 'b' || v === 'c' || v === 'none') navVariant = v;
+    const row = (navResult.data as { nav_variant?: string; site_draft?: Record<string, unknown> } | null) || {};
+    const sourceVal = mode === 'draft'
+      ? ((row.site_draft as Record<string, unknown>)?.nav_variant as string | undefined) ?? row.nav_variant
+      : row.nav_variant;
+    if (sourceVal === 'a' || sourceVal === 'b' || sourceVal === 'c' || sourceVal === 'none') {
+      navVariant = sourceVal;
+    }
   } catch {
     // Spalte existiert evtl. noch nicht — Fallback bleibt 'a'
   }
   (tokens as EffectiveTokens & { nav_variant?: string }).nav_variant = navVariant;
 
-  let bereiche = (bereicheResult.data ?? []).filter(
-    (b) => b.wedding_site_id === tokens.wedding_site_id,
-  ) as WeddingBereich[];
+  // Bereiche: content_published bzw. content_draft auf content mappen,
+  // damit die Render-Komponenten unverändert weiterlaufen. Im Draft-Mode
+  // zusätzlich variant_draft/display_order_draft/is_active_draft anwenden.
+  let bereiche = (bereicheResult.data ?? [])
+    .filter((b) => b.wedding_site_id === tokens.wedding_site_id)
+    .map((b) => {
+      const raw = b as WeddingBereich;
+      if (mode === 'draft') {
+        return {
+          ...raw,
+          content: raw.content_draft || raw.content || {},
+          variant: (raw.variant_draft ?? raw.variant),
+          display_order: raw.display_order_draft ?? raw.display_order,
+          is_active: raw.is_active_draft ?? raw.is_active,
+        } as WeddingBereich;
+      }
+      return {
+        ...raw,
+        content: raw.content_published || raw.content || {},
+      } as WeddingBereich;
+    })
+    // Erneutes Filtern nach (effektivem) is_active und Sortieren — die
+    // initiale Query filterte auf is_active=true (Published), im Draft-Mode
+    // kann das anders sein. Pragmatisch: alle initial geladenen, danach
+    // effektives Filter und Sort.
+    .filter((b) => b.is_active)
+    .sort((a, b) => a.display_order - b.display_order);
 
   // Purchase-Filter: nur Bereiche zeigen, die wirklich gebucht sind. So bleibt
   // Gäste-Seite konsistent zum Dashboard (welches denselben Filter macht).

@@ -4,11 +4,17 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { DashboardNavSection } from '@/lib/dashboard-nav';
+import type { BereichKey } from '@/types/supabase';
 import DashboardIcon from './DashboardIcon';
 
 interface Props {
   slug: string;
   sections: DashboardNavSection[];
+  /**
+   * Bereich-Keys mit ungespeicherten Live-Änderungen. Wird als kleiner Dot
+   * neben dem Editor-Item in der Sidebar angezeigt.
+   */
+  dirtyBereiche?: BereichKey[];
 }
 
 /**
@@ -20,9 +26,11 @@ interface Props {
  * Das aktive Item wird über usePathname() ermittelt. Reihenfolge der Checks
  * matters: Wir matchen den am genauesten passenden Pfad zuerst (länger zuerst).
  */
-export default function DashboardSidebar({ slug, sections }: Props) {
+export default function DashboardSidebar({ slug, sections, dirtyBereiche = [] }: Props) {
   const pathname = usePathname() || '';
   const [open, setOpen] = useState(false);
+
+  const dirtySet = new Set(dirtyBereiche);
 
   // Mobile-Drawer-Steuerung via Custom Event aus der Topbar
   useEffect(() => {
@@ -83,6 +91,11 @@ export default function DashboardSidebar({ slug, sections }: Props) {
                 {section.items.map((item) => {
                   const href = item.href ? `${base}/${item.href}` : base;
                   const isActive = item.id === activeId;
+                  // Editor-Items haben id-Format "edit-{bereich_key}"
+                  const editKey = item.id.startsWith('edit-')
+                    ? (item.id.replace('edit-', '') as BereichKey)
+                    : null;
+                  const isDirty = editKey ? dirtySet.has(editKey) : false;
                   return (
                     <li key={item.id}>
                       <Link
@@ -93,6 +106,9 @@ export default function DashboardSidebar({ slug, sections }: Props) {
                           <DashboardIcon name={item.icon} />
                         </span>
                         <span className="dash-sidebar-item-label">{item.label}</span>
+                        {isDirty && (
+                          <span className="dash-sidebar-dirty-dot" title="Ungespeicherte Live-Änderungen" />
+                        )}
                         {typeof item.badge === 'number' && item.badge > 0 && (
                           <span className={`dash-sidebar-badge ${item.warning ? 'is-warning' : ''}`}>
                             {item.badge}

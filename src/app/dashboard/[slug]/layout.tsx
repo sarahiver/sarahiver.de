@@ -1,4 +1,5 @@
 import { loadDashboardData, loadDashboardStats } from '@/lib/dashboard-data';
+import { loadDirtyState } from './publish-actions';
 import { buildDashboardNav } from '@/lib/dashboard-nav';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import DashboardTopbar from '@/components/dashboard/DashboardTopbar';
@@ -46,6 +47,7 @@ export default async function DashboardLayout({
   }
 
   const stats = await loadDashboardStats(data.site.id, data.bereiche);
+  const dirtyState = await loadDirtyState(slug);
   const navSections = buildDashboardNav({
     bereiche: data.bereiche.map((b) => ({
       bereich_key: b.bereich_key,
@@ -60,12 +62,13 @@ export default async function DashboardLayout({
 
   return (
     <div className="dash-shell">
-      <DashboardSidebar slug={slug} sections={navSections} />
+      <DashboardSidebar slug={slug} sections={navSections} dirtyBereiche={dirtyState.dirtyBereiche} />
       <div className="dash-main">
         <DashboardTopbar
           slug={slug}
           coupleNames={coupleNames}
           weddingDateISO={data.site.wedding_date}
+          dirtyState={dirtyState}
         />
         <main className="dash-content">
           <DashboardErrorBoundary>

@@ -184,10 +184,13 @@ const SITE_DRAFT_FIELDS = [
   'palette_custom_ink',
   'font_preset_id',
   'nav_variant',
-  'dna_align_override',
+  'dna_density_override',
   'dna_spacing_override',
-  'dna_decor_override',
-  'dna_contrast_override',
+  'dna_align_override',
+  'dna_radius_override',
+  'dna_motion_override',
+  'dna_pace_override',
+  'dna_imagery_override',
 ] as const;
 
 export async function publishSite(p: PublishSitePayload): Promise<ActionResult> {

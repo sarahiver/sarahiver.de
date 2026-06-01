@@ -9,6 +9,7 @@ import type { Metadata } from 'next';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ preview?: string }>;
 }
 
 export const revalidate = 60;
@@ -32,10 +33,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function WeddingSitePage({ params }: PageProps) {
+export default async function WeddingSitePage({ params, searchParams }: PageProps) {
   const { slug } = await params;
+  const sp = await searchParams;
+  const mode: 'draft' | 'published' = sp?.preview === 'draft' ? 'draft' : 'published';
+
   if (isReservedSlug(slug) || !isValidSlugFormat(slug)) notFound();
-  const data = await loadWeddingSite(slug);
+  const data = await loadWeddingSite(slug, mode);
   if (!data) notFound();
 
   const { tokens, bereiche } = data;

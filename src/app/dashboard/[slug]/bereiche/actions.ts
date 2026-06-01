@@ -73,7 +73,7 @@ export async function reorderBereiche(p: ReorderPayload): Promise<ActionResult> 
   for (const u of updates) {
     const { error } = await supabase
       .from('wedding_bereiche')
-      .update({ display_order: u.display_order } as never)
+      .update({ display_order_draft: u.display_order, is_dirty: true } as never)
       .eq('wedding_site_id', siteId)
       .eq('bereich_key', u.bereich_key);
     if (error) {
@@ -118,7 +118,7 @@ export async function setBereichVariant(p: SetVariantPayload): Promise<ActionRes
 
   const { error } = await supabase
     .from('wedding_bereiche')
-    .update({ variant: p.variant } as never)
+    .update({ variant_draft: p.variant, is_dirty: true } as never)
     .eq('wedding_site_id', siteId)
     .eq('bereich_key', p.bereich_key);
 
@@ -167,7 +167,7 @@ export async function toggleBereichActive(p: ToggleActivePayload): Promise<Actio
 
   const { error } = await supabase
     .from('wedding_bereiche')
-    .update({ is_active: p.is_active } as never)
+    .update({ is_active_draft: p.is_active, is_dirty: true } as never)
     .eq('wedding_site_id', siteId)
     .eq('bereich_key', p.bereich_key);
 

@@ -2,22 +2,26 @@
 
 import Link from 'next/link';
 import DashboardIcon from './DashboardIcon';
+import PublishButton from './PublishButton';
+import type { DirtyState } from '@/app/dashboard/[slug]/publish-actions';
 
 interface Props {
   slug: string;
   coupleNames: string;
   weddingDateISO: string;
+  dirtyState: DirtyState;
 }
 
 /**
  * Topbar oben im Dashboard.
  *
  * Links: Burger (mobile, blendet Sidebar ein) + Brautpaar-Name + Hochzeitsdatum.
+ * Mitte: PublishButton (mit Badge wenn Änderungen offen sind)
  * Rechts: "Vorschau"-Link auf die Gäste-Seite (öffnet in neuem Tab).
  *
  * Datum wird hier SSR-sicher formatiert (kein toLocaleDateString im Render).
  */
-export default function DashboardTopbar({ slug, coupleNames, weddingDateISO }: Props) {
+export default function DashboardTopbar({ slug, coupleNames, weddingDateISO, dirtyState }: Props) {
   const dateLabel = formatGermanDate(weddingDateISO);
 
   const openSidebar = () => {
@@ -40,10 +44,13 @@ export default function DashboardTopbar({ slug, coupleNames, weddingDateISO }: P
           {dateLabel && <span className="dash-topbar-date">{dateLabel}</span>}
         </div>
       </div>
+      <div className="dash-topbar-center">
+        <PublishButton slug={slug} initialState={dirtyState} />
+      </div>
       <div className="dash-topbar-right">
         <Link href={`/${slug}`} target="_blank" rel="noopener noreferrer" className="dash-topbar-preview">
           <DashboardIcon name="external" size={14} />
-          <span>Vorschau</span>
+          <span>Live ansehen</span>
         </Link>
       </div>
     </header>

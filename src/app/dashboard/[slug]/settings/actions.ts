@@ -54,13 +54,30 @@ export async function updateStammdaten(p: StammdatenPayload): Promise<ActionResu
   const supabase = createSupabaseAdminClient();
   if (!supabase) return { ok: false, error: 'Datenbankverbindung nicht verfügbar.' };
 
+  // Aktuelles site_draft holen und Stammdaten mergen
+  const { data: site, error: readErr } = await supabase
+    .from('wedding_sites')
+    .select('site_draft')
+    .eq('slug', p.slug)
+    .maybeSingle();
+  if (readErr) {
+    return { ok: false, error: readErr.message };
+  }
+
+  const currentDraft = ((site as { site_draft: Record<string, unknown> | null })?.site_draft) || {};
+  const nextDraft = {
+    ...currentDraft,
+    couple_name_1: p.couple_name_1.trim(),
+    couple_name_2: p.couple_name_2.trim(),
+    wedding_date: wedding_date_utc,
+    wedding_location: p.wedding_location.trim() || null,
+  };
+
   const { error } = await supabase
     .from('wedding_sites')
     .update({
-      couple_name_1: p.couple_name_1.trim(),
-      couple_name_2: p.couple_name_2.trim(),
-      wedding_date: wedding_date_utc,
-      wedding_location: p.wedding_location.trim() || null,
+      site_draft: nextDraft,
+      site_is_dirty: true,
       updated_at: new Date().toISOString(),
     } as never)
     .eq('slug', p.slug);
@@ -128,7 +145,13 @@ export async function updateStil(p: StilPayload): Promise<ActionResult> {
   const hasAnyCustom = customs.some((c) => c && c.trim().length > 0);
   const hasAllCustoms = customs.every((c) => c && c.trim().length > 0);
 
-  let updatePayload: Record<string, unknown>;
+  // Im Draft können alle Felder einzeln gesetzt sein — der CHECK-Constraint
+  // (Preset XOR Custom) gilt nur beim Publish. So kann das Brautpaar in
+  // Ruhe wechseln, ohne dass uns die Validierung dazwischenfunkt.
+  const draftPatch: Record<string, unknown> = {
+    start_style_id: p.start_style_id,
+    font_preset_id: p.font_preset_id,
+  };
 
   if (hasAnyCustom) {
     if (!hasAllCustoms) {
@@ -138,61 +161,53 @@ export async function updateStil(p: StilPayload): Promise<ActionResult> {
           'Wenn einzelne Farben angepasst werden, müssen alle fünf gesetzt sein (Hintergrund, Hintergrund weich, Akzent, Akzent dunkel, Text).',
       };
     }
-    updatePayload = {
-      start_style_id: p.start_style_id,
-      palette_preset_id: null,
-      font_preset_id: p.font_preset_id,
-      palette_custom_bg: p.custom_bg,
-      palette_custom_bg_soft: p.custom_bg_soft,
-      palette_custom_accent: p.custom_accent,
-      palette_custom_accent_deep: p.custom_accent_deep,
-      palette_custom_ink: p.custom_ink,
-      updated_at: new Date().toISOString(),
-    };
+    draftPatch.palette_preset_id = null;
+    draftPatch.palette_custom_bg = p.custom_bg;
+    draftPatch.palette_custom_bg_soft = p.custom_bg_soft;
+    draftPatch.palette_custom_accent = p.custom_accent;
+    draftPatch.palette_custom_accent_deep = p.custom_accent_deep;
+    draftPatch.palette_custom_ink = p.custom_ink;
   } else {
-    // Kein Custom → Preset muss gesetzt sein (sonst verletzt das Constraint
-    // den "oder"-Fall andersrum)
     if (!p.palette_preset_id) {
       return {
         ok: false,
         error: 'Bitte eine Palette wählen oder alle fünf Farben individuell setzen.',
       };
     }
-    updatePayload = {
-      start_style_id: p.start_style_id,
-      palette_preset_id: p.palette_preset_id,
-      font_preset_id: p.font_preset_id,
-      palette_custom_bg: null,
-      palette_custom_bg_soft: null,
-      palette_custom_accent: null,
-      palette_custom_accent_deep: null,
-      palette_custom_ink: null,
-      updated_at: new Date().toISOString(),
-    };
+    draftPatch.palette_preset_id = p.palette_preset_id;
+    draftPatch.palette_custom_bg = null;
+    draftPatch.palette_custom_bg_soft = null;
+    draftPatch.palette_custom_accent = null;
+    draftPatch.palette_custom_accent_deep = null;
+    draftPatch.palette_custom_ink = null;
   }
 
   const supabase = createSupabaseAdminClient();
   if (!supabase) return { ok: false, error: 'Datenbankverbindung nicht verfügbar.' };
 
+  // Aktuelles Draft holen und mergen
+  const { data: site, error: readErr } = await supabase
+    .from('wedding_sites')
+    .select('site_draft')
+    .eq('slug', p.slug)
+    .maybeSingle();
+  if (readErr) return { ok: false, error: readErr.message };
+  const currentDraft = ((site as { site_draft: Record<string, unknown> | null })?.site_draft) || {};
+  const nextDraft = { ...currentDraft, ...draftPatch };
+
   const { error } = await supabase
     .from('wedding_sites')
-    .update(updatePayload as never)
+    .update({
+      site_draft: nextDraft,
+      site_is_dirty: true,
+      updated_at: new Date().toISOString(),
+    } as never)
     .eq('slug', p.slug);
 
   if (error) {
     console.error('[updateStil] update failed:', error);
     return { ok: false, error: error.message };
   }
-
-  // VERIFIKATION: nach dem Update direkt lesen, ob die Werte angekommen sind
-  const verify = await supabase
-    .from('wedding_sites')
-    .select(
-      'palette_preset_id, palette_custom_bg, palette_custom_bg_soft, palette_custom_accent, palette_custom_accent_deep, palette_custom_ink',
-    )
-    .eq('slug', p.slug)
-    .maybeSingle();
-  console.log('[updateStil] after update, DB state:', JSON.stringify(verify.data));
 
   revalidatePath(`/dashboard/${p.slug}`, 'layout');
   revalidatePath(`/${p.slug}`, 'layout');
@@ -217,10 +232,20 @@ export async function updateNavigation(p: NavPayload): Promise<ActionResult> {
   const supabase = createSupabaseAdminClient();
   if (!supabase) return { ok: false, error: 'Datenbankverbindung nicht verfügbar.' };
 
+  const { data: site, error: readErr } = await supabase
+    .from('wedding_sites')
+    .select('site_draft')
+    .eq('slug', p.slug)
+    .maybeSingle();
+  if (readErr) return { ok: false, error: readErr.message };
+  const currentDraft = ((site as { site_draft: Record<string, unknown> | null })?.site_draft) || {};
+  const nextDraft = { ...currentDraft, nav_variant: p.nav_variant };
+
   const { error } = await supabase
     .from('wedding_sites')
     .update({
-      nav_variant: p.nav_variant,
+      site_draft: nextDraft,
+      site_is_dirty: true,
       updated_at: new Date().toISOString(),
     } as never)
     .eq('slug', p.slug);
