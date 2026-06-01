@@ -48,7 +48,7 @@ export async function updateHeroImage(p: UpdateHeroImagePayload): Promise<Action
     return { ok: false, error: readErr?.message || 'Site nicht gefunden.' };
   }
 
-  const currentDraft = ((site as { site_draft: Record<string, unknown> | null }).site_draft) || {};
+  const currentDraft = ((site as unknown as { site_draft: Record<string, unknown> | null }).site_draft) || {};
   const nextDraft = { ...currentDraft, hero_image_url: p.imageUrl };
 
   const { error: updateErr } = await supabase

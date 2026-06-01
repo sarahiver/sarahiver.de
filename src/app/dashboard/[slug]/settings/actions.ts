@@ -64,7 +64,7 @@ export async function updateStammdaten(p: StammdatenPayload): Promise<ActionResu
     return { ok: false, error: readErr.message };
   }
 
-  const currentDraft = ((site as { site_draft: Record<string, unknown> | null })?.site_draft) || {};
+  const currentDraft = ((site as unknown as { site_draft: Record<string, unknown> | null } | null)?.site_draft) || {};
   const nextDraft = {
     ...currentDraft,
     couple_name_1: p.couple_name_1.trim(),
@@ -192,7 +192,7 @@ export async function updateStil(p: StilPayload): Promise<ActionResult> {
     .eq('slug', p.slug)
     .maybeSingle();
   if (readErr) return { ok: false, error: readErr.message };
-  const currentDraft = ((site as { site_draft: Record<string, unknown> | null })?.site_draft) || {};
+  const currentDraft = ((site as unknown as { site_draft: Record<string, unknown> | null } | null)?.site_draft) || {};
   const nextDraft = { ...currentDraft, ...draftPatch };
 
   const { error } = await supabase
@@ -238,7 +238,7 @@ export async function updateNavigation(p: NavPayload): Promise<ActionResult> {
     .eq('slug', p.slug)
     .maybeSingle();
   if (readErr) return { ok: false, error: readErr.message };
-  const currentDraft = ((site as { site_draft: Record<string, unknown> | null })?.site_draft) || {};
+  const currentDraft = ((site as unknown as { site_draft: Record<string, unknown> | null } | null)?.site_draft) || {};
   const nextDraft = { ...currentDraft, nav_variant: p.nav_variant };
 
   const { error } = await supabase
