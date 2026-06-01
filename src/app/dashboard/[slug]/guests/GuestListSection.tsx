@@ -397,7 +397,7 @@ export default function GuestListSection({
 
           {/* 3-Step-Anleitung */}
           <div className="dash-guests-steps">
-            <Step number={1} title="Datei vorbereiten" desc="Excel oder CSV mit den Spalten „Name", „Email" und optional „Gruppe".">
+            <Step number={1} title="Datei vorbereiten" desc="Excel oder CSV mit den Spalten „Name“, „Email“ und optional „Gruppe“.">
               <StepIconSpreadsheet />
             </Step>
             <StepArrow />
