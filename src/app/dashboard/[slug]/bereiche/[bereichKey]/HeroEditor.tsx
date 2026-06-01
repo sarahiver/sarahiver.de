@@ -43,8 +43,10 @@ export default function HeroEditor({ slug, variant, initial }: Props) {
     }
   }, [status]);
 
-  // Folder pro Hochzeit, damit Cloudinary übersichtlich bleibt
-  const heroFolder = `weddings/${slug}/hero`;
+  // Folder pro Hochzeit, damit Cloudinary übersichtlich bleibt.
+  // Top-Level "sarahiver.de" trennt dieses Projekt von sarahiver.com im
+  // gleichen Cloudinary-Account.
+  const heroFolder = `sarahiver.de/${slug}/hero`;
 
   // ====================================================================
   // Hero-Bild — sofortiger Save nach Cloudinary-Upload

@@ -22,7 +22,7 @@ import { getCloudinaryClientConfig } from '@/lib/cloudinary';
  * Aufruf:
  *   <ImageUploader
  *     image={currentUrl}
- *     folder={`weddings/${slug}/hero`}
+ *     folder={`sarahiver.de/${slug}/hero`}
  *     ratio="16/9"
  *     label="Hero-Bild"
  *     onUpload={(url) => ...}    // url = neue Cloudinary-secure_url, oder null beim Entfernen
@@ -32,7 +32,7 @@ import { getCloudinaryClientConfig } from '@/lib/cloudinary';
 interface Props {
   /** Aktuelle Bild-URL (oder null wenn noch kein Bild). */
   image: string | null | undefined;
-  /** Cloudinary-Folder, z.B. "weddings/sarah-iver-demo-a/hero". */
+  /** Cloudinary-Folder, z.B. "sarahiver.de/sarah-iver-demo-a/hero". */
   folder: string;
   /** Aspect-Ratio als CSS-Property (z.B. "16/9", "4/5", "1/1"). */
   ratio?: string;

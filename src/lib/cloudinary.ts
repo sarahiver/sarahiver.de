@@ -33,8 +33,8 @@ export function getCloudinaryClientConfig(): CloudinaryClientConfig {
  * Extrahiert die public_id aus einer Cloudinary-secure_url.
  *
  * Beispiel:
- *   https://res.cloudinary.com/si-weddings/image/upload/v1770992769/weddings/demo-a/hero/abc123.jpg
- *   → "weddings/demo-a/hero/abc123"
+ *   https://res.cloudinary.com/si-weddings/image/upload/v1770992769/sarahiver.de/demo-a/hero/abc123.jpg
+ *   → "sarahiver.de/demo-a/hero/abc123"
  *
  * Returnt null wenn die URL keine Cloudinary-URL ist.
  */
