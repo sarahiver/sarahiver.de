@@ -5806,3 +5806,203 @@ html, body {
   flex-wrap: wrap;
   justify-content: center;
 }
+
+/* =========================================================
+   DASHBOARD — Gästeliste Empty-State (visuell, 3-Step)
+   ========================================================= */
+
+/* Empty State Container überarbeiten */
+.dash-guests-empty {
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-border);
+  border-radius: 14px;
+  padding: 36px clamp(20px, 4vw, 48px);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.dash-guests-empty-head h3 {
+  font-family: ui-serif, Georgia, serif;
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 10px;
+  color: var(--dash-ink);
+  letter-spacing: -0.01em;
+}
+.dash-guests-empty-head p {
+  font-size: 14px;
+  color: var(--dash-ink-soft);
+  margin: 0 auto;
+  max-width: 520px;
+  line-height: 1.55;
+}
+
+/* 3-Step-Reihe */
+.dash-guests-steps {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  gap: 12px;
+  align-items: start;
+  max-width: 880px;
+  margin: 0 auto;
+  width: 100%;
+}
+.dash-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 12px;
+}
+.dash-step-illu {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  border-radius: 16px;
+  background: var(--dash-bg);
+  border: 1px solid var(--dash-border);
+  display: grid;
+  place-items: center;
+}
+.dash-step-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--dash-accent);
+  color: white;
+  font-family: ui-serif, Georgia, serif;
+  font-size: 13px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 6px -2px rgba(20, 16, 12, 0.3);
+}
+.dash-step-title {
+  font-family: ui-serif, Georgia, serif;
+  font-size: 15px;
+  font-weight: 600;
+  margin: 4px 0 0;
+  color: var(--dash-ink);
+}
+.dash-step-desc {
+  font-size: 12.5px;
+  color: var(--dash-ink-soft);
+  margin: 0;
+  line-height: 1.5;
+  max-width: 220px;
+}
+
+.dash-step-arrow {
+  align-self: center;
+  margin-top: 30px;
+  color: var(--dash-muted);
+  opacity: 0.5;
+}
+
+/* Mobile: Steps untereinander, Pfeile drehen 90° */
+@media (max-width: 720px) {
+  .dash-guests-steps {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .dash-step-arrow {
+    transform: rotate(90deg);
+    margin: 4px auto;
+  }
+}
+
+/* Mail-Buttons-Erklärung */
+.dash-guests-mail-explainer {
+  background: var(--dash-bg);
+  border: 1px solid var(--dash-border-soft);
+  border-radius: 12px;
+  padding: 22px clamp(16px, 3vw, 28px);
+  text-align: left;
+}
+.dash-guests-mail-explainer h4 {
+  font-family: ui-serif, Georgia, serif;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 14px;
+  color: var(--dash-ink);
+  text-align: center;
+}
+.dash-guests-mail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+.dash-mail-card {
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dash-mail-card-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--dash-bg);
+}
+.dash-mail-card-title {
+  font-family: ui-serif, Georgia, serif;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--dash-ink);
+}
+.dash-mail-card-desc {
+  font-size: 12.5px;
+  color: var(--dash-ink-soft);
+  margin: 0;
+  line-height: 1.5;
+}
+.dash-mail-card-when {
+  font-size: 11.5px;
+  color: var(--dash-muted);
+  margin: 4px 0 0;
+}
+.dash-mail-card-when-label {
+  font-family: var(--dash-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dash-ink-soft);
+  font-weight: 600;
+  margin-right: 4px;
+}
+.dash-mail-card-only {
+  font-size: 11px;
+  color: var(--dash-muted);
+  font-style: italic;
+  margin: 4px 0 0;
+}
+.dash-guests-mail-note {
+  font-size: 13px;
+  color: var(--dash-ink-soft);
+  text-align: center;
+  margin: 18px 0 0;
+  line-height: 1.55;
+  padding-top: 16px;
+  border-top: 1px solid var(--dash-border-soft);
+}
+.dash-guests-mail-note strong { color: var(--dash-ink); font-weight: 600; }
+
+/* CTA-Buttons im Empty-State */
+.dash-guests-empty-actions {
+  display: inline-flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0 auto;
+}

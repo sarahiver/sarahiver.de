@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useTransition, type ChangeEvent } from 'react';
+import { useMemo, useState, useTransition, type ChangeEvent, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import type { GuestListEntry } from '@/lib/guest-list-data';
 import type { RsvpRecord } from '@/lib/rsvp-data';
@@ -387,16 +387,30 @@ export default function GuestListSection({
       {/* Empty State */}
       {stats.total === 0 && !showUpload && (
         <div className="dash-guests-empty">
-          <h3>Noch keine Gästeliste hochgeladen</h3>
-          <p>
-            Ladet eine Liste hoch, um den Überblick zu behalten und Erinnerungen verschicken zu
-            können.
-          </p>
-          <ol>
-            <li>Excel oder CSV mit Spalten „Name", „Email", optional „Gruppe"</li>
-            <li>Datei hier importieren — Duplikate werden automatisch übersprungen</li>
-            <li>Status seht ihr live nach RSVP-Eingang, Erinnerung per Klick versenden</li>
-          </ol>
+          <div className="dash-guests-empty-head">
+            <h3>Noch keine Gästeliste hochgeladen</h3>
+            <p>
+              Mit der Gästeliste behaltet ihr den Überblick, wer schon zugesagt hat — und könnt
+              gezielt an offene Gäste Erinnerungen schicken.
+            </p>
+          </div>
+
+          {/* 3-Step-Anleitung */}
+          <div className="dash-guests-steps">
+            <Step number={1} title="Datei vorbereiten" desc="Excel oder CSV mit den Spalten „Name", „Email" und optional „Gruppe".">
+              <StepIconSpreadsheet />
+            </Step>
+            <StepArrow />
+            <Step number={2} title="Hochladen" desc="Datei hier importieren. Duplikate werden automatisch erkannt und übersprungen.">
+              <StepIconUpload />
+            </Step>
+            <StepArrow />
+            <Step number={3} title="Erinnern & danken" desc="Status seht ihr live, sobald RSVPs reinkommen. Per Klick Erinnerungen verschicken.">
+              <StepIconMail />
+            </Step>
+          </div>
+
+          {/* CTA */}
           <div className="dash-guests-empty-actions">
             <button type="button" className="dash-btn" onClick={() => setShowUpload(true)}>
               <DashboardIcon name="plus" size={14} />
@@ -406,6 +420,37 @@ export default function GuestListSection({
               <DashboardIcon name="download" size={14} />
               <span>Vorlage herunterladen</span>
             </button>
+          </div>
+
+          {/* Was machen die Mail-Buttons? */}
+          <div className="dash-guests-mail-explainer">
+            <h4>Was passiert, wenn ich eine Mail verschicke?</h4>
+            <div className="dash-guests-mail-grid">
+              <MailExplainCard
+                icon={<MailIconReminder />}
+                title="RSVP-Erinnerung"
+                desc="Geht an alle, die noch nicht geantwortet haben. Sanfter Reminder, dass eure Gäste sich zurückmelden mögen."
+                when="Vor der Hochzeit, wenn die Frist näher rückt."
+              />
+              <MailExplainCard
+                icon={<MailIconThanks />}
+                title="Danke-Mail"
+                desc="Geht an alle, die zugesagt und gefeiert haben. Persönliche Danksagung — den genauen Wortlaut könnt ihr selbst anpassen."
+                when="Nach der Hochzeit."
+              />
+              <MailExplainCard
+                icon={<MailIconPhoto />}
+                title="Foto-Erinnerung"
+                desc="Geht an alle Zusager. Bittet sie, ihre Schnappschüsse vom Tag auf eurer Seite hochzuladen."
+                when="In den Tagen/Wochen nach der Hochzeit."
+                onlyWith="Nur sichtbar, wenn der Foto-Upload-Bereich gebucht ist."
+              />
+            </div>
+            <p className="dash-guests-mail-note">
+              <strong>Vorab seht ihr immer eine Vorschau</strong> mit Betreff und Text — die ihr
+              vor dem Versand frei anpassen könnt. Es geht nichts raus, ohne dass ihr es freigegeben
+              habt.
+            </p>
           </div>
         </div>
       )}
@@ -544,4 +589,159 @@ function StatCard({
 function StatusBadge({ status }: { status: EnrichedGuest['status'] }) {
   const label = status === 'confirmed' ? 'Zusage' : status === 'declined' ? 'Absage' : 'Offen';
   return <span className={`dash-rsvp-badge is-${status}`}>{label}</span>;
+}
+
+// ====================================================================
+// 3-Step-Anleitung
+// ====================================================================
+
+function Step({
+  number,
+  title,
+  desc,
+  children,
+}: {
+  number: number;
+  title: string;
+  desc: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="dash-step">
+      <div className="dash-step-illu" aria-hidden="true">
+        {children}
+        <span className="dash-step-badge">{number}</span>
+      </div>
+      <h4 className="dash-step-title">{title}</h4>
+      <p className="dash-step-desc">{desc}</p>
+    </div>
+  );
+}
+
+function StepArrow() {
+  return (
+    <div className="dash-step-arrow" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M5 12h14M13 6l6 6-6 6" />
+      </svg>
+    </div>
+  );
+}
+
+/* Schritt-Illustrationen — eigene kleine SVGs, kein externes Bild */
+
+function StepIconSpreadsheet() {
+  return (
+    <svg viewBox="0 0 64 64" width="56" height="56" fill="none" aria-hidden="true">
+      {/* Blatt */}
+      <rect x="10" y="8" width="44" height="48" rx="3" fill="var(--dash-surface)" stroke="var(--dash-ink-soft)" strokeWidth="1.5" />
+      {/* Header */}
+      <rect x="10" y="8" width="44" height="9" rx="3" fill="var(--dash-accent-soft)" stroke="var(--dash-ink-soft)" strokeWidth="1.5" />
+      {/* Vertikale Trennlinien */}
+      <line x1="25" y1="8" x2="25" y2="56" stroke="var(--dash-border)" strokeWidth="1" />
+      <line x1="40" y1="8" x2="40" y2="56" stroke="var(--dash-border)" strokeWidth="1" />
+      {/* Horizontale Reihen */}
+      <line x1="10" y1="26" x2="54" y2="26" stroke="var(--dash-border)" strokeWidth="1" />
+      <line x1="10" y1="35" x2="54" y2="35" stroke="var(--dash-border)" strokeWidth="1" />
+      <line x1="10" y1="44" x2="54" y2="44" stroke="var(--dash-border)" strokeWidth="1" />
+      {/* Header-Beschriftung — kleine Linien als "Spaltentitel" */}
+      <rect x="13" y="11" width="9" height="3" rx="1" fill="var(--dash-accent)" />
+      <rect x="28" y="11" width="9" height="3" rx="1" fill="var(--dash-accent)" />
+      <rect x="43" y="11" width="8" height="3" rx="1" fill="var(--dash-accent)" />
+    </svg>
+  );
+}
+
+function StepIconUpload() {
+  return (
+    <svg viewBox="0 0 64 64" width="56" height="56" fill="none" aria-hidden="true">
+      {/* Cloud */}
+      <path
+        d="M16 42c-4 0-7-3-7-7s3-7 7-7c1 0 2 .2 2.8.6C20 23 24.5 19 30 19c6 0 11 5 11 11 4 0 7 3 7 7s-3 7-7 7H16z"
+        fill="var(--dash-accent-soft)"
+        stroke="var(--dash-ink-soft)"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      {/* Pfeil rauf */}
+      <path d="M32 48V31M26 37l6-6 6 6" stroke="var(--dash-accent)" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function StepIconMail() {
+  return (
+    <svg viewBox="0 0 64 64" width="56" height="56" fill="none" aria-hidden="true">
+      {/* Briefumschlag */}
+      <rect x="10" y="18" width="44" height="30" rx="3" fill="var(--dash-surface)" stroke="var(--dash-ink-soft)" strokeWidth="1.5" />
+      <path d="M10 22l22 16 22-16" stroke="var(--dash-ink-soft)" strokeWidth="1.5" strokeLinejoin="round" fill="none" />
+      {/* Klingel/Glocke vorm Brief — Erinnerungs-Symbolik */}
+      <circle cx="48" cy="20" r="8" fill="var(--dash-accent)" />
+      <text x="48" y="24" textAnchor="middle" fill="white" fontSize="11" fontWeight="700">!</text>
+    </svg>
+  );
+}
+
+// ====================================================================
+// Mail-Buttons-Erklärung
+// ====================================================================
+
+function MailExplainCard({
+  icon,
+  title,
+  desc,
+  when,
+  onlyWith,
+}: {
+  icon: ReactNode;
+  title: string;
+  desc: string;
+  when: string;
+  onlyWith?: string;
+}) {
+  return (
+    <div className="dash-mail-card">
+      <div className="dash-mail-card-icon" aria-hidden="true">{icon}</div>
+      <h5 className="dash-mail-card-title">{title}</h5>
+      <p className="dash-mail-card-desc">{desc}</p>
+      <p className="dash-mail-card-when">
+        <span className="dash-mail-card-when-label">Wann?</span> {when}
+      </p>
+      {onlyWith && <p className="dash-mail-card-only">{onlyWith}</p>}
+    </div>
+  );
+}
+
+function MailIconReminder() {
+  return (
+    <svg viewBox="0 0 32 32" width="22" height="22" fill="none" aria-hidden="true">
+      <rect x="3" y="8" width="26" height="18" rx="2" fill="var(--dash-warning-soft)" stroke="var(--dash-warning)" strokeWidth="1.4" />
+      <path d="M3 10l13 9 13-9" stroke="var(--dash-warning)" strokeWidth="1.4" strokeLinejoin="round" fill="none" />
+    </svg>
+  );
+}
+
+function MailIconThanks() {
+  return (
+    <svg viewBox="0 0 32 32" width="22" height="22" fill="none" aria-hidden="true">
+      {/* Herz */}
+      <path
+        d="M16 27s-9-5.5-9-12.5C7 11 9.5 8 13 8c1.8 0 3 1 3 1s1.2-1 3-1c3.5 0 6 3 6 6.5 0 7-9 12.5-9 12.5z"
+        fill="var(--dash-success-soft)"
+        stroke="var(--dash-success)"
+        strokeWidth="1.4"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function MailIconPhoto() {
+  return (
+    <svg viewBox="0 0 32 32" width="22" height="22" fill="none" aria-hidden="true">
+      <rect x="3" y="8" width="26" height="18" rx="2" fill="var(--dash-accent-soft)" stroke="var(--dash-accent)" strokeWidth="1.4" />
+      <circle cx="16" cy="17" r="4.5" fill="none" stroke="var(--dash-accent)" strokeWidth="1.4" />
+      <rect x="12" y="5" width="8" height="4" rx="1" fill="var(--dash-accent)" />
+    </svg>
+  );
 }
