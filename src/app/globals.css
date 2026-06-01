@@ -6262,3 +6262,87 @@ html, body {
     gap: 8px;
   }
 }
+
+/* =========================================================
+   DASHBOARD — Lovestory-Editor (Milestones)
+   ========================================================= */
+
+/* Section-Head mit Title + Add-Button rechts */
+.dash-form-section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.dash-form-section-head .dash-form-section-title { margin-top: 0; }
+
+/* Liste der Milestones */
+.dash-milestones {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.dash-milestone-card {
+  background: var(--dash-bg);
+  border: 1px solid var(--dash-border);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.dash-milestone-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--dash-border-soft);
+  margin-bottom: 14px;
+}
+.dash-milestone-when-preview {
+  font-family: var(--dash-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dash-muted);
+  font-weight: 600;
+}
+.dash-milestone-actions {
+  display: flex;
+  gap: 4px;
+}
+
+/* Grid: Bild links, Felder rechts (auf Desktop) */
+.dash-milestone-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 16px;
+}
+.dash-milestone-image { min-width: 0; }
+.dash-milestone-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+@media (max-width: 720px) {
+  .dash-milestone-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Inline-Empty-State (z.B. 0 Milestones) */
+.dash-empty-inline {
+  background: var(--dash-bg);
+  border: 1px dashed var(--dash-border);
+  border-radius: 10px;
+  padding: 28px 24px;
+  text-align: center;
+}
+.dash-empty-inline p {
+  font-size: 13.5px;
+  color: var(--dash-ink-soft);
+  margin: 0;
+}

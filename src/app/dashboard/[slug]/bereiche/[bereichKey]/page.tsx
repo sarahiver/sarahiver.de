@@ -4,6 +4,7 @@ import ComingSoonSection from '@/components/dashboard/ComingSoonSection';
 import VariantPicker from './VariantPicker';
 import HeroEditor from './HeroEditor';
 import PhotoUploadEditor from './PhotoUploadEditor';
+import LovestoryEditor from './LovestoryEditor';
 import { bereichLabel } from '@/lib/dashboard-nav';
 import { loadDashboardData, findBereich } from '@/lib/dashboard-data';
 import type { BereichKey } from '@/types/supabase';
@@ -91,6 +92,55 @@ export default async function BereichEditorPage({
                 success_sub: (content.success_sub as string) || '',
               }}
             />
+          ) : bereichKey === 'lovestory' ? (
+            variant === 'a' ? (
+              <LovestoryEditor
+                slug={slug}
+                variant="a"
+                initial={{
+                  eyebrow: (content.eyebrow as string) || '',
+                  title: (content.title as string) || '',
+                  when: (content.when as string) || '',
+                  moment_title: (content.moment_title as string) || '',
+                  description: (content.description as string) || '',
+                  signature: (content.signature as string) || '',
+                  images: Array.isArray(content.images)
+                    ? (content.images as unknown[])
+                        .filter((s): s is string => typeof s === 'string')
+                        .slice(0, 3)
+                    : [],
+                }}
+              />
+            ) : (
+              <LovestoryEditor
+                slug={slug}
+                variant={variant as 'b' | 'c'}
+                initial={{
+                  eyebrow: (content.eyebrow as string) || '',
+                  title: (content.title as string) || '',
+                  intro: (content.intro as string) || '',
+                  entries: Array.isArray(content.entries)
+                    ? (content.entries as Array<Record<string, unknown>>)
+                        .filter(
+                          (e) =>
+                            typeof e?.id === 'string' &&
+                            typeof e?.when === 'string' &&
+                            typeof e?.title === 'string' &&
+                            typeof e?.description === 'string' &&
+                            typeof e?.image_url === 'string',
+                        )
+                        .map((e) => ({
+                          id: e.id as string,
+                          when: e.when as string,
+                          title: e.title as string,
+                          description: e.description as string,
+                          image_url: e.image_url as string,
+                          image_alt: typeof e.image_alt === 'string' ? e.image_alt : undefined,
+                        }))
+                    : [],
+                }}
+              />
+            )
           ) : (
             <ComingSoonSection what={`Editor-Felder für „${label}"`} />
           )}
