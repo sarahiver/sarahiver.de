@@ -58,7 +58,7 @@ export async function loadWeddingSite(
         .maybeSingle();
       const draft = (siteRes.data as { site_draft?: Record<string, unknown> } | null)?.site_draft || {};
       // Felder, die in EffectiveTokens-Form gemerged werden müssen
-      const t = tokens as Record<string, unknown>;
+      const t = tokens as unknown as Record<string, unknown>;
       if ('hero_image_url' in draft) t.hero_image_url = draft.hero_image_url;
       if ('couple_name_1' in draft) t.couple_name_1 = draft.couple_name_1;
       if ('couple_name_2' in draft) t.couple_name_2 = draft.couple_name_2;
@@ -94,7 +94,7 @@ export async function loadWeddingSite(
   } catch {
     // Spalte existiert evtl. noch nicht — Fallback bleibt 'a'
   }
-  (tokens as EffectiveTokens & { nav_variant?: string }).nav_variant = navVariant;
+  (tokens as unknown as EffectiveTokens & { nav_variant?: string }).nav_variant = navVariant;
 
   // Bereiche: content_published bzw. content_draft auf content mappen,
   // damit die Render-Komponenten unverändert weiterlaufen. Im Draft-Mode
@@ -192,7 +192,7 @@ const PADDING_SCALE = {
  * Generiert das CSS-Variable-Inline-Style für eine Hochzeitsseite.
  */
 export function tokensToCSSVariables(tokens: EffectiveTokens): React.CSSProperties {
-  const styleHint = (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'klassisch';
+  const styleHint = (tokens as unknown as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'klassisch';
   const imgFilter = IMAGE_FILTERS[styleHint] ?? IMAGE_FILTERS.klassisch;
 
   const style: Record<string, string> = {
