@@ -5773,3 +5773,36 @@ html, body {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* Gästeliste-Status-Hint */
+.dash-guests-status-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: var(--dash-surface-soft);
+  border: 1px solid var(--dash-border-soft);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12.5px;
+  color: var(--dash-ink-soft);
+  line-height: 1.5;
+  margin: 0;
+}
+.dash-guests-status-hint > svg { flex-shrink: 0; margin-top: 2px; color: var(--dash-muted); }
+.dash-guests-status-hint strong { color: var(--dash-ink); font-weight: 600; }
+
+/* Template-Download-Row im Upload-Panel */
+.dash-guests-template-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Empty-State: zwei Buttons nebeneinander */
+.dash-guests-empty-actions {
+  display: inline-flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}

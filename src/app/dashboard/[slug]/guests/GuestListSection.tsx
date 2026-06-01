@@ -81,6 +81,29 @@ export default function GuestListSection({
     setTimeout(() => setToast(null), 2800);
   };
 
+  /**
+   * Lädt eine Beispiel-CSV herunter, die User in Excel öffnen, befüllen
+   * und wieder hochladen können. UTF-8 mit BOM + Semikolon = Excel-DE-
+   * kompatibel.
+   */
+  const downloadExampleCsv = () => {
+    const lines = [
+      'Name;Email;Gruppe',
+      'Anna Müller;anna.mueller@example.de;Familie',
+      'Max Schmidt;max.schmidt@example.de;Freunde',
+      'Lisa Weber;lisa.weber@example.de;Kollegen',
+      'Thomas & Julia Schäfer;schaefer@example.de;Familie',
+    ];
+    const csvContent = '\uFEFF' + lines.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'gaesteliste-vorlage.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const enriched = useMemo(() => enrich(guestList, rsvps), [guestList, rsvps]);
 
   const stats = useMemo(() => {
@@ -255,6 +278,18 @@ export default function GuestListSection({
         <StatCard label="Erinnert" value={stats.reminded} />
       </div>
 
+      {/* Status-Erklärung */}
+      {stats.total > 0 && (
+        <p className="dash-guests-status-hint">
+          <DashboardIcon name="external" size={12} />
+          <span>
+            Der Status pro Gast wird automatisch durch <strong>Abgleich der Email-Adressen</strong> mit
+            den eingegangenen RSVPs berechnet. Hat ein Gast unter einer anderen Email-Adresse
+            geantwortet, wird er weiter als „offen" angezeigt.
+          </span>
+        </p>
+      )}
+
       {/* Action Bar */}
       <div className="dash-guests-actions">
         <button
@@ -318,6 +353,17 @@ export default function GuestListSection({
             <strong>Email</strong> sind nötig (optional: <strong>Gruppe</strong>). Duplikate werden
             übersprungen.
           </p>
+
+          <div className="dash-guests-template-row">
+            <button type="button" className="dash-btn-out" onClick={downloadExampleCsv}>
+              <DashboardIcon name="download" size={14} />
+              <span>Vorlage als CSV herunterladen</span>
+            </button>
+            <span className="dash-form-hint" style={{ margin: 0 }}>
+              Öffnet sich direkt in Excel — Spalten füllen und wieder hochladen.
+            </span>
+          </div>
+
           <div className="dash-guests-csv-example">
             <code>
               Name;Email;Gruppe
@@ -351,10 +397,16 @@ export default function GuestListSection({
             <li>Datei hier importieren — Duplikate werden automatisch übersprungen</li>
             <li>Status seht ihr live nach RSVP-Eingang, Erinnerung per Klick versenden</li>
           </ol>
-          <button type="button" className="dash-btn" onClick={() => setShowUpload(true)}>
-            <DashboardIcon name="plus" size={14} />
-            <span>Liste importieren</span>
-          </button>
+          <div className="dash-guests-empty-actions">
+            <button type="button" className="dash-btn" onClick={() => setShowUpload(true)}>
+              <DashboardIcon name="plus" size={14} />
+              <span>Liste importieren</span>
+            </button>
+            <button type="button" className="dash-btn-out" onClick={downloadExampleCsv}>
+              <DashboardIcon name="download" size={14} />
+              <span>Vorlage herunterladen</span>
+            </button>
+          </div>
         </div>
       )}
 
