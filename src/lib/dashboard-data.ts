@@ -83,7 +83,7 @@ export async function loadDashboardData(slug: string): Promise<DashboardData | n
   // site_draft über die Published-Spalten legen — Dashboard liest und
   // schreibt die editierbaren Felder in den Draft-Zustand. Die Spalten
   // selbst bleiben "Published" als Quelle für die Gäste-Seite.
-  const merged = mergeDraftIntoSite(siteRaw as WeddingSiteRecord & { site_draft?: Record<string, unknown> });
+  const merged = mergeDraftIntoSite(siteRaw as unknown as WeddingSiteRecord & { site_draft?: Record<string, unknown> });
 
   const [bereicheRes, purchasesRes] = await Promise.all([
     supabase
@@ -166,7 +166,7 @@ function mergeDraftIntoSite(
   for (const [key, value] of Object.entries(draft)) {
     if (value !== undefined) merged[key] = value;
   }
-  return merged as WeddingSiteRecord;
+  return merged as unknown as WeddingSiteRecord;
 }
 
 /**
