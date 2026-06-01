@@ -99,15 +99,30 @@ export interface GuestbookSubmit {
 }
 
 /**
- * Kapselt den Submit. Aktuell console.log-Fallback (wie RSVP); echter
- * Supabase-Insert in eine moderierte guestbook_entries-Tabelle als TODO.
- * Liefert ok/Fehler zurück.
+ * Submit an Public-API. Forciert serverseitig status='pending' — Moderation
+ * geschieht im Dashboard. Bei Erfolg → success-Phase mit Pending-Hinweis.
  */
 export async function submitEntry(payload: GuestbookSubmit): Promise<{ ok: boolean; error?: string }> {
-  // TODO: Supabase-Insert (status='pending') + optionale Brevo-Notification ans Brautpaar
-  // eslint-disable-next-line no-console
-  console.log('[Guestbook submit]', payload);
-  // Simulierter Netzwerk-Roundtrip
-  await new Promise((r) => setTimeout(r, 500));
-  return { ok: true };
+  if (!payload.weddingSlug) {
+    return { ok: false, error: 'Hochzeitsseite fehlt.' };
+  }
+  try {
+    const res = await fetch('/api/guestbook', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        slug: payload.weddingSlug,
+        name: payload.name,
+        message: payload.message,
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data?.ok) {
+      return { ok: false, error: data?.error || 'Konnte nicht gesendet werden.' };
+    }
+    return { ok: true };
+  } catch (err) {
+    console.error('[Guestbook submit] network error:', err);
+    return { ok: false, error: 'Netzwerkfehler.' };
+  }
 }

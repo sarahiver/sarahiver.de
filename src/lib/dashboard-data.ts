@@ -214,8 +214,8 @@ export async function loadDashboardStats(
       {};
 
     if (b.bereich_key === 'guestbook') {
-      const entries = (content.entries as unknown[]) || [];
-      stats.guestbookApproved = entries.length;
+      // Guestbook-Stats kommen jetzt aus eigener Tabelle (siehe unten)
+      // — hier nichts mehr aus content.entries lesen, das ist veraltet.
     }
 
     if (b.bereich_key === 'musicwishes') {
@@ -261,6 +261,22 @@ export async function loadDashboardStats(
       }
     } catch (err) {
       console.warn('[loadDashboardStats] rsvp counts failed:', err);
+    }
+
+    // wedding_guestbook_entries — pending + approved counts
+    try {
+      const { data: gbRows } = await supabase
+        .from('wedding_guestbook_entries')
+        .select('status')
+        .eq('wedding_site_id', siteId);
+      if (Array.isArray(gbRows)) {
+        for (const r of gbRows as Array<{ status: string }>) {
+          if (r.status === 'pending') stats.guestbookPending += 1;
+          else if (r.status === 'approved') stats.guestbookApproved += 1;
+        }
+      }
+    } catch (err) {
+      console.warn('[loadDashboardStats] guestbook counts failed:', err);
     }
   }
 

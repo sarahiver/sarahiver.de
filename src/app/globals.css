@@ -6560,3 +6560,196 @@ html, body {
   background: var(--dash-accent);
   color: white;
 }
+
+/* =========================================================
+   DASHBOARD — Gästebuch-Moderation
+   ========================================================= */
+
+/* Tabs */
+.dash-gb-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--dash-bg);
+  border: 1px solid var(--dash-border);
+  border-radius: 8px;
+  padding: 4px;
+}
+.dash-gb-tab {
+  flex: 1;
+  background: transparent;
+  border: 0;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--dash-ink-soft);
+  cursor: pointer;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 120ms ease, color 120ms ease;
+}
+.dash-gb-tab:hover { color: var(--dash-ink); }
+.dash-gb-tab.is-active {
+  background: var(--dash-surface);
+  color: var(--dash-ink);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+.dash-gb-tab-badge {
+  display: inline-block;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 18px;
+  border-radius: 999px;
+  background: var(--dash-bg);
+  color: var(--dash-muted);
+  border: 1px solid var(--dash-border);
+}
+.dash-gb-tab.is-active .dash-gb-tab-badge {
+  background: var(--dash-bg);
+}
+.dash-gb-tab-badge.is-warn {
+  background: var(--dash-accent);
+  color: white;
+  border-color: var(--dash-accent);
+}
+
+/* Karten */
+.dash-gb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.dash-gb-card {
+  background: var(--dash-bg);
+  border: 1px solid var(--dash-border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  transition: border-color 140ms ease;
+}
+.dash-gb-card.is-pending {
+  border-color: var(--dash-accent);
+  background: var(--dash-accent-soft);
+}
+.dash-gb-card.is-rejected {
+  opacity: 0.7;
+}
+
+.dash-gb-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.dash-gb-card-name {
+  display: block;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--dash-ink);
+  margin-bottom: 2px;
+}
+.dash-gb-card-time {
+  display: block;
+  font-family: var(--dash-font-mono);
+  font-size: 10.5px;
+  color: var(--dash-muted);
+  letter-spacing: 0.04em;
+}
+.dash-gb-card-message {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--dash-ink);
+  margin: 0 0 14px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.dash-gb-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--dash-border-soft);
+}
+
+/* Status-Badge im Card-Header */
+.dash-gb-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.dash-gb-badge.is-warn  { background: var(--dash-accent); color: white; }
+.dash-gb-badge.is-ok    { background: var(--dash-success-soft); color: var(--dash-success); }
+.dash-gb-badge.is-muted { background: var(--dash-bg); color: var(--dash-muted); border: 1px solid var(--dash-border); }
+
+/* Inline Info-Banner (für Editor mit pending-Count) */
+.dash-info-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px 18px;
+  background: var(--dash-accent-soft);
+  border: 1px solid var(--dash-accent);
+  border-radius: 10px;
+  margin-bottom: 18px;
+}
+.dash-info-banner-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.dash-info-banner-content strong {
+  font-size: 13px;
+  color: var(--dash-ink);
+  font-weight: 600;
+}
+.dash-info-banner-content span {
+  font-size: 12px;
+  color: var(--dash-ink-soft);
+}
+
+/* Inline Empty-State (Text-only) */
+.dash-empty-inline-text {
+  padding: 28px 16px;
+  text-align: center;
+  color: var(--dash-muted);
+  font-size: 13.5px;
+  background: var(--dash-bg);
+  border: 1px dashed var(--dash-border);
+  border-radius: 10px;
+}
+
+/* Danger-Text-Button */
+.dash-btn-text-danger {
+  background: transparent;
+  border: 0;
+  color: var(--dash-error, #c53030);
+  padding: 6px 10px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  transition: background 120ms ease;
+}
+.dash-btn-text-danger:hover { background: rgba(197, 48, 48, 0.08); }
+.dash-btn-text-danger:disabled { opacity: 0.4; cursor: not-allowed; }

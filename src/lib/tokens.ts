@@ -124,6 +124,42 @@ export async function loadWeddingSite(
     .filter((b) => b.is_active)
     .sort((a, b) => a.display_order - b.display_order);
 
+  // Gästebuch: approved Einträge aus eigener Tabelle laden und in content.entries
+  // injecten, damit die Render-Komponente sie via readEntries() bekommt.
+  // Im Draft-Mode auch pending zeigen, damit das Brautpaar in der Vorschau
+  // sieht, was noch zu moderieren ist (sonst wirkt die Live-Vorschau leer).
+  const guestbookIdx = bereiche.findIndex((b) => b.bereich_key === 'guestbook');
+  if (guestbookIdx !== -1) {
+    try {
+      const statusFilter = mode === 'draft' ? ['approved', 'pending'] : ['approved'];
+      const { data: entries } = await supabase
+        .from('wedding_guestbook_entries')
+        .select('id, name, message, created_at, status')
+        .eq('wedding_site_id', tokens.wedding_site_id)
+        .in('status', statusFilter)
+        .order('created_at', { ascending: false })
+        .limit(200);
+      const list = (entries || []).map((e) => {
+        const r = e as { id: string; name: string; message: string; created_at: string; status: string };
+        return {
+          id: r.id,
+          name: r.name,
+          message: r.message,
+          created_at: r.created_at,
+          // Im Draft-Mode pending markieren, damit shared-ui ein Badge zeigen könnte
+          ...(r.status === 'pending' ? { pending: true } : {}),
+        };
+      });
+      const b = bereiche[guestbookIdx];
+      bereiche[guestbookIdx] = {
+        ...b,
+        content: { ...(b.content as Record<string, unknown>), entries: list },
+      } as WeddingBereich;
+    } catch (err) {
+      console.warn('[loadWeddingSite] guestbook entries load failed:', err);
+    }
+  }
+
   // Purchase-Filter: nur Bereiche zeigen, die wirklich gebucht sind. So bleibt
   // Gäste-Seite konsistent zum Dashboard (welches denselben Filter macht).
   //

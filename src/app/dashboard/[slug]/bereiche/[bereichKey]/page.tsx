@@ -5,8 +5,10 @@ import VariantPicker from './VariantPicker';
 import HeroEditor from './HeroEditor';
 import PhotoUploadEditor from './PhotoUploadEditor';
 import LovestoryEditor from './LovestoryEditor';
+import GuestbookEditor from './GuestbookEditor';
 import { bereichLabel } from '@/lib/dashboard-nav';
 import { loadDashboardData, findBereich } from '@/lib/dashboard-data';
+import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import type { BereichKey } from '@/types/supabase';
 import { notFound, redirect } from 'next/navigation';
 
@@ -51,6 +53,20 @@ export default async function BereichEditorPage({
   const bereich = findBereich(data.bereiche, bereichKey as BereichKey);
   const label = bereichLabel(bereichKey as BereichKey);
   const variant = (bereich?.variant as 'a' | 'b' | 'c') || 'a';
+
+  // Für Gästebuch: pending-Einträge zählen, damit Editor das Banner zeigt
+  let guestbookPendingCount = 0;
+  if (bereichKey === 'guestbook') {
+    const supabase = createSupabaseAdminClient();
+    if (supabase) {
+      const { count } = await supabase
+        .from('wedding_guestbook_entries')
+        .select('id', { count: 'exact', head: true })
+        .eq('wedding_site_id', data.site.id)
+        .eq('status', 'pending');
+      guestbookPendingCount = count ?? 0;
+    }
+  }
 
   const desc = bereich
     ? `Variante ${variant.toUpperCase()} · ${bereich.is_active ? 'aktiv' : 'deaktiviert'}`
@@ -141,6 +157,19 @@ export default async function BereichEditorPage({
                 }}
               />
             )
+          ) : bereichKey === 'guestbook' ? (
+            <GuestbookEditor
+              slug={slug}
+              pendingCount={guestbookPendingCount}
+              initial={{
+                eyebrow: (content.eyebrow as string) || '',
+                title: (content.title as string) || '',
+                description: (content.description as string) || '',
+                moderation: (content.moderation as string) || '',
+                success_message: (content.success_message as string) || '',
+                success_sub: (content.success_sub as string) || '',
+              }}
+            />
           ) : (
             <ComingSoonSection what={`Editor-Felder für „${label}"`} />
           )}
