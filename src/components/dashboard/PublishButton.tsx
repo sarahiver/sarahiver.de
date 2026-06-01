@@ -1,10 +1,16 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import DashboardIcon from './DashboardIcon';
-import { publishAll, publishBereich, publishSite, type DirtyState } from '@/app/dashboard/[slug]/publish-actions';
+import {
+  publishAll,
+  publishBereich,
+  publishSite,
+  loadDirtyState,
+  type DirtyState,
+} from '@/app/dashboard/[slug]/publish-actions';
 import { bereichLabel } from '@/lib/dashboard-nav';
 import type { BereichKey } from '@/types/supabase';
 
@@ -15,6 +21,12 @@ import type { BereichKey } from '@/types/supabase';
  *   - Badge mit Anzahl der dirty Items
  *   - Klick → Modal mit Liste der Änderungen + "Live schalten"-Button
  *   - Im Modal: Vorschau-Link (Draft-Modus) + pro-Item-Publish-Optionen
+ *
+ * Auto-Refresh:
+ *   - Hört auf 'dashboard:editor-saved'-Events (von allen Auto-Save-Editoren)
+ *   - Lädt dann den Dirty-State frisch nach (debounced, damit nicht jeder
+ *     Keystroke einen Roundtrip auslöst)
+ *   - Sync mit initialState bei Layout-Reload (router.refresh)
  */
 
 interface Props {
@@ -28,6 +40,35 @@ export default function PublishButton({ slug, initialState }: Props) {
   const [showModal, setShowModal] = useState(false);
   const [pending, startTransition] = useTransition();
   const [toast, setToast] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
+
+  // Bei Layout-Reload (z.B. nach Publish) den frischen Server-State übernehmen
+  useEffect(() => {
+    setState(initialState);
+  }, [initialState]);
+
+  // Auf Save-Events lauschen und Dirty-State neu laden
+  useEffect(() => {
+    let timer: number | null = null;
+    const refresh = () => {
+      // Kurz debouncen, damit ein burst von Save-Events nur einen
+      // Roundtrip macht. Außerdem brauchen wir kurz Verzögerung, damit
+      // der Server-Schreibvorgang abgeschlossen ist (Postgres-Commit).
+      if (timer) window.clearTimeout(timer);
+      timer = window.setTimeout(async () => {
+        try {
+          const fresh = await loadDirtyState(slug);
+          setState(fresh);
+        } catch (err) {
+          console.warn('[PublishButton] reload dirty state failed:', err);
+        }
+      }, 600);
+    };
+    window.addEventListener('dashboard:editor-saved', refresh);
+    return () => {
+      window.removeEventListener('dashboard:editor-saved', refresh);
+      if (timer) window.clearTimeout(timer);
+    };
+  }, [slug]);
 
   const notify = (type: 'ok' | 'err', text: string) => {
     setToast({ type, text });
