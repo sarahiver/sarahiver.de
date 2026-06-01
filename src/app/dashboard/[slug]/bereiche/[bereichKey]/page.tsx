@@ -6,6 +6,7 @@ import HeroEditor from './HeroEditor';
 import PhotoUploadEditor from './PhotoUploadEditor';
 import LovestoryEditor from './LovestoryEditor';
 import GuestbookEditor from './GuestbookEditor';
+import MusicWishesEditor from './MusicWishesEditor';
 import { bereichLabel } from '@/lib/dashboard-nav';
 import { loadDashboardData, findBereich } from '@/lib/dashboard-data';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
@@ -56,15 +57,24 @@ export default async function BereichEditorPage({
 
   // Für Gästebuch: pending-Einträge zählen, damit Editor das Banner zeigt
   let guestbookPendingCount = 0;
-  if (bereichKey === 'guestbook') {
+  let musicWishesTotalCount = 0;
+  if (bereichKey === 'guestbook' || bereichKey === 'musicwishes') {
     const supabase = createSupabaseAdminClient();
     if (supabase) {
-      const { count } = await supabase
-        .from('wedding_guestbook_entries')
-        .select('id', { count: 'exact', head: true })
-        .eq('wedding_site_id', data.site.id)
-        .eq('status', 'pending');
-      guestbookPendingCount = count ?? 0;
+      if (bereichKey === 'guestbook') {
+        const { count } = await supabase
+          .from('wedding_guestbook_entries')
+          .select('id', { count: 'exact', head: true })
+          .eq('wedding_site_id', data.site.id)
+          .eq('status', 'pending');
+        guestbookPendingCount = count ?? 0;
+      } else {
+        const { count } = await supabase
+          .from('wedding_music_wishes')
+          .select('id', { count: 'exact', head: true })
+          .eq('wedding_site_id', data.site.id);
+        musicWishesTotalCount = count ?? 0;
+      }
     }
   }
 
@@ -166,6 +176,18 @@ export default async function BereichEditorPage({
                 title: (content.title as string) || '',
                 description: (content.description as string) || '',
                 moderation: (content.moderation as string) || '',
+                success_message: (content.success_message as string) || '',
+                success_sub: (content.success_sub as string) || '',
+              }}
+            />
+          ) : bereichKey === 'musicwishes' ? (
+            <MusicWishesEditor
+              slug={slug}
+              totalCount={musicWishesTotalCount}
+              initial={{
+                eyebrow: (content.eyebrow as string) || '',
+                title: (content.title as string) || '',
+                description: (content.description as string) || '',
                 success_message: (content.success_message as string) || '',
                 success_sub: (content.success_sub as string) || '',
               }}

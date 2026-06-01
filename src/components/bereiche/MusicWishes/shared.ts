@@ -150,24 +150,41 @@ export interface MusicWishSubmit {
 }
 
 /**
- * Kapselt den Submit. Aktuell console.log-Fallback (wie RSVP); echter
- * Supabase-Insert + optionale Brevo-Notification als TODO. Liefert den
- * angelegten Wunsch zurück (für optimistisches Einfügen).
+ * Submit an Public-API. Liefert den angelegten Wunsch zurück (mit DB-ID),
+ * damit das Frontend ihn optimistic in die Liste einfügen kann.
  */
 export async function submitWish(
   payload: MusicWishSubmit,
 ): Promise<{ ok: boolean; wish?: MusicWish; error?: string }> {
-  // TODO: Supabase-Insert in music_wishes + optionale Brevo-Notification
-  // eslint-disable-next-line no-console
-  console.log('[MusicWishes submit]', payload);
-  await new Promise((r) => setTimeout(r, 450));
-  const wish: MusicWish = {
-    id: `mw_${Date.now()}`,
-    title: payload.title,
-    artist: payload.artist,
-    guest_name: payload.guestName || '',
-    created_at: new Date().toISOString().slice(0, 10),
-    isFresh: true,
-  };
-  return { ok: true, wish };
+  if (!payload.weddingSlug) {
+    return { ok: false, error: 'Hochzeitsseite fehlt.' };
+  }
+  try {
+    const res = await fetch('/api/music-wishes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        slug: payload.weddingSlug,
+        title: payload.title,
+        artist: payload.artist,
+        guest_name: payload.guestName || '',
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data?.ok || !data.wish) {
+      return { ok: false, error: data?.error || 'Konnte nicht gesendet werden.' };
+    }
+    const wish: MusicWish = {
+      id: data.wish.id,
+      title: data.wish.title,
+      artist: data.wish.artist,
+      guest_name: data.wish.guest_name || '',
+      created_at: data.wish.created_at,
+      isFresh: true,
+    };
+    return { ok: true, wish };
+  } catch (err) {
+    console.error('[MusicWishes submit] network error:', err);
+    return { ok: false, error: 'Netzwerkfehler.' };
+  }
 }

@@ -6753,3 +6753,93 @@ html, body {
 }
 .dash-btn-text-danger:hover { background: rgba(197, 48, 48, 0.08); }
 .dash-btn-text-danger:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* =========================================================
+   DASHBOARD — Musikwünsche-Liste
+   ========================================================= */
+
+/* Toolbar: Suche + Export-Button nebeneinander */
+.dash-mw-toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+.dash-mw-toolbar > input {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* Liste */
+.dash-mw-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dash-mw-card {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: var(--dash-bg);
+  border: 1px solid var(--dash-border);
+  border-radius: 8px;
+  transition: border-color 120ms ease;
+}
+.dash-mw-card:hover {
+  border-color: var(--dash-border-strong, var(--dash-accent));
+}
+
+.dash-mw-card-main { min-width: 0; }
+.dash-mw-card-title {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--dash-ink);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dash-mw-card-artist {
+  font-size: 12.5px;
+  color: var(--dash-ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dash-mw-card-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  text-align: right;
+}
+.dash-mw-card-guest {
+  font-size: 11.5px;
+  color: var(--dash-ink-soft);
+}
+.dash-mw-card-guest strong { color: var(--dash-ink); }
+.dash-mw-card-time {
+  font-family: var(--dash-font-mono);
+  font-size: 10px;
+  color: var(--dash-muted);
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 640px) {
+  .dash-mw-card {
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "main delete" "meta meta";
+    align-items: flex-start;
+  }
+  .dash-mw-card-main { grid-area: main; }
+  .dash-mw-card-meta {
+    grid-area: meta;
+    align-items: flex-start;
+    text-align: left;
+    padding-top: 8px;
+    border-top: 1px solid var(--dash-border-soft);
+  }
+}

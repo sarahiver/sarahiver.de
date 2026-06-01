@@ -160,6 +160,37 @@ export async function loadWeddingSite(
     }
   }
 
+  // Musikwünsche: Items aus eigener Tabelle laden und in content.items injecten.
+  // Kein Moderationsschritt — alle Einträge sind sofort sichtbar.
+  const musicIdx = bereiche.findIndex((b) => b.bereich_key === 'musicwishes');
+  if (musicIdx !== -1) {
+    try {
+      const { data: rows } = await supabase
+        .from('wedding_music_wishes')
+        .select('id, title, artist, guest_name, created_at')
+        .eq('wedding_site_id', tokens.wedding_site_id)
+        .order('created_at', { ascending: false })
+        .limit(500);
+      const list = (rows || []).map((e) => {
+        const r = e as { id: string; title: string; artist: string; guest_name: string | null; created_at: string };
+        return {
+          id: r.id,
+          title: r.title,
+          artist: r.artist,
+          guest_name: r.guest_name || '',
+          created_at: r.created_at,
+        };
+      });
+      const b = bereiche[musicIdx];
+      bereiche[musicIdx] = {
+        ...b,
+        content: { ...(b.content as Record<string, unknown>), items: list },
+      } as WeddingBereich;
+    } catch (err) {
+      console.warn('[loadWeddingSite] music wishes load failed:', err);
+    }
+  }
+
   // Purchase-Filter: nur Bereiche zeigen, die wirklich gebucht sind. So bleibt
   // Gäste-Seite konsistent zum Dashboard (welches denselben Filter macht).
   //

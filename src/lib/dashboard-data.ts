@@ -219,8 +219,8 @@ export async function loadDashboardStats(
     }
 
     if (b.bereich_key === 'musicwishes') {
-      const items = (content.items as unknown[]) || [];
-      stats.musicWishes = items.length;
+      // Music-Wishes-Stats kommen jetzt aus eigener Tabelle (siehe unten)
+      // — hier nichts mehr aus content.items lesen, das ist veraltet.
     }
 
     if (b.bereich_key === 'gifts') {
@@ -277,6 +277,17 @@ export async function loadDashboardStats(
       }
     } catch (err) {
       console.warn('[loadDashboardStats] guestbook counts failed:', err);
+    }
+
+    // wedding_music_wishes — total count
+    try {
+      const { count } = await supabase
+        .from('wedding_music_wishes')
+        .select('id', { count: 'exact', head: true })
+        .eq('wedding_site_id', siteId);
+      if (typeof count === 'number') stats.musicWishes = count;
+    } catch (err) {
+      console.warn('[loadDashboardStats] music wishes count failed:', err);
     }
   }
 
