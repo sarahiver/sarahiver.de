@@ -6124,3 +6124,141 @@ html, body {
   color: white;
   letter-spacing: 0.06em;
 }
+
+/* =========================================================
+   DASHBOARD — Photos (Eingehende Daten)
+   ========================================================= */
+.dash-photos { display: flex; flex-direction: column; gap: 18px; }
+
+.dash-photos-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-border);
+  border-radius: 10px;
+}
+.dash-photos-toolbar-left,
+.dash-photos-toolbar-right {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.dash-btn-danger-out {
+  border-color: var(--dash-warning) !important;
+  color: var(--dash-warning) !important;
+}
+.dash-btn-danger-out:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--dash-warning) 10%, transparent) !important;
+}
+
+/* Empty State */
+.dash-photos-empty {
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-border);
+  border-radius: 14px;
+  padding: 48px 32px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.dash-photos-empty-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--dash-bg);
+  border: 1px solid var(--dash-border);
+  display: grid;
+  place-items: center;
+  color: var(--dash-muted);
+}
+.dash-photos-empty h3 {
+  font-family: ui-serif, Georgia, serif;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--dash-ink);
+}
+.dash-photos-empty p {
+  font-size: 13.5px;
+  color: var(--dash-ink-soft);
+  margin: 0 auto;
+  max-width: 480px;
+  line-height: 1.55;
+}
+
+/* Foto-Grid */
+.dash-photos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+.dash-photos-card {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--dash-bg);
+  border-radius: 8px;
+  cursor: pointer;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: transform 140ms ease, border-color 140ms ease;
+}
+.dash-photos-card:hover {
+  transform: translateY(-2px);
+}
+.dash-photos-card.is-selected {
+  border-color: var(--dash-accent);
+  transform: scale(0.97);
+}
+
+.dash-photos-check {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--dash-accent);
+  color: white;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 6px -2px rgba(20, 16, 12, 0.4);
+}
+
+.dash-photos-card-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 18px 10px 8px;
+  background: linear-gradient(to bottom, transparent 0%, rgba(20, 16, 12, 0.78) 100%);
+  color: white;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.dash-photos-card-uploader {
+  font-weight: 600;
+}
+.dash-photos-card-date {
+  font-family: var(--dash-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+@media (max-width: 640px) {
+  .dash-photos-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 8px;
+  }
+}

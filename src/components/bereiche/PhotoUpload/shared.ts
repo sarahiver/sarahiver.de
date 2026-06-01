@@ -154,7 +154,9 @@ export function uploadFile(
     form.append('file', file);
     form.append('upload_preset', cfg.preset);
     if (opts.weddingSlug) {
-      form.append('folder', `guest-uploads/${opts.weddingSlug}`);
+      // Folder analog zu Dashboard-Uploads: sarahiver.de/{slug}/photos
+      form.append('folder', `sarahiver.de/${opts.weddingSlug}/photos`);
+      form.append('asset_folder', `sarahiver.de/${opts.weddingSlug}/photos`);
       form.append('tags', `guest-upload,${opts.weddingSlug}`);
     } else {
       form.append('tags', 'guest-upload');
@@ -168,11 +170,26 @@ export function uploadFile(
     xhr.upload.onprogress = (e) => {
       if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100));
     };
-    xhr.onload = () => {
+    xhr.onload = async () => {
       if (xhr.status >= 200 && xhr.status < 300) {
         try {
           const res = JSON.parse(xhr.responseText);
           onProgress(100);
+          // Nach erfolgreichem Cloudinary-Upload: DB-Eintrag persistieren,
+          // damit der Foto-Upload im Dashboard auftaucht. Bei Fehler hier
+          // markieren wir den Upload trotzdem als ok — das Bild liegt in
+          // Cloudinary, das Brautpaar verliert nur den DB-Record.
+          if (opts.weddingSlug) {
+            persistPhotoUpload({
+              weddingSlug: opts.weddingSlug,
+              guestName: opts.guestName,
+              secureUrl: res.secure_url,
+              publicId: res.public_id,
+            }).catch((err) => {
+              // eslint-disable-next-line no-console
+              console.warn('[uploadFile] persist failed (non-fatal):', err);
+            });
+          }
           resolve({ ok: true, secureUrl: res.secure_url, publicId: res.public_id });
         } catch {
           resolve({ ok: false, error: 'Antwort konnte nicht gelesen werden.' });
@@ -183,5 +200,28 @@ export function uploadFile(
     };
     xhr.onerror = () => resolve({ ok: false, error: 'Netzwerkfehler beim Upload.' });
     xhr.send(form);
+  });
+}
+
+/**
+ * Server-Route /api/photo-uploads schreibt den Upload-Record in
+ * wedding_photo_uploads. Best-effort — Fehler werden geloggt, nicht
+ * geworfen. Der Cloudinary-Upload war ja schon erfolgreich.
+ */
+async function persistPhotoUpload(args: {
+  weddingSlug: string;
+  guestName?: string;
+  secureUrl: string;
+  publicId: string;
+}): Promise<void> {
+  await fetch('/api/photo-uploads', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      slug: args.weddingSlug,
+      cloudinary_url: args.secureUrl,
+      cloudinary_public_id: args.publicId,
+      uploaded_by: (args.guestName || '').trim() || 'Gast',
+    }),
   });
 }

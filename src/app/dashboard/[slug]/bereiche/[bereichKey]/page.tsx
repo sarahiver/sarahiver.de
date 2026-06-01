@@ -3,6 +3,7 @@ import EditorShell from '@/components/dashboard/EditorShell';
 import ComingSoonSection from '@/components/dashboard/ComingSoonSection';
 import VariantPicker from './VariantPicker';
 import HeroEditor from './HeroEditor';
+import PhotoUploadEditor from './PhotoUploadEditor';
 import { bereichLabel } from '@/lib/dashboard-nav';
 import { loadDashboardData, findBereich } from '@/lib/dashboard-data';
 import type { BereichKey } from '@/types/supabase';
@@ -76,6 +77,18 @@ export default async function BereichEditorPage({
                 hero_image_url: data.site.hero_image_url,
                 eyebrow: (content.eyebrow as string) || '',
                 image_2: (content.image_2 as string) || null,
+              }}
+            />
+          ) : bereichKey === 'photoupload' ? (
+            <PhotoUploadEditor
+              slug={slug}
+              initial={{
+                eyebrow: (content.eyebrow as string) || '',
+                title: (content.title as string) || '',
+                description: (content.description as string) || '',
+                privacy: (content.privacy as string) || '',
+                success_message: (content.success_message as string) || '',
+                success_sub: (content.success_sub as string) || '',
               }}
             />
           ) : (

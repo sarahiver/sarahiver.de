@@ -177,9 +177,40 @@ export async function loadDashboardStats(
     }
   }
 
-  // siteId ist absichtlich Teil der Signatur (für künftige echte Counts
-  // aus rsvp/guestbook_entries/...-Tabellen); aktuell wird sie nicht genutzt.
-  void siteId;
+  // siteId wird jetzt genutzt — echte Counts aus separaten Tabellen,
+  // wo wir sie schon haben.
+  const supabase = createSupabaseAdminClient();
+  if (supabase) {
+    // wedding_photo_uploads — count
+    try {
+      const { count } = await supabase
+        .from('wedding_photo_uploads')
+        .select('*', { count: 'exact', head: true })
+        .eq('wedding_site_id', siteId);
+      if (typeof count === 'number') stats.photoUploads = count;
+    } catch (err) {
+      // Tabelle könnte noch nicht existieren — defensiv schlucken
+      console.warn('[loadDashboardStats] photoUploads count failed:', err);
+    }
+
+    // wedding_rsvps — count + breakdown
+    try {
+      const { data: rsvps } = await supabase
+        .from('wedding_rsvps')
+        .select('attending, persons')
+        .eq('wedding_site_id', siteId);
+      if (Array.isArray(rsvps)) {
+        stats.rsvpTotal = rsvps.length;
+        for (const r of rsvps as Array<{ attending: boolean }>) {
+          if (r.attending) stats.rsvpAccepted += 1;
+          else stats.rsvpDeclined += 1;
+        }
+      }
+    } catch (err) {
+      console.warn('[loadDashboardStats] rsvp counts failed:', err);
+    }
+  }
+
   return stats;
 }
 
