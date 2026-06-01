@@ -191,6 +191,45 @@ export async function loadWeddingSite(
     }
   }
 
+  // Geschenke: Reservierungen aus eigener Tabelle laden und auf die Items
+  // im content.items mergen (reserved=true + reserved_by). Items selbst
+  // werden im Editor gepflegt, Reservierungen sind getrennt, damit ein
+  // Publish nicht versehentlich Reservierungen wegwirft.
+  const giftsIdx = bereiche.findIndex((b) => b.bereich_key === 'gifts');
+  if (giftsIdx !== -1) {
+    try {
+      const { data: rows } = await supabase
+        .from('wedding_gift_reservations')
+        .select('item_id, guest_name')
+        .eq('wedding_site_id', tokens.wedding_site_id);
+      const map = new Map<string, string>();
+      for (const r of (rows || []) as Array<{ item_id: string; guest_name: string }>) {
+        map.set(r.item_id, r.guest_name);
+      }
+      const b = bereiche[giftsIdx];
+      const content = b.content as Record<string, unknown>;
+      const items = Array.isArray(content.items)
+        ? (content.items as Array<Record<string, unknown>>).map((it) => {
+            const id = (it.id as string) || '';
+            const guestName = map.get(id);
+            if (guestName) {
+              return { ...it, reserved: true, reserved_by: guestName };
+            }
+            // Clean: stelle sicher, dass alte reserved-Flags aus content
+            // (falls noch welche da sind) nicht hereinschummeln — nur DB
+            // ist die Wahrheit.
+            return { ...it, reserved: false, reserved_by: '' };
+          })
+        : [];
+      bereiche[giftsIdx] = {
+        ...b,
+        content: { ...content, items },
+      } as WeddingBereich;
+    } catch (err) {
+      console.warn('[loadWeddingSite] gift reservations load failed:', err);
+    }
+  }
+
   // Purchase-Filter: nur Bereiche zeigen, die wirklich gebucht sind. So bleibt
   // Gäste-Seite konsistent zum Dashboard (welches denselben Filter macht).
   //

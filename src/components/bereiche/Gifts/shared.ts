@@ -106,16 +106,33 @@ export interface ReserveSubmit {
 }
 
 /**
- * Kapselt die Reservierung (wie sarahiver.com reserveGiftItem). Aktuell
- * console.log-Fallback; echter Supabase-Update (items[].reserved=true,
- * reserved_by) + optionale Brevo-Notification ans Brautpaar als TODO.
+ * Submit an Public-API. Race-Schutz: zweite Reservierung für dasselbe
+ * Item scheitert mit 409 + verständlichem Fehlertext.
  */
 export async function submitReservation(
   payload: ReserveSubmit,
 ): Promise<{ ok: boolean; error?: string }> {
-  // TODO: Supabase-Update + optionale Brevo-Notification
-  // eslint-disable-next-line no-console
-  console.log('[Gifts reserve]', payload);
-  await new Promise((r) => setTimeout(r, 450));
-  return { ok: true };
+  if (!payload.weddingSlug) {
+    return { ok: false, error: 'Hochzeitsseite fehlt.' };
+  }
+  try {
+    const res = await fetch('/api/gifts/reserve', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        slug: payload.weddingSlug,
+        item_id: payload.itemId,
+        item_title: payload.itemTitle,
+        guest_name: payload.guestName,
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data?.ok) {
+      return { ok: false, error: data?.error || 'Konnte nicht reserviert werden.' };
+    }
+    return { ok: true };
+  } catch (err) {
+    console.error('[Gifts reserve] network error:', err);
+    return { ok: false, error: 'Netzwerkfehler.' };
+  }
 }

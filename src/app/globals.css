@@ -6843,3 +6843,65 @@ html, body {
     border-top: 1px solid var(--dash-border-soft);
   }
 }
+
+/* =========================================================
+   DASHBOARD — Geschenke (Editor + Reservierungen)
+   ========================================================= */
+
+/* Reservierte Item-Karte im Editor */
+.dash-milestone-card.is-reserved {
+  border-color: var(--dash-accent);
+  background: linear-gradient(0deg, var(--dash-accent-soft) 0%, var(--dash-bg) 60%);
+}
+
+/* IBAN-Toggle (Reisekasse-Block) */
+.dash-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--dash-ink);
+  user-select: none;
+}
+.dash-toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--dash-accent);
+}
+
+/* Stats-Zeile (reserviert / verfügbar / gesamt) */
+.dash-gifts-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.dash-gifts-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 12px;
+  background: var(--dash-bg);
+  border: 1px solid var(--dash-border);
+  border-radius: 10px;
+}
+.dash-gifts-stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--dash-ink);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.dash-gifts-stat-label {
+  font-family: var(--dash-font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--dash-muted);
+  text-transform: uppercase;
+}
+
+@media (max-width: 480px) {
+  .dash-gifts-stats { grid-template-columns: 1fr; }
+}

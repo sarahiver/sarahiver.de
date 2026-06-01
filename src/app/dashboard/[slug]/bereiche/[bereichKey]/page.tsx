@@ -7,6 +7,7 @@ import PhotoUploadEditor from './PhotoUploadEditor';
 import LovestoryEditor from './LovestoryEditor';
 import GuestbookEditor from './GuestbookEditor';
 import MusicWishesEditor from './MusicWishesEditor';
+import GiftsEditor from './GiftsEditor';
 import { bereichLabel } from '@/lib/dashboard-nav';
 import { loadDashboardData, findBereich } from '@/lib/dashboard-data';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
@@ -58,7 +59,9 @@ export default async function BereichEditorPage({
   // Für Gästebuch: pending-Einträge zählen, damit Editor das Banner zeigt
   let guestbookPendingCount = 0;
   let musicWishesTotalCount = 0;
-  if (bereichKey === 'guestbook' || bereichKey === 'musicwishes') {
+  let giftReservedItemIds = new Set<string>();
+  let giftReservedCount = 0;
+  if (bereichKey === 'guestbook' || bereichKey === 'musicwishes' || bereichKey === 'gifts') {
     const supabase = createSupabaseAdminClient();
     if (supabase) {
       if (bereichKey === 'guestbook') {
@@ -68,12 +71,20 @@ export default async function BereichEditorPage({
           .eq('wedding_site_id', data.site.id)
           .eq('status', 'pending');
         guestbookPendingCount = count ?? 0;
-      } else {
+      } else if (bereichKey === 'musicwishes') {
         const { count } = await supabase
           .from('wedding_music_wishes')
           .select('id', { count: 'exact', head: true })
           .eq('wedding_site_id', data.site.id);
         musicWishesTotalCount = count ?? 0;
+      } else if (bereichKey === 'gifts') {
+        const { data: rows } = await supabase
+          .from('wedding_gift_reservations')
+          .select('item_id')
+          .eq('wedding_site_id', data.site.id);
+        const list = (rows || []) as Array<{ item_id: string }>;
+        giftReservedItemIds = new Set(list.map((r) => r.item_id));
+        giftReservedCount = list.length;
       }
     }
   }
@@ -190,6 +201,33 @@ export default async function BereichEditorPage({
                 description: (content.description as string) || '',
                 success_message: (content.success_message as string) || '',
                 success_sub: (content.success_sub as string) || '',
+              }}
+            />
+          ) : bereichKey === 'gifts' ? (
+            <GiftsEditor
+              slug={slug}
+              reservedItemIds={giftReservedItemIds}
+              reservedCount={giftReservedCount}
+              initial={{
+                eyebrow: (content.eyebrow as string) || '',
+                title: (content.title as string) || '',
+                description: (content.description as string) || '',
+                reserve_success: (content.reserve_success as string) || '',
+                iban_enabled: content.iban_enabled === true,
+                iban: (content.iban as string) || '',
+                iban_holder: (content.iban_holder as string) || '',
+                iban_note: (content.iban_note as string) || '',
+                items: Array.isArray(content.items)
+                  ? (content.items as Array<Record<string, unknown>>)
+                      .filter((it) => typeof it?.id === 'string' && typeof it?.title === 'string')
+                      .map((it) => ({
+                        id: it.id as string,
+                        title: it.title as string,
+                        description: typeof it.description === 'string' ? it.description : '',
+                        amount: typeof it.amount === 'string' ? it.amount : '',
+                        image: typeof it.image === 'string' ? it.image : '',
+                      }))
+                  : [],
               }}
             />
           ) : (

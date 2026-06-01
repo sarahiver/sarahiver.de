@@ -224,9 +224,11 @@ export async function loadDashboardStats(
     }
 
     if (b.bereich_key === 'gifts') {
-      const items = ((content.items as Array<{ reserved?: boolean }>) || []);
+      // Anzahl Items aus content (Draft-Stand), reservedCount kommt aus DB unten.
+      const items = ((content.items as unknown[]) || []);
       stats.giftsTotal = items.length;
-      stats.giftsReserved = items.filter((i) => i.reserved === true).length;
+      // giftsReserved wird unten aus DB überschrieben — content.reserved-Flags
+      // sind veraltet (DB ist Wahrheit).
     }
   }
 
@@ -288,6 +290,17 @@ export async function loadDashboardStats(
       if (typeof count === 'number') stats.musicWishes = count;
     } catch (err) {
       console.warn('[loadDashboardStats] music wishes count failed:', err);
+    }
+
+    // wedding_gift_reservations — count
+    try {
+      const { count } = await supabase
+        .from('wedding_gift_reservations')
+        .select('id', { count: 'exact', head: true })
+        .eq('wedding_site_id', siteId);
+      if (typeof count === 'number') stats.giftsReserved = count;
+    } catch (err) {
+      console.warn('[loadDashboardStats] gift reservations count failed:', err);
     }
   }
 
