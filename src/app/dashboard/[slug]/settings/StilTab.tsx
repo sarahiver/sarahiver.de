@@ -24,14 +24,28 @@ interface Props {
   fonts: FontPreset[];
 }
 
+type CustomColors = {
+  bg: string;
+  bg_soft: string;
+  accent: string;
+  accent_deep: string;
+  ink: string;
+};
+
+const EMPTY_CUSTOMS: CustomColors = { bg: '', bg_soft: '', accent: '', accent_deep: '', ink: '' };
+
 /**
  * Stil-Tab mit Auto-Save:
- *  - Klick auf Stil/Palette/Font-Karte → speichert sofort
+ *  - Klick auf Stil/Palette/Font-Karte → speichert sofort (mit den NEUEN Werten,
+ *    nicht aus React-State, weil der noch nicht propagiert ist)
  *  - Tippen in Custom-Farb-Feld → debounced 800ms, dann speichern
  *  - AutoPalette übernehmen → speichert sofort
  *
- * Status-Indikator oben rechts (Saving / Gespeichert / Fehler). Kein
- * "Speichern"-Button mehr.
+ * WICHTIG: Sofort-Saves dürfen NICHT aus React-State lesen, weil State-Updates
+ * im selben Event-Handler erst nach React-Re-Render committed sind. Stattdessen
+ * geben die Handler die neuen Werte als Override an doSave() weiter.
+ *
+ * Status-Indikator oben rechts (Saving / Gespeichert / Fehler).
  */
 export default function StilTab({ slug, initial, styles, palettes, fonts }: Props) {
   const router = useRouter();
@@ -51,7 +65,7 @@ export default function StilTab({ slug, initial, styles, palettes, fonts }: Prop
   const [styleId, setStyleId] = useState(initial.start_style_id);
   const [paletteId, setPaletteId] = useState(initial.palette_preset_id);
   const [fontId, setFontId] = useState(initial.font_preset_id);
-  const [customs, setCustoms] = useState({
+  const [customs, setCustoms] = useState<CustomColors>({
     bg: initial.custom_bg || '',
     bg_soft: initial.custom_bg_soft || '',
     accent: initial.custom_accent || '',
@@ -67,44 +81,64 @@ export default function StilTab({ slug, initial, styles, palettes, fonts }: Prop
     }
   }, [status]);
 
-  // Aktuelle Werte als Ref, damit der debounced Save den letzten State nutzt
+  // Aktuelle Werte als Ref (für DEBOUNCED Save, der den Last-State nutzt).
+  // Für SOFORT-Saves wird die Ref NICHT verwendet — dort kommen die Werte
+  // explizit als Argument an doSave().
   const latestRef = useRef({ styleId, paletteId, fontId, customs });
   latestRef.current = { styleId, paletteId, fontId, customs };
 
-  const doSave = useCallback(() => {
-    setStatus('saving');
-    setErrText(null);
-    const { styleId: s, paletteId: p, fontId: f, customs: c } = latestRef.current;
-    startTransition(async () => {
-      const res = await updateStil({
-        slug,
-        start_style_id: s,
-        palette_preset_id: p,
-        font_preset_id: f,
-        custom_bg: c.bg || null,
-        custom_bg_soft: c.bg_soft || null,
-        custom_accent: c.accent || null,
-        custom_accent_deep: c.accent_deep || null,
-        custom_ink: c.ink || null,
+  type SavePayload = {
+    styleId: string;
+    paletteId: string | null;
+    fontId: string | null;
+    customs: CustomColors;
+  };
+
+  /**
+   * Save-Funktion mit optionalem Override.
+   *  - Ohne Argument: nutzt latestRef.current (für debounced Save)
+   *  - Mit Argument: nutzt das Override (für sofort-Save nach State-Update)
+   */
+  const doSave = useCallback(
+    (override?: Partial<SavePayload>) => {
+      setStatus('saving');
+      setErrText(null);
+      const ref = latestRef.current;
+      const payload: SavePayload = {
+        styleId: override?.styleId ?? ref.styleId,
+        paletteId: override?.paletteId !== undefined ? override.paletteId : ref.paletteId,
+        fontId: override?.fontId !== undefined ? override.fontId : ref.fontId,
+        customs: override?.customs ?? ref.customs,
+      };
+
+      startTransition(async () => {
+        const res = await updateStil({
+          slug,
+          start_style_id: payload.styleId,
+          palette_preset_id: payload.paletteId,
+          font_preset_id: payload.fontId,
+          custom_bg: payload.customs.bg || null,
+          custom_bg_soft: payload.customs.bg_soft || null,
+          custom_accent: payload.customs.accent || null,
+          custom_accent_deep: payload.customs.accent_deep || null,
+          custom_ink: payload.customs.ink || null,
+        });
+        if (res.ok) {
+          setStatus('ok');
+          window.dispatchEvent(new Event('dashboard:editor-saved'));
+          router.refresh();
+        } else {
+          setStatus('err');
+          setErrText(res.error || 'Konnte nicht gespeichert werden.');
+        }
       });
-      if (res.ok) {
-        setStatus('ok');
-        window.dispatchEvent(new Event('dashboard:editor-saved'));
-        router.refresh();
-      } else {
-        setStatus('err');
-        setErrText(res.error || 'Konnte nicht gespeichert werden.');
-      }
-    });
-  }, [slug, router]);
+    },
+    [slug, router],
+  );
 
   // === SOFORT-SAVE für diskrete Aktionen (Karten) ===
-  // Sie setzen State UND triggern unmittelbar einen Save.
-  // Damit der State den Save erreicht, nutzen wir flushSync-ähnliches Pattern:
-  // Wir warten einen Microtask (Promise.resolve()), dann ist der State im Ref.
-  const saveSoon = () => {
-    Promise.resolve().then(() => doSave());
-  };
+  // Jeder Handler gibt die NEUEN Werte explizit an doSave() weiter,
+  // damit nicht der noch nicht propagierte React-State gelesen wird.
 
   const handleStyleChange = (newStyleId: string) => {
     const s = styles.find((x) => x.id === newStyleId);
@@ -112,47 +146,61 @@ export default function StilTab({ slug, initial, styles, palettes, fonts }: Prop
     if (s) {
       setPaletteId(s.default_palette_id);
       setFontId(s.default_font_id);
-      setCustoms({ bg: '', bg_soft: '', accent: '', accent_deep: '', ink: '' });
+      setCustoms(EMPTY_CUSTOMS);
     }
-    saveSoon();
+    doSave({
+      styleId: newStyleId,
+      paletteId: s ? s.default_palette_id : paletteId,
+      fontId: s ? s.default_font_id : fontId,
+      customs: s ? EMPTY_CUSTOMS : customs,
+    });
   };
 
   const handlePaletteChange = (newId: string) => {
     setPaletteId(newId);
-    setCustoms({ bg: '', bg_soft: '', accent: '', accent_deep: '', ink: '' });
-    saveSoon();
+    setCustoms(EMPTY_CUSTOMS);
+    doSave({
+      paletteId: newId,
+      customs: EMPTY_CUSTOMS,
+    });
   };
 
   const handleFontChange = (newId: string) => {
     setFontId(newId);
-    saveSoon();
+    doSave({
+      fontId: newId,
+    });
   };
 
-  const handleAutoPaletteApply = (p: {
-    bg: string;
-    bg_soft: string;
-    accent: string;
-    accent_deep: string;
-    ink: string;
-  }) => {
+  const handleAutoPaletteApply = (p: CustomColors) => {
     setCustoms({ ...p });
-    saveSoon();
+    doSave({
+      customs: { ...p },
+    });
   };
 
   const resetCustoms = () => {
-    setCustoms({ bg: '', bg_soft: '', accent: '', accent_deep: '', ink: '' });
-    saveSoon();
+    setCustoms(EMPTY_CUSTOMS);
+    doSave({
+      customs: EMPTY_CUSTOMS,
+    });
   };
 
   // === DEBOUNCED Save bei Custom-Farb-Änderung ===
-  // 800ms nach letzter Eingabe wird gespeichert.
+  // 800ms nach letzter Eingabe wird gespeichert. Hier ist die Race-Condition
+  // unkritisch, weil der Timer länger ist als ein React-Render-Cycle.
+  // Trotzdem geben wir die Werte explizit weiter — Symmetrie + Robustheit.
   const debounceRef = useRef<number | null>(null);
-  const handleCustomChange = (key: keyof typeof customs, value: string) => {
-    setCustoms((curr) => ({ ...curr, [key]: value }));
-    if (debounceRef.current) window.clearTimeout(debounceRef.current);
-    debounceRef.current = window.setTimeout(() => {
-      doSave();
-    }, 800);
+  const handleCustomChange = (key: keyof CustomColors, value: string) => {
+    setCustoms((curr) => {
+      const next = { ...curr, [key]: value };
+      // Debounced Save mit dem aktuellen "next"-Value
+      if (debounceRef.current) window.clearTimeout(debounceRef.current);
+      debounceRef.current = window.setTimeout(() => {
+        doSave({ customs: next });
+      }, 800);
+      return next;
+    });
   };
 
   // Cleanup beim Unmount
