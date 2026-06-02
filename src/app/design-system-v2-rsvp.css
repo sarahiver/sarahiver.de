@@ -1,0 +1,552 @@
+/* ============================================================
+   DESIGN SYSTEM v2 — RSVP (v4: CSS-Variable Pattern)
+   ============================================================
+   Statt 8 vollständige Stil-Blocks (zu viel CSS für PostCSS) nutzen wir:
+   1. Einen Variable-Default-Block auf .rsvp
+   2. Generic-Selektoren die diese Variables verbrauchen
+   3. Pro Stil NUR Variable-Overrides, keine eigenen Properties
+
+   Das reduziert die CSS-Größe drastisch — gleicher visueller Effekt,
+   aber 70% weniger Rules.
+============================================================ */
+
+/* ============================================================
+   1) DEFAULTS auf .rsvp — gilt für alle Stile außer überschrieben
+   ============================================================ */
+.rsvp {
+  position: relative;
+
+  /* Input/Textarea */
+  --rsvp-input-border: 1px solid rgba(0, 0, 0, 0.18);
+  --rsvp-input-radius: 4px;
+  --rsvp-input-bg: var(--bg);
+  --rsvp-input-pad: 12px 14px;
+  --rsvp-input-font: var(--font-body);
+  --rsvp-input-focus-border: var(--accent);
+  --rsvp-input-focus-bg: var(--bg);
+
+  /* Labels */
+  --rsvp-label-font: var(--font-mono);
+  --rsvp-label-size: 11px;
+  --rsvp-label-tracking: 0.15em;
+  --rsvp-label-transform: uppercase;
+  --rsvp-label-color: var(--ink);
+
+  /* Toggle-Pills (Ja/Nein) */
+  --rsvp-toggle-border: 1px solid rgba(0, 0, 0, 0.15);
+  --rsvp-toggle-radius: 4px;
+  --rsvp-toggle-bg: var(--bg);
+  --rsvp-toggle-font: var(--font-body);
+  --rsvp-toggle-weight: 500;
+  --rsvp-toggle-on-bg: var(--accent);
+  --rsvp-toggle-on-color: var(--bg);
+  --rsvp-toggle-on-border-color: var(--accent);
+  --rsvp-toggle-on-transform: none;
+
+  /* Submit-Button */
+  --rsvp-submit-bg: var(--ink);
+  --rsvp-submit-color: var(--bg);
+  --rsvp-submit-border: 0;
+  --rsvp-submit-radius: 4px;
+  --rsvp-submit-font: var(--font-mono);
+  --rsvp-submit-size: 14px;
+  --rsvp-submit-tracking: 0.1em;
+  --rsvp-submit-transform: uppercase;
+  --rsvp-submit-pad: 14px 32px;
+  --rsvp-submit-shadow: none;
+  --rsvp-submit-weight: 500;
+  --rsvp-submit-transform-extra: none;
+
+  /* Form-Container */
+  --rsvp-form-bg: transparent;
+  --rsvp-form-border: 0;
+  --rsvp-form-radius: 0;
+  --rsvp-form-pad: 0;
+  --rsvp-form-shadow: none;
+  --rsvp-form-max: 640px;
+
+  /* Section-Padding */
+  --rsvp-section-pad: 80px 60px;
+
+  /* Header */
+  --rsvp-head-align: center;
+  --rsvp-eyebrow-font: var(--font-mono);
+  --rsvp-eyebrow-size: 11px;
+  --rsvp-eyebrow-tracking: 0.2em;
+  --rsvp-eyebrow-color: var(--accent);
+  --rsvp-eyebrow-transform: uppercase;
+  --rsvp-eyebrow-bg: transparent;
+  --rsvp-eyebrow-pad: 0;
+
+  --rsvp-title-font: var(--font-display);
+  --rsvp-title-size: clamp(40px, 5.5vw, 72px);
+  --rsvp-title-weight: 400;
+  --rsvp-title-style: normal;
+  --rsvp-title-tracking: -0.02em;
+  --rsvp-title-line: 1.0;
+  --rsvp-title-transform: none;
+  --rsvp-title-em-color: var(--accent);
+  --rsvp-title-em-font: inherit;
+  --rsvp-title-em-style: italic;
+}
+
+/* Ornament default ausblenden — nur ausgewählte Stile zeigen es */
+.rsvp-head-ornament {
+  display: none;
+}
+
+/* ============================================================
+   2) GENERIC RULES — verbrauchen die Variablen
+   ============================================================ */
+.rsvp {
+  padding: var(--rsvp-section-pad);
+}
+
+.rsvp form,
+.rsvp .rsvpA,
+.rsvp .rsvpB,
+.rsvp .rsvpC,
+.rsvp .rsvp-head,
+.rsvp .rsvp-closed,
+.rsvp .rsvp-success {
+  position: relative;
+  z-index: 5;
+}
+
+.rsvp .rsvp-head {
+  text-align: var(--rsvp-head-align);
+  max-width: 640px;
+  margin: 0 auto 40px;
+}
+
+.rsvp .rsvp-eyebrow {
+  font-family: var(--rsvp-eyebrow-font);
+  font-size: var(--rsvp-eyebrow-size);
+  letter-spacing: var(--rsvp-eyebrow-tracking);
+  color: var(--rsvp-eyebrow-color);
+  text-transform: var(--rsvp-eyebrow-transform);
+  background: var(--rsvp-eyebrow-bg);
+  padding: var(--rsvp-eyebrow-pad);
+  display: inline-block;
+}
+
+.rsvp .rsvp-title {
+  font-family: var(--rsvp-title-font);
+  font-weight: var(--rsvp-title-weight);
+  font-style: var(--rsvp-title-style);
+  font-size: var(--rsvp-title-size);
+  letter-spacing: var(--rsvp-title-tracking);
+  line-height: var(--rsvp-title-line);
+  text-transform: var(--rsvp-title-transform);
+  margin: 16px 0 12px;
+}
+.rsvp .rsvp-title em {
+  color: var(--rsvp-title-em-color);
+  font-family: var(--rsvp-title-em-font);
+  font-style: var(--rsvp-title-em-style);
+}
+
+.rsvp form,
+.rsvp .rsvpA,
+.rsvp .rsvpB {
+  max-width: var(--rsvp-form-max);
+  margin: 0 auto;
+  background: var(--rsvp-form-bg);
+  border: var(--rsvp-form-border);
+  border-radius: var(--rsvp-form-radius);
+  padding: var(--rsvp-form-pad);
+  box-shadow: var(--rsvp-form-shadow);
+}
+
+.rsvp input,
+.rsvp textarea {
+  border: var(--rsvp-input-border);
+  border-radius: var(--rsvp-input-radius);
+  background: var(--rsvp-input-bg);
+  padding: var(--rsvp-input-pad);
+  font-family: var(--rsvp-input-font);
+}
+.rsvp input:focus,
+.rsvp textarea:focus {
+  outline: 0;
+  border-color: var(--rsvp-input-focus-border);
+  background: var(--rsvp-input-focus-bg);
+}
+
+.rsvp .field label {
+  font-family: var(--rsvp-label-font);
+  font-size: var(--rsvp-label-size);
+  letter-spacing: var(--rsvp-label-tracking);
+  text-transform: var(--rsvp-label-transform);
+  color: var(--rsvp-label-color);
+}
+
+.rsvp .toggle-opt {
+  border: var(--rsvp-toggle-border);
+  border-radius: var(--rsvp-toggle-radius);
+  background: var(--rsvp-toggle-bg);
+  font-family: var(--rsvp-toggle-font);
+  font-weight: var(--rsvp-toggle-weight);
+  transition: transform 0.2s, background 0.2s;
+}
+.rsvp .toggle-opt.is-on {
+  background: var(--rsvp-toggle-on-bg);
+  color: var(--rsvp-toggle-on-color);
+  border-color: var(--rsvp-toggle-on-border-color);
+  transform: var(--rsvp-toggle-on-transform);
+}
+
+.rsvp .btn-primary {
+  background: var(--rsvp-submit-bg);
+  color: var(--rsvp-submit-color);
+  border: var(--rsvp-submit-border);
+  border-radius: var(--rsvp-submit-radius);
+  font-family: var(--rsvp-submit-font);
+  font-size: var(--rsvp-submit-size);
+  letter-spacing: var(--rsvp-submit-tracking);
+  text-transform: var(--rsvp-submit-transform);
+  font-weight: var(--rsvp-submit-weight);
+  padding: var(--rsvp-submit-pad);
+  box-shadow: var(--rsvp-submit-shadow);
+  transform: var(--rsvp-submit-transform-extra);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* ============================================================
+   3) PRO STIL — nur Variable-Overrides
+   ============================================================ */
+
+/* EDITORIAL — Magazine, hairlines */
+.rsvp[data-style-rsvp="editorial"] {
+  --rsvp-head-align: left;
+  --rsvp-eyebrow-tracking: 0.3em;
+  --rsvp-eyebrow-color: var(--accent);
+  --rsvp-eyebrow-size: 10px;
+  --rsvp-title-font: var(--font-display);
+  --rsvp-title-weight: 350;
+  --rsvp-title-style: normal;
+  --rsvp-title-size: clamp(48px, 6vw, 84px);
+  --rsvp-input-border: 0;
+  --rsvp-input-radius: 0;
+  --rsvp-input-bg: transparent;
+  --rsvp-input-pad: 10px 0;
+  --rsvp-label-color: var(--accent);
+  --rsvp-submit-radius: 2px;
+  --rsvp-submit-tracking: 0.12em;
+  --rsvp-submit-size: 11px;
+}
+.rsvp[data-style-rsvp="editorial"] input,
+.rsvp[data-style-rsvp="editorial"] textarea {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+/* BRUTALIST — Marquee oben, harte Borders, Yellow */
+.rsvp[data-style-rsvp="brutalist"] {
+  --rsvp-section-pad: 50px 0 80px;
+  --rsvp-head-align: left;
+  --rsvp-eyebrow-bg: var(--ink);
+  --rsvp-eyebrow-color: var(--bg);
+  --rsvp-eyebrow-pad: 8px 14px;
+  --rsvp-eyebrow-size: 11px;
+  --rsvp-title-font: var(--font-display);
+  --rsvp-title-weight: 700;
+  --rsvp-title-size: clamp(48px, 7vw, 100px);
+  --rsvp-title-line: 0.85;
+  --rsvp-title-tracking: -0.045em;
+  --rsvp-title-transform: uppercase;
+  --rsvp-form-bg: var(--bg);
+  --rsvp-form-border: 4px solid var(--ink);
+  --rsvp-form-pad: 40px;
+  --rsvp-form-shadow: 16px 16px 0 var(--accent);
+  --rsvp-input-border: 3px solid var(--ink);
+  --rsvp-input-radius: 0;
+  --rsvp-input-bg: var(--bg);
+  --rsvp-input-pad: 14px;
+  --rsvp-input-focus-bg: var(--accent);
+  --rsvp-input-font: var(--font-display);
+  --rsvp-toggle-border: 3px solid var(--ink);
+  --rsvp-toggle-radius: 0;
+  --rsvp-toggle-font: var(--font-display);
+  --rsvp-toggle-weight: 700;
+  --rsvp-submit-bg: var(--accent);
+  --rsvp-submit-color: var(--ink);
+  --rsvp-submit-border: 3px solid var(--ink);
+  --rsvp-submit-radius: 0;
+  --rsvp-submit-font: var(--font-display);
+  --rsvp-submit-size: 18px;
+  --rsvp-submit-weight: 700;
+  --rsvp-submit-pad: 18px 36px;
+  --rsvp-submit-shadow: 8px 8px 0 var(--ink);
+}
+.rsvp[data-style-rsvp="brutalist"] form,
+.rsvp[data-style-rsvp="brutalist"] .rsvpA,
+.rsvp[data-style-rsvp="brutalist"] .rsvpB {
+  margin: 0 50px;
+}
+.rsvp[data-style-rsvp="brutalist"] .rsvp-head {
+  margin: 0 50px 40px;
+  padding-bottom: 32px;
+  border-bottom: 4px solid var(--ink);
+}
+.rsvp[data-style-rsvp="brutalist"] .btn-primary:hover:not(:disabled) {
+  transform: translate(-4px, -4px);
+  box-shadow: 12px 12px 0 var(--ink);
+}
+
+/* ORGANIC — Blob, Caveat Script, soft */
+.rsvp[data-style-rsvp="organic"] {
+  --rsvp-eyebrow-font: var(--font-script);
+  --rsvp-eyebrow-size: 26px;
+  --rsvp-eyebrow-tracking: 0;
+  --rsvp-eyebrow-transform: none;
+  --rsvp-eyebrow-color: var(--accent);
+  --rsvp-title-font: var(--font-display);
+  --rsvp-title-style: italic;
+  --rsvp-title-weight: 350;
+  --rsvp-title-size: clamp(44px, 6vw, 80px);
+  --rsvp-title-em-font: var(--font-script);
+  --rsvp-title-em-style: normal;
+  --rsvp-form-bg: var(--bg-soft);
+  --rsvp-form-pad: 40px;
+  --rsvp-form-radius: 32px;
+  --rsvp-form-max: 580px;
+  --rsvp-input-border: 1.5px solid rgba(0, 0, 0, 0.1);
+  --rsvp-input-radius: 24px;
+  --rsvp-input-pad: 14px 20px;
+  --rsvp-label-font: var(--font-script);
+  --rsvp-label-size: 18px;
+  --rsvp-label-tracking: 0;
+  --rsvp-label-transform: none;
+  --rsvp-label-color: var(--accent);
+  --rsvp-toggle-radius: 100px;
+  --rsvp-toggle-border: 1.5px solid rgba(0, 0, 0, 0.12);
+  --rsvp-submit-radius: 100px;
+  --rsvp-submit-bg: var(--accent);
+  --rsvp-submit-color: var(--bg);
+  --rsvp-submit-font: var(--font-display);
+  --rsvp-submit-size: 18px;
+  --rsvp-submit-tracking: 0;
+  --rsvp-submit-transform: none;
+  --rsvp-submit-pad: 16px 44px;
+}
+
+/* MONO — Terminal-Look, JetBrains */
+.rsvp[data-style-rsvp="mono"] {
+  --rsvp-head-align: left;
+  --rsvp-eyebrow-font: var(--font-mono);
+  --rsvp-eyebrow-tracking: 0.18em;
+  --rsvp-eyebrow-color: rgba(0, 0, 0, 0.55);
+  --rsvp-title-font: var(--font-mono);
+  --rsvp-title-weight: 300;
+  --rsvp-title-size: clamp(28px, 3.5vw, 42px);
+  --rsvp-title-line: 1.1;
+  --rsvp-title-tracking: -0.04em;
+  --rsvp-title-transform: lowercase;
+  --rsvp-title-em-color: rgba(0, 0, 0, 0.55);
+  --rsvp-title-em-style: normal;
+  --rsvp-form-bg: var(--bg);
+  --rsvp-form-border: 1px solid rgba(0, 0, 0, 0.2);
+  --rsvp-form-pad: 32px;
+  --rsvp-form-max: 720px;
+  --rsvp-input-border: 1px solid rgba(0, 0, 0, 0.2);
+  --rsvp-input-radius: 0;
+  --rsvp-input-font: var(--font-mono);
+  --rsvp-input-pad: 10px 12px;
+  --rsvp-label-font: var(--font-mono);
+  --rsvp-label-size: 11px;
+  --rsvp-label-tracking: 0.1em;
+  --rsvp-label-color: rgba(0, 0, 0, 0.55);
+  --rsvp-toggle-border: 1px solid rgba(0, 0, 0, 0.25);
+  --rsvp-toggle-radius: 0;
+  --rsvp-toggle-font: var(--font-mono);
+  --rsvp-submit-bg: var(--ink);
+  --rsvp-submit-color: var(--bg);
+  --rsvp-submit-radius: 0;
+  --rsvp-submit-font: var(--font-mono);
+  --rsvp-submit-size: 13px;
+  --rsvp-submit-pad: 12px 28px;
+}
+
+/* OPULENT — Gold-Frame, Cormorant, dark luxe */
+.rsvp[data-style-rsvp="opulent"] {
+  --rsvp-eyebrow-font: 'Italiana', serif;
+  --rsvp-eyebrow-size: 13px;
+  --rsvp-eyebrow-tracking: 0.5em;
+  --rsvp-eyebrow-color: var(--gold, var(--accent));
+  --rsvp-title-font: 'Cormorant SC', serif;
+  --rsvp-title-weight: 300;
+  --rsvp-title-size: clamp(44px, 5.5vw, 76px);
+  --rsvp-title-line: 1.0;
+  --rsvp-title-tracking: 0.04em;
+  --rsvp-title-em-font: 'Italiana', serif;
+  --rsvp-form-bg: rgba(0, 0, 0, 0.05);
+  --rsvp-form-border: 1px solid rgba(197, 165, 114, 0.4);
+  --rsvp-form-pad: 50px 60px;
+  --rsvp-input-border: 1px solid rgba(197, 165, 114, 0.4);
+  --rsvp-input-radius: 0;
+  --rsvp-input-bg: transparent;
+  --rsvp-input-font: 'Crimson Pro', serif;
+  --rsvp-input-pad: 12px 14px;
+  --rsvp-label-font: 'Italiana', serif;
+  --rsvp-label-tracking: 0.35em;
+  --rsvp-label-color: var(--gold, var(--accent));
+  --rsvp-toggle-border: 1px solid rgba(197, 165, 114, 0.4);
+  --rsvp-toggle-radius: 0;
+  --rsvp-toggle-font: 'Italiana', serif;
+  --rsvp-toggle-on-bg: var(--gold, var(--accent));
+  --rsvp-toggle-on-border-color: var(--gold, var(--accent));
+  --rsvp-submit-bg: var(--gold, var(--accent));
+  --rsvp-submit-border: 1px solid var(--gold, var(--accent));
+  --rsvp-submit-radius: 0;
+  --rsvp-submit-font: 'Italiana', serif;
+  --rsvp-submit-tracking: 0.4em;
+  --rsvp-submit-size: 12px;
+  --rsvp-submit-pad: 18px 44px;
+}
+
+/* LIQUEFY — Acid-Glow, rounded */
+.rsvp[data-style-rsvp="liquefy"] {
+  --rsvp-eyebrow-font: var(--font-mono);
+  --rsvp-eyebrow-color: var(--accent-deep);
+  --rsvp-eyebrow-tracking: 0.3em;
+  --rsvp-title-font: 'Fraunces', serif;
+  --rsvp-title-style: italic;
+  --rsvp-title-weight: 700;
+  --rsvp-title-size: clamp(48px, 7vw, 90px);
+  --rsvp-title-line: 0.9;
+  --rsvp-title-em-color: var(--accent-deep);
+  --rsvp-form-bg: var(--bg-soft);
+  --rsvp-form-radius: 32px;
+  --rsvp-form-pad: 40px;
+  --rsvp-form-shadow: 0 0 80px rgba(210, 255, 212, 0.25);
+  --rsvp-form-border: 1px solid rgba(210, 255, 212, 0.3);
+  --rsvp-form-max: 600px;
+  --rsvp-input-border: 1.5px solid rgba(210, 255, 212, 0.3);
+  --rsvp-input-radius: 16px;
+  --rsvp-input-pad: 14px 20px;
+  --rsvp-input-font: 'Syne', sans-serif;
+  --rsvp-label-font: 'Syne', sans-serif;
+  --rsvp-label-color: var(--accent);
+  --rsvp-toggle-radius: 16px;
+  --rsvp-toggle-font: 'Fraunces', serif;
+  --rsvp-toggle-weight: 700;
+  --rsvp-submit-bg: var(--accent);
+  --rsvp-submit-color: var(--bg);
+  --rsvp-submit-radius: 24px;
+  --rsvp-submit-font: 'Fraunces', serif;
+  --rsvp-submit-size: 17px;
+  --rsvp-submit-pad: 18px 44px;
+}
+
+/* KINETIC — Tilted, Yellow-Shadow */
+.rsvp[data-style-rsvp="kinetic"] {
+  --rsvp-head-align: left;
+  --rsvp-eyebrow-font: var(--font-mono);
+  --rsvp-eyebrow-color: var(--accent);
+  --rsvp-title-font: 'Syne', sans-serif;
+  --rsvp-title-weight: 900;
+  --rsvp-title-size: clamp(56px, 8vw, 120px);
+  --rsvp-title-line: 0.85;
+  --rsvp-title-tracking: -0.04em;
+  --rsvp-title-transform: uppercase;
+  --rsvp-form-bg: var(--bg);
+  --rsvp-form-border: 2px solid var(--ink);
+  --rsvp-form-pad: 40px;
+  --rsvp-form-shadow: -20px 20px 0 var(--accent);
+  --rsvp-input-border: 2px solid var(--ink);
+  --rsvp-input-radius: 0;
+  --rsvp-input-font: 'Syne', sans-serif;
+  --rsvp-input-pad: 14px 18px;
+  --rsvp-label-font: 'Syne', sans-serif;
+  --rsvp-toggle-border: 2px solid var(--ink);
+  --rsvp-toggle-radius: 0;
+  --rsvp-toggle-font: 'Syne', sans-serif;
+  --rsvp-toggle-weight: 700;
+  --rsvp-toggle-on-bg: var(--accent);
+  --rsvp-toggle-on-color: var(--ink);
+  --rsvp-toggle-on-transform: rotate(-2deg);
+  --rsvp-submit-bg: var(--accent);
+  --rsvp-submit-color: var(--ink);
+  --rsvp-submit-border: 2px solid var(--ink);
+  --rsvp-submit-radius: 0;
+  --rsvp-submit-font: 'Syne', sans-serif;
+  --rsvp-submit-weight: 900;
+  --rsvp-submit-size: 20px;
+  --rsvp-submit-pad: 20px 44px;
+  --rsvp-submit-shadow: 8px 8px 0 var(--ink);
+  --rsvp-submit-transform-extra: rotate(-2deg);
+}
+.rsvp[data-style-rsvp="kinetic"] .btn-primary:hover:not(:disabled) {
+  transform: rotate(0deg) scale(1.02);
+}
+
+/* BAUHAUS — Color blocks, Navy + Red + Yellow */
+.rsvp[data-style-rsvp="bauhaus"] {
+  --rsvp-section-pad: 0;
+  --rsvp-head-align: left;
+  --rsvp-eyebrow-font: var(--font-mono);
+  --rsvp-eyebrow-tracking: 0.25em;
+  --rsvp-title-font: 'Syne', sans-serif;
+  --rsvp-title-weight: 900;
+  --rsvp-title-size: clamp(48px, 7vw, 100px);
+  --rsvp-title-line: 0.85;
+  --rsvp-title-transform: uppercase;
+  --rsvp-input-border: 0;
+  --rsvp-input-radius: 0;
+  --rsvp-input-pad: 12px 4px;
+  --rsvp-input-font: 'Syne', sans-serif;
+  --rsvp-label-font: 'Syne', sans-serif;
+  --rsvp-toggle-border: 0;
+  --rsvp-toggle-radius: 0;
+  --rsvp-toggle-bg: var(--bg-soft);
+  --rsvp-toggle-font: 'Syne', sans-serif;
+  --rsvp-toggle-weight: 700;
+  --rsvp-submit-bg: var(--c-navy, var(--ink));
+  --rsvp-submit-color: var(--bg);
+  --rsvp-submit-radius: 0;
+  --rsvp-submit-font: 'Syne', sans-serif;
+  --rsvp-submit-weight: 900;
+  --rsvp-submit-size: 16px;
+  --rsvp-submit-pad: 18px 44px;
+}
+.rsvp[data-style-rsvp="bauhaus"] .rsvp-head {
+  background: var(--bg-soft);
+  padding: 60px;
+  margin-bottom: 0;
+  max-width: 100%;
+}
+.rsvp[data-style-rsvp="bauhaus"] form,
+.rsvp[data-style-rsvp="bauhaus"] .rsvpA,
+.rsvp[data-style-rsvp="bauhaus"] .rsvpB {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 60px;
+}
+.rsvp[data-style-rsvp="bauhaus"] input,
+.rsvp[data-style-rsvp="bauhaus"] textarea {
+  border-bottom: 3px solid var(--c-navy, var(--ink));
+}
+.rsvp[data-style-rsvp="bauhaus"] input:focus,
+.rsvp[data-style-rsvp="bauhaus"] textarea:focus {
+  border-bottom-color: var(--c-red, var(--accent));
+}
+.rsvp[data-style-rsvp="bauhaus"] .toggle-opt:nth-child(2).is-on {
+  background: var(--c-yellow, var(--accent-deep));
+  color: var(--c-navy, var(--ink));
+}
+
+/* ============================================================
+   Mobile
+   ============================================================ */
+@media (max-width: 700px) {
+  .rsvp[data-style-rsvp="brutalist"] {
+    --rsvp-section-pad: 30px 0 50px;
+    --rsvp-form-shadow: 8px 8px 0 var(--accent);
+  }
+  .rsvp[data-style-rsvp="brutalist"] form { margin: 0 20px; }
+  .rsvp[data-style-rsvp="brutalist"] .rsvp-head { margin: 0 20px 30px; }
+  .rsvp[data-style-rsvp="kinetic"] {
+    --rsvp-form-shadow: -10px 10px 0 var(--accent);
+  }
+  .rsvp[data-style-rsvp="bauhaus"] .rsvp-head { padding: 40px 24px; }
+}
