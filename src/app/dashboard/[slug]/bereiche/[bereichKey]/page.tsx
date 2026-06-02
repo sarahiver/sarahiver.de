@@ -135,7 +135,9 @@ export default async function BereichEditorPage({
               initial={{
                 hero_image_url: data.site.hero_image_url,
                 eyebrow: (content.eyebrow as string) || '',
-                image_2: (content.image_2 as string) || null,
+                intro: (content.intro as string) || '',
+                volume: (content.volume as string) || '',
+                caption: (content.caption as string) || '',
               }}
             />
           ) : bereichKey === 'photoupload' ? (

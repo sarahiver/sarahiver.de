@@ -12,11 +12,10 @@ import DecorationBauhausShapes from '@/components/decoration/DecorationBauhausSh
  * Hero Variante C — Full Bleed Magazine / Cinematic / Inverted
  *
  * Bild flutet die ganze Sektion. Text als Overlay, meist mit Vignette.
- * Brutalist Variant C ist die "Counter-Marquee Bleed"-Version mit
- * S/W-Bild und Yellow-Text-Overlay.
  *
- * Liquefy Variant C: ganzer Hintergrund wird durch den Acid-Melt-Filter
- * gejagt — eine Eskalation des Effekts.
+ * Editor-Felder:
+ *   - eyebrow (immer)
+ *   - volume (optional, oben rechts — Default: "Vol. I · MMXXVI")
  */
 
 interface HeroVariantCProps {
@@ -29,6 +28,7 @@ export default function HeroVariantC({ tokens, content }: HeroVariantCProps) {
     (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
 
   const eyebrow = (content.eyebrow as string) ?? 'Save the Date';
+  const volume = (content.volume as string) ?? 'Vol. I · MMXXVI';
   const dateLong = formatLongDateDE(tokens.wedding_date);
   const shortDate = formatShortDateDE(tokens.wedding_date);
   const venue = tokens.wedding_location ?? '';
@@ -129,7 +129,13 @@ export default function HeroVariantC({ tokens, content }: HeroVariantCProps) {
           >
             {eyebrow}
           </p>
-          <p className="hero-c-volume">Vol. I · MMXXVI</p>
+          <p
+            className="hero-c-volume"
+            data-editable="hero.volume"
+            data-edit-type="text"
+          >
+            {volume}
+          </p>
         </div>
 
         <div className="hero-c-mid">

@@ -14,8 +14,13 @@ import DecorationLiquefyBlob from '@/components/decoration/DecorationLiquefyBlob
  * Zwei Spalten: Text auf einer Seite, Bild auf der anderen.
  * Jeder Stil interpretiert das in seiner eigenen Sprache.
  *
- * Brutalist nutzt hier kein Marquee (das macht Variant A), sondern
- * eine 3D-Tilt-Card auf Mouse-Hover.
+ * Editor-Felder:
+ *   - eyebrow (immer)
+ *   - intro (optional, im Text-Block sichtbar)
+ *   - caption (optional, nur für Mono + Editorial — Photo-Caption-Style)
+ *
+ * Wenn caption leer ist, generieren Mono+Editorial einen sinnvollen Default
+ * aus den Couple-Namen + Location.
  */
 
 interface HeroVariantBProps {
@@ -32,6 +37,11 @@ export default function HeroVariantB({ tokens, content }: HeroVariantBProps) {
   const intro = (content.intro as string) ?? '';
   const venue = tokens.wedding_location ?? '';
   const coupleNames = `${tokens.couple_name_1} & ${tokens.couple_name_2}`;
+  const customCaption = (content.caption as string) ?? '';
+
+  // Default-Caption-Texte falls leer (Stil-spezifisch)
+  const defaultCaptionMono = `fig. 01 · ${tokens.couple_name_1.toLowerCase()} & ${tokens.couple_name_2.toLowerCase()}`;
+  const defaultCaptionEditorial = `Pl. 01 · ${tokens.couple_name_1[0]} & ${tokens.couple_name_2[0]}`;
 
   return (
     <div className="hero-b" data-style-hero={style}>
@@ -123,14 +133,28 @@ export default function HeroVariantB({ tokens, content }: HeroVariantBProps) {
             )}
             {/* Stil-spezifische Overlay-Captions */}
             {style === 'mono' && (
-              <div className="hero-b-image-caption">
-                <span>fig. 01 · {tokens.couple_name_1.toLowerCase()} &amp; {tokens.couple_name_2.toLowerCase()}</span>
-                <span>{venue || 'Hamburg'}</span>
+              <div
+                className="hero-b-image-caption"
+                data-editable="hero.caption"
+                data-edit-type="text"
+              >
+                {customCaption ? (
+                  <span>{customCaption}</span>
+                ) : (
+                  <>
+                    <span>{defaultCaptionMono}</span>
+                    <span>{venue || 'Hamburg'}</span>
+                  </>
+                )}
               </div>
             )}
             {style === 'editorial' && (
-              <div className="hero-b-image-caption">
-                Pl. 01 · {tokens.couple_name_1[0]} &amp; {tokens.couple_name_2[0]}
+              <div
+                className="hero-b-image-caption"
+                data-editable="hero.caption"
+                data-edit-type="text"
+              >
+                {customCaption || defaultCaptionEditorial}
               </div>
             )}
           </>
