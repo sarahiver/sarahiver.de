@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import './design-system-v2.css';
 import { SITE_CONFIG } from '@/lib/content';
 
 export const metadata: Metadata = {
