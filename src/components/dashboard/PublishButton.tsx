@@ -8,10 +8,14 @@ import {
   publishAll,
   publishBereich,
   publishSite,
+  discardAll,
+  discardBereich,
+  discardSite,
   loadDirtyState,
   type DirtyState,
 } from '@/app/dashboard/[slug]/publish-actions';
 import { bereichLabel } from '@/lib/dashboard-nav';
+import type { DiffEntry } from '@/lib/content-diff';
 import type { BereichKey } from '@/types/supabase';
 
 /**
@@ -20,12 +24,12 @@ import type { BereichKey } from '@/types/supabase';
  * Anzeige:
  *   - Badge mit Anzahl der dirty Items
  *   - Klick → Modal mit Liste der Änderungen + "Live schalten"-Button
- *   - Im Modal: Vorschau-Link (Draft-Modus) + pro-Item-Publish-Optionen
+ *   - Im Modal: aufklappbare Details pro Item, einzeln/alle veröffentlichen,
+ *     einzeln/alle verwerfen
  *
  * Auto-Refresh:
  *   - Hört auf 'dashboard:editor-saved'-Events (von allen Auto-Save-Editoren)
- *   - Lädt dann den Dirty-State frisch nach (debounced, damit nicht jeder
- *     Keystroke einen Roundtrip auslöst)
+ *   - Lädt dann den Dirty-State frisch nach
  *   - Sync mit initialState bei Layout-Reload (router.refresh)
  */
 
@@ -40,6 +44,7 @@ export default function PublishButton({ slug, initialState }: Props) {
   const [showModal, setShowModal] = useState(false);
   const [pending, startTransition] = useTransition();
   const [toast, setToast] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
   // Bei Layout-Reload (z.B. nach Publish) den frischen Server-State übernehmen
   useEffect(() => {
@@ -91,7 +96,7 @@ export default function PublishButton({ slug, initialState }: Props) {
       if (res.ok) {
         notify('ok', `${res.published ?? 0} Änderung(en) veröffentlicht.`);
         setShowModal(false);
-        setState({ siteDirty: false, dirtyBereiche: [], totalDirty: 0 });
+        setState({ siteDirty: false, dirtyBereiche: [], totalDirty: 0, bereichDetails: {}, siteDetails: [] });
         router.refresh();
       } else {
         notify('err', res.error || 'Veröffentlichen fehlgeschlagen.');
@@ -104,11 +109,16 @@ export default function PublishButton({ slug, initialState }: Props) {
       const res = await publishBereich({ slug, bereich_key: key });
       if (res.ok) {
         notify('ok', `${bereichLabel(key)} veröffentlicht.`);
-        setState((s) => ({
-          ...s,
-          dirtyBereiche: s.dirtyBereiche.filter((k) => k !== key),
-          totalDirty: s.totalDirty - 1,
-        }));
+        setState((s) => {
+          const newDetails = { ...s.bereichDetails };
+          delete newDetails[key];
+          return {
+            ...s,
+            dirtyBereiche: s.dirtyBereiche.filter((k) => k !== key),
+            totalDirty: s.totalDirty - 1,
+            bereichDetails: newDetails,
+          };
+        });
         router.refresh();
       } else {
         notify('err', res.error || 'Veröffentlichen fehlgeschlagen.');
@@ -121,11 +131,72 @@ export default function PublishButton({ slug, initialState }: Props) {
       const res = await publishSite({ slug });
       if (res.ok) {
         notify('ok', 'Stammdaten/Stil veröffentlicht.');
-        setState((s) => ({ ...s, siteDirty: false, totalDirty: s.totalDirty - 1 }));
+        setState((s) => ({ ...s, siteDirty: false, totalDirty: s.totalDirty - 1, siteDetails: [] }));
         router.refresh();
       } else {
         notify('err', res.error || 'Veröffentlichen fehlgeschlagen.');
       }
+    });
+  };
+
+  const handleDiscardAll = () => {
+    if (!window.confirm(`Wirklich alle ${state.totalDirty} Änderungen verwerfen? Eure Bearbeitung wird auf den Live-Stand zurückgesetzt — das kann nicht rückgängig gemacht werden.`)) return;
+    startTransition(async () => {
+      const res = await discardAll(slug);
+      if (res.ok) {
+        notify('ok', `${res.published ?? 0} Änderung(en) verworfen.`);
+        setShowModal(false);
+        setState({ siteDirty: false, dirtyBereiche: [], totalDirty: 0, bereichDetails: {}, siteDetails: [] });
+        router.refresh();
+      } else {
+        notify('err', res.error || 'Verwerfen fehlgeschlagen.');
+      }
+    });
+  };
+
+  const handleDiscardBereich = (key: BereichKey) => {
+    if (!window.confirm(`Änderungen an „${bereichLabel(key)}“ verwerfen? Der Bereich wird auf den Live-Stand zurückgesetzt.`)) return;
+    startTransition(async () => {
+      const res = await discardBereich({ slug, bereich_key: key });
+      if (res.ok) {
+        notify('ok', `${bereichLabel(key)}: Änderungen verworfen.`);
+        setState((s) => {
+          const newDetails = { ...s.bereichDetails };
+          delete newDetails[key];
+          return {
+            ...s,
+            dirtyBereiche: s.dirtyBereiche.filter((k) => k !== key),
+            totalDirty: s.totalDirty - 1,
+            bereichDetails: newDetails,
+          };
+        });
+        router.refresh();
+      } else {
+        notify('err', res.error || 'Verwerfen fehlgeschlagen.');
+      }
+    });
+  };
+
+  const handleDiscardSite = () => {
+    if (!window.confirm('Änderungen an Stammdaten/Stil/Navigation/Hero verwerfen? Die Live-Werte werden wiederhergestellt.')) return;
+    startTransition(async () => {
+      const res = await discardSite({ slug });
+      if (res.ok) {
+        notify('ok', 'Stammdaten/Stil: Änderungen verworfen.');
+        setState((s) => ({ ...s, siteDirty: false, totalDirty: s.totalDirty - 1, siteDetails: [] }));
+        router.refresh();
+      } else {
+        notify('err', res.error || 'Verwerfen fehlgeschlagen.');
+      }
+    });
+  };
+
+  const toggleExpand = (key: string) => {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
     });
   };
 
@@ -147,43 +218,37 @@ export default function PublishButton({ slug, initialState }: Props) {
             <h3 className="dash-modal-title">Änderungen veröffentlichen</h3>
             <p className="dash-modal-desc">
               Folgende Änderungen sind aktuell nur in eurer Bearbeitungsansicht sichtbar. Klickt
-              auf „Alles veröffentlichen", um sie auf eure Live-Seite zu übertragen — oder
-              einzeln pro Bereich.
+              auf den Pfeil neben einem Eintrag, um Details zu sehen.
             </p>
 
             <div className="dash-publish-list">
               {state.siteDirty && (
-                <div className="dash-publish-item">
-                  <div className="dash-publish-item-info">
-                    <strong>Stammdaten · Stil · Navigation · Hero-Bild</strong>
-                    <span>Allgemeine Einstellungen eurer Seite</span>
-                  </div>
-                  <button
-                    type="button"
-                    className="dash-btn-out"
-                    onClick={handlePublishSite}
-                    disabled={pending}
-                  >
-                    Einzeln veröffentlichen
-                  </button>
-                </div>
+                <PublishItem
+                  itemKey="__site__"
+                  title="Stammdaten · Stil · Navigation · Hero-Bild"
+                  subtitle="Allgemeine Einstellungen eurer Seite"
+                  details={state.siteDetails}
+                  expanded={expanded.has('__site__')}
+                  onToggle={() => toggleExpand('__site__')}
+                  onPublish={handlePublishSite}
+                  onDiscard={handleDiscardSite}
+                  pending={pending}
+                />
               )}
 
               {state.dirtyBereiche.map((key) => (
-                <div key={key} className="dash-publish-item">
-                  <div className="dash-publish-item-info">
-                    <strong>{bereichLabel(key)}</strong>
-                    <span>Bereich auf eurer Seite</span>
-                  </div>
-                  <button
-                    type="button"
-                    className="dash-btn-out"
-                    onClick={() => handlePublishBereich(key)}
-                    disabled={pending}
-                  >
-                    Einzeln veröffentlichen
-                  </button>
-                </div>
+                <PublishItem
+                  key={key}
+                  itemKey={key}
+                  title={bereichLabel(key)}
+                  subtitle="Bereich auf eurer Seite"
+                  details={state.bereichDetails[key] || []}
+                  expanded={expanded.has(key)}
+                  onToggle={() => toggleExpand(key)}
+                  onPublish={() => handlePublishBereich(key)}
+                  onDiscard={() => handleDiscardBereich(key)}
+                  pending={pending}
+                />
               ))}
             </div>
 
@@ -195,6 +260,15 @@ export default function PublishButton({ slug, initialState }: Props) {
             </p>
 
             <div className="dash-modal-actions">
+              <button
+                type="button"
+                className="dash-btn-text-danger"
+                onClick={handleDiscardAll}
+                disabled={pending}
+                style={{ marginRight: 'auto' }}
+              >
+                Alle verwerfen
+              </button>
               <button
                 type="button"
                 className="dash-btn-out"
@@ -220,5 +294,107 @@ export default function PublishButton({ slug, initialState }: Props) {
         <div className={`dash-toast ${toast.type === 'ok' ? 'is-ok' : 'is-err'}`}>{toast.text}</div>
       )}
     </>
+  );
+}
+
+// ====================================================================
+// PublishItem — eine Karte im Modal mit aufklappbaren Details
+// ====================================================================
+
+function PublishItem({
+  title,
+  subtitle,
+  details,
+  expanded,
+  onToggle,
+  onPublish,
+  onDiscard,
+  pending,
+}: {
+  itemKey: string;
+  title: string;
+  subtitle: string;
+  details: DiffEntry[];
+  expanded: boolean;
+  onToggle: () => void;
+  onPublish: () => void;
+  onDiscard: () => void;
+  pending: boolean;
+}) {
+  const hasDetails = details && details.length > 0;
+  return (
+    <div className={`dash-publish-item ${expanded ? 'is-expanded' : ''}`}>
+      <div className="dash-publish-item-head">
+        <button
+          type="button"
+          className="dash-publish-item-toggle"
+          onClick={onToggle}
+          disabled={!hasDetails}
+          title={hasDetails ? 'Details anzeigen' : 'Keine Details verfügbar'}
+        >
+          <span className={`dash-publish-item-chevron ${expanded ? 'is-open' : ''}`} aria-hidden="true">
+            ▸
+          </span>
+          <div className="dash-publish-item-info">
+            <strong>{title}</strong>
+            <span>
+              {hasDetails
+                ? `${details.length} ${details.length === 1 ? 'Änderung' : 'Änderungen'} · ${subtitle}`
+                : subtitle}
+            </span>
+          </div>
+        </button>
+        <div className="dash-publish-item-actions">
+          <button
+            type="button"
+            className="dash-btn-text-danger"
+            onClick={onDiscard}
+            disabled={pending}
+            title="Änderungen verwerfen"
+          >
+            Verwerfen
+          </button>
+          <button
+            type="button"
+            className="dash-btn-out"
+            onClick={onPublish}
+            disabled={pending}
+          >
+            Veröffentlichen
+          </button>
+        </div>
+      </div>
+
+      {expanded && hasDetails && (
+        <div className="dash-publish-item-details">
+          {details.map((d, i) => (
+            <DiffRow key={`${d.field}-${i}`} entry={d} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DiffRow({ entry }: { entry: DiffEntry }) {
+  const typeLabel = entry.type === 'added' ? 'NEU' : entry.type === 'removed' ? 'WEG' : 'ÄND';
+  return (
+    <div className={`dash-diff-row is-${entry.type}`}>
+      <span className={`dash-diff-type is-${entry.type}`}>{typeLabel}</span>
+      <div className="dash-diff-content">
+        <span className="dash-diff-label">{entry.label}</span>
+        {entry.summary ? (
+          <span className="dash-diff-summary">{entry.summary}</span>
+        ) : (
+          <span className="dash-diff-values">
+            {entry.before !== undefined && <span className="dash-diff-before">{entry.before || '—'}</span>}
+            {entry.before !== undefined && entry.after !== undefined && (
+              <span className="dash-diff-arrow" aria-hidden="true">→</span>
+            )}
+            {entry.after !== undefined && <span className="dash-diff-after">{entry.after || '—'}</span>}
+          </span>
+        )}
+      </div>
+    </div>
   );
 }

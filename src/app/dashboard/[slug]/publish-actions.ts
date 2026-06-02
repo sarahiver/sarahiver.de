@@ -184,13 +184,10 @@ const SITE_DRAFT_FIELDS = [
   'palette_custom_ink',
   'font_preset_id',
   'nav_variant',
-  'dna_density_override',
-  'dna_spacing_override',
   'dna_align_override',
-  'dna_radius_override',
-  'dna_motion_override',
-  'dna_pace_override',
-  'dna_imagery_override',
+  'dna_spacing_override',
+  'dna_decor_override',
+  'dna_contrast_override',
 ] as const;
 
 export async function publishSite(p: PublishSitePayload): Promise<ActionResult> {
@@ -307,39 +304,289 @@ export async function publishAll(slug: string): Promise<ActionResult> {
 // loadDirtyState — für UI-Anzeige (welche Bereiche sind dirty?)
 // ====================================================================
 
+import { diffJsonbContent, diffSiteDraft, type DiffEntry } from '@/lib/content-diff';
+
 export interface DirtyState {
   siteDirty: boolean;
   dirtyBereiche: BereichKey[];
   totalDirty: number;
+  /** Pro Bereich-Key die Liste der Änderungen (für Detail-Aufklappung im Modal). */
+  bereichDetails: Record<string, DiffEntry[]>;
+  /** Änderungen am Site-Level (Stammdaten, Stil, Navigation, Hero). */
+  siteDetails: DiffEntry[];
 }
 
 export async function loadDirtyState(slug: string): Promise<DirtyState> {
-  const empty: DirtyState = { siteDirty: false, dirtyBereiche: [], totalDirty: 0 };
+  const empty: DirtyState = {
+    siteDirty: false,
+    dirtyBereiche: [],
+    totalDirty: 0,
+    bereichDetails: {},
+    siteDetails: [],
+  };
   if (!slug) return empty;
 
   const supabase = createSupabaseAdminClient();
   if (!supabase) return empty;
 
+  // Site-Daten inklusive aller publizierten Spalten + site_draft holen
   const { data: site } = await supabase
     .from('wedding_sites')
-    .select('id, site_is_dirty')
+    .select('*')
     .eq('slug', slug)
     .maybeSingle();
   if (!site) return empty;
 
-  const siteRow = site as { id: string; site_is_dirty: boolean };
+  const siteRow = site as Record<string, unknown> & {
+    id: string;
+    site_is_dirty: boolean;
+    site_draft: Record<string, unknown> | null;
+  };
 
+  // Site-Diffs berechnen (nur wenn dirty)
+  let siteDetails: DiffEntry[] = [];
+  if (siteRow.site_is_dirty) {
+    siteDetails = diffSiteDraft(siteRow.site_draft, siteRow);
+  }
+
+  // Alle dirty Bereiche inkl. content_draft + content_published
   const { data: dirty } = await supabase
     .from('wedding_bereiche')
-    .select('bereich_key')
+    .select('bereich_key, content_draft, content_published, variant, variant_draft, display_order, display_order_draft, is_active, is_active_draft')
     .eq('wedding_site_id', siteRow.id)
     .eq('is_dirty', true);
 
-  const keys = ((dirty || []) as Array<{ bereich_key: BereichKey }>).map((d) => d.bereich_key);
+  const dirtyRows = (dirty || []) as Array<{
+    bereich_key: BereichKey;
+    content_draft: Record<string, unknown>;
+    content_published: Record<string, unknown>;
+    variant: string;
+    variant_draft: string | null;
+    display_order: number;
+    display_order_draft: number | null;
+    is_active: boolean;
+    is_active_draft: boolean | null;
+  }>;
+
+  const bereichDetails: Record<string, DiffEntry[]> = {};
+  for (const row of dirtyRows) {
+    const diffs: DiffEntry[] = diffJsonbContent(row.content_draft, row.content_published);
+
+    // Zusätzlich Variant/Order/Aktivierung diffen (das sind Spalten, nicht im Content)
+    if (row.variant_draft !== null && row.variant_draft !== row.variant) {
+      diffs.unshift({
+        field: '_variant',
+        label: 'Darstellungsvariante',
+        type: 'changed',
+        before: row.variant?.toUpperCase() || '—',
+        after: row.variant_draft.toUpperCase(),
+      });
+    }
+    if (row.is_active_draft !== null && row.is_active_draft !== row.is_active) {
+      diffs.unshift({
+        field: '_is_active',
+        label: 'Sichtbarkeit',
+        type: 'changed',
+        before: row.is_active ? 'Sichtbar' : 'Versteckt',
+        after: row.is_active_draft ? 'Sichtbar' : 'Versteckt',
+      });
+    }
+    if (row.display_order_draft !== null && row.display_order_draft !== row.display_order) {
+      diffs.unshift({
+        field: '_display_order',
+        label: 'Reihenfolge',
+        type: 'changed',
+        summary: `Position ${row.display_order} → ${row.display_order_draft}`,
+      });
+    }
+
+    bereichDetails[row.bereich_key] = diffs;
+  }
+
+  const keys = dirtyRows.map((d) => d.bereich_key);
 
   return {
     siteDirty: siteRow.site_is_dirty,
     dirtyBereiche: keys,
     totalDirty: (siteRow.site_is_dirty ? 1 : 0) + keys.length,
+    bereichDetails,
+    siteDetails,
   };
+}
+
+// ====================================================================
+// DISCARD — Draft auf Published-Stand zurücksetzen
+// ====================================================================
+
+/**
+ * Cloudinary-URLs sammeln, die nur im Draft, aber nicht im Published sind
+ * (= verwaiste Bilder, die beim Discard gelöscht werden sollen).
+ */
+function urlsOnlyInDraft(draft: unknown, published: unknown): string[] {
+  return urlsOnlyInOld(draft, published); // Helper schon oben definiert, gleiche Logik
+}
+
+export async function discardBereich(p: PublishBereichPayload): Promise<ActionResult> {
+  if (!p.slug || !p.bereich_key) return { ok: false, error: 'Slug oder Bereich fehlt.' };
+
+  const supabase = createSupabaseAdminClient();
+  if (!supabase) return { ok: false, error: 'Datenbankverbindung nicht verfügbar.' };
+
+  const { data: site, error: siteErr } = await supabase
+    .from('wedding_sites')
+    .select('id')
+    .eq('slug', p.slug)
+    .maybeSingle();
+  if (siteErr || !site) {
+    return { ok: false, error: siteErr?.message || 'Site nicht gefunden.' };
+  }
+  const siteId = (site as { id: string }).id;
+
+  // Aktuelle Werte holen, um Cloudinary-Cleanup zu berechnen
+  const { data: bereich, error: readErr } = await supabase
+    .from('wedding_bereiche')
+    .select('content_draft, content_published')
+    .eq('wedding_site_id', siteId)
+    .eq('bereich_key', p.bereich_key)
+    .maybeSingle();
+  if (readErr || !bereich) {
+    return { ok: false, error: readErr?.message || 'Bereich nicht gefunden.' };
+  }
+  const row = bereich as { content_draft: Record<string, unknown>; content_published: Record<string, unknown> };
+
+  // URLs, die nur im Draft sind → werden verwaist
+  const toCleanup = urlsOnlyInDraft(row.content_draft, row.content_published);
+
+  // Draft = Published, Struktur-Drafts auf null (= "verwende die Live-Werte")
+  const { error: updateErr } = await supabase
+    .from('wedding_bereiche')
+    .update({
+      content_draft: row.content_published,
+      variant_draft: null,
+      display_order_draft: null,
+      is_active_draft: null,
+      is_dirty: false,
+    } as never)
+    .eq('wedding_site_id', siteId)
+    .eq('bereich_key', p.bereich_key);
+
+  if (updateErr) {
+    console.error('[discardBereich] update failed:', updateErr);
+    return { ok: false, error: updateErr.message };
+  }
+
+  if (toCleanup.length > 0) {
+    cleanupCloudinary(toCleanup).catch((err) =>
+      console.warn('[discardBereich] cleanup error:', err),
+    );
+  }
+
+  revalidatePath(`/dashboard/${p.slug}`, 'layout');
+  revalidatePath(`/${p.slug}`, 'layout');
+  return { ok: true, published: 1 };
+}
+
+export async function discardSite(p: PublishSitePayload): Promise<ActionResult> {
+  if (!p.slug) return { ok: false, error: 'Slug fehlt.' };
+
+  const supabase = createSupabaseAdminClient();
+  if (!supabase) return { ok: false, error: 'Datenbankverbindung nicht verfügbar.' };
+
+  // Site mit allen Live-Spalten + site_draft laden
+  const { data: site, error: readErr } = await supabase
+    .from('wedding_sites')
+    .select('*')
+    .eq('slug', p.slug)
+    .maybeSingle();
+  if (readErr || !site) {
+    return { ok: false, error: readErr?.message || 'Site nicht gefunden.' };
+  }
+  const row = site as Record<string, unknown> & {
+    id: string;
+    site_draft: Record<string, unknown> | null;
+    hero_image_url: string | null;
+  };
+
+  // Neuen Draft aus den Live-Spalten bauen
+  const freshDraft: Record<string, unknown> = {};
+  for (const f of SITE_DRAFT_FIELDS) {
+    freshDraft[f] = row[f] ?? null;
+  }
+
+  // Hero-Bild im Draft anders als Live? → verwaistes Draft-Bild aus Cloudinary löschen
+  const draftHero = (row.site_draft as Record<string, unknown> | null)?.hero_image_url;
+  const liveHero = row.hero_image_url;
+  const toCleanup: string[] = [];
+  if (typeof draftHero === 'string' && draftHero !== liveHero && draftHero.includes('cloudinary.com')) {
+    toCleanup.push(draftHero);
+  }
+
+  const { error: updateErr } = await supabase
+    .from('wedding_sites')
+    .update({
+      site_draft: freshDraft,
+      site_is_dirty: false,
+      updated_at: new Date().toISOString(),
+    } as never)
+    .eq('id', row.id);
+
+  if (updateErr) {
+    console.error('[discardSite] update failed:', updateErr);
+    return { ok: false, error: updateErr.message };
+  }
+
+  if (toCleanup.length > 0) {
+    cleanupCloudinary(toCleanup).catch((err) =>
+      console.warn('[discardSite] cleanup error:', err),
+    );
+  }
+
+  revalidatePath(`/dashboard/${p.slug}`, 'layout');
+  revalidatePath(`/${p.slug}`, 'layout');
+  return { ok: true, published: 1 };
+}
+
+export async function discardAll(slug: string): Promise<ActionResult> {
+  if (!slug) return { ok: false, error: 'Slug fehlt.' };
+
+  const supabase = createSupabaseAdminClient();
+  if (!supabase) return { ok: false, error: 'Datenbankverbindung nicht verfügbar.' };
+
+  const { data: site, error: siteErr } = await supabase
+    .from('wedding_sites')
+    .select('id, site_is_dirty')
+    .eq('slug', slug)
+    .maybeSingle();
+  if (siteErr || !site) {
+    return { ok: false, error: siteErr?.message || 'Site nicht gefunden.' };
+  }
+  const siteRow = site as { id: string; site_is_dirty: boolean };
+
+  let count = 0;
+
+  if (siteRow.site_is_dirty) {
+    const res = await discardSite({ slug });
+    if (!res.ok) return res;
+    count += res.published || 0;
+  }
+
+  const { data: dirtyBereiche, error: dirtyErr } = await supabase
+    .from('wedding_bereiche')
+    .select('bereich_key')
+    .eq('wedding_site_id', siteRow.id)
+    .eq('is_dirty', true);
+
+  if (dirtyErr) {
+    return { ok: false, error: dirtyErr.message };
+  }
+
+  for (const b of (dirtyBereiche || []) as Array<{ bereich_key: BereichKey }>) {
+    const res = await discardBereich({ slug, bereich_key: b.bereich_key });
+    if (!res.ok) return res;
+    count += res.published || 0;
+  }
+
+  revalidatePath(`/dashboard/${slug}`, 'layout');
+  revalidatePath(`/${slug}`, 'layout');
+  return { ok: true, published: count };
 }
