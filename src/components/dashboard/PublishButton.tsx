@@ -144,10 +144,10 @@ export default function PublishButton({ slug, initialState }: Props) {
     startTransition(async () => {
       const res = await discardAll(slug);
       if (res.ok) {
-        notify('ok', `${res.published ?? 0} Änderung(en) verworfen.`);
-        setShowModal(false);
-        setState({ siteDirty: false, dirtyBereiche: [], totalDirty: 0, bereichDetails: {}, siteDetails: [] });
-        router.refresh();
+        // Hard-Reload: lokaler Editor-State (useState mit alten Draft-Werten)
+        // wird sonst nicht aktualisiert. router.refresh() reicht nicht, weil
+        // Client-Komponenten ihren useState beim Prop-Update behalten.
+        window.location.reload();
       } else {
         notify('err', res.error || 'Verwerfen fehlgeschlagen.');
       }
@@ -159,18 +159,7 @@ export default function PublishButton({ slug, initialState }: Props) {
     startTransition(async () => {
       const res = await discardBereich({ slug, bereich_key: key });
       if (res.ok) {
-        notify('ok', `${bereichLabel(key)}: Änderungen verworfen.`);
-        setState((s) => {
-          const newDetails = { ...s.bereichDetails };
-          delete newDetails[key];
-          return {
-            ...s,
-            dirtyBereiche: s.dirtyBereiche.filter((k) => k !== key),
-            totalDirty: s.totalDirty - 1,
-            bereichDetails: newDetails,
-          };
-        });
-        router.refresh();
+        window.location.reload();
       } else {
         notify('err', res.error || 'Verwerfen fehlgeschlagen.');
       }
@@ -182,9 +171,7 @@ export default function PublishButton({ slug, initialState }: Props) {
     startTransition(async () => {
       const res = await discardSite({ slug });
       if (res.ok) {
-        notify('ok', 'Stammdaten/Stil: Änderungen verworfen.');
-        setState((s) => ({ ...s, siteDirty: false, totalDirty: s.totalDirty - 1, siteDetails: [] }));
-        router.refresh();
+        window.location.reload();
       } else {
         notify('err', res.error || 'Verwerfen fehlgeschlagen.');
       }
