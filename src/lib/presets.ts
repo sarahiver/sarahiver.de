@@ -4,7 +4,8 @@ import { createSupabaseAdminClient } from './supabase-admin';
  * Preset-Tabellen (start_styles, palette_presets, font_presets) — Stammdaten,
  * die selten geändert werden. Werden im Settings-Editor angezeigt.
  *
- * Die Felder spiegeln die DB-Spalten 1:1 (siehe Diagnose vom 29.05.2026).
+ * Design System v2: Alte Stile (display_order < 0) werden ausgeblendet.
+ * Sie bleiben in der DB für Audit, aber im Picker nur die aktiven.
  */
 
 export interface StartStylePreset {
@@ -54,10 +55,13 @@ export async function loadAllPresets(): Promise<AllPresets> {
     return { styles: [], palettes: [], fonts: [] };
   }
 
+  // Design System v2: nur aktive Presets (display_order >= 0) anzeigen.
+  // Deprecated Presets bleiben in der DB für historische wedding_sites,
+  // werden aber im StilTab-Picker ausgefiltert.
   const [stylesRes, palettesRes, fontsRes] = await Promise.all([
-    supabase.from('start_styles').select('*').order('display_order'),
-    supabase.from('palette_presets').select('*').order('display_order'),
-    supabase.from('font_presets').select('*').order('display_order'),
+    supabase.from('start_styles').select('*').gte('display_order', 0).order('display_order'),
+    supabase.from('palette_presets').select('*').gte('display_order', 0).order('display_order'),
+    supabase.from('font_presets').select('*').gte('display_order', 0).order('display_order'),
   ]);
 
   if (stylesRes.error) console.error('[presets] start_styles failed:', stylesRes.error);
