@@ -58,6 +58,81 @@ export async function loadWeddingSite(
       if ('couple_name_2' in draft) t.couple_name_2 = draft.couple_name_2;
       if ('wedding_date' in draft) t.wedding_date = draft.wedding_date;
       if ('wedding_location' in draft) t.wedding_location = draft.wedding_location;
+
+      // === DESIGN-SYSTEM-Felder aus draft mergen ===
+      // Die View v_effective_tokens kennt nur published-Spalten + Joins mit
+      // start_styles/palette_presets/font_presets nach den PUBLISHED-IDs.
+      // Wenn im draft eine andere ID gesetzt ist, müssen wir die Joins
+      // hier nachholen — sonst zeigt die Vorschau weiterhin den
+      // veröffentlichten Stil/Palette/Font.
+
+      // Parallel: 3 Preset-Lookups je nach Draft-Inhalt
+      const draftStyleId = (draft as Record<string, unknown>).start_style_id as string | undefined;
+      const draftPaletteId = (draft as Record<string, unknown>).palette_preset_id as string | null | undefined;
+      const draftFontId = (draft as Record<string, unknown>).font_preset_id as string | null | undefined;
+
+      const [styleRow, paletteRow, fontRow] = await Promise.all([
+        draftStyleId
+          ? supabase
+              .from('start_styles')
+              .select('dna_align, dna_spacing, dna_decor, dna_contrast')
+              .eq('id', draftStyleId)
+              .maybeSingle()
+          : Promise.resolve({ data: null }),
+        draftPaletteId
+          ? supabase
+              .from('palette_presets')
+              .select('color_bg, color_bg_soft, color_accent, color_accent_deep, color_ink')
+              .eq('id', draftPaletteId)
+              .maybeSingle()
+          : Promise.resolve({ data: null }),
+        draftFontId
+          ? supabase
+              .from('font_presets')
+              .select('font_display, font_body, font_script, display_weight, display_style')
+              .eq('id', draftFontId)
+              .maybeSingle()
+          : Promise.resolve({ data: null }),
+      ]);
+
+      // Stil (cascadiert auf DNA-Felder)
+      if (draftStyleId) {
+        t.start_style_id = draftStyleId;
+        const sr = styleRow.data as Record<string, unknown> | null;
+        if (sr) {
+          t.dna_align = sr.dna_align;
+          t.dna_spacing = sr.dna_spacing;
+          t.dna_decor = sr.dna_decor;
+          t.dna_contrast = sr.dna_contrast;
+        }
+      }
+
+      // Palette-Preset (überschreibt die View-Werte mit der gewählten Preset-Palette)
+      if (draftPaletteId) {
+        const pr = paletteRow.data as Record<string, unknown> | null;
+        if (pr) {
+          t.color_bg = pr.color_bg;
+          t.color_bg_soft = pr.color_bg_soft;
+          t.color_accent = pr.color_accent;
+          t.color_accent_deep = pr.color_accent_deep;
+          t.color_ink = pr.color_ink;
+        }
+      }
+
+      // Font-Preset
+      if (draftFontId) {
+        const fr = fontRow.data as Record<string, unknown> | null;
+        if (fr) {
+          t.font_display = fr.font_display;
+          t.font_body = fr.font_body;
+          t.font_script = fr.font_script;
+          t.display_weight = fr.display_weight;
+          t.display_style = fr.display_style;
+        }
+      }
+
+      // Custom-Farben (überschreiben die Preset-Werte, falls gesetzt)
+      // Wichtig: NACH dem Palette-Preset-Merge, damit Custom > Preset gilt.
       if ('palette_custom_bg' in draft) t.color_bg = draft.palette_custom_bg ?? t.color_bg;
       if ('palette_custom_bg_soft' in draft) t.color_bg_soft = draft.palette_custom_bg_soft ?? t.color_bg_soft;
       if ('palette_custom_accent' in draft) t.color_accent = draft.palette_custom_accent ?? t.color_accent;
