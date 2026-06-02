@@ -41,16 +41,10 @@
    STIL 01 · EDITORIAL — Bento + Variable Font Magazine
    ============================================================ */
 .wedding-site-wrapper[data-style="editorial"] {
-  --bg: #F5F0E8;
-  --ink: #1F1A14;
   --ink-soft: #5A4F40;
-  --accent: #B85C3A;
-  --accent-deep: #8E4530;
   --rule: #C9B898;
-  --font-display: 'Fraunces', serif;
   --font-display-vars: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
   --font-display-weight: 350;
-  --font-body: 'Manrope', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --display-letter-spacing: -0.03em;
   --display-line-height: 0.92;
@@ -76,15 +70,9 @@
    STIL 02 · BRUTALIST — Marquee + 3D Z-Tilt + Distortion
    ============================================================ */
 .wedding-site-wrapper[data-style="brutalist"] {
-  --bg: #FFFFFF;
-  --ink: #000000;
   --ink-soft: #333333;
-  --accent: #E8FF00;
-  --accent-deep: #C5D900;
   --rule: #000000;
-  --font-display: 'Space Grotesk', sans-serif;
   --font-display-weight: 700;
-  --font-body: 'Space Grotesk', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --display-letter-spacing: -0.045em;
   --display-line-height: 0.82;
@@ -118,24 +106,17 @@
    STIL 03 · ORGANIC — Wabernde Formen, Goo, Mesh
    ============================================================ */
 .wedding-site-wrapper[data-style="organic"] {
-  --bg: #F4F0E6;
   --bg-deep: #EBE5D2;
-  --ink: #2A2419;
   --ink-soft: #5A5040;
-  --accent: #B85C3A;
-  --accent-deep: #7C8C6C;
   --c-sage: #7C8C6C;
   --c-peach: #E8A98F;
   --c-coral: #B85C3A;
   --c-plum: #6B4F5E;
   --c-gold: #C9A874;
   --rule: rgba(42, 36, 25, 0.15);
-  --font-display: 'Fraunces', serif;
   --font-display-vars: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
   --font-display-weight: 350;
   --font-display-style: italic;
-  --font-body: 'Karla', sans-serif;
-  --font-script: 'Caveat', cursive;
   --font-mono: 'JetBrains Mono', monospace;
   --display-letter-spacing: -0.025em;
   --display-line-height: 0.95;
@@ -163,15 +144,9 @@
    STIL 04 · MONO — Architektur, JetBrains für alles
    ============================================================ */
 .wedding-site-wrapper[data-style="mono"] {
-  --bg: #FAFAF8;
-  --ink: #0A0A0A;
   --ink-soft: #6B6B65;
-  --accent: #0A0A0A;
-  --accent-deep: #000000;
   --rule: #D8D6CF;
-  --font-display: 'JetBrains Mono', monospace;
   --font-display-weight: 300;
-  --font-body: 'JetBrains Mono', monospace;
   --font-mono: 'JetBrains Mono', monospace;
   --display-letter-spacing: -0.04em;
   --display-line-height: 1.0;
@@ -196,20 +171,13 @@
    STIL 05 · OPULENT — Aurora, Gold-Shimmer, 3D-Stack
    ============================================================ */
 .wedding-site-wrapper[data-style="opulent"] {
-  --bg: #0E0B08;
-  --bg-soft: #14110E;
   --bg-mid: #1F1A14;
-  --ink: #F2EAD9;
   --ink-soft: rgba(242, 234, 217, 0.7);
-  --accent: #C5A572;
-  --accent-deep: #E0C088;
   --gold: #C5A572;
   --gold-bright: #E0C088;
   --rule: rgba(197, 165, 114, 0.4);
-  --font-display: 'Cormorant SC', serif;
   --font-display-weight: 300;
   --font-display-style: 'Italiana', serif;
-  --font-body: 'Crimson Pro', serif;
   --font-body-style: italic;
   --font-mono: 'JetBrains Mono', monospace;
   --display-letter-spacing: 0.04em;
@@ -236,18 +204,11 @@
    STIL 06 · LIQUEFY — Aggressive SVG-Acid-Melt
    ============================================================ */
 .wedding-site-wrapper[data-style="liquefy"] {
-  --bg: #0D1A10;
-  --bg-soft: #152822;
-  --ink: #D2FFD4;
   --ink-soft: rgba(210, 255, 212, 0.7);
-  --accent: #D2FFD4;
-  --accent-deep: #A2CBB5;
   --rule: rgba(210, 255, 212, 0.2);
-  --font-display: 'Fraunces', serif;
   --font-display-vars: 'opsz' 144;
   --font-display-weight: 700;
   --font-display-style: italic;
-  --font-body: 'Syne', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --display-letter-spacing: -0.02em;
   --display-line-height: 0.88;
@@ -276,17 +237,10 @@
    STIL 07 · KINETIC — Diagonal Marquee + Skewed Magazine
    ============================================================ */
 .wedding-site-wrapper[data-style="kinetic"] {
-  --bg: #0C0C0C;
-  --bg-soft: #1A1A1A;
-  --ink: #FFFFFF;
   --ink-soft: rgba(255, 255, 255, 0.7);
-  --accent: #FFCC00;
-  --accent-deep: #E0B400;
   --rule: rgba(255, 255, 255, 0.15);
-  --font-display: 'Syne', sans-serif;
   --font-display-weight: 900;
   --font-display-style: 'Alumni Sans Inline', sans-serif;
-  --font-body: 'Syne', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --display-letter-spacing: -0.04em;
   --display-line-height: 0.82;
@@ -315,19 +269,12 @@
    STIL 08 · BAUHAUS — Geometrische Asymmetrie
    ============================================================ */
 .wedding-site-wrapper[data-style="bauhaus"] {
-  --bg: #EAE7DF;
-  --bg-soft: #DDD8CC;
-  --ink: #1D2B49;
   --ink-soft: rgba(29, 43, 73, 0.7);
-  --accent: #E03A3E;
-  --accent-deep: #F5B92B;
   --c-red: #E03A3E;
   --c-yellow: #F5B92B;
   --c-navy: #1D2B49;
   --rule: rgba(29, 43, 73, 0.15);
-  --font-display: 'Syne', sans-serif;
   --font-display-weight: 900;
-  --font-body: 'Syne', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --display-letter-spacing: -0.02em;
   --display-line-height: 0.85;
@@ -867,13 +814,13 @@
   border-left: 0; border-top: 0;
 }
 .hero-a[data-style-hero="opulent"] .hero-a-eyebrow {
-  font-family: 'Italiana', serif;
+  font-family: var(--font-display-style);
   font-size: 14px;
   letter-spacing: 0.5em;
   color: var(--gold, var(--accent));
 }
 .hero-a[data-style-hero="opulent"] .hero-a-title {
-  font-family: 'Cormorant SC', serif;
+  font-family: var(--font-display);
   font-weight: 300;
   letter-spacing: 0.04em;
   font-size: clamp(52px, 7vw, 88px);
@@ -885,7 +832,7 @@
   animation: op-gold-flow 6s ease-in-out infinite;
 }
 .hero-a[data-style-hero="opulent"] .hero-a-title .amp {
-  font-family: 'Italiana', serif;
+  font-family: var(--font-display-style);
   font-style: italic;
   color: var(--gold, var(--accent));
   padding: 0 0.1em;
@@ -893,7 +840,7 @@
 }
 .hero-a[data-style-hero="opulent"] .hero-a-date,
 .hero-a[data-style-hero="opulent"] .hero-a-location {
-  font-family: 'Italiana', serif;
+  font-family: var(--font-display-style);
   font-size: 14px;
   letter-spacing: 0.4em;
   text-transform: uppercase;
@@ -936,7 +883,7 @@
   color: var(--accent-deep);
 }
 .hero-a[data-style-hero="liquefy"] .hero-a-title {
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: 'opsz' 144;
   font-weight: 700;
@@ -952,7 +899,7 @@
 }
 .hero-a[data-style-hero="liquefy"] .hero-a-date,
 .hero-a[data-style-hero="liquefy"] .hero-a-location {
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-display);
   font-weight: 700;
   font-size: 18px;
   text-transform: uppercase;
@@ -999,7 +946,7 @@
   letter-spacing: 0.18em;
 }
 .hero-a[data-style-hero="kinetic"] .hero-a-title {
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-display);
   font-weight: 900;
   font-size: clamp(64px, 10vw, 160px);
   text-transform: uppercase;
@@ -1008,14 +955,14 @@
 }
 .hero-a[data-style-hero="kinetic"] .hero-a-title .amp {
   display: block;
-  font-family: 'Alumni Sans Inline', sans-serif;
+  font-family: var(--font-display-style);
   font-style: italic;
   color: var(--accent);
   font-weight: 900;
 }
 .hero-a[data-style-hero="kinetic"] .hero-a-date,
 .hero-a[data-style-hero="kinetic"] .hero-a-location {
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-display);
   font-weight: 700;
   font-size: 16px;
   text-transform: uppercase;
@@ -1063,7 +1010,7 @@
   letter-spacing: 0.25em;
 }
 .hero-a[data-style-hero="bauhaus"] .hero-a-title {
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-display);
   font-weight: 900;
   font-size: clamp(56px, 8vw, 120px);
   text-transform: uppercase;
@@ -1076,7 +1023,7 @@
 }
 .hero-a[data-style-hero="bauhaus"] .hero-a-date,
 .hero-a[data-style-hero="bauhaus"] .hero-a-location {
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-display);
   font-weight: 700;
   font-size: 16px;
   text-transform: uppercase;
@@ -1314,19 +1261,19 @@
 }
 .hero-b[data-style-hero="opulent"] .hero-b-text { color: var(--ink); }
 .hero-b[data-style-hero="opulent"] .hero-b-eyebrow {
-  font-family: 'Italiana', serif;
+  font-family: var(--font-display-style);
   font-size: 14px;
   letter-spacing: 0.5em;
   color: var(--gold, var(--accent));
 }
 .hero-b[data-style-hero="opulent"] .hero-b-title {
-  font-family: 'Cormorant SC', serif;
+  font-family: var(--font-display);
   font-weight: 300;
   letter-spacing: 0.04em;
   font-size: clamp(56px, 6.5vw, 100px);
 }
 .hero-b[data-style-hero="opulent"] .hero-b-title .amp {
-  font-family: 'Italiana', serif;
+  font-family: var(--font-display-style);
   font-style: italic;
   color: var(--gold-bright, var(--accent-deep));
 }
@@ -1346,7 +1293,7 @@
 }
 .hero-b[data-style-hero="opulent"] .hero-b-date,
 .hero-b[data-style-hero="opulent"] .hero-b-venue {
-  font-family: 'Italiana', serif;
+  font-family: var(--font-display-style);
   letter-spacing: 0.4em;
   text-transform: uppercase;
   font-size: 12px;
@@ -1364,7 +1311,7 @@
   letter-spacing: 0.25em;
 }
 .hero-b[data-style-hero="liquefy"] .hero-b-title {
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   font-style: italic;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -1400,7 +1347,7 @@
   color: var(--ink);
 }
 .hero-b[data-style-hero="kinetic"] .hero-b-title {
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-display);
   font-weight: 900;
   font-size: clamp(56px, 7vw, 120px);
   text-transform: uppercase;
@@ -1409,7 +1356,7 @@
 }
 .hero-b[data-style-hero="kinetic"] .hero-b-title .amp {
   display: block;
-  font-family: 'Alumni Sans Inline', sans-serif;
+  font-family: var(--font-display-style);
   font-style: italic;
   color: var(--accent);
   font-weight: 900;
@@ -1446,7 +1393,7 @@
   letter-spacing: 0.25em;
 }
 .hero-b[data-style-hero="bauhaus"] .hero-b-title {
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-display);
   font-weight: 900;
   font-size: clamp(56px, 7vw, 120px);
   text-transform: uppercase;
@@ -1650,7 +1597,7 @@
 }
 .hero-c[data-style-hero="opulent"] .hero-c-content { color: var(--ink); }
 .hero-c[data-style-hero="opulent"] .hero-c-title {
-  font-family: 'Cormorant SC', serif;
+  font-family: var(--font-display);
   font-weight: 300;
   letter-spacing: 0.04em;
   font-size: clamp(64px, 9vw, 140px);
@@ -1662,7 +1609,7 @@
   animation: op-gold-flow 8s ease-in-out infinite;
 }
 .hero-c[data-style-hero="opulent"] .hero-c-title .amp {
-  font-family: 'Italiana', serif;
+  font-family: var(--font-display-style);
   font-style: italic;
   -webkit-text-fill-color: var(--gold, var(--accent));
 }
@@ -1670,7 +1617,7 @@
 .hero-c[data-style-hero="opulent"] .hero-c-volume,
 .hero-c[data-style-hero="opulent"] .hero-c-date,
 .hero-c[data-style-hero="opulent"] .hero-c-venue {
-  font-family: 'Italiana', serif;
+  font-family: var(--font-display-style);
   letter-spacing: 0.35em;
   font-size: 12px;
   color: var(--gold, var(--accent));
@@ -1699,7 +1646,7 @@
 .hero-c[data-style-hero="liquefy"] .hero-c-vignette { display: none; }
 .hero-c[data-style-hero="liquefy"] .hero-c-content { color: var(--ink); }
 .hero-c[data-style-hero="liquefy"] .hero-c-title {
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   font-style: italic;
   font-variation-settings: 'opsz' 144;
   font-weight: 700;
@@ -1730,7 +1677,7 @@
 }
 .hero-c[data-style-hero="kinetic"] .hero-c-content { color: #fff; }
 .hero-c[data-style-hero="kinetic"] .hero-c-title {
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-display);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -0.04em;
@@ -1739,7 +1686,7 @@
 }
 .hero-c[data-style-hero="kinetic"] .hero-c-title .amp {
   display: block;
-  font-family: 'Alumni Sans Inline', sans-serif;
+  font-family: var(--font-display-style);
   color: var(--accent);
   font-style: italic;
 }
@@ -1772,7 +1719,7 @@
   max-width: 55%;
 }
 .hero-c[data-style-hero="bauhaus"] .hero-c-title {
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-display);
   font-weight: 900;
   text-transform: uppercase;
   font-size: clamp(64px, 10vw, 160px);
@@ -1800,7 +1747,7 @@
 .hero-c[data-style-hero="bauhaus"] .hero-c-date,
 .hero-c[data-style-hero="bauhaus"] .hero-c-venue {
   color: var(--ink);
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-display);
   font-weight: 700;
   letter-spacing: -0.01em;
 }

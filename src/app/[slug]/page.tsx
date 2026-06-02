@@ -1,10 +1,12 @@
 import { notFound } from 'next/navigation';
+import { unstable_noStore as noStore } from 'next/cache';
 import { loadWeddingSite, tokensToCSSVariables, getBereichBackground, SPACING_MULTIPLIER } from '@/lib/tokens';
 import { DnaProvider } from '@/lib/dna-context';
 import { BereichRenderer } from '@/components/layout/BereichRenderer';
 import { SiteNav } from '@/components/layout/SiteNav';
 import { buildNavItems } from '@/components/layout/nav-config';
 import { isReservedSlug, isValidSlugFormat } from '@/lib/slug-validation';
+import DecorationFilters from '@/components/decoration/DecorationFilters';
 import type { Metadata } from 'next';
 
 interface PageProps {
@@ -12,6 +14,8 @@ interface PageProps {
   searchParams: Promise<{ preview?: string }>;
 }
 
+// ISR für Live-Pages: alle 60s revalidieren ist OK für Gäste-Sicht.
+// Für Draft-Mode wird unten via noStore() pro-Request umgangen.
 export const revalidate = 60;
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -38,6 +42,13 @@ export default async function WeddingSitePage({ params, searchParams }: PageProp
   const sp = await searchParams;
   const mode: 'draft' | 'published' = sp?.preview === 'draft' ? 'draft' : 'published';
 
+  // Draft-Modus: niemals cachen, immer frisch aus der DB lesen.
+  // Sonst bleibt die Vorschau auf dem Stand des letzten ISR-Builds hängen,
+  // selbst wenn der StilTab gerade Custom-Farben gespeichert hat.
+  if (mode === 'draft') {
+    noStore();
+  }
+
   if (isReservedSlug(slug) || !isValidSlugFormat(slug)) notFound();
   const data = await loadWeddingSite(slug, mode);
   if (!data) notFound();
@@ -52,7 +63,9 @@ export default async function WeddingSitePage({ params, searchParams }: PageProp
     spacingMultiplier: SPACING_MULTIPLIER[tokens.dna_spacing],
   };
 
-  const styleHint = (tokens as typeof tokens & { start_style_id?: string }).start_style_id ?? 'klassisch';
+  // Design System v2: Default ist 'editorial' (war 'klassisch'). Migration
+  // mappt alle alten IDs auf die neuen 8 — Fallback nur für unbekannte IDs.
+  const styleHint = (tokens as typeof tokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const navVariant = (tokens as typeof tokens & { nav_variant?: string }).nav_variant ?? 'a';
   const navItems = buildNavItems(bereiche.map((b) => b.bereich_key));
   const coupleShort =
@@ -66,6 +79,10 @@ export default async function WeddingSitePage({ params, searchParams }: PageProp
       className="wedding-site-wrapper min-h-screen"
       data-style={styleHint}
     >
+      {/* Design System v2: globale SVG-Filter-Library (Goo, Melt, Distort, Grain).
+          Eine einzige Instanz pro Seite, Filter werden via filter:url(#xxx) referenziert. */}
+      <DecorationFilters />
+
       <DnaProvider dna={dna}>
         {navVariant !== 'none' && navItems.length > 0 && (
           <SiteNav
