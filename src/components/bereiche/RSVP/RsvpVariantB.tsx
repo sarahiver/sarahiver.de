@@ -57,6 +57,8 @@ function buildSteps(state: RsvpState, config: RsvpConfig): Step[] {
 }
 
 export default function RsvpVariantB({ tokens, content }: Props) {
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const config = readConfig(content, {
     name1: tokens.couple_name_1,
     name2: tokens.couple_name_2,
@@ -79,7 +81,7 @@ export default function RsvpVariantB({ tokens, content }: Props) {
 
   if (closed) {
     return (
-      <div className="rsvp rsvpB-wrap">
+      <div className="rsvp rsvpB-wrap" data-style-rsvp={style}>
         <RsvpHeader config={config} />
         <RsvpClosed />
       </div>
@@ -88,7 +90,7 @@ export default function RsvpVariantB({ tokens, content }: Props) {
 
   if (submitted) {
     return (
-      <div className="rsvp rsvpB-wrap">
+      <div className="rsvp rsvpB-wrap" data-style-rsvp={style}>
         <RsvpHeader config={config} />
         <RsvpSuccess
           firstName={state.name.split(' ')[0] || ''}
@@ -150,7 +152,7 @@ export default function RsvpVariantB({ tokens, content }: Props) {
   };
 
   return (
-    <div className="rsvp rsvpB-wrap">
+    <div className="rsvp rsvpB-wrap" data-style-rsvp={style}>
       <RsvpHeader config={config} />
 
       <div className="rsvpB">

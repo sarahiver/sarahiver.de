@@ -1,6 +1,5 @@
 'use client';
 
-import Decor from '@/components/ui/Decor';
 import {
   formatDeadline,
   renderTitleWithEm,
@@ -77,8 +76,13 @@ export function CustomQuestionField({
 }
 
 /**
- * RSVP-Header: Eyebrow + Titel + Decor + Description + Deadline-Pill
- * Wird von allen 3 Varianten gleich genutzt.
+ * RSVP-Header: Eyebrow + Titel + (stil-spezifisches Ornament) + Description + Deadline-Pill.
+ *
+ * Design System v2:
+ *   Statt der alten generischen <Decor />-Komponente rendert der Header
+ *   pro Stil eine eigene Ornament-Form via CSS-Klasse `.rsvp-head-ornament`.
+ *   Der Style wird über das `data-style-rsvp` Attribute am Top-Wrapper
+ *   gesteuert — Header selbst muss nichts wissen.
  */
 export function RsvpHeader({ config }: { config: RsvpConfig }) {
   const deadlineText = formatDeadline(config.deadline);
@@ -86,14 +90,14 @@ export function RsvpHeader({ config }: { config: RsvpConfig }) {
     <div className="rsvp-head">
       <p className="rsvp-eyebrow">RSVP</p>
       <h2
-        className="rsvp-title"
+        className="rsvp-title display"
         data-editable="rsvp.title"
         data-edit-type="text"
         dangerouslySetInnerHTML={{ __html: renderTitleWithEm(config.title) }}
       />
-      <div className="rsvp-head-decor-wrap">
-        <Decor />
-      </div>
+      {/* Stil-spezifisches Ornament — wird per CSS pro [data-style-rsvp] gestaltet.
+          Per Default unsichtbar; bei spezifischen Stilen sichtbar gemacht. */}
+      <div className="rsvp-head-ornament" aria-hidden="true" />
       {config.description && (
         <p
           className="rsvp-desc"

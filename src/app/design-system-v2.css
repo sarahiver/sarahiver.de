@@ -1809,3 +1809,582 @@
   .hero-c-content { padding: 30px 24px; }
   .hero-c-bot { flex-direction: column; gap: 8px; align-items: flex-start; }
 }
+/* ============================================================
+   DESIGN SYSTEM v2 — RSVP STYLES PRO STIL
+   Bitte ans Ende von src/app/design-system-v2.css anhängen.
+   ============================================================
+
+   Architektur:
+   .rsvp[data-style-rsvp="X"]  →  Stil-spezifische Form-Anmutung.
+
+   Das CSS modifiziert pro Stil nur die markantesten Form-Elemente:
+   - rsvp-head-ornament (Ornament im Header)
+   - input/textarea Borders + Focus
+   - toggle-opt (Ja/Nein-Toggle)
+   - stepper (Personen-Anzahl-Buttons)
+   - btn-primary (Submit)
+   - rsvp-cq-pill (Custom-Frage-Pills)
+
+   Inputs/Toggles erben Standard-Layout vom bestehenden globals.css —
+   wir überschreiben nur Stil-Charakteristika.
+============================================================ */
+
+/* ===== Base: Ornament-Container default versteckt ===== */
+.rsvp-head-ornament {
+  display: none;
+}
+
+/* ============================================================
+   STIL 01 · EDITORIAL — Magazin: dünne Hairlines, dezent
+   ============================================================ */
+.rsvp[data-style-rsvp="editorial"] .rsvp-head-ornament {
+  display: block;
+  width: 60px;
+  height: 1px;
+  background: var(--accent);
+  margin: 18px auto;
+}
+.rsvp[data-style-rsvp="editorial"] .rsvp-eyebrow {
+  font-family: var(--font-mono);
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+.rsvp[data-style-rsvp="editorial"] input,
+.rsvp[data-style-rsvp="editorial"] textarea {
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+  border-radius: 0;
+  background: transparent;
+  padding: 10px 0;
+  font-family: var(--font-body);
+  transition: border-color 0.2s;
+}
+.rsvp[data-style-rsvp="editorial"] input:focus,
+.rsvp[data-style-rsvp="editorial"] textarea:focus {
+  outline: 0;
+  border-bottom-color: var(--accent);
+}
+.rsvp[data-style-rsvp="editorial"] .toggle-opt {
+  border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent);
+  border-radius: 4px;
+  background: transparent;
+}
+.rsvp[data-style-rsvp="editorial"] .toggle-opt.is-on {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  color: var(--accent);
+}
+.rsvp[data-style-rsvp="editorial"] .btn-primary {
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 2px;
+  padding: 14px 32px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+/* ============================================================
+   STIL 02 · BRUTALIST — Harte Borders, Yellow-Accents, blocky
+   ============================================================ */
+.rsvp[data-style-rsvp="brutalist"] .rsvp-head-ornament {
+  display: block;
+  width: 80%;
+  max-width: 400px;
+  height: 4px;
+  background: var(--ink);
+  margin: 18px auto;
+}
+.rsvp[data-style-rsvp="brutalist"] .rsvp-eyebrow {
+  background: var(--ink);
+  color: var(--bg);
+  display: inline-block;
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.15em;
+}
+.rsvp[data-style-rsvp="brutalist"] input,
+.rsvp[data-style-rsvp="brutalist"] textarea {
+  border: 3px solid var(--ink);
+  border-radius: 0;
+  background: var(--bg);
+  padding: 14px;
+  font-family: var(--font-display);
+  font-weight: 500;
+}
+.rsvp[data-style-rsvp="brutalist"] input:focus,
+.rsvp[data-style-rsvp="brutalist"] textarea:focus {
+  outline: 0;
+  background: var(--accent);
+}
+.rsvp[data-style-rsvp="brutalist"] .toggle-opt {
+  border: 3px solid var(--ink);
+  border-radius: 0;
+  background: var(--bg);
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.rsvp[data-style-rsvp="brutalist"] .toggle-opt.is-on {
+  background: var(--accent);
+  color: var(--ink);
+}
+.rsvp[data-style-rsvp="brutalist"] .stepper button {
+  border: 3px solid var(--ink);
+  background: var(--bg);
+  font-weight: 700;
+}
+.rsvp[data-style-rsvp="brutalist"] .btn-primary {
+  background: var(--accent);
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  padding: 18px 36px;
+  box-shadow: 8px 8px 0 var(--ink);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.rsvp[data-style-rsvp="brutalist"] .btn-primary:hover:not(:disabled) {
+  transform: translate(-4px, -4px);
+  box-shadow: 12px 12px 0 var(--ink);
+}
+.rsvp[data-style-rsvp="brutalist"] .btn-primary:active:not(:disabled) {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 var(--ink);
+}
+.rsvp[data-style-rsvp="brutalist"] .rsvp-cq-pill {
+  border: 3px solid var(--ink);
+  border-radius: 0;
+  font-weight: 700;
+}
+.rsvp[data-style-rsvp="brutalist"] .rsvp-cq-pill.is-on {
+  background: var(--accent);
+  color: var(--ink);
+}
+
+/* ============================================================
+   STIL 03 · ORGANIC — Runde Pills, sanfte Borders, warmer Glow
+   ============================================================ */
+.rsvp[data-style-rsvp="organic"] .rsvp-head-ornament {
+  display: block;
+  width: 80px;
+  height: 30px;
+  margin: 20px auto;
+  background: var(--accent);
+  border-radius: 50% / 30%;
+  opacity: 0.7;
+}
+.rsvp[data-style-rsvp="organic"] .rsvp-eyebrow {
+  font-family: var(--font-script);
+  font-size: 22px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--accent);
+}
+.rsvp[data-style-rsvp="organic"] input,
+.rsvp[data-style-rsvp="organic"] textarea {
+  border: 1.5px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  border-radius: 24px;
+  background: var(--bg-soft);
+  padding: 14px 20px;
+  transition: all 0.25s;
+}
+.rsvp[data-style-rsvp="organic"] input:focus,
+.rsvp[data-style-rsvp="organic"] textarea:focus {
+  outline: 0;
+  border-color: var(--accent);
+  background: var(--bg);
+}
+.rsvp[data-style-rsvp="organic"] .toggle-opt {
+  border-radius: 100px;
+  border: 1.5px solid color-mix(in srgb, var(--ink) 12%, transparent);
+}
+.rsvp[data-style-rsvp="organic"] .toggle-opt.is-on {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+.rsvp[data-style-rsvp="organic"] .stepper button {
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--ink) 15%, transparent);
+}
+.rsvp[data-style-rsvp="organic"] .btn-primary {
+  border-radius: 100px;
+  background: var(--accent);
+  padding: 16px 40px;
+  font-family: var(--font-display);
+  font-style: italic;
+}
+.rsvp[data-style-rsvp="organic"] .rsvp-cq-pill {
+  border-radius: 100px;
+}
+
+/* ============================================================
+   STIL 04 · MONO — JetBrains, dünne 1px-Borders, technisch
+   ============================================================ */
+.rsvp[data-style-rsvp="mono"] .rsvp-head-ornament {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: color-mix(in srgb, var(--ink) 50%, transparent);
+  margin: 12px auto;
+  letter-spacing: 0.2em;
+}
+.rsvp[data-style-rsvp="mono"] .rsvp-head-ornament::before {
+  content: '— rsvp:01 —';
+}
+.rsvp[data-style-rsvp="mono"] .rsvp-eyebrow {
+  font-family: var(--font-mono);
+}
+.rsvp[data-style-rsvp="mono"] .rsvp-eyebrow::before {
+  content: '// ';
+  color: color-mix(in srgb, var(--ink) 45%, transparent);
+}
+.rsvp[data-style-rsvp="mono"] input,
+.rsvp[data-style-rsvp="mono"] textarea {
+  border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+  border-radius: 0;
+  background: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 12px 16px;
+}
+.rsvp[data-style-rsvp="mono"] input:focus,
+.rsvp[data-style-rsvp="mono"] textarea:focus {
+  outline: 0;
+  border-color: var(--ink);
+}
+.rsvp[data-style-rsvp="mono"] .field label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--ink) 55%, transparent);
+}
+.rsvp[data-style-rsvp="mono"] .toggle-opt {
+  border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+  border-radius: 0;
+  background: var(--bg);
+  font-family: var(--font-mono);
+}
+.rsvp[data-style-rsvp="mono"] .toggle-opt.is-on {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+.rsvp[data-style-rsvp="mono"] .btn-primary {
+  background: var(--ink);
+  color: var(--bg);
+  border: 0;
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 14px 36px;
+}
+.rsvp[data-style-rsvp="mono"] .rsvp-cq-pill {
+  border-radius: 0;
+  font-family: var(--font-mono);
+}
+
+/* ============================================================
+   STIL 05 · OPULENT — Gold-Borders, Cormorant-Headlines, dark glamour
+   ============================================================ */
+.rsvp[data-style-rsvp="opulent"] .rsvp-head-ornament {
+  display: block;
+  width: 140px;
+  height: 1px;
+  margin: 20px auto;
+  background: linear-gradient(90deg, transparent, var(--gold, var(--accent)) 50%, transparent);
+  position: relative;
+}
+.rsvp[data-style-rsvp="opulent"] .rsvp-head-ornament::after {
+  content: '✦';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--gold, var(--accent));
+  background: var(--bg);
+  padding: 0 12px;
+  font-size: 14px;
+}
+.rsvp[data-style-rsvp="opulent"] .rsvp-eyebrow {
+  font-family: 'Italiana', serif;
+  letter-spacing: 0.45em;
+  font-size: 13px;
+  color: var(--gold, var(--accent));
+}
+.rsvp[data-style-rsvp="opulent"] input,
+.rsvp[data-style-rsvp="opulent"] textarea {
+  border: 1px solid color-mix(in srgb, var(--gold, var(--accent)) 40%, transparent);
+  border-radius: 0;
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+  font-family: var(--font-body);
+  font-style: italic;
+  padding: 14px 16px;
+}
+.rsvp[data-style-rsvp="opulent"] input:focus,
+.rsvp[data-style-rsvp="opulent"] textarea:focus {
+  outline: 0;
+  border-color: var(--gold, var(--accent));
+  background: var(--bg-soft);
+}
+.rsvp[data-style-rsvp="opulent"] .toggle-opt {
+  border: 1px solid color-mix(in srgb, var(--gold, var(--accent)) 40%, transparent);
+  border-radius: 0;
+  background: transparent;
+  font-family: 'Italiana', serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.rsvp[data-style-rsvp="opulent"] .toggle-opt.is-on {
+  background: var(--gold, var(--accent));
+  color: var(--bg);
+  border-color: var(--gold, var(--accent));
+}
+.rsvp[data-style-rsvp="opulent"] .btn-primary {
+  background: linear-gradient(135deg, var(--gold, var(--accent)) 0%, var(--accent-deep) 100%);
+  color: var(--bg);
+  border: 1px solid var(--gold, var(--accent));
+  border-radius: 0;
+  font-family: 'Italiana', serif;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-size: 13px;
+  padding: 16px 40px;
+}
+
+/* ============================================================
+   STIL 06 · LIQUEFY — Acid-Mint Akzente, Liquid-Shapes
+   ============================================================ */
+.rsvp[data-style-rsvp="liquefy"] .rsvp-head-ornament {
+  display: block;
+  width: 50px;
+  height: 50px;
+  margin: 16px auto;
+  background: var(--accent);
+  border-radius: 47% 53% 56% 44% / 49% 42% 58% 51%;
+  opacity: 0.6;
+  filter: blur(4px);
+}
+.rsvp[data-style-rsvp="liquefy"] .rsvp-eyebrow {
+  font-family: var(--font-mono);
+  color: var(--accent-deep);
+  letter-spacing: 0.25em;
+}
+.rsvp[data-style-rsvp="liquefy"] input,
+.rsvp[data-style-rsvp="liquefy"] textarea {
+  border: 1.5px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-radius: 16px;
+  background: var(--bg-soft);
+  font-family: var(--font-body);
+  padding: 14px 20px;
+}
+.rsvp[data-style-rsvp="liquefy"] input:focus,
+.rsvp[data-style-rsvp="liquefy"] textarea:focus {
+  outline: 0;
+  border-color: var(--accent);
+  box-shadow: 0 0 30px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.rsvp[data-style-rsvp="liquefy"] .toggle-opt {
+  border: 1.5px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  border-radius: 16px;
+  background: var(--bg-soft);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+}
+.rsvp[data-style-rsvp="liquefy"] .toggle-opt.is-on {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+.rsvp[data-style-rsvp="liquefy"] .btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+  border: 0;
+  border-radius: 24px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 17px;
+  padding: 16px 40px;
+  box-shadow: 0 8px 30px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+/* ============================================================
+   STIL 07 · KINETIC — Diagonal-Tilt, Yellow-Shadows
+   ============================================================ */
+.rsvp[data-style-rsvp="kinetic"] .rsvp-head-ornament {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 24px;
+  letter-spacing: -0.04em;
+  color: var(--accent);
+  margin: 12px 0;
+  transform: rotate(-4deg);
+}
+.rsvp[data-style-rsvp="kinetic"] .rsvp-head-ornament::before {
+  content: '★ Antwort bitte ★';
+}
+.rsvp[data-style-rsvp="kinetic"] .rsvp-eyebrow {
+  font-family: var(--font-mono);
+}
+.rsvp[data-style-rsvp="kinetic"] input,
+.rsvp[data-style-rsvp="kinetic"] textarea {
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  background: var(--bg);
+  font-family: var(--font-display);
+  font-weight: 500;
+  padding: 14px 18px;
+  transition: transform 0.2s;
+}
+.rsvp[data-style-rsvp="kinetic"] input:focus,
+.rsvp[data-style-rsvp="kinetic"] textarea:focus {
+  outline: 0;
+  background: color-mix(in srgb, var(--accent) 15%, var(--bg));
+  transform: translateX(-2px);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+.rsvp[data-style-rsvp="kinetic"] .toggle-opt {
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  background: var(--bg);
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  transition: transform 0.2s;
+}
+.rsvp[data-style-rsvp="kinetic"] .toggle-opt.is-on {
+  background: var(--accent);
+  color: var(--ink);
+  transform: rotate(-2deg);
+}
+.rsvp[data-style-rsvp="kinetic"] .btn-primary {
+  background: var(--accent);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 18px;
+  padding: 18px 42px;
+  letter-spacing: -0.02em;
+  transform: rotate(-2deg);
+  box-shadow: 6px 6px 0 var(--ink);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.rsvp[data-style-rsvp="kinetic"] .btn-primary:hover:not(:disabled) {
+  transform: rotate(0deg) scale(1.02);
+  box-shadow: 10px 10px 0 var(--ink);
+}
+
+/* ============================================================
+   STIL 08 · BAUHAUS — Geometric blocks, Navy+Red+Yellow
+   ============================================================ */
+.rsvp[data-style-rsvp="bauhaus"] .rsvp-head-ornament {
+  display: flex;
+  width: fit-content;
+  margin: 16px auto;
+  gap: 6px;
+  align-items: center;
+}
+.rsvp[data-style-rsvp="bauhaus"] .rsvp-head-ornament::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--c-red, var(--accent));
+}
+.rsvp[data-style-rsvp="bauhaus"] .rsvp-head-ornament::after {
+  content: '';
+  width: 28px;
+  height: 10px;
+  background: var(--c-yellow, var(--accent-deep));
+}
+.rsvp[data-style-rsvp="bauhaus"] .rsvp-eyebrow {
+  font-family: var(--font-mono);
+  letter-spacing: 0.25em;
+  font-weight: 600;
+}
+.rsvp[data-style-rsvp="bauhaus"] input,
+.rsvp[data-style-rsvp="bauhaus"] textarea {
+  border: 0;
+  border-bottom: 3px solid var(--c-navy, var(--ink));
+  border-radius: 0;
+  background: var(--bg);
+  font-family: var(--font-display);
+  font-weight: 500;
+  padding: 12px 4px;
+}
+.rsvp[data-style-rsvp="bauhaus"] input:focus,
+.rsvp[data-style-rsvp="bauhaus"] textarea:focus {
+  outline: 0;
+  border-bottom-color: var(--c-red, var(--accent));
+}
+.rsvp[data-style-rsvp="bauhaus"] .toggle-opt {
+  border: 0;
+  border-radius: 0;
+  background: var(--bg-soft);
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  position: relative;
+}
+.rsvp[data-style-rsvp="bauhaus"] .toggle-opt.is-on {
+  background: var(--c-red, var(--accent));
+  color: var(--bg);
+}
+.rsvp[data-style-rsvp="bauhaus"] .toggle-opt:first-child.is-on {
+  background: var(--c-red, var(--accent));
+}
+.rsvp[data-style-rsvp="bauhaus"] .toggle-opt:nth-child(2).is-on {
+  background: var(--c-yellow, var(--accent-deep));
+  color: var(--c-navy, var(--ink));
+}
+.rsvp[data-style-rsvp="bauhaus"] .btn-primary {
+  background: var(--c-navy, var(--ink));
+  color: var(--bg);
+  border: 0;
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 16px;
+  padding: 16px 40px;
+  letter-spacing: -0.01em;
+  position: relative;
+  overflow: hidden;
+}
+.rsvp[data-style-rsvp="bauhaus"] .btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 14px;
+  height: 100%;
+  background: var(--c-yellow, var(--accent-deep));
+}
+
+/* ============================================================
+   Mobile-Anpassungen
+   ============================================================ */
+@media (max-width: 700px) {
+  .rsvp[data-style-rsvp="brutalist"] .btn-primary { box-shadow: 4px 4px 0 var(--ink); }
+  .rsvp[data-style-rsvp="kinetic"] .btn-primary { box-shadow: 4px 4px 0 var(--ink); }
+}
