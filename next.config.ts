@@ -2,10 +2,12 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  // Memory-Optimization für Vercel-Builds — verhindert OOM bei großen
-  // CSS-Bundles. Aktiviert experimentelle Webpack-Memory-Reduzierung.
+  // Verhindert OOM auf Vercel-Build-Container:
+  // - webpackBuildWorker: false → kein separater Worker-Prozess mit eigenem
+  //   Memory-Limit. Build läuft im Main-Prozess, der mit NODE_OPTIONS auf 6GB
+  //   hochgezogen werden kann (siehe package.json build-Skript).
   experimental: {
-    webpackMemoryOptimizations: true,
+    webpackBuildWorker: false,
   },
   images: {
     remotePatterns: [
