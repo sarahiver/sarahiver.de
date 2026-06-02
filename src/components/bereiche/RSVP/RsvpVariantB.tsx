@@ -83,7 +83,7 @@ export default function RsvpVariantB({ tokens, content }: Props) {
   if (closed) {
     return (
       <div className="rsvp rsvpB-wrap" data-style-rsvp={style}>
-        <StyledBereichBg style={style} />
+        <StyledBereichBg style={style} marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`} />
         <RsvpHeader config={config} />
         <RsvpClosed />
       </div>
@@ -93,7 +93,7 @@ export default function RsvpVariantB({ tokens, content }: Props) {
   if (submitted) {
     return (
       <div className="rsvp rsvpB-wrap" data-style-rsvp={style}>
-        <StyledBereichBg style={style} />
+        <StyledBereichBg style={style} marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`} />
         <RsvpHeader config={config} />
         <RsvpSuccess
           firstName={state.name.split(' ')[0] || ''}
@@ -156,7 +156,7 @@ export default function RsvpVariantB({ tokens, content }: Props) {
 
   return (
     <div className="rsvp rsvpB-wrap" data-style-rsvp={style}>
-        <StyledBereichBg style={style} />
+        <StyledBereichBg style={style} marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`} />
       <RsvpHeader config={config} />
 
       <div className="rsvpB">

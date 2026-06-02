@@ -2362,3 +2362,342 @@
   }
   .rsvp[data-style-rsvp="bauhaus"] .rsvp-head { padding: 40px 24px; }
 }
+
+/* ============================================================
+   STYLED-BG ANIMATIONS — drastisch sichtbare Decorations pro Stil
+   ============================================================
+   Pro Stil charakteristische animierte Visual-Elemente die sofort
+   den Stil-Charakter zeigen. CSS-Pendant zu src/components/decoration/
+   StyledBereichBg.tsx.
+============================================================ */
+
+/* Alle styled-bg-* Container: absolute over the rsvp, pointer-events: none */
+[class*="styled-bg-"] {
+  pointer-events: none;
+}
+
+/* ============================================================
+   EDITORIAL — animated hairline + magazine mark
+   ============================================================ */
+.styled-bg-editorial {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.styled-bg-editorial-rule {
+  position: absolute;
+  top: 60px;
+  left: 60px;
+  right: 60px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.2;
+  transform-origin: left center;
+  animation: ed-rule-draw 1.5s ease-out forwards;
+}
+.styled-bg-editorial-mark {
+  position: absolute;
+  top: 30px;
+  right: 60px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  opacity: 0.5;
+  text-transform: uppercase;
+  animation: ed-fade-in 1.2s ease 0.4s both;
+}
+@keyframes ed-rule-draw {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@keyframes ed-fade-in {
+  from { opacity: 0; }
+  to { opacity: 0.5; }
+}
+
+/* ============================================================
+   BRUTALIST — animated marquee + pulsing star
+   ============================================================ */
+.styled-bg-brutalist {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.styled-bg-brutalist-marquee {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--ink);
+  color: var(--accent);
+  padding: 12px 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+}
+.styled-bg-brutalist-marquee span {
+  display: inline-block;
+  padding-left: 100%;
+  animation: brut-marquee 14s linear infinite;
+}
+.styled-bg-brutalist-star {
+  position: absolute;
+  top: 80px;
+  right: 40px;
+  font-size: 80px;
+  color: var(--accent);
+  line-height: 1;
+  animation: brut-star-pulse 1.6s ease-in-out infinite;
+  font-family: var(--font-display);
+}
+@keyframes brut-marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+@keyframes brut-star-pulse {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50%      { transform: rotate(15deg) scale(1.15); }
+}
+
+/* ============================================================
+   ORGANIC — floating colored blobs with drift
+   ============================================================ */
+.styled-bg-organic {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  filter: blur(40px);
+}
+.styled-bg-organic-blob {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: org-drift 18s ease-in-out infinite;
+}
+.styled-bg-organic-blob--1 {
+  background: var(--accent);
+  top: 5%;
+  left: -80px;
+  animation-delay: 0s;
+}
+.styled-bg-organic-blob--2 {
+  background: var(--accent-deep);
+  bottom: 5%;
+  right: -80px;
+  animation-delay: -9s;
+}
+@keyframes org-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(60px, -40px) scale(1.1); }
+  66%      { transform: translate(-30px, 30px) scale(0.95); }
+}
+
+/* ============================================================
+   MONO — code-comment + blinking cursor
+   ============================================================ */
+.styled-bg-mono {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.styled-bg-mono-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: 0.7;
+}
+.styled-bg-mono-comment {
+  position: absolute;
+  top: 30px;
+  right: 40px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.5);
+}
+.styled-bg-mono-prefix {
+  opacity: 0.5;
+}
+.styled-bg-mono-cursor {
+  animation: mono-cursor-blink 1s steps(2) infinite;
+}
+@keyframes mono-cursor-blink {
+  50% { opacity: 0; }
+}
+
+/* ============================================================
+   OPULENT — twinkling sparkles
+   ============================================================ */
+.styled-bg-opulent {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.styled-bg-opulent-sparkle {
+  position: absolute;
+  font-size: 24px;
+  color: var(--gold, var(--accent));
+  animation: op-sparkle 3s ease-in-out infinite;
+}
+.styled-bg-opulent-sparkle--1 {
+  top: 15%;
+  right: 12%;
+  font-size: 20px;
+  animation-delay: 0s;
+}
+.styled-bg-opulent-sparkle--2 {
+  bottom: 18%;
+  left: 8%;
+  font-size: 28px;
+  animation-delay: -1s;
+}
+.styled-bg-opulent-sparkle--3 {
+  top: 55%;
+  right: 5%;
+  font-size: 18px;
+  animation-delay: -2s;
+}
+@keyframes op-sparkle {
+  0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+  50%      { opacity: 1; transform: scale(1.2) rotate(180deg); }
+}
+
+/* ============================================================
+   LIQUEFY — pulsing acid blobs
+   ============================================================ */
+.styled-bg-liquefy {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.styled-bg-liquefy-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  animation: liq-pulse 4s ease-in-out infinite;
+}
+.styled-bg-liquefy-blob--1 {
+  top: 10%;
+  left: 5%;
+  width: 320px;
+  height: 320px;
+  background: var(--accent);
+  opacity: 0.4;
+  animation-delay: 0s;
+}
+.styled-bg-liquefy-blob--2 {
+  bottom: 8%;
+  right: 5%;
+  width: 380px;
+  height: 380px;
+  background: var(--accent-deep);
+  opacity: 0.3;
+  animation-delay: -2s;
+}
+@keyframes liq-pulse {
+  0%, 100% { transform: scale(0.85); opacity: 0.3; }
+  50%      { transform: scale(1.1); opacity: 0.5; }
+}
+
+/* ============================================================
+   KINETIC — diagonal scrolling typo stripes
+   ============================================================ */
+.styled-bg-kinetic {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.styled-bg-kinetic-stripe {
+  position: absolute;
+  white-space: nowrap;
+  font-family: 'Syne', sans-serif;
+  font-weight: 900;
+  font-size: 80px;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+  opacity: 0.06;
+}
+.styled-bg-kinetic-stripe--1 {
+  top: 10%;
+  left: -100%;
+  transform: rotate(-12deg);
+  animation: kin-stripe-1 22s linear infinite;
+}
+.styled-bg-kinetic-stripe--2 {
+  bottom: 10%;
+  right: -100%;
+  transform: rotate(-12deg);
+  animation: kin-stripe-2 28s linear infinite;
+}
+@keyframes kin-stripe-1 {
+  from { transform: translateX(0) rotate(-12deg); }
+  to   { transform: translateX(50%) rotate(-12deg); }
+}
+@keyframes kin-stripe-2 {
+  from { transform: translateX(0) rotate(-12deg); }
+  to   { transform: translateX(-50%) rotate(-12deg); }
+}
+
+/* ============================================================
+   BAUHAUS — rotating geometric blocks
+   ============================================================ */
+.styled-bg-bauhaus {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.styled-bg-bauhaus-square {
+  position: absolute;
+  top: 10%;
+  right: 10%;
+  width: 80px;
+  height: 80px;
+  background: var(--c-yellow, var(--accent-deep));
+  animation: bau-rotate 12s linear infinite;
+  mix-blend-mode: multiply;
+}
+.styled-bg-bauhaus-circle {
+  position: absolute;
+  bottom: 12%;
+  left: 8%;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: var(--c-red, var(--accent));
+  animation: bau-bounce 3s ease-in-out infinite;
+  mix-blend-mode: multiply;
+}
+@keyframes bau-rotate {
+  to { transform: rotate(360deg); }
+}
+@keyframes bau-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-20px) scale(1.05); }
+}
+
+/* ============================================================
+   Mobile reduction
+   ============================================================ */
+@media (max-width: 700px) {
+  .styled-bg-organic-blob,
+  .styled-bg-liquefy-blob { width: 180px; height: 180px; }
+  .styled-bg-brutalist-star { font-size: 50px; top: 60px; right: 20px; }
+  .styled-bg-kinetic-stripe { font-size: 50px; }
+  .styled-bg-bauhaus-square { width: 50px; height: 50px; }
+  .styled-bg-bauhaus-circle { width: 60px; height: 60px; }
+}
