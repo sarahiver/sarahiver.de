@@ -1808,6 +1808,7 @@
   .hero-c { min-height: 600px; }
   .hero-c-content { padding: 30px 24px; }
   .hero-c-bot { flex-direction: column; gap: 8px; align-items: flex-start; }
+}
 
 /* ============================================================
    DESIGN SYSTEM v2 — RSVP (v3: drastischer Charakter pro Stil)
