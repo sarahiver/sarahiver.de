@@ -1,9 +1,21 @@
 import type { EffectiveTokens } from '@/types/supabase';
-import Decor from '@/components/ui/Decor';
 import { formatLongDateDE } from '@/lib/date-format';
+import DecorationGoo from '@/components/decoration/DecorationGoo';
+import DecorationAurora from '@/components/decoration/DecorationAurora';
+import DecorationStars from '@/components/decoration/DecorationStars';
+import DecorationGrain from '@/components/decoration/DecorationGrain';
+import DecorationBauhausShapes from '@/components/decoration/DecorationBauhausShapes';
+import DecorationKineticBg from '@/components/decoration/DecorationKineticBg';
+import DecorationLiquefyBlob from '@/components/decoration/DecorationLiquefyBlob';
 
 /**
- * Hero Variante B — "Split — Text links, Bild rechts"
+ * Hero Variante B — Split Editorial / Documentary / Asymmetric
+ *
+ * Zwei Spalten: Text auf einer Seite, Bild auf der anderen.
+ * Jeder Stil interpretiert das in seiner eigenen Sprache.
+ *
+ * Brutalist nutzt hier kein Marquee (das macht Variant A), sondern
+ * eine 3D-Tilt-Card auf Mouse-Hover.
  */
 
 interface HeroVariantBProps {
@@ -12,173 +24,118 @@ interface HeroVariantBProps {
 }
 
 export default function HeroVariantB({ tokens, content }: HeroVariantBProps) {
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
+
   const eyebrow = (content.eyebrow as string) ?? 'Wir heiraten';
   const dateLong = formatLongDateDE(tokens.wedding_date);
-
-  const gridCols =
-    tokens.dna_spacing === 'airy'
-      ? '0.95fr 1.05fr'
-      : tokens.dna_spacing === 'wide'
-      ? '0.85fr 1.15fr'
-      : '1fr 1fr';
-
-  const padding =
-    tokens.dna_spacing === 'tight'
-      ? 'var(--pad-tight)'
-      : tokens.dna_spacing === 'airy'
-      ? 'var(--pad-airy)'
-      : tokens.dna_spacing === 'wide'
-      ? 'var(--pad-wide)'
-      : 'var(--pad-regular)';
-
-  const textAlignItems = tokens.dna_align === 'center' ? 'center' : 'flex-start';
-
-  const fallbackBg =
-    'radial-gradient(ellipse 60% 50% at 50% 35%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 65%), linear-gradient(160deg, var(--bg-soft) 0%, var(--accent) 100%)';
+  const intro = (content.intro as string) ?? '';
+  const venue = tokens.wedding_location ?? '';
+  const coupleNames = `${tokens.couple_name_1} & ${tokens.couple_name_2}`;
 
   return (
-    <div
-      className="hero-b-grid"
-      style={{
-        display: 'grid',
-        gridTemplateColumns: gridCols,
-        minHeight: 580,
-        width: '100%',
-        background: 'var(--bg)',
-      }}
-    >
+    <div className="hero-b" data-style-hero={style}>
+      {/* Stil-spezifische BG-Decorations (auf der Text-Seite oder global) */}
+      {style === 'editorial' && <DecorationGrain intensity="soft" />}
+      {style === 'organic' && <DecorationGoo intensity="soft" />}
+      {style === 'opulent' && <DecorationAurora />}
+      {style === 'kinetic' && (
+        <DecorationKineticBg text={`${coupleNames} · ${venue || 'Hamburg'}`} rotation={-15} />
+      )}
+      {style === 'bauhaus' && <DecorationBauhausShapes shapes={['circle', 'rect']} />}
+
       {/* === LINKS: Text === */}
-      <div
-        style={{
-          padding,
-          paddingLeft: `clamp(${padding === 'var(--pad-tight)' ? '20px' : '28px'}, 5vw, 64px)`,
-          paddingRight: 'clamp(24px, 4vw, 48px)',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: textAlignItems,
-          textAlign: tokens.dna_align,
-          minWidth: 0,
-        }}
-      >
+      <div className="hero-b-text">
         <p
+          className="hero-b-eyebrow"
           data-editable="hero.eyebrow"
           data-edit-type="text"
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 11,
-            letterSpacing: '0.28em',
-            textTransform: 'uppercase',
-            color: 'var(--ink-soft)',
-            margin: '0 0 18px',
-          }}
         >
           {eyebrow}
         </p>
 
         <h1
+          className="hero-b-title display"
           data-editable="hero.couple_names"
           data-edit-type="text"
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontWeight: 'var(--display-weight)' as unknown as number,
-            fontStyle: 'var(--display-style)' as unknown as 'normal' | 'italic',
-            fontSize: 'clamp(34px, 7vw, 84px)',
-            lineHeight: 0.95,
-            letterSpacing: '-0.02em',
-            color: 'var(--ink)',
-            margin: '0 0 6px',
-            textWrap: 'balance',
-          }}
         >
-          {tokens.couple_name_1}{' '}
-          <span
-            className="amp"
-            style={{
-              fontFamily: 'var(--font-script)',
-              color: 'var(--accent)',
-              fontStyle: 'normal',
-              fontWeight: 500,
-              fontSize: '1.05em',
-              padding: '0 0.05em',
-              display: 'inline-block',
-            }}
-          >
-            &amp;
-          </span>{' '}
-          {tokens.couple_name_2}
+          {tokens.couple_name_1}<br />
+          <em className="amp">&amp;</em> {tokens.couple_name_2}
         </h1>
 
-        <div style={{ margin: '16px 0 18px' }}>
-          <Decor />
+        <div className="hero-b-rule" aria-hidden="true" />
+
+        <div className="hero-b-meta">
+          <p
+            className="hero-b-date"
+            data-editable="hero.date"
+            data-edit-type="date"
+          >
+            {dateLong}
+          </p>
+          {venue && (
+            <p
+              className="hero-b-venue"
+              data-editable="hero.location"
+              data-edit-type="text"
+            >
+              {venue}
+            </p>
+          )}
         </div>
 
-        <p
-          data-editable="hero.date"
-          data-edit-type="date"
-          style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 16,
-            color: 'var(--ink-soft)',
-            margin: '20px 0 0',
-            letterSpacing: '0.04em',
-          }}
-        >
-          {dateLong}
-        </p>
-
-        {tokens.wedding_location && (
+        {intro && (
           <p
-            data-editable="hero.location"
+            className="hero-b-intro"
+            data-editable="hero.intro"
             data-edit-type="text"
-            style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: 14,
-              color: 'var(--muted)',
-              margin: '4px 0 0',
-              letterSpacing: '0.04em',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-            }}
           >
-            <svg
-              viewBox="0 0 12 12"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.4"
-              aria-hidden="true"
-              style={{ width: 12, height: 12, color: 'var(--accent)' }}
-            >
-              <path d="M6 11c2.5-3 4-5 4-7a4 4 0 0 0-8 0c0 2 1.5 4 4 7z" />
-              <circle cx="6" cy="4" r="1.4" />
-            </svg>
-            {tokens.wedding_location}
+            {intro}
           </p>
         )}
+
+        {/* Stars nach dem Text bei Opulent, damit's nicht hinter Text liegt */}
+        {style === 'opulent' && <DecorationStars density="sparse" />}
       </div>
 
-      {/* === RECHTS: Bild als Background-Div (broken-link-safe) === */}
-      <div
-        aria-label={tokens.hero_image_url ? `${tokens.couple_name_1} und ${tokens.couple_name_2}` : undefined}
-        role={tokens.hero_image_url ? 'img' : undefined}
-        data-editable="hero.image"
-        data-edit-type="image"
-        style={{
-          position: 'relative',
-          overflow: 'hidden',
-          aspectRatio: '4 / 5',
-          width: '100%',
-          alignSelf: 'stretch',
-          height: '100%',
-          backgroundImage: tokens.hero_image_url
-            ? `url(${tokens.hero_image_url}), ${fallbackBg}`
-            : fallbackBg,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          filter: tokens.hero_image_url ? 'var(--img-filter)' : 'none',
-        }}
-      />
+      {/* === RECHTS: Bild === */}
+      <div className="hero-b-image-col">
+        {style === 'liquefy' ? (
+          <DecorationLiquefyBlob size="lg" shape="circle">
+            <div
+              className="hero-b-liquefy-img"
+              aria-label={coupleNames}
+              role="img"
+              data-editable="hero.image"
+              data-edit-type="image"
+            />
+          </DecorationLiquefyBlob>
+        ) : (
+          <>
+            {tokens.hero_image_url && (
+              <div
+                className="hero-b-image"
+                aria-label={coupleNames}
+                role="img"
+                data-editable="hero.image"
+                data-edit-type="image"
+              />
+            )}
+            {/* Stil-spezifische Overlay-Captions */}
+            {style === 'mono' && (
+              <div className="hero-b-image-caption">
+                <span>fig. 01 · {tokens.couple_name_1.toLowerCase()} &amp; {tokens.couple_name_2.toLowerCase()}</span>
+                <span>{venue || 'Hamburg'}</span>
+              </div>
+            )}
+            {style === 'editorial' && (
+              <div className="hero-b-image-caption">
+                Pl. 01 · {tokens.couple_name_1[0]} &amp; {tokens.couple_name_2[0]}
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }

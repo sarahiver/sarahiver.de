@@ -1,163 +1,99 @@
-# Decoration Components — Phase 2.1
+# Hero Refactor v2 — 8 Stile × 3 Variants = 24 Renderings
 
-8 wiederverwendbare Decoration-Komponenten als Bausteine für die Stil-spezifischen Bereich-Renderings.
+Erste komplette Bereich-Migration auf das neue Design-System.
 
 ## Was hier drin ist
 
 ```
-src/components/decoration/
-├── DecorationGoo.tsx              ← Organic (5 driftende Goo-Blobs)
-├── DecorationAurora.tsx           ← Opulent (radial-gradient Aurora)
-├── DecorationStars.tsx            ← Opulent (Gold-Sprenkel-Pattern)
-├── DecorationMarquee.tsx          ← Brutalist (Endless Marquee + optional 3D-Z-Tilt)
-├── DecorationKineticBg.tsx        ← Kinetic (Diagonal -15° Marquee Background)
-├── DecorationBauhausShapes.tsx    ← Bauhaus (Circle + Rect + Triangle)
-├── DecorationGrain.tsx            ← Editorial + Organic (Film-Grain-Overlay)
-└── DecorationLiquefyBlob.tsx      ← Liquefy (Acid-Melt-Wrapper)
+src/components/bereiche/Hero/
+├── HeroVariantA.tsx        ← Centered Statement / Bento / Marquee
+├── HeroVariantB.tsx        ← Split Editorial / Documentary
+└── HeroVariantC.tsx        ← Full Bleed / Cinematic / Inverted
 
 src/app/
-└── decoration-extras.css          ← AN globals.css anhängen (Goo-Blob-Positionen)
+└── hero-v2.css             ← AN globals.css anhängen
 ```
 
 ## Installation
 
-1. **Alle .tsx-Files** nach `src/components/decoration/` kopieren (Folder ist nach Foundation-Migration bereits da, enthält schon `DecorationFilters.tsx`)
-2. **`decoration-extras.css`** Inhalt ans **Ende** deiner bestehenden `src/app/globals.css` anhängen (nach dem v2-globals-append-Block)
+1. **Drei Hero-Komponenten ersetzen** in `src/components/bereiche/Hero/`
+2. **`hero-v2.css`** Inhalt ans Ende von `src/app/globals.css` anhängen (nach decoration-extras.css)
 
-## Verwendung in Bereich-Komponenten
+## Was diese Architektur leistet
 
-Beispiel-Pattern, wie eine Hero-Variant die Decorations konditional einsetzt:
+Anstatt 24 separate Komponenten zu bauen, gibt es nur **3 React-Komponenten** — eine pro Variant. Jede Komponente:
 
-```tsx
-import DecorationGoo from '@/components/decoration/DecorationGoo';
-import DecorationAurora from '@/components/decoration/DecorationAurora';
-import DecorationStars from '@/components/decoration/DecorationStars';
-import DecorationGrain from '@/components/decoration/DecorationGrain';
-import DecorationBauhausShapes from '@/components/decoration/DecorationBauhausShapes';
-import DecorationMarquee from '@/components/decoration/DecorationMarquee';
-import DecorationKineticBg from '@/components/decoration/DecorationKineticBg';
-import DecorationLiquefyBlob from '@/components/decoration/DecorationLiquefyBlob';
+- Liest `start_style_id` aus tokens
+- Rendert ein **gemeinsames HTML-Skelett** mit semantischen Klassen (`.hero-a`, `.hero-b-title`, etc.)
+- Bindet **konditional Decoration-Subkomponenten** ein je Stil
+- Übergibt den Stil über `data-style-hero="..."` Attribute
 
-export default function HeroVariantA({ tokens, content }) {
-  const style = tokens.start_style_id;
-  const coupleNames = `${tokens.couple_name_1} & ${tokens.couple_name_2}`;
-  
-  return (
-    <div className="hero-a" data-style-hero={style}>
-      {/* Stil-spezifische Background-Decorations */}
-      {style === 'editorial' && <DecorationGrain />}
-      {style === 'organic'   && <DecorationGoo />}
-      {style === 'opulent'   && (
-        <>
-          <DecorationAurora />
-          <DecorationStars />
-        </>
-      )}
-      {style === 'kinetic'   && (
-        <DecorationKineticBg 
-          text={`${coupleNames} Wedding Hamburg ${formattedDate}`}
-        />
-      )}
-      {style === 'bauhaus'   && <DecorationBauhausShapes />}
-      
-      {/* Liquefy: Bild im Wrapper */}
-      {style === 'liquefy' ? (
-        <DecorationLiquefyBlob size="lg" shape="circle">
-          <div 
-            className="liquefy-blob-img"
-            style={{ backgroundImage: 'var(--img-square)', backgroundSize: 'cover' }}
-          />
-        </DecorationLiquefyBlob>
-      ) : (
-        <img src={tokens.hero_image_url} alt="" />
-      )}
-      
-      {/* Brutalist: Marquee als Hauptkomposition */}
-      {style === 'brutalist' && (
-        <DecorationMarquee 
-          text={coupleNames}
-          tilt="3d"
-          fontSize="clamp(100px, 16vw, 240px)"
-        />
-      )}
-      
-      <div className="hero-a-content">
-        <h1 className="display">{coupleNames}</h1>
-        {/* ... gemeinsamer Content */}
-      </div>
-    </div>
-  );
-}
-```
-
-## Props-Übersicht
-
-### DecorationGoo
-- `intensity?: 'soft' | 'normal'` (Default: normal — 5 Blobs)
-- `zIndex?: number` (Default: 0)
-
-### DecorationAurora
-- `intensity?: 'soft' | 'normal' | 'strong'`
-- `blendMode?: 'normal' | 'screen' | 'overlay'` (für Bleed-Layouts auf Bild)
-- `zIndex?: number`
-
-### DecorationStars
-- `density?: 'sparse' | 'normal' | 'dense'` (6 / 10 / 16 Stars)
-- `zIndex?: number`
-
-### DecorationMarquee
-- `text: string` (Pflicht)
-- `speed?: number` (sek pro Loop, default 22)
-- `direction?: 'normal' | 'reverse'`
-- `tilt?: 'none' | '3d'` (für Brutalist-Z-Tilt)
-- `fontSize?: string`
-- `separator?: string` (Default ` — `)
-
-### DecorationKineticBg
-- `text: string` (Pflicht)
-- `rotation?: number` (deg, default -15)
-- `speed?: number` (sek, default 18)
-- `opacity?: number` (default 0.1)
-- `fontSize?: string`
-- `topPercent?: number` (vertikale Position, default 40)
-
-### DecorationBauhausShapes
-- `shapes?: ('circle' | 'rect' | 'triangle')[]` (Default: alle drei)
-- `variant?: 'standard' | 'mirror'` (gespiegelte Komposition)
-- `zIndex?: number`
-
-### DecorationGrain
-- `intensity?: 'soft' | 'normal' | 'strong'`
-- `blendMode?: 'multiply' | 'overlay' | 'screen'`
-- `zIndex?: number` (Default 1)
-
-### DecorationLiquefyBlob
-- `children: ReactNode` (was verflüssigt wird)
-- `size?: 'sm' | 'md' | 'lg'` (320 / 420 / 520 px)
-- `shape?: 'circle' | 'square' | 'free'`
-
-## Wichtig: Z-Index-Hierarchie
-
-Decorations sitzen standardmäßig auf `zIndex: 0` als Background. Der Content der Bereich-Komponente muss auf `position: relative; z-index: 2;` stehen, damit er drüber liegt:
+Den schweren Lift macht **CSS in `hero-v2.css`**. Pro Variant gibt es 8 Stil-Blöcke:
 
 ```css
-.hero-a-content {
-  position: relative;
-  z-index: 2;
-}
+.hero-a[data-style-hero="editorial"] { /* Bento-Cover */ }
+.hero-a[data-style-hero="brutalist"] { /* Marquee + 3D-Card */ }
+.hero-a[data-style-hero="organic"]   { /* Goo-Blob-Komposition */ }
+/* ... */
 ```
 
-Aurora unter Stars: Aurora auf `zIndex: 0`, Stars auf `zIndex: 1`. Beide unter Content `zIndex: 2`.
+## Was sich pro Variant unterscheidet
 
-## Performance-Hinweise
+| Variant | Layout-DNA | Beispiel pro Stil |
+|---|---|---|
+| **A** | Centered / Statement | Editorial: Bento mit Bild + Text · Brutalist: 3D-Marquee + Photo-Card · Organic: Blob-Mask-Portrait · Mono: Bento mit Bild + Info-Cells · Opulent: Gold-Frame-Card · Liquefy: 2-Col mit Liquid-Mercury-Bild · Kinetic: Tilted-Photo + große Display-Typo · Bauhaus: Photo mit Navy-Border + Display |
+| **B** | Split | Bild auf einer Seite, Text auf der anderen. Pro Stil andere Bild-Behandlung (Editorial: Magazine, Brutalist: Hard-Border, Organic: Blob-Mask, Mono: Photo-Caption, Opulent: Gold-Frame, Liquefy: Liquid-Mercury, Kinetic: Yellow-Shadow-Tilt, Bauhaus: Navy-Border) |
+| **C** | Full Bleed | Vollformat-Bild als Background, Text als Overlay. Brutalist: Counter-Marquees + S/W-Bild. Liquefy: Bild durch Acid-Melt-Filter. Bauhaus: Asymmetrisches Bild + Geometric Shapes. |
 
-- `DecorationLiquefyBlob` ist der teuerste Effekt (SVG-Displacement mit scale=100). Pro Hero maximal 1 Instanz, nicht in jeden Bereich packen.
-- `DecorationGoo` läuft mit `filter: url(#org-goo)` — auch teuer, aber okay. Pro Bereich 1 Instanz.
-- `DecorationMarquee` und `DecorationKineticBg` sind günstig (reine CSS-Transform-Animationen).
-- `prefers-reduced-motion: reduce` deaktiviert alle Animationen (in globals-append.css definiert).
+## Datenkompatibilität
 
-## Was ALS NÄCHSTES kommt
+Die Komponenten lesen exakt die gleichen Felder wie vorher:
+- `tokens.couple_name_1`, `tokens.couple_name_2`
+- `tokens.wedding_date`, `tokens.wedding_location`
+- `tokens.hero_image_url`
+- `tokens.start_style_id` (NEU: bestimmt das Rendering)
+- `content.eyebrow`
+- `content.intro` (NEU verwendet in Variant B)
 
-Nach diesem ZIP:
-- **Hero-Refactor** auf das neue 8-Stile-System (`HeroVariantA/B/C.tsx`) — nutzt all diese Decorations
-- Wir bauen 1 Variant zuerst, du testest live, dann B+C
+Keine DB-Änderung nötig — alle Daten kommen aus den bestehenden Spalten.
+
+## Editor-Integration
+
+Alle editierbaren Felder behalten ihre `data-editable` und `data-edit-type` Attribute, damit das Dashboard-Inline-Editing weiter funktioniert.
+
+## Was du erwarten kannst
+
+Nach Deployment:
+- Alle 4 bestehenden Hochzeitsseiten (alle auf `editorial` durch die Migration gemappt) zeigen die neue Editorial-Hero-Komposition
+- Du kannst im Dashboard zu anderen Stilen wechseln und sehen, wie sich der Hero radikal anders rendert
+- Variants A/B/C wechseln zwischen Centered/Split/Bleed-Layouts
+
+## Bekannte Limitierungen / Tradeoffs
+
+- **Variant C Liquefy** filtert das Vollformat-Bild durch `#brutal-melt` — das kann auf schwächeren Geräten ruckeln. Wenn problematisch, fallen wir auf eine `<DecorationLiquefyBlob>` als Center-Element zurück.
+- **Variant C Opulent** nutzt animated `background-clip: text` Gradient — funktioniert in Chrome/Firefox/Safari, aber nicht in alten Browsern (graceful fallback: text in `var(--ink)`).
+- **Mouse-Tracking 3D-Tilt** (aus dem Mockup für Brutalist B / Opulent B) ist hier **noch nicht aktiviert**. Wenn du das willst, brauchen wir ein 'use client' Wrapper-Component. Sag Bescheid, dann ergänze ich das gezielt.
+
+## Was als nächstes ansteht
+
+Nach Hero kommen 14 weitere Bereiche. Vorschlag-Reihenfolge nach Wichtigkeit:
+
+1. RSVP (Kern-Funktion)
+2. Countdown
+3. Lovestory
+4. Gallery
+5. Timeline
+6. FAQ
+7. WeddingABC
+8. Witnesses
+9. Accommodations
+10. Directions
+11. Gifts
+12. Guestbook
+13. Musicwishes
+14. PhotoUpload
+
+Bei jedem Bereich folgen wir der gleichen Architektur:
+- 3 Komponenten (A/B/C)
+- HTML-Skelett mit semantischen Klassen
+- CSS-Append mit 8 Stil-Blöcken pro Variant
