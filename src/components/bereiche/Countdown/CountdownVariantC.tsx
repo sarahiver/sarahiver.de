@@ -5,13 +5,14 @@ import { useCountdown } from './use-countdown';
 import { formatDateStamp } from '@/lib/countdown';
 import { parseWallClock } from '@/lib/date-format';
 import { COUNTDOWN_DEFAULTS } from '@/lib/defaults';
-import Decor from '@/components/ui/Decor';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 
 /**
  * Countdown Variante C — Zeitstrahl (Horizontale Progress-Bars)
  *
  * Fünf Bars untereinander, jede zeigt den verbleibenden Anteil ihrer Skala.
- * Sekunden-Bar tickt jede Sekunde sichtbar.
+ * Pro Stil unterschiedlich gestylt (Brutalist 3px Borders, Mono dünne
+ * Hairlines, Opulent Gold, Organic rounded, etc.) via CSS-Variablen.
  */
 
 interface Props {
@@ -28,166 +29,57 @@ export default function CountdownVariantC({ tokens, content }: Props) {
   const footer = (content.footer as string) ?? COUNTDOWN_DEFAULTS.footer;
   const pastText = (content.past_text as string) ?? COUNTDOWN_DEFAULTS.past_text;
 
-  const styleHint = (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'klassisch';
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
 
-  const padding =
-    tokens.dna_spacing === 'tight' ? 'var(--pad-tight)' :
-    tokens.dna_spacing === 'airy' ? 'var(--pad-airy)' :
-    tokens.dna_spacing === 'wide' ? 'var(--pad-wide)' :
-    'var(--pad-regular)';
-
-  // Skalen pro Unit
   const bars = [
-    { key: 'months', label: 'Monate', short: 'M', value: cd.months, max: 12 },
-    { key: 'days', label: 'Tage', short: 'T', value: cd.days, max: cd.daysInCurrentMonth },
-    { key: 'hours', label: 'Stunden', short: 'H', value: cd.hours, max: 24 },
-    { key: 'minutes', label: 'Minuten', short: 'Min', value: cd.minutes, max: 60 },
-    { key: 'seconds', label: 'Sekunden', short: 'S', value: cd.seconds, max: 60 },
+    { key: 'months',  label: 'Monate',   short: 'M',   value: cd.months,  max: 12 },
+    { key: 'days',    label: 'Tage',     short: 'T',   value: cd.days,    max: cd.daysInCurrentMonth },
+    { key: 'hours',   label: 'Stunden',  short: 'H',   value: cd.hours,   max: 24 },
+    { key: 'minutes', label: 'Minuten',  short: 'Min', value: cd.minutes, max: 60 },
+    { key: 'seconds', label: 'Sekunden', short: 'S',   value: cd.seconds, max: 60 },
   ];
 
-  const barHeight = styleHint === 'minimal' ? 1 : styleHint === 'festlich' ? 12 : 8;
-  const trackHeight = styleHint === 'minimal' ? 1 : barHeight;
-  const barRadius = styleHint === 'modern' ? 0 : styleHint === 'floral' ? 8 : 4;
-
   return (
-    <div
-      style={{
-        padding: `clamp(64px, 8vw, 96px) ${padding}`,
-        textAlign: tokens.dna_align,
-        color: 'var(--ink)',
-      }}
-    >
-      {/* Eyebrow */}
+    <div className="cd cdC-wrap" data-style-countdown={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
+
       <p
+        className="cd-eyebrow"
         data-editable="countdown.eyebrow"
         data-edit-type="text"
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 11,
-          letterSpacing: '0.28em',
-          textTransform: 'uppercase',
-          color: 'var(--muted)',
-          margin: '0 0 16px',
-        }}
       >
         {eyebrow}
       </p>
 
-      <div style={{ marginBottom: 24 }}>
-        <Decor />
-      </div>
-
-      {/* Datums-Stempel */}
-      <div
-        style={{
-          marginBottom: 28,
-          display: 'flex',
-          justifyContent: tokens.dna_align === 'center' ? 'center' : 'flex-start',
-        }}
-      >
-        <span
-          style={{
-            display: 'inline-block',
-            padding: '8px 16px',
-            fontFamily: 'var(--font-mono)',
-            fontSize: 11,
-            letterSpacing: '0.22em',
-            color: 'var(--accent-deep)',
-            border: '1px solid var(--accent)',
-            borderRadius: 2,
-          }}
-        >
-          {formatDateStamp(targetDisplay)}
-        </span>
+      <div className="cd-date-stamp-wrap">
+        <span className="cd-date-stamp">{formatDateStamp(targetDisplay)}</span>
       </div>
 
       {cd.past ? (
-        <p
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(2rem, 5vw, 3rem)',
-            color: 'var(--accent)',
-            margin: 0,
-          }}
-        >
-          {pastText}
-        </p>
+        <p className="cd-past">{pastText}</p>
       ) : (
-        <div
-          style={{
-            maxWidth: 720,
-            margin: '0 auto',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'clamp(14px, 2vw, 22px)',
-          }}
-        >
+        <div className="cdC-bars">
           {bars.map(({ key, label, short, value, max }) => {
             const fillPercent = Math.min(100, Math.max(0, (value / max) * 100));
-            const fillColor = styleHint === 'festlich' ? 'var(--gold)' : 'var(--accent)';
-
             return (
-              <div
-                key={key}
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '80px 1fr 80px',
-                  gap: 12,
-                  alignItems: 'center',
-                }}
-              >
-                {/* Label */}
-                <span
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 11,
-                    letterSpacing: '0.22em',
-                    textTransform: 'uppercase',
-                    color: 'var(--ink-soft)',
-                    textAlign: styleHint === 'modern' ? 'right' : 'left',
-                  }}
-                >
-                  <span className="bar-label-full">{label}</span>
-                  <span className="bar-label-short" style={{ display: 'none' }}>{short}</span>
+              <div key={key} className="cdC-bar-row" data-unit={key}>
+                <span className="cdC-bar-label cd-label">
+                  <span className="cdC-bar-label-full">{label}</span>
+                  <span className="cdC-bar-label-short">{short}</span>
                 </span>
-
-                {/* Track + Fill */}
-                <span
-                  style={{
-                    display: 'block',
-                    width: '100%',
-                    height: trackHeight,
-                    background: 'var(--border-soft)',
-                    borderRadius: barRadius,
-                    position: 'relative',
-                    overflow: 'hidden',
-                  }}
-                >
+                <span className="cdC-bar-track">
                   <span
-                    data-fill={key}
-                    style={{
-                      display: 'block',
-                      width: `${fillPercent}%`,
-                      height: '100%',
-                      background: fillColor,
-                      borderRadius: barRadius,
-                      transition: key === 'seconds' ? 'none' : 'width 0.4s ease-out',
-                    }}
+                    className={`cdC-bar-fill ${key === 'seconds' ? 'is-seconds' : ''}`}
+                    style={{ width: `${fillPercent}%` }}
                   />
                 </span>
-
-                {/* Zahl */}
-                <span
-                  style={{
-                    fontFamily: styleHint === 'minimal' ? 'var(--font-mono)' : 'var(--font-display)',
-                    fontSize: 16,
-                    color: 'var(--ink)',
-                    textAlign: styleHint === 'modern' ? 'left' : 'right',
-                    fontVariantNumeric: 'tabular-nums',
-                  }}
-                >
-                  <span data-num={key}>{value}</span>
-                  <span style={{ color: 'var(--muted)', opacity: 0.6 }}> / {max}</span>
+                <span className="cdC-bar-num">
+                  <span className="cdC-bar-num-value">{value}</span>
+                  <span className="cdC-bar-num-max"> / {max}</span>
                 </span>
               </div>
             );
@@ -197,16 +89,9 @@ export default function CountdownVariantC({ tokens, content }: Props) {
 
       {!cd.past && footer && (
         <p
+          className="cd-footer"
           data-editable="countdown.footer"
           data-edit-type="text"
-          style={{
-            fontFamily: 'var(--font-script)',
-            fontSize: 'clamp(1.5rem, 2.5vw, 2rem)',
-            color: 'var(--accent)',
-            marginTop: 40,
-            marginBottom: 0,
-            fontWeight: 500,
-          }}
         >
           {footer}
         </p>

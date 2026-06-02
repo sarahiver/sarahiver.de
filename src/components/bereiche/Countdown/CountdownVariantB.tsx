@@ -6,15 +6,15 @@ import { useCountdown } from './use-countdown';
 import { formatDateStamp } from '@/lib/countdown';
 import { parseWallClock } from '@/lib/date-format';
 import { COUNTDOWN_DEFAULTS } from '@/lib/defaults';
-import Decor from '@/components/ui/Decor';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 
 /**
  * Countdown Variante B — Split-Flap-Counter
  *
  * Bahnhofs-Lamellen mit echtem 3D-Flip beim Zahlenwechsel.
- * Jede zweistellige Zahl besteht aus 2 Karten (je 1 Ziffer).
- * Bei Wechsel: obere Hälfte klappt nach unten weg (rotateX -90°),
- * untere Hälfte klappt von oben hervor (rotateX 0°).
+ * Flip-Animation BLEIBT bei allen Stilen (das ist die DNA dieses Variants),
+ * aber Look der Karten verändert sich pro Stil (Brutalist hart, Mono dünn,
+ * Opulent gold-rim etc.) via CSS-Variablen.
  */
 
 interface Props {
@@ -34,17 +34,9 @@ function pad2(n: number): string {
   return String(Math.max(0, Math.min(99, n))).padStart(2, '0');
 }
 
-/**
- * Single flip-card — eine Ziffer mit 3D-Flip-Animation.
- *
- * Zeigt aktuelle Ziffer. Bei Wechsel: erzeugt zwei animierte Flap-Hälften
- * (alte Ziffer klappt weg, neue klappt hervor), die nach Animation entfernt werden.
- */
 function FlipCard({ digit, isSeconds }: { digit: string; isSeconds: boolean }) {
   const [current, setCurrent] = useState(digit);
   const [previous, setPrevious] = useState<string | null>(null);
-  // animKey zwingt React, bei jedem Flip die Anim-Divs neu zu mounten,
-  // damit die CSS-Animation tatsächlich neu startet (sonst läuft sie nur einmal).
   const [animKey, setAnimKey] = useState(0);
   const cleanupTimer = useRef<NodeJS.Timeout | null>(null);
 
@@ -54,9 +46,6 @@ function FlipCard({ digit, isSeconds }: { digit: string; isSeconds: boolean }) {
     setCurrent(digit);
     setAnimKey((k) => k + 1);
 
-    // Cleanup nach Animation (Dauer muss zu CSS-Animationen passen)
-    // Normal: top 280ms + bot delay 140ms + bot 280ms = 420ms → +20ms buffer
-    // Seconds: top 180ms + bot delay 90ms + bot 180ms = 270ms → +20ms buffer
     if (cleanupTimer.current) clearTimeout(cleanupTimer.current);
     const totalDuration = isSeconds ? 290 : 440;
     cleanupTimer.current = setTimeout(() => {
@@ -70,20 +59,13 @@ function FlipCard({ digit, isSeconds }: { digit: string; isSeconds: boolean }) {
 
   return (
     <div className="flip-card">
-      {/* Statische obere Hälfte zeigt NEUE Ziffer (wird beim Flip enthüllt) */}
       <div className="flip-half flip-top">
         <div className="flip-digit">{current}</div>
       </div>
-
-      {/* Statische untere Hälfte zeigt ALTE Ziffer (oder neue wenn keine Animation) */}
       <div className="flip-half flip-bottom">
         <div className="flip-digit">{previous ?? current}</div>
       </div>
-
-      {/* Trennlinie */}
       <div className="flip-mid" />
-
-      {/* Animierte Flaps (nur während Wechsel) — key erzwingt Remount bei jedem Tick */}
       {previous !== null && (
         <Fragment key={animKey}>
           <div className={`flip-half flip-top flip-anim flip-anim-top ${isSeconds ? 'is-seconds' : ''}`}>
@@ -99,9 +81,7 @@ function FlipCard({ digit, isSeconds }: { digit: string; isSeconds: boolean }) {
 }
 
 export default function CountdownVariantB({ tokens, content }: Props) {
-  // echtes Date für Countdown-Berechnung (Differenz zu now)
   const target = new Date(tokens.wedding_date);
-  // SSR-stabile Date für die Anzeige des Datums-Stempels
   const targetDisplay = parseWallClock(tokens.wedding_date) ?? target;
   const cd = useCountdown(target);
 
@@ -109,11 +89,8 @@ export default function CountdownVariantB({ tokens, content }: Props) {
   const footer = (content.footer as string) ?? COUNTDOWN_DEFAULTS.footer;
   const pastText = (content.past_text as string) ?? COUNTDOWN_DEFAULTS.past_text;
 
-  const padding =
-    tokens.dna_spacing === 'tight' ? 'var(--pad-tight)' :
-    tokens.dna_spacing === 'airy' ? 'var(--pad-airy)' :
-    tokens.dna_spacing === 'wide' ? 'var(--pad-wide)' :
-    'var(--pad-regular)';
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
 
   const values = {
     months: cd.months,
@@ -124,109 +101,38 @@ export default function CountdownVariantB({ tokens, content }: Props) {
   } as const;
 
   return (
-    <div
-      style={{
-        padding: `clamp(64px, 8vw, 96px) ${padding}`,
-        textAlign: tokens.dna_align,
-        color: 'var(--ink)',
-        perspective: '480px',
-      }}
-    >
-      {/* Eyebrow */}
+    <div className="cd cdB-wrap" data-style-countdown={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
+
       <p
+        className="cd-eyebrow"
         data-editable="countdown.eyebrow"
         data-edit-type="text"
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 11,
-          letterSpacing: '0.28em',
-          textTransform: 'uppercase',
-          color: 'var(--muted)',
-          margin: '0 0 16px',
-        }}
       >
         {eyebrow}
       </p>
 
-      <div style={{ marginBottom: 24 }}>
-        <Decor />
-      </div>
-
-      {/* Datums-Stempel */}
-      <div
-        style={{
-          marginBottom: 28,
-          display: 'flex',
-          justifyContent: tokens.dna_align === 'center' ? 'center' : 'flex-start',
-        }}
-      >
-        <span
-          style={{
-            display: 'inline-block',
-            padding: '8px 16px',
-            fontFamily: 'var(--font-mono)',
-            fontSize: 11,
-            letterSpacing: '0.22em',
-            color: 'var(--accent-deep)',
-            border: '1px solid var(--accent)',
-            borderRadius: 2,
-          }}
-        >
-          {formatDateStamp(targetDisplay)}
-        </span>
+      <div className="cd-date-stamp-wrap">
+        <span className="cd-date-stamp">{formatDateStamp(targetDisplay)}</span>
       </div>
 
       {cd.past ? (
-        <p
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(2rem, 5vw, 3rem)',
-            color: 'var(--accent)',
-            margin: 0,
-          }}
-        >
-          {pastText}
-        </p>
+        <p className="cd-past">{pastText}</p>
       ) : (
-        <div
-          className="cd-flap-row"
-          style={{
-            display: 'flex',
-            justifyContent: tokens.dna_align === 'center' ? 'center' : 'flex-start',
-            gap: 'clamp(0.8rem, 2vw, 1.6rem)',
-            flexWrap: 'wrap',
-            alignItems: 'flex-start',
-          }}
-        >
+        <div className="cdB-row">
           {UNITS.map(({ key, label }) => {
             const digits = pad2(values[key as keyof typeof values]);
             const isSeconds = key === 'seconds';
             return (
-              <div
-                key={key}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: 10,
-                }}
-              >
-                <div style={{ display: 'flex', gap: 4 }}>
+              <div key={key} className="cdB-unit">
+                <div className="cdB-cards">
                   <FlipCard digit={digits[0]} isSeconds={isSeconds} />
                   <FlipCard digit={digits[1]} isSeconds={isSeconds} />
                 </div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 10,
-                    letterSpacing: '0.22em',
-                    textTransform: 'uppercase',
-                    color: 'var(--muted)',
-                    marginTop: 4,
-                  }}
-                >
-                  {label}
-                </div>
+                <div className="cd-label">{label}</div>
               </div>
             );
           })}
@@ -235,16 +141,9 @@ export default function CountdownVariantB({ tokens, content }: Props) {
 
       {!cd.past && footer && (
         <p
+          className="cd-footer"
           data-editable="countdown.footer"
           data-edit-type="text"
-          style={{
-            fontFamily: 'var(--font-script)',
-            fontSize: 'clamp(1.5rem, 2.5vw, 2rem)',
-            color: 'var(--accent)',
-            marginTop: 40,
-            marginBottom: 0,
-            fontWeight: 500,
-          }}
         >
           {footer}
         </p>

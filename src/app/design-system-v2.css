@@ -2701,3 +2701,459 @@
   .styled-bg-bauhaus-square { width: 50px; height: 50px; }
   .styled-bg-bauhaus-circle { width: 60px; height: 60px; }
 }
+
+/* ============================================================
+   DESIGN SYSTEM v2 — COUNTDOWN STYLES PRO STIL
+   ============================================================
+   CSS-Variable-Pattern wie RSVP:
+   1. Defaults auf .cd (Number-Font, Label-Look, Date-Stamp, Footer)
+   2. Generic Selektoren konsumieren die Variablen
+   3. Pro Stil NUR Variable-Overrides + ein paar Layout-Tweaks
+
+   ORGANIC: Numbers bleiben STATISCH (kein wabble), damit's nicht zu unruhig
+   wird. Charakter kommt aus rounded Container, Script-Labels, soft borders.
+============================================================ */
+
+/* ============================================================
+   1) DEFAULTS auf .cd
+   ============================================================ */
+.cd {
+  position: relative;
+  padding: var(--cd-section-pad);
+  text-align: center;
+  color: var(--ink);
+
+  --cd-section-pad: clamp(64px, 8vw, 96px) clamp(24px, 5vw, 60px);
+
+  /* Eyebrow */
+  --cd-eyebrow-font: var(--font-mono);
+  --cd-eyebrow-size: 11px;
+  --cd-eyebrow-tracking: 0.28em;
+  --cd-eyebrow-color: var(--muted, rgba(0, 0, 0, 0.55));
+  --cd-eyebrow-transform: uppercase;
+
+  /* Numbers (das Zentrum) */
+  --cd-num-font: var(--font-display);
+  --cd-num-size: clamp(3.5rem, 9vw, 6rem);
+  --cd-num-weight: 400;
+  --cd-num-style: normal;
+  --cd-num-color: var(--ink);
+  --cd-num-letter-spacing: -0.02em;
+  --cd-num-bg: transparent;
+  --cd-num-border: 0;
+  --cd-num-pad: 0;
+  --cd-num-radius: 0;
+  --cd-num-shadow: none;
+
+  /* Labels unter Numbers */
+  --cd-label-font: var(--font-mono);
+  --cd-label-size: 10px;
+  --cd-label-tracking: 0.22em;
+  --cd-label-transform: uppercase;
+  --cd-label-color: var(--muted, rgba(0, 0, 0, 0.55));
+
+  /* Date-Stamp (B, C) */
+  --cd-stamp-bg: transparent;
+  --cd-stamp-color: var(--accent-deep);
+  --cd-stamp-border: 1px solid var(--accent);
+  --cd-stamp-radius: 2px;
+  --cd-stamp-font: var(--font-mono);
+  --cd-stamp-pad: 8px 16px;
+
+  /* Footer */
+  --cd-footer-font: var(--font-script);
+  --cd-footer-size: clamp(1.5rem, 2.5vw, 2rem);
+  --cd-footer-color: var(--accent);
+  --cd-footer-weight: 500;
+  --cd-footer-style: normal;
+
+  /* Variant A grid spacing */
+  --cd-grid-gap: clamp(2rem, 5vw, 5rem);
+
+  /* Container für Group-Animation (Organic etc.) */
+  --cd-group-bg: transparent;
+  --cd-group-pad: 0;
+  --cd-group-radius: 0;
+  --cd-group-anim: none;
+}
+
+/* Content über Decorations */
+.cd > *:not([class*="styled-bg-"]):not([class*="Decoration"]) {
+  position: relative;
+  z-index: 5;
+}
+
+/* ============================================================
+   2) GENERIC RULES
+   ============================================================ */
+.cd-eyebrow {
+  font-family: var(--cd-eyebrow-font);
+  font-size: var(--cd-eyebrow-size);
+  letter-spacing: var(--cd-eyebrow-tracking);
+  color: var(--cd-eyebrow-color);
+  text-transform: var(--cd-eyebrow-transform);
+  margin: 0 0 24px;
+}
+
+.cd-num {
+  font-family: var(--cd-num-font);
+  font-size: var(--cd-num-size);
+  font-weight: var(--cd-num-weight);
+  font-style: var(--cd-num-style);
+  color: var(--cd-num-color);
+  letter-spacing: var(--cd-num-letter-spacing);
+  background: var(--cd-num-bg);
+  border: var(--cd-num-border);
+  padding: var(--cd-num-pad);
+  border-radius: var(--cd-num-radius);
+  box-shadow: var(--cd-num-shadow);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
+}
+
+.cd-label {
+  font-family: var(--cd-label-font);
+  font-size: var(--cd-label-size);
+  letter-spacing: var(--cd-label-tracking);
+  text-transform: var(--cd-label-transform);
+  color: var(--cd-label-color);
+  margin-top: 8px;
+}
+
+.cd-label-idx {
+  margin-right: 6px;
+  opacity: 0.55;
+}
+
+.cd-date-stamp-wrap {
+  margin-bottom: 28px;
+  display: flex;
+  justify-content: center;
+}
+
+.cd-date-stamp {
+  display: inline-block;
+  padding: var(--cd-stamp-pad);
+  font-family: var(--cd-stamp-font);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--cd-stamp-color);
+  background: var(--cd-stamp-bg);
+  border: var(--cd-stamp-border);
+  border-radius: var(--cd-stamp-radius);
+}
+
+.cd-past {
+  font-family: var(--cd-num-font);
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: var(--accent);
+  margin: 0;
+}
+
+.cd-footer {
+  font-family: var(--cd-footer-font);
+  font-size: var(--cd-footer-size);
+  color: var(--cd-footer-color);
+  font-weight: var(--cd-footer-weight);
+  font-style: var(--cd-footer-style);
+  margin: 40px 0 0;
+}
+
+/* Variant A — Grid */
+.cdA-grid {
+  display: flex;
+  justify-content: center;
+  gap: var(--cd-grid-gap);
+  flex-wrap: wrap;
+  background: var(--cd-group-bg);
+  padding: var(--cd-group-pad);
+  border-radius: var(--cd-group-radius);
+  animation: var(--cd-group-anim);
+}
+.cdA-unit {
+  text-align: center;
+  min-width: 80px;
+}
+
+/* Variant B — Flap row */
+.cdB-row {
+  display: flex;
+  justify-content: center;
+  gap: clamp(0.8rem, 2vw, 1.6rem);
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.cdB-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.cdB-cards {
+  display: flex;
+  gap: 4px;
+}
+
+/* Variant C — Bars */
+.cdC-bars {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 2vw, 22px);
+}
+.cdC-bar-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 80px;
+  gap: 12px;
+  align-items: center;
+}
+.cdC-bar-label {
+  text-align: left;
+  margin-top: 0;
+}
+.cdC-bar-label-short { display: none; }
+.cdC-bar-track {
+  display: block;
+  width: 100%;
+  height: var(--cdC-bar-height, 8px);
+  background: var(--border-soft, rgba(0, 0, 0, 0.08));
+  border-radius: var(--cdC-bar-radius, 4px);
+  position: relative;
+  overflow: hidden;
+}
+.cdC-bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--cdC-bar-fill, var(--accent));
+  border-radius: var(--cdC-bar-radius, 4px);
+  transition: width 0.4s ease-out;
+}
+.cdC-bar-fill.is-seconds {
+  transition: none;
+}
+.cdC-bar-num {
+  font-family: var(--cd-num-font);
+  font-size: 16px;
+  color: var(--ink);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.cdC-bar-num-max {
+  color: var(--muted, rgba(0, 0, 0, 0.5));
+  opacity: 0.6;
+}
+
+/* ============================================================
+   3) PRO STIL — Variable-Overrides
+   ============================================================ */
+
+/* EDITORIAL — Magazine, Hairlines */
+.cd[data-style-countdown="editorial"] {
+  --cd-num-font: var(--font-display);
+  --cd-num-weight: 350;
+  --cd-num-letter-spacing: -0.03em;
+  --cd-eyebrow-tracking: 0.3em;
+  --cd-eyebrow-color: var(--accent);
+}
+
+/* BRUTALIST — Yellow-Block Numbers, harte Borders */
+.cd[data-style-countdown="brutalist"] {
+  --cd-num-font: var(--font-display);
+  --cd-num-weight: 700;
+  --cd-num-size: clamp(3rem, 8vw, 5.5rem);
+  --cd-num-bg: var(--accent);
+  --cd-num-color: var(--ink);
+  --cd-num-pad: 12px 18px;
+  --cd-num-border: 3px solid var(--ink);
+  --cd-num-shadow: 8px 8px 0 var(--ink);
+  --cd-num-letter-spacing: -0.04em;
+  --cd-eyebrow-color: var(--ink);
+  --cd-grid-gap: clamp(1.5rem, 3vw, 3rem);
+  --cd-label-font: var(--font-mono);
+  --cd-label-color: var(--ink);
+  --cd-stamp-border: 3px solid var(--ink);
+  --cd-stamp-bg: var(--accent);
+  --cd-stamp-color: var(--ink);
+  --cd-stamp-radius: 0;
+  --cd-footer-font: var(--font-display);
+  --cd-footer-color: var(--ink);
+  --cd-footer-weight: 700;
+  --cd-footer-style: normal;
+  --cdC-bar-height: 16px;
+  --cdC-bar-radius: 0;
+  --cdC-bar-fill: var(--accent);
+}
+.cd[data-style-countdown="brutalist"] .cdC-bar-track {
+  border: 2px solid var(--ink);
+  background: var(--bg);
+}
+
+/* ORGANIC — Numbers STATISCH, nur Container wabbelt subtil */
+.cd[data-style-countdown="organic"] {
+  --cd-num-font: var(--font-display);
+  --cd-num-style: italic;
+  --cd-num-weight: 400;
+  --cd-num-color: var(--accent-deep);
+  --cd-eyebrow-font: var(--font-script);
+  --cd-eyebrow-size: 24px;
+  --cd-eyebrow-tracking: 0;
+  --cd-eyebrow-transform: none;
+  --cd-eyebrow-color: var(--accent);
+  --cd-label-font: var(--font-script);
+  --cd-label-size: 16px;
+  --cd-label-tracking: 0;
+  --cd-label-transform: none;
+  --cd-label-color: var(--accent);
+  --cd-group-bg: var(--bg-soft);
+  --cd-group-pad: clamp(20px, 4vw, 40px);
+  --cd-group-radius: 47% 53% 56% 44% / 5% 5% 5% 5%;
+  --cd-group-anim: org-container-breath 8s ease-in-out infinite;
+  --cd-stamp-radius: 100px;
+  --cd-stamp-border: 1.5px solid var(--accent);
+  --cd-footer-font: var(--font-script);
+  --cdC-bar-radius: 8px;
+}
+@keyframes org-container-breath {
+  /* SUBTIL: nur 1% Scale, kein Wabble der Inhalte */
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.01); }
+}
+
+/* MONO — JetBrains, Terminal-Look */
+.cd[data-style-countdown="mono"] {
+  --cd-num-font: var(--font-mono);
+  --cd-num-weight: 300;
+  --cd-num-letter-spacing: -0.04em;
+  --cd-num-size: clamp(3rem, 7vw, 5rem);
+  --cd-eyebrow-font: var(--font-mono);
+  --cd-eyebrow-color: var(--ink);
+  --cd-label-font: var(--font-mono);
+  --cd-label-color: rgba(0, 0, 0, 0.55);
+  --cd-stamp-radius: 0;
+  --cd-stamp-font: var(--font-mono);
+  --cd-stamp-border: 1px solid rgba(0, 0, 0, 0.2);
+  --cd-footer-font: var(--font-mono);
+  --cd-footer-style: normal;
+  --cd-footer-size: 14px;
+  --cdC-bar-radius: 0;
+  --cdC-bar-height: 1px;
+}
+
+/* OPULENT — Cormorant, Gold-Frames */
+.cd[data-style-countdown="opulent"] {
+  --cd-num-font: 'Cormorant SC', serif;
+  --cd-num-weight: 300;
+  --cd-num-color: var(--gold, var(--accent));
+  --cd-num-letter-spacing: 0.02em;
+  --cd-eyebrow-font: 'Italiana', serif;
+  --cd-eyebrow-size: 12px;
+  --cd-eyebrow-tracking: 0.5em;
+  --cd-eyebrow-color: var(--gold, var(--accent));
+  --cd-label-font: 'Italiana', serif;
+  --cd-label-size: 11px;
+  --cd-label-tracking: 0.35em;
+  --cd-label-color: var(--gold, var(--accent));
+  --cd-stamp-radius: 0;
+  --cd-stamp-border: 1px solid var(--gold, var(--accent));
+  --cd-stamp-color: var(--gold, var(--accent));
+  --cd-footer-font: 'Crimson Pro', serif;
+  --cd-footer-style: italic;
+  --cdC-bar-fill: var(--gold, var(--accent));
+}
+
+/* LIQUEFY — Acid-Mint Glow */
+.cd[data-style-countdown="liquefy"] {
+  --cd-num-font: 'Fraunces', serif;
+  --cd-num-style: italic;
+  --cd-num-weight: 700;
+  --cd-num-color: var(--accent);
+  --cd-num-letter-spacing: -0.04em;
+  --cd-eyebrow-font: var(--font-mono);
+  --cd-eyebrow-color: var(--accent-deep);
+  --cd-eyebrow-tracking: 0.3em;
+  --cd-label-font: 'Syne', sans-serif;
+  --cd-label-color: var(--accent);
+  --cd-stamp-radius: 16px;
+  --cd-footer-font: 'Fraunces', serif;
+  --cd-footer-style: italic;
+  --cdC-bar-radius: 16px;
+  --cdC-bar-height: 12px;
+}
+
+/* KINETIC — Tilted Numbers, Yellow-Shadow */
+.cd[data-style-countdown="kinetic"] {
+  --cd-num-font: 'Syne', sans-serif;
+  --cd-num-weight: 900;
+  --cd-num-color: var(--ink);
+  --cd-num-letter-spacing: -0.04em;
+  --cd-num-size: clamp(3.5rem, 9vw, 6.5rem);
+  --cd-eyebrow-font: var(--font-mono);
+  --cd-eyebrow-color: var(--accent);
+  --cd-label-font: 'Syne', sans-serif;
+  --cd-label-color: var(--ink);
+  --cd-stamp-radius: 0;
+  --cd-stamp-bg: var(--accent);
+  --cd-stamp-color: var(--ink);
+  --cd-stamp-border: 2px solid var(--ink);
+  --cd-footer-font: 'Syne', sans-serif;
+  --cd-footer-weight: 700;
+  --cdC-bar-radius: 0;
+  --cdC-bar-height: 10px;
+}
+.cd[data-style-countdown="kinetic"] .cdA-unit {
+  transform: rotate(-2deg);
+}
+.cd[data-style-countdown="kinetic"] .cdA-unit:nth-child(2) { transform: rotate(1deg); }
+.cd[data-style-countdown="kinetic"] .cdA-unit:nth-child(3) { transform: rotate(-1deg); }
+.cd[data-style-countdown="kinetic"] .cdA-unit:nth-child(4) { transform: rotate(2deg); }
+.cd[data-style-countdown="kinetic"] .cdA-unit:nth-child(5) { transform: rotate(-2deg); }
+
+/* BAUHAUS — Color-Blocks */
+.cd[data-style-countdown="bauhaus"] {
+  --cd-num-font: 'Syne', sans-serif;
+  --cd-num-weight: 900;
+  --cd-num-color: var(--bg);
+  --cd-num-bg: var(--c-navy, var(--ink));
+  --cd-num-pad: 14px 18px;
+  --cd-num-radius: 0;
+  --cd-num-letter-spacing: -0.02em;
+  --cd-eyebrow-font: var(--font-mono);
+  --cd-eyebrow-color: var(--c-red, var(--accent));
+  --cd-eyebrow-tracking: 0.25em;
+  --cd-label-font: 'Syne', sans-serif;
+  --cd-label-color: var(--c-navy, var(--ink));
+  --cd-stamp-radius: 0;
+  --cd-stamp-bg: var(--c-yellow, var(--accent-deep));
+  --cd-stamp-color: var(--c-navy, var(--ink));
+  --cd-stamp-border: 0;
+  --cd-footer-font: 'Syne', sans-serif;
+  --cd-footer-weight: 700;
+  --cd-footer-color: var(--c-navy, var(--ink));
+  --cdC-bar-radius: 0;
+  --cdC-bar-fill: var(--c-red, var(--accent));
+}
+/* Bauhaus: jede 2. Zahl in roter Farbe (Alternating) */
+.cd[data-style-countdown="bauhaus"] .cdA-unit:nth-child(2) .cd-num,
+.cd[data-style-countdown="bauhaus"] .cdA-unit:nth-child(4) .cd-num {
+  background: var(--c-red, var(--accent));
+}
+.cd[data-style-countdown="bauhaus"] .cdA-unit:nth-child(3) .cd-num {
+  background: var(--c-yellow, var(--accent-deep));
+  color: var(--c-navy, var(--ink));
+}
+
+/* ============================================================
+   Mobile
+   ============================================================ */
+@media (max-width: 700px) {
+  .cd[data-style-countdown="brutalist"] {
+    --cd-num-size: 2.5rem;
+    --cd-num-shadow: 4px 4px 0 var(--ink);
+  }
+  .cdC-bar-row { grid-template-columns: 50px 1fr 70px; gap: 8px; }
+  .cdC-bar-label-full { display: none; }
+  .cdC-bar-label-short { display: inline; }
+  .cd[data-style-countdown="kinetic"] .cdA-unit { transform: none !important; }
+}
