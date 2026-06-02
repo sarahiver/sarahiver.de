@@ -1,0 +1,82 @@
+/* ============================================================
+   DESIGN SYSTEM v2 — DECORATION COMPONENTS CSS
+   Bitte ans Ende der bestehenden src/app/globals.css anhängen,
+   NACH dem v2-globals-append.css-Block.
+   ============================================================ */
+
+/* ============================================================
+   Organic Goo Blobs — Color-Variants + Positions + Animations
+   ============================================================ */
+.org-goo-blob {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.85;
+  will-change: transform;
+  /* Default-Animation, kann pro Blob überschrieben werden */
+  animation: org-drift-a 18s ease-in-out infinite;
+}
+
+.org-goo-blob-1 {
+  width: 380px;
+  height: 380px;
+  background: var(--c-peach, #E8A98F);
+  top: 5%;
+  left: -8%;
+  animation: org-drift-a 18s ease-in-out infinite;
+}
+.org-goo-blob-2 {
+  width: 320px;
+  height: 320px;
+  background: var(--c-sage, #7C8C6C);
+  top: 45%;
+  left: 60%;
+  animation: org-drift-b 22s ease-in-out infinite;
+}
+.org-goo-blob-3 {
+  width: 280px;
+  height: 280px;
+  background: var(--c-coral, #B85C3A);
+  bottom: -5%;
+  left: 35%;
+  opacity: 0.7;
+  animation: org-drift-c 26s ease-in-out infinite;
+}
+.org-goo-blob-4 {
+  width: 220px;
+  height: 220px;
+  background: var(--c-plum, #6B4F5E);
+  top: 15%;
+  right: 5%;
+  opacity: 0.6;
+  animation: org-drift-d 20s ease-in-out infinite;
+}
+.org-goo-blob-5 {
+  width: 180px;
+  height: 180px;
+  background: var(--c-gold, #C9A874);
+  top: 60%;
+  left: 8%;
+  opacity: 0.7;
+  animation: org-drift-a 24s ease-in-out infinite reverse;
+}
+
+/* Bei kleinen Viewports: Blobs schrumpfen, um nicht überzulaufen */
+@media (max-width: 768px) {
+  .org-goo-blob-1 { width: 240px; height: 240px; }
+  .org-goo-blob-2 { width: 200px; height: 200px; }
+  .org-goo-blob-3 { width: 180px; height: 180px; }
+  .org-goo-blob-4 { width: 140px; height: 140px; }
+  .org-goo-blob-5 { width: 120px; height: 120px; }
+}
+
+/* ============================================================
+   Liquefy-Blob — Child-Container Default
+   ============================================================ */
+/* (Die Children innerhalb von DecorationLiquefyBlob brauchen keine
+    explizite CSS-Klasse — der Wrapper kümmert sich. Aber wir können
+    img-Children sicher stretchen.) */
+[data-style="liquefy"] .liquefy-blob-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
