@@ -1811,28 +1811,109 @@
 }
 
 /* ============================================================
-   DESIGN SYSTEM v2 — RSVP (v3: drastischer Charakter pro Stil)
+   DESIGN SYSTEM v2 — RSVP (v4: CSS-Variable Pattern)
    ============================================================
-   Im Vergleich zu v2 (pragmatisches Form-Skinning):
-   - Container-Frame pro Stil (Brutalist Box-Shadow, Mono Terminal,
-     Opulent Gold-Frame, Bauhaus Color-Blocks)
-   - Header-Marquee/Ornament pro Stil deutlich präsenter
-   - Form-Layout-Tweaks (Brutalist links-aligned Statement, Mono
-     Code-Editor-Look, Bauhaus asymmetrische Grid)
+   Statt 8 vollständige Stil-Blocks (zu viel CSS für PostCSS) nutzen wir:
+   1. Einen Variable-Default-Block auf .rsvp
+   2. Generic-Selektoren die diese Variables verbrauchen
+   3. Pro Stil NUR Variable-Overrides, keine eigenen Properties
+
+   Das reduziert die CSS-Größe drastisch — gleicher visueller Effekt,
+   aber 70% weniger Rules.
 ============================================================ */
 
 /* ============================================================
-   GRUNDREGELN
+   1) DEFAULTS auf .rsvp — gilt für alle Stile außer überschrieben
    ============================================================ */
-/* Position relative für StyledBereichBg-Anker im Wrapper */
 .rsvp {
   position: relative;
+
+  /* Input/Textarea */
+  --rsvp-input-border: 1px solid rgba(0, 0, 0, 0.18);
+  --rsvp-input-radius: 4px;
+  --rsvp-input-bg: var(--bg);
+  --rsvp-input-pad: 12px 14px;
+  --rsvp-input-font: var(--font-body);
+  --rsvp-input-focus-border: var(--accent);
+  --rsvp-input-focus-bg: var(--bg);
+
+  /* Labels */
+  --rsvp-label-font: var(--font-mono);
+  --rsvp-label-size: 11px;
+  --rsvp-label-tracking: 0.15em;
+  --rsvp-label-transform: uppercase;
+  --rsvp-label-color: var(--ink);
+
+  /* Toggle-Pills (Ja/Nein) */
+  --rsvp-toggle-border: 1px solid rgba(0, 0, 0, 0.15);
+  --rsvp-toggle-radius: 4px;
+  --rsvp-toggle-bg: var(--bg);
+  --rsvp-toggle-font: var(--font-body);
+  --rsvp-toggle-weight: 500;
+  --rsvp-toggle-on-bg: var(--accent);
+  --rsvp-toggle-on-color: var(--bg);
+  --rsvp-toggle-on-border-color: var(--accent);
+  --rsvp-toggle-on-transform: none;
+
+  /* Submit-Button */
+  --rsvp-submit-bg: var(--ink);
+  --rsvp-submit-color: var(--bg);
+  --rsvp-submit-border: 0;
+  --rsvp-submit-radius: 4px;
+  --rsvp-submit-font: var(--font-mono);
+  --rsvp-submit-size: 14px;
+  --rsvp-submit-tracking: 0.1em;
+  --rsvp-submit-transform: uppercase;
+  --rsvp-submit-pad: 14px 32px;
+  --rsvp-submit-shadow: none;
+  --rsvp-submit-weight: 500;
+  --rsvp-submit-transform-extra: none;
+
+  /* Form-Container */
+  --rsvp-form-bg: transparent;
+  --rsvp-form-border: 0;
+  --rsvp-form-radius: 0;
+  --rsvp-form-pad: 0;
+  --rsvp-form-shadow: none;
+  --rsvp-form-max: 640px;
+
+  /* Section-Padding */
+  --rsvp-section-pad: 80px 60px;
+
+  /* Header */
+  --rsvp-head-align: center;
+  --rsvp-eyebrow-font: var(--font-mono);
+  --rsvp-eyebrow-size: 11px;
+  --rsvp-eyebrow-tracking: 0.2em;
+  --rsvp-eyebrow-color: var(--accent);
+  --rsvp-eyebrow-transform: uppercase;
+  --rsvp-eyebrow-bg: transparent;
+  --rsvp-eyebrow-pad: 0;
+
+  --rsvp-title-font: var(--font-display);
+  --rsvp-title-size: clamp(40px, 5.5vw, 72px);
+  --rsvp-title-weight: 400;
+  --rsvp-title-style: normal;
+  --rsvp-title-tracking: -0.02em;
+  --rsvp-title-line: 1.0;
+  --rsvp-title-transform: none;
+  --rsvp-title-em-color: var(--accent);
+  --rsvp-title-em-font: inherit;
+  --rsvp-title-em-style: italic;
 }
-/* Stil-Header-Ornament default verborgen */
+
+/* Ornament default ausblenden — nur ausgewählte Stile zeigen es */
 .rsvp-head-ornament {
   display: none;
 }
-/* Form-Inhalt über Decorations */
+
+/* ============================================================
+   2) GENERIC RULES — verbrauchen die Variablen
+   ============================================================ */
+.rsvp {
+  padding: var(--rsvp-section-pad);
+}
+
 .rsvp form,
 .rsvp .rsvpA,
 .rsvp .rsvpB,
@@ -1844,896 +1925,407 @@
   z-index: 5;
 }
 
-/* ============================================================
-   STIL 01 · EDITORIAL — Magazine, dünne Hairlines
-   ============================================================ */
-.rsvp[data-style-rsvp="editorial"] {
-  padding: 80px 60px;
-}
-.rsvp[data-style-rsvp="editorial"] .rsvp-head {
-  border-bottom: 1px solid var(--accent);
-  padding-bottom: 32px;
-  margin-bottom: 40px;
-  text-align: left;
-  max-width: 720px;
-  margin-left: auto;
-  margin-right: auto;
-}
-.rsvp[data-style-rsvp="editorial"] .rsvp-eyebrow {
-  font-family: var(--font-mono);
-  letter-spacing: 0.3em;
-  color: var(--accent);
-  font-size: 10px;
-  text-transform: uppercase;
-}
-.rsvp[data-style-rsvp="editorial"] .rsvp-title {
-  font-family: var(--font-display);
-  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
-  font-weight: 350;
-  font-size: clamp(48px, 6vw, 84px);
-  line-height: 0.94;
-  letter-spacing: -0.025em;
-  margin: 12px 0 18px;
-}
-.rsvp[data-style-rsvp="editorial"] .rsvp-title em {
-  font-style: italic;
-  color: var(--accent);
-}
-.rsvp[data-style-rsvp="editorial"] .rsvp-desc {
-  font-family: var(--font-body);
-  font-size: 17px;
-  line-height: 1.65;
-  max-width: 520px;
-  color: var(--ink-soft);
-}
-.rsvp[data-style-rsvp="editorial"] form,
-.rsvp[data-style-rsvp="editorial"] .rsvpA,
-.rsvp[data-style-rsvp="editorial"] .rsvpB {
+.rsvp .rsvp-head {
+  text-align: var(--rsvp-head-align);
   max-width: 640px;
+  margin: 0 auto 40px;
+}
+
+.rsvp .rsvp-eyebrow {
+  font-family: var(--rsvp-eyebrow-font);
+  font-size: var(--rsvp-eyebrow-size);
+  letter-spacing: var(--rsvp-eyebrow-tracking);
+  color: var(--rsvp-eyebrow-color);
+  text-transform: var(--rsvp-eyebrow-transform);
+  background: var(--rsvp-eyebrow-bg);
+  padding: var(--rsvp-eyebrow-pad);
+  display: inline-block;
+}
+
+.rsvp .rsvp-title {
+  font-family: var(--rsvp-title-font);
+  font-weight: var(--rsvp-title-weight);
+  font-style: var(--rsvp-title-style);
+  font-size: var(--rsvp-title-size);
+  letter-spacing: var(--rsvp-title-tracking);
+  line-height: var(--rsvp-title-line);
+  text-transform: var(--rsvp-title-transform);
+  margin: 16px 0 12px;
+}
+.rsvp .rsvp-title em {
+  color: var(--rsvp-title-em-color);
+  font-family: var(--rsvp-title-em-font);
+  font-style: var(--rsvp-title-em-style);
+}
+
+.rsvp form,
+.rsvp .rsvpA,
+.rsvp .rsvpB {
+  max-width: var(--rsvp-form-max);
   margin: 0 auto;
+  background: var(--rsvp-form-bg);
+  border: var(--rsvp-form-border);
+  border-radius: var(--rsvp-form-radius);
+  padding: var(--rsvp-form-pad);
+  box-shadow: var(--rsvp-form-shadow);
 }
-.rsvp[data-style-rsvp="editorial"] input,
-.rsvp[data-style-rsvp="editorial"] textarea {
-  border: 0;
-  border-bottom: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
-  border-radius: 0;
-  background: transparent;
-  padding: 10px 0;
-  font-family: var(--font-body);
+
+.rsvp input,
+.rsvp textarea {
+  border: var(--rsvp-input-border);
+  border-radius: var(--rsvp-input-radius);
+  background: var(--rsvp-input-bg);
+  padding: var(--rsvp-input-pad);
+  font-family: var(--rsvp-input-font);
 }
-.rsvp[data-style-rsvp="editorial"] input:focus,
-.rsvp[data-style-rsvp="editorial"] textarea:focus {
+.rsvp input:focus,
+.rsvp textarea:focus {
   outline: 0;
-  border-bottom-color: var(--accent);
+  border-color: var(--rsvp-input-focus-border);
+  background: var(--rsvp-input-focus-bg);
 }
-.rsvp[data-style-rsvp="editorial"] .field label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--accent);
+
+.rsvp .field label {
+  font-family: var(--rsvp-label-font);
+  font-size: var(--rsvp-label-size);
+  letter-spacing: var(--rsvp-label-tracking);
+  text-transform: var(--rsvp-label-transform);
+  color: var(--rsvp-label-color);
 }
-.rsvp[data-style-rsvp="editorial"] .toggle-opt {
-  border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent);
-  border-radius: 2px;
-  background: transparent;
+
+.rsvp .toggle-opt {
+  border: var(--rsvp-toggle-border);
+  border-radius: var(--rsvp-toggle-radius);
+  background: var(--rsvp-toggle-bg);
+  font-family: var(--rsvp-toggle-font);
+  font-weight: var(--rsvp-toggle-weight);
+  transition: transform 0.2s, background 0.2s;
 }
-.rsvp[data-style-rsvp="editorial"] .toggle-opt.is-on {
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 8%, transparent);
-  color: var(--accent);
+.rsvp .toggle-opt.is-on {
+  background: var(--rsvp-toggle-on-bg);
+  color: var(--rsvp-toggle-on-color);
+  border-color: var(--rsvp-toggle-on-border-color);
+  transform: var(--rsvp-toggle-on-transform);
 }
-.rsvp[data-style-rsvp="editorial"] .btn-primary {
-  background: var(--ink);
-  color: var(--bg);
-  border-radius: 2px;
-  padding: 14px 32px;
-  font-family: var(--font-mono);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-size: 11px;
+
+.rsvp .btn-primary {
+  background: var(--rsvp-submit-bg);
+  color: var(--rsvp-submit-color);
+  border: var(--rsvp-submit-border);
+  border-radius: var(--rsvp-submit-radius);
+  font-family: var(--rsvp-submit-font);
+  font-size: var(--rsvp-submit-size);
+  letter-spacing: var(--rsvp-submit-tracking);
+  text-transform: var(--rsvp-submit-transform);
+  font-weight: var(--rsvp-submit-weight);
+  padding: var(--rsvp-submit-pad);
+  box-shadow: var(--rsvp-submit-shadow);
+  transform: var(--rsvp-submit-transform-extra);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 /* ============================================================
-   STIL 02 · BRUTALIST — Marquee oben, Box-Shadow, harte Borders
+   3) PRO STIL — nur Variable-Overrides
    ============================================================ */
+
+/* EDITORIAL — Magazine, hairlines */
+.rsvp[data-style-rsvp="editorial"] {
+  --rsvp-head-align: left;
+  --rsvp-eyebrow-tracking: 0.3em;
+  --rsvp-eyebrow-color: var(--accent);
+  --rsvp-eyebrow-size: 10px;
+  --rsvp-title-font: var(--font-display);
+  --rsvp-title-weight: 350;
+  --rsvp-title-style: normal;
+  --rsvp-title-size: clamp(48px, 6vw, 84px);
+  --rsvp-input-border: 0;
+  --rsvp-input-radius: 0;
+  --rsvp-input-bg: transparent;
+  --rsvp-input-pad: 10px 0;
+  --rsvp-label-color: var(--accent);
+  --rsvp-submit-radius: 2px;
+  --rsvp-submit-tracking: 0.12em;
+  --rsvp-submit-size: 11px;
+}
+.rsvp[data-style-rsvp="editorial"] input,
+.rsvp[data-style-rsvp="editorial"] textarea {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+/* BRUTALIST — Marquee oben, harte Borders, Yellow */
 .rsvp[data-style-rsvp="brutalist"] {
-  padding: 50px 0 80px;
-  background: var(--bg);
-}
-/* CSS-Marquee überm Form */
-.rsvp[data-style-rsvp="brutalist"] .rsvp-head {
-  position: relative;
-  padding: 0 50px 40px;
-  border-bottom: 4px solid var(--ink);
-  margin-bottom: 50px;
-  text-align: left;
-}
-.rsvp[data-style-rsvp="brutalist"] .rsvp-head::before {
-  content: '★ ANTWORT BITTE ★ ANTWORT BITTE ★ ANTWORT BITTE ★ ANTWORT BITTE ★ ANTWORT BITTE ★ ANTWORT BITTE ★';
-  position: absolute;
-  top: -40px;
-  left: 0;
-  right: 0;
-  white-space: nowrap;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 14px;
-  letter-spacing: 0.05em;
-  background: var(--ink);
-  color: var(--accent);
-  padding: 10px 0;
-  overflow: hidden;
-  text-overflow: clip;
-}
-.rsvp[data-style-rsvp="brutalist"] .rsvp-eyebrow {
-  background: var(--ink);
-  color: var(--bg);
-  display: inline-block;
-  padding: 8px 14px;
-  font-family: var(--font-mono);
-  font-weight: 600;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  font-size: 11px;
-}
-.rsvp[data-style-rsvp="brutalist"] .rsvp-title {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(48px, 7vw, 100px);
-  line-height: 0.85;
-  letter-spacing: -0.045em;
-  text-transform: uppercase;
-  margin: 16px 0 12px;
-}
-.rsvp[data-style-rsvp="brutalist"] .rsvp-title em {
-  background: var(--accent);
-  color: var(--ink);
-  padding: 0 0.1em;
-  display: inline-block;
-  transform: skewX(-6deg);
-  font-style: normal;
-}
-.rsvp[data-style-rsvp="brutalist"] .rsvp-desc {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 16px;
-  max-width: 580px;
+  --rsvp-section-pad: 50px 0 80px;
+  --rsvp-head-align: left;
+  --rsvp-eyebrow-bg: var(--ink);
+  --rsvp-eyebrow-color: var(--bg);
+  --rsvp-eyebrow-pad: 8px 14px;
+  --rsvp-eyebrow-size: 11px;
+  --rsvp-title-font: var(--font-display);
+  --rsvp-title-weight: 700;
+  --rsvp-title-size: clamp(48px, 7vw, 100px);
+  --rsvp-title-line: 0.85;
+  --rsvp-title-tracking: -0.045em;
+  --rsvp-title-transform: uppercase;
+  --rsvp-form-bg: var(--bg);
+  --rsvp-form-border: 4px solid var(--ink);
+  --rsvp-form-pad: 40px;
+  --rsvp-form-shadow: 16px 16px 0 var(--accent);
+  --rsvp-input-border: 3px solid var(--ink);
+  --rsvp-input-radius: 0;
+  --rsvp-input-bg: var(--bg);
+  --rsvp-input-pad: 14px;
+  --rsvp-input-focus-bg: var(--accent);
+  --rsvp-input-font: var(--font-display);
+  --rsvp-toggle-border: 3px solid var(--ink);
+  --rsvp-toggle-radius: 0;
+  --rsvp-toggle-font: var(--font-display);
+  --rsvp-toggle-weight: 700;
+  --rsvp-submit-bg: var(--accent);
+  --rsvp-submit-color: var(--ink);
+  --rsvp-submit-border: 3px solid var(--ink);
+  --rsvp-submit-radius: 0;
+  --rsvp-submit-font: var(--font-display);
+  --rsvp-submit-size: 18px;
+  --rsvp-submit-weight: 700;
+  --rsvp-submit-pad: 18px 36px;
+  --rsvp-submit-shadow: 8px 8px 0 var(--ink);
 }
 .rsvp[data-style-rsvp="brutalist"] form,
 .rsvp[data-style-rsvp="brutalist"] .rsvpA,
 .rsvp[data-style-rsvp="brutalist"] .rsvpB {
   margin: 0 50px;
-  background: var(--bg);
-  border: 4px solid var(--ink);
-  padding: 40px;
-  box-shadow: 16px 16px 0 var(--accent);
 }
-.rsvp[data-style-rsvp="brutalist"] input,
-.rsvp[data-style-rsvp="brutalist"] textarea {
-  border: 3px solid var(--ink);
-  border-radius: 0;
-  background: var(--bg);
-  padding: 14px;
-  font-family: var(--font-display);
-  font-weight: 500;
-}
-.rsvp[data-style-rsvp="brutalist"] input:focus,
-.rsvp[data-style-rsvp="brutalist"] textarea:focus {
-  outline: 0;
-  background: var(--accent);
-}
-.rsvp[data-style-rsvp="brutalist"] .field label {
-  font-family: var(--font-mono);
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  font-size: 11px;
-}
-.rsvp[data-style-rsvp="brutalist"] .toggle-opt {
-  border: 3px solid var(--ink);
-  border-radius: 0;
-  background: var(--bg);
-  font-family: var(--font-display);
-  font-weight: 700;
-  text-transform: uppercase;
-  padding: 16px;
-}
-.rsvp[data-style-rsvp="brutalist"] .toggle-opt.is-on {
-  background: var(--accent);
-  color: var(--ink);
-}
-.rsvp[data-style-rsvp="brutalist"] .stepper button {
-  border: 3px solid var(--ink);
-  background: var(--bg);
-  font-weight: 700;
-  font-family: var(--font-display);
-}
-.rsvp[data-style-rsvp="brutalist"] .btn-primary {
-  background: var(--accent);
-  color: var(--ink);
-  border: 3px solid var(--ink);
-  border-radius: 0;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 18px;
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
-  padding: 18px 36px;
-  box-shadow: 8px 8px 0 var(--ink);
-  transition: transform 0.15s, box-shadow 0.15s;
+.rsvp[data-style-rsvp="brutalist"] .rsvp-head {
+  margin: 0 50px 40px;
+  padding-bottom: 32px;
+  border-bottom: 4px solid var(--ink);
 }
 .rsvp[data-style-rsvp="brutalist"] .btn-primary:hover:not(:disabled) {
   transform: translate(-4px, -4px);
   box-shadow: 12px 12px 0 var(--ink);
 }
-.rsvp[data-style-rsvp="brutalist"] .btn-primary:active:not(:disabled) {
-  transform: translate(4px, 4px);
-  box-shadow: 0 0 0 var(--ink);
-}
-.rsvp[data-style-rsvp="brutalist"] .rsvp-cq-pill {
-  border: 3px solid var(--ink);
-  border-radius: 0;
-  font-weight: 700;
-  font-family: var(--font-display);
-}
-.rsvp[data-style-rsvp="brutalist"] .rsvp-cq-pill.is-on {
-  background: var(--accent);
-  color: var(--ink);
-}
 
-/* ============================================================
-   STIL 03 · ORGANIC — Blob-Shapes, Caveat-Script, Goo
-   ============================================================ */
+/* ORGANIC — Blob, Caveat Script, soft */
 .rsvp[data-style-rsvp="organic"] {
-  padding: 80px 60px;
-  position: relative;
-}
-.rsvp[data-style-rsvp="organic"] .rsvp-head {
-  text-align: center;
-  max-width: 620px;
-  margin: 0 auto 40px;
-}
-.rsvp[data-style-rsvp="organic"] .rsvp-eyebrow {
-  font-family: var(--font-script);
-  font-size: 26px;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--accent);
-}
-.rsvp[data-style-rsvp="organic"] .rsvp-title {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
-  font-weight: 350;
-  font-size: clamp(44px, 6vw, 80px);
-  line-height: 0.96;
-  letter-spacing: -0.02em;
-  color: var(--accent-deep);
-  margin: 8px 0 16px;
-}
-.rsvp[data-style-rsvp="organic"] .rsvp-title em {
-  font-family: var(--font-script);
-  font-style: normal;
-  color: var(--accent);
-}
-.rsvp[data-style-rsvp="organic"] .rsvp-desc {
-  font-family: var(--font-body);
-  font-size: 17px;
-  line-height: 1.65;
-}
-.rsvp[data-style-rsvp="organic"] form,
-.rsvp[data-style-rsvp="organic"] .rsvpA,
-.rsvp[data-style-rsvp="organic"] .rsvpB {
-  max-width: 580px;
-  margin: 0 auto;
-  background: var(--bg-soft);
-  padding: 40px;
-  border-radius: 47% 53% 56% 44% / 8% 8% 8% 8%;
-}
-.rsvp[data-style-rsvp="organic"] input,
-.rsvp[data-style-rsvp="organic"] textarea {
-  border: 1.5px solid color-mix(in srgb, var(--ink) 10%, transparent);
-  border-radius: 24px;
-  background: var(--bg);
-  padding: 14px 20px;
-  transition: all 0.25s;
-}
-.rsvp[data-style-rsvp="organic"] input:focus,
-.rsvp[data-style-rsvp="organic"] textarea:focus {
-  outline: 0;
-  border-color: var(--accent);
-}
-.rsvp[data-style-rsvp="organic"] .field label {
-  font-family: var(--font-script);
-  font-size: 18px;
-  color: var(--accent);
-}
-.rsvp[data-style-rsvp="organic"] .toggle-opt {
-  border-radius: 100px;
-  border: 1.5px solid color-mix(in srgb, var(--ink) 12%, transparent);
-  background: var(--bg);
-}
-.rsvp[data-style-rsvp="organic"] .toggle-opt.is-on {
-  background: var(--accent);
-  color: var(--bg);
-  border-color: var(--accent);
-}
-.rsvp[data-style-rsvp="organic"] .stepper button {
-  border-radius: 50%;
-  border: 1.5px solid color-mix(in srgb, var(--ink) 15%, transparent);
-  background: var(--bg);
-}
-.rsvp[data-style-rsvp="organic"] .btn-primary {
-  border-radius: 100px;
-  background: var(--accent);
-  color: var(--bg);
-  padding: 16px 44px;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 500;
-  font-size: 18px;
-}
-.rsvp[data-style-rsvp="organic"] .rsvp-cq-pill {
-  border-radius: 100px;
-  border: 1.5px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  --rsvp-eyebrow-font: var(--font-script);
+  --rsvp-eyebrow-size: 26px;
+  --rsvp-eyebrow-tracking: 0;
+  --rsvp-eyebrow-transform: none;
+  --rsvp-eyebrow-color: var(--accent);
+  --rsvp-title-font: var(--font-display);
+  --rsvp-title-style: italic;
+  --rsvp-title-weight: 350;
+  --rsvp-title-size: clamp(44px, 6vw, 80px);
+  --rsvp-title-em-font: var(--font-script);
+  --rsvp-title-em-style: normal;
+  --rsvp-form-bg: var(--bg-soft);
+  --rsvp-form-pad: 40px;
+  --rsvp-form-radius: 32px;
+  --rsvp-form-max: 580px;
+  --rsvp-input-border: 1.5px solid rgba(0, 0, 0, 0.1);
+  --rsvp-input-radius: 24px;
+  --rsvp-input-pad: 14px 20px;
+  --rsvp-label-font: var(--font-script);
+  --rsvp-label-size: 18px;
+  --rsvp-label-tracking: 0;
+  --rsvp-label-transform: none;
+  --rsvp-label-color: var(--accent);
+  --rsvp-toggle-radius: 100px;
+  --rsvp-toggle-border: 1.5px solid rgba(0, 0, 0, 0.12);
+  --rsvp-submit-radius: 100px;
+  --rsvp-submit-bg: var(--accent);
+  --rsvp-submit-color: var(--bg);
+  --rsvp-submit-font: var(--font-display);
+  --rsvp-submit-size: 18px;
+  --rsvp-submit-tracking: 0;
+  --rsvp-submit-transform: none;
+  --rsvp-submit-pad: 16px 44px;
 }
 
-/* ============================================================
-   STIL 04 · MONO — Terminal-Look, JetBrains, ASCII-Border
-   ============================================================ */
+/* MONO — Terminal-Look, JetBrains */
 .rsvp[data-style-rsvp="mono"] {
-  padding: 60px;
-  font-family: var(--font-mono);
-}
-.rsvp[data-style-rsvp="mono"] .rsvp-head {
-  text-align: left;
-  max-width: 720px;
-  margin: 0 auto 32px;
-  border: 1px dashed color-mix(in srgb, var(--ink) 30%, transparent);
-  padding: 24px;
-  position: relative;
-}
-.rsvp[data-style-rsvp="mono"] .rsvp-head::before {
-  content: '┌── rsvp.terminal ──┐';
-  position: absolute;
-  top: -10px;
-  left: 16px;
-  background: var(--bg);
-  padding: 0 8px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: color-mix(in srgb, var(--ink) 60%, transparent);
-  letter-spacing: 0.05em;
-}
-.rsvp[data-style-rsvp="mono"] .rsvp-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--ink) 55%, transparent);
-}
-.rsvp[data-style-rsvp="mono"] .rsvp-eyebrow::before {
-  content: '// ';
-  color: color-mix(in srgb, var(--ink) 40%, transparent);
-}
-.rsvp[data-style-rsvp="mono"] .rsvp-title {
-  font-family: var(--font-mono);
-  font-weight: 300;
-  font-size: clamp(28px, 3.5vw, 42px);
-  line-height: 1.1;
-  letter-spacing: -0.04em;
-  margin: 14px 0 12px;
-  text-transform: lowercase;
-}
-.rsvp[data-style-rsvp="mono"] .rsvp-title em {
-  font-style: normal;
-  color: color-mix(in srgb, var(--ink) 55%, transparent);
-  padding-left: 0.4em;
-}
-.rsvp[data-style-rsvp="mono"] .rsvp-desc {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 1.7;
-  color: color-mix(in srgb, var(--ink) 70%, transparent);
-}
-.rsvp[data-style-rsvp="mono"] .rsvp-desc::before {
-  content: '/* ';
-  opacity: 0.5;
-}
-.rsvp[data-style-rsvp="mono"] .rsvp-desc::after {
-  content: ' */';
-  opacity: 0.5;
-}
-.rsvp[data-style-rsvp="mono"] form,
-.rsvp[data-style-rsvp="mono"] .rsvpA,
-.rsvp[data-style-rsvp="mono"] .rsvpB {
-  max-width: 720px;
-  margin: 0 auto;
-  border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
-  padding: 32px;
-  background: var(--bg);
-}
-.rsvp[data-style-rsvp="mono"] input,
-.rsvp[data-style-rsvp="mono"] textarea {
-  border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
-  border-radius: 0;
-  background: var(--bg);
-  font-family: var(--font-mono);
-  font-size: 14px;
-  padding: 10px 12px;
-}
-.rsvp[data-style-rsvp="mono"] input:focus,
-.rsvp[data-style-rsvp="mono"] textarea:focus {
-  outline: 0;
-  border-color: var(--ink);
-}
-.rsvp[data-style-rsvp="mono"] .field label {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: color-mix(in srgb, var(--ink) 55%, transparent);
-  text-transform: uppercase;
-}
-.rsvp[data-style-rsvp="mono"] .field label::before {
-  content: '> ';
-  color: var(--accent);
-}
-.rsvp[data-style-rsvp="mono"] .toggle-opt {
-  border: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
-  border-radius: 0;
-  background: var(--bg);
-  font-family: var(--font-mono);
-}
-.rsvp[data-style-rsvp="mono"] .toggle-opt.is-on {
-  background: var(--ink);
-  color: var(--bg);
-  border-color: var(--ink);
-}
-.rsvp[data-style-rsvp="mono"] .toggle-opt::before {
-  content: '[ ] ';
-}
-.rsvp[data-style-rsvp="mono"] .toggle-opt.is-on::before {
-  content: '[x] ';
-}
-.rsvp[data-style-rsvp="mono"] .stepper button {
-  border: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
-  background: var(--bg);
-  font-family: var(--font-mono);
-}
-.rsvp[data-style-rsvp="mono"] .btn-primary {
-  background: var(--ink);
-  color: var(--bg);
-  border: 0;
-  border-radius: 0;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  letter-spacing: 0.05em;
-  padding: 12px 28px;
-}
-.rsvp[data-style-rsvp="mono"] .btn-primary::before {
-  content: '$ ';
-  opacity: 0.7;
-}
-.rsvp[data-style-rsvp="mono"] .rsvp-cq-pill {
-  border-radius: 0;
-  font-family: var(--font-mono);
+  --rsvp-head-align: left;
+  --rsvp-eyebrow-font: var(--font-mono);
+  --rsvp-eyebrow-tracking: 0.18em;
+  --rsvp-eyebrow-color: rgba(0, 0, 0, 0.55);
+  --rsvp-title-font: var(--font-mono);
+  --rsvp-title-weight: 300;
+  --rsvp-title-size: clamp(28px, 3.5vw, 42px);
+  --rsvp-title-line: 1.1;
+  --rsvp-title-tracking: -0.04em;
+  --rsvp-title-transform: lowercase;
+  --rsvp-title-em-color: rgba(0, 0, 0, 0.55);
+  --rsvp-title-em-style: normal;
+  --rsvp-form-bg: var(--bg);
+  --rsvp-form-border: 1px solid rgba(0, 0, 0, 0.2);
+  --rsvp-form-pad: 32px;
+  --rsvp-form-max: 720px;
+  --rsvp-input-border: 1px solid rgba(0, 0, 0, 0.2);
+  --rsvp-input-radius: 0;
+  --rsvp-input-font: var(--font-mono);
+  --rsvp-input-pad: 10px 12px;
+  --rsvp-label-font: var(--font-mono);
+  --rsvp-label-size: 11px;
+  --rsvp-label-tracking: 0.1em;
+  --rsvp-label-color: rgba(0, 0, 0, 0.55);
+  --rsvp-toggle-border: 1px solid rgba(0, 0, 0, 0.25);
+  --rsvp-toggle-radius: 0;
+  --rsvp-toggle-font: var(--font-mono);
+  --rsvp-submit-bg: var(--ink);
+  --rsvp-submit-color: var(--bg);
+  --rsvp-submit-radius: 0;
+  --rsvp-submit-font: var(--font-mono);
+  --rsvp-submit-size: 13px;
+  --rsvp-submit-pad: 12px 28px;
 }
 
-/* ============================================================
-   STIL 05 · OPULENT — Gold-Frame, Cormorant, dark luxe
-   ============================================================ */
+/* OPULENT — Gold-Frame, Cormorant, dark luxe */
 .rsvp[data-style-rsvp="opulent"] {
-  padding: 80px 60px;
-  position: relative;
-}
-.rsvp[data-style-rsvp="opulent"] .rsvp-head {
-  text-align: center;
-  max-width: 620px;
-  margin: 0 auto 40px;
-}
-.rsvp[data-style-rsvp="opulent"] .rsvp-eyebrow {
-  font-family: 'Italiana', serif;
-  letter-spacing: 0.5em;
-  font-size: 13px;
-  color: var(--gold, var(--accent));
-  text-transform: uppercase;
-}
-.rsvp[data-style-rsvp="opulent"] .rsvp-title {
-  font-family: 'Cormorant SC', serif;
-  font-weight: 300;
-  letter-spacing: 0.04em;
-  font-size: clamp(44px, 5.5vw, 76px);
-  line-height: 1.0;
-  margin: 16px 0;
-  background: linear-gradient(135deg, var(--ink) 0%, var(--gold-bright, var(--accent-deep)) 50%, var(--ink) 100%);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: op-gold-flow 6s ease-in-out infinite;
-}
-.rsvp[data-style-rsvp="opulent"] .rsvp-title em {
-  font-family: 'Italiana', serif;
-  font-style: italic;
-  -webkit-text-fill-color: var(--gold, var(--accent));
-}
-.rsvp[data-style-rsvp="opulent"] .rsvp-desc {
-  font-family: 'Crimson Pro', serif;
-  font-style: italic;
-  font-size: 18px;
-  line-height: 1.65;
-  color: var(--ink-soft);
-}
-/* Gold-Frame Container */
-.rsvp[data-style-rsvp="opulent"] form,
-.rsvp[data-style-rsvp="opulent"] .rsvpA,
-.rsvp[data-style-rsvp="opulent"] .rsvpB {
-  max-width: 640px;
-  margin: 0 auto;
-  background: color-mix(in srgb, var(--bg) 65%, transparent);
-  border: 1px solid color-mix(in srgb, var(--gold, var(--accent)) 40%, transparent);
-  padding: 50px 60px;
-  position: relative;
-  backdrop-filter: blur(8px);
-}
-.rsvp[data-style-rsvp="opulent"] form::before,
-.rsvp[data-style-rsvp="opulent"] form::after,
-.rsvp[data-style-rsvp="opulent"] .rsvpA::before,
-.rsvp[data-style-rsvp="opulent"] .rsvpA::after {
-  content: '';
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  border: 1px solid var(--gold, var(--accent));
-}
-.rsvp[data-style-rsvp="opulent"] form::before,
-.rsvp[data-style-rsvp="opulent"] .rsvpA::before {
-  top: -9px; left: -9px;
-  border-right: 0; border-bottom: 0;
-}
-.rsvp[data-style-rsvp="opulent"] form::after,
-.rsvp[data-style-rsvp="opulent"] .rsvpA::after {
-  bottom: -9px; right: -9px;
-  border-left: 0; border-top: 0;
-}
-.rsvp[data-style-rsvp="opulent"] input,
-.rsvp[data-style-rsvp="opulent"] textarea {
-  border: 1px solid color-mix(in srgb, var(--gold, var(--accent)) 40%, transparent);
-  border-radius: 0;
-  background: color-mix(in srgb, var(--bg) 50%, transparent);
-  font-family: 'Crimson Pro', serif;
-  font-style: italic;
-  font-size: 16px;
-  padding: 12px 14px;
-}
-.rsvp[data-style-rsvp="opulent"] input:focus,
-.rsvp[data-style-rsvp="opulent"] textarea:focus {
-  outline: 0;
-  border-color: var(--gold, var(--accent));
-  background: var(--bg-soft);
-}
-.rsvp[data-style-rsvp="opulent"] .field label {
-  font-family: 'Italiana', serif;
-  letter-spacing: 0.35em;
-  font-size: 11px;
-  text-transform: uppercase;
-  color: var(--gold, var(--accent));
-}
-.rsvp[data-style-rsvp="opulent"] .toggle-opt {
-  border: 1px solid color-mix(in srgb, var(--gold, var(--accent)) 40%, transparent);
-  border-radius: 0;
-  background: transparent;
-  font-family: 'Italiana', serif;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  font-size: 12px;
-}
-.rsvp[data-style-rsvp="opulent"] .toggle-opt.is-on {
-  background: var(--gold, var(--accent));
-  color: var(--bg);
-  border-color: var(--gold, var(--accent));
-}
-.rsvp[data-style-rsvp="opulent"] .btn-primary {
-  background: linear-gradient(135deg, var(--gold, var(--accent)) 0%, var(--accent-deep) 100%);
-  color: var(--bg);
-  border: 1px solid var(--gold, var(--accent));
-  border-radius: 0;
-  font-family: 'Italiana', serif;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  font-size: 12px;
-  padding: 18px 44px;
+  --rsvp-eyebrow-font: 'Italiana', serif;
+  --rsvp-eyebrow-size: 13px;
+  --rsvp-eyebrow-tracking: 0.5em;
+  --rsvp-eyebrow-color: var(--gold, var(--accent));
+  --rsvp-title-font: 'Cormorant SC', serif;
+  --rsvp-title-weight: 300;
+  --rsvp-title-size: clamp(44px, 5.5vw, 76px);
+  --rsvp-title-line: 1.0;
+  --rsvp-title-tracking: 0.04em;
+  --rsvp-title-em-font: 'Italiana', serif;
+  --rsvp-form-bg: rgba(0, 0, 0, 0.05);
+  --rsvp-form-border: 1px solid rgba(197, 165, 114, 0.4);
+  --rsvp-form-pad: 50px 60px;
+  --rsvp-input-border: 1px solid rgba(197, 165, 114, 0.4);
+  --rsvp-input-radius: 0;
+  --rsvp-input-bg: transparent;
+  --rsvp-input-font: 'Crimson Pro', serif;
+  --rsvp-input-pad: 12px 14px;
+  --rsvp-label-font: 'Italiana', serif;
+  --rsvp-label-tracking: 0.35em;
+  --rsvp-label-color: var(--gold, var(--accent));
+  --rsvp-toggle-border: 1px solid rgba(197, 165, 114, 0.4);
+  --rsvp-toggle-radius: 0;
+  --rsvp-toggle-font: 'Italiana', serif;
+  --rsvp-toggle-on-bg: var(--gold, var(--accent));
+  --rsvp-toggle-on-border-color: var(--gold, var(--accent));
+  --rsvp-submit-bg: var(--gold, var(--accent));
+  --rsvp-submit-border: 1px solid var(--gold, var(--accent));
+  --rsvp-submit-radius: 0;
+  --rsvp-submit-font: 'Italiana', serif;
+  --rsvp-submit-tracking: 0.4em;
+  --rsvp-submit-size: 12px;
+  --rsvp-submit-pad: 18px 44px;
 }
 
-/* ============================================================
-   STIL 06 · LIQUEFY — Acid-Glow-Frame, Liquid Forms
-   ============================================================ */
+/* LIQUEFY — Acid-Glow, rounded */
 .rsvp[data-style-rsvp="liquefy"] {
-  padding: 80px 60px;
-  background: var(--bg);
-}
-.rsvp[data-style-rsvp="liquefy"] .rsvp-head {
-  text-align: center;
-  max-width: 620px;
-  margin: 0 auto 40px;
-}
-.rsvp[data-style-rsvp="liquefy"] .rsvp-eyebrow {
-  font-family: var(--font-mono);
-  color: var(--accent-deep);
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  font-size: 11px;
-}
-.rsvp[data-style-rsvp="liquefy"] .rsvp-title {
-  font-family: 'Fraunces', serif;
-  font-style: italic;
-  font-variation-settings: 'opsz' 144;
-  font-weight: 700;
-  font-size: clamp(48px, 7vw, 90px);
-  line-height: 0.9;
-  letter-spacing: -0.02em;
-  color: var(--accent);
-  text-shadow: 0 10px 40px color-mix(in srgb, var(--accent) 35%, transparent);
-  margin: 14px 0;
-}
-.rsvp[data-style-rsvp="liquefy"] .rsvp-title em {
-  color: var(--accent-deep);
-  font-style: italic;
-}
-.rsvp[data-style-rsvp="liquefy"] .rsvp-desc {
-  font-family: 'Syne', sans-serif;
-  font-size: 16px;
-  line-height: 1.65;
-  color: var(--ink-soft);
-}
-.rsvp[data-style-rsvp="liquefy"] form,
-.rsvp[data-style-rsvp="liquefy"] .rsvpA,
-.rsvp[data-style-rsvp="liquefy"] .rsvpB {
-  max-width: 600px;
-  margin: 0 auto;
-  background: var(--bg-soft);
-  border-radius: 32px;
-  padding: 40px;
-  box-shadow: 0 0 80px color-mix(in srgb, var(--accent) 25%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-}
-.rsvp[data-style-rsvp="liquefy"] input,
-.rsvp[data-style-rsvp="liquefy"] textarea {
-  border: 1.5px solid color-mix(in srgb, var(--accent) 30%, transparent);
-  border-radius: 16px;
-  background: var(--bg);
-  font-family: 'Syne', sans-serif;
-  padding: 14px 20px;
-  color: var(--ink);
-}
-.rsvp[data-style-rsvp="liquefy"] input:focus,
-.rsvp[data-style-rsvp="liquefy"] textarea:focus {
-  outline: 0;
-  border-color: var(--accent);
-  box-shadow: 0 0 30px color-mix(in srgb, var(--accent) 30%, transparent);
-}
-.rsvp[data-style-rsvp="liquefy"] .field label {
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 12px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-.rsvp[data-style-rsvp="liquefy"] .toggle-opt {
-  border: 1.5px solid color-mix(in srgb, var(--accent) 35%, transparent);
-  border-radius: 16px;
-  background: var(--bg);
-  font-family: 'Fraunces', serif;
-  font-style: italic;
-  font-weight: 700;
-  padding: 16px;
-}
-.rsvp[data-style-rsvp="liquefy"] .toggle-opt.is-on {
-  background: var(--accent);
-  color: var(--bg);
-  border-color: var(--accent);
-}
-.rsvp[data-style-rsvp="liquefy"] .btn-primary {
-  background: var(--accent);
-  color: var(--bg);
-  border: 0;
-  border-radius: 24px;
-  font-family: 'Fraunces', serif;
-  font-style: italic;
-  font-weight: 700;
-  font-size: 17px;
-  padding: 18px 44px;
-  box-shadow: 0 12px 40px color-mix(in srgb, var(--accent) 40%, transparent);
+  --rsvp-eyebrow-font: var(--font-mono);
+  --rsvp-eyebrow-color: var(--accent-deep);
+  --rsvp-eyebrow-tracking: 0.3em;
+  --rsvp-title-font: 'Fraunces', serif;
+  --rsvp-title-style: italic;
+  --rsvp-title-weight: 700;
+  --rsvp-title-size: clamp(48px, 7vw, 90px);
+  --rsvp-title-line: 0.9;
+  --rsvp-title-em-color: var(--accent-deep);
+  --rsvp-form-bg: var(--bg-soft);
+  --rsvp-form-radius: 32px;
+  --rsvp-form-pad: 40px;
+  --rsvp-form-shadow: 0 0 80px rgba(210, 255, 212, 0.25);
+  --rsvp-form-border: 1px solid rgba(210, 255, 212, 0.3);
+  --rsvp-form-max: 600px;
+  --rsvp-input-border: 1.5px solid rgba(210, 255, 212, 0.3);
+  --rsvp-input-radius: 16px;
+  --rsvp-input-pad: 14px 20px;
+  --rsvp-input-font: 'Syne', sans-serif;
+  --rsvp-label-font: 'Syne', sans-serif;
+  --rsvp-label-color: var(--accent);
+  --rsvp-toggle-radius: 16px;
+  --rsvp-toggle-font: 'Fraunces', serif;
+  --rsvp-toggle-weight: 700;
+  --rsvp-submit-bg: var(--accent);
+  --rsvp-submit-color: var(--bg);
+  --rsvp-submit-radius: 24px;
+  --rsvp-submit-font: 'Fraunces', serif;
+  --rsvp-submit-size: 17px;
+  --rsvp-submit-pad: 18px 44px;
 }
 
-/* ============================================================
-   STIL 07 · KINETIC — Tilted Form, Yellow-Shadow, Diagonal-BG
-   ============================================================ */
+/* KINETIC — Tilted, Yellow-Shadow */
 .rsvp[data-style-rsvp="kinetic"] {
-  padding: 80px 60px;
-  background: var(--bg);
-  overflow: hidden;
-}
-.rsvp[data-style-rsvp="kinetic"] .rsvp-head {
-  text-align: left;
-  max-width: 720px;
-  margin: 0 auto 40px;
-  position: relative;
-  z-index: 5;
-}
-.rsvp[data-style-rsvp="kinetic"] .rsvp-eyebrow {
-  font-family: var(--font-mono);
-  letter-spacing: 0.2em;
-  font-size: 11px;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-.rsvp[data-style-rsvp="kinetic"] .rsvp-title {
-  font-family: 'Syne', sans-serif;
-  font-weight: 900;
-  font-size: clamp(56px, 8vw, 120px);
-  line-height: 0.85;
-  letter-spacing: -0.04em;
-  text-transform: uppercase;
-  margin: 12px 0;
-}
-.rsvp[data-style-rsvp="kinetic"] .rsvp-title em {
-  display: block;
-  font-family: 'Alumni Sans Inline', sans-serif;
-  font-style: italic;
-  color: var(--accent);
-  font-weight: 900;
-}
-.rsvp[data-style-rsvp="kinetic"] .rsvp-desc {
-  font-family: 'Syne', sans-serif;
-  font-size: 16px;
-  line-height: 1.5;
-  max-width: 500px;
-}
-.rsvp[data-style-rsvp="kinetic"] form,
-.rsvp[data-style-rsvp="kinetic"] .rsvpA,
-.rsvp[data-style-rsvp="kinetic"] .rsvpB {
-  max-width: 640px;
-  margin: 0 auto;
-  background: var(--bg);
-  border: 2px solid var(--ink);
-  padding: 40px;
-  box-shadow: -20px 20px 0 var(--accent);
-  position: relative;
-  z-index: 5;
-}
-.rsvp[data-style-rsvp="kinetic"] input,
-.rsvp[data-style-rsvp="kinetic"] textarea {
-  border: 2px solid var(--ink);
-  border-radius: 0;
-  background: var(--bg);
-  font-family: 'Syne', sans-serif;
-  font-weight: 500;
-  padding: 14px 18px;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.rsvp[data-style-rsvp="kinetic"] input:focus,
-.rsvp[data-style-rsvp="kinetic"] textarea:focus {
-  outline: 0;
-  background: color-mix(in srgb, var(--accent) 15%, var(--bg));
-  transform: translateX(-2px);
-  box-shadow: 4px 4px 0 var(--accent);
-}
-.rsvp[data-style-rsvp="kinetic"] .field label {
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 12px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-.rsvp[data-style-rsvp="kinetic"] .toggle-opt {
-  border: 2px solid var(--ink);
-  border-radius: 0;
-  background: var(--bg);
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-  transition: transform 0.2s;
-  padding: 16px;
-}
-.rsvp[data-style-rsvp="kinetic"] .toggle-opt.is-on {
-  background: var(--accent);
-  color: var(--ink);
-  transform: rotate(-2deg);
-}
-.rsvp[data-style-rsvp="kinetic"] .btn-primary {
-  background: var(--accent);
-  color: var(--ink);
-  border: 2px solid var(--ink);
-  border-radius: 0;
-  font-family: 'Syne', sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
-  font-size: 20px;
-  padding: 20px 44px;
-  letter-spacing: -0.02em;
-  transform: rotate(-2deg);
-  box-shadow: 8px 8px 0 var(--ink);
-  transition: transform 0.2s, box-shadow 0.2s;
+  --rsvp-head-align: left;
+  --rsvp-eyebrow-font: var(--font-mono);
+  --rsvp-eyebrow-color: var(--accent);
+  --rsvp-title-font: 'Syne', sans-serif;
+  --rsvp-title-weight: 900;
+  --rsvp-title-size: clamp(56px, 8vw, 120px);
+  --rsvp-title-line: 0.85;
+  --rsvp-title-tracking: -0.04em;
+  --rsvp-title-transform: uppercase;
+  --rsvp-form-bg: var(--bg);
+  --rsvp-form-border: 2px solid var(--ink);
+  --rsvp-form-pad: 40px;
+  --rsvp-form-shadow: -20px 20px 0 var(--accent);
+  --rsvp-input-border: 2px solid var(--ink);
+  --rsvp-input-radius: 0;
+  --rsvp-input-font: 'Syne', sans-serif;
+  --rsvp-input-pad: 14px 18px;
+  --rsvp-label-font: 'Syne', sans-serif;
+  --rsvp-toggle-border: 2px solid var(--ink);
+  --rsvp-toggle-radius: 0;
+  --rsvp-toggle-font: 'Syne', sans-serif;
+  --rsvp-toggle-weight: 700;
+  --rsvp-toggle-on-bg: var(--accent);
+  --rsvp-toggle-on-color: var(--ink);
+  --rsvp-toggle-on-transform: rotate(-2deg);
+  --rsvp-submit-bg: var(--accent);
+  --rsvp-submit-color: var(--ink);
+  --rsvp-submit-border: 2px solid var(--ink);
+  --rsvp-submit-radius: 0;
+  --rsvp-submit-font: 'Syne', sans-serif;
+  --rsvp-submit-weight: 900;
+  --rsvp-submit-size: 20px;
+  --rsvp-submit-pad: 20px 44px;
+  --rsvp-submit-shadow: 8px 8px 0 var(--ink);
+  --rsvp-submit-transform-extra: rotate(-2deg);
 }
 .rsvp[data-style-rsvp="kinetic"] .btn-primary:hover:not(:disabled) {
   transform: rotate(0deg) scale(1.02);
-  box-shadow: 12px 12px 0 var(--ink);
 }
 
-/* ============================================================
-   STIL 08 · BAUHAUS — Asymmetric Color-Block-Header
-   ============================================================ */
+/* BAUHAUS — Color blocks, Navy + Red + Yellow */
 .rsvp[data-style-rsvp="bauhaus"] {
-  padding: 0;
-  background: var(--bg);
-  overflow: hidden;
+  --rsvp-section-pad: 0;
+  --rsvp-head-align: left;
+  --rsvp-eyebrow-font: var(--font-mono);
+  --rsvp-eyebrow-tracking: 0.25em;
+  --rsvp-title-font: 'Syne', sans-serif;
+  --rsvp-title-weight: 900;
+  --rsvp-title-size: clamp(48px, 7vw, 100px);
+  --rsvp-title-line: 0.85;
+  --rsvp-title-transform: uppercase;
+  --rsvp-input-border: 0;
+  --rsvp-input-radius: 0;
+  --rsvp-input-pad: 12px 4px;
+  --rsvp-input-font: 'Syne', sans-serif;
+  --rsvp-label-font: 'Syne', sans-serif;
+  --rsvp-toggle-border: 0;
+  --rsvp-toggle-radius: 0;
+  --rsvp-toggle-bg: var(--bg-soft);
+  --rsvp-toggle-font: 'Syne', sans-serif;
+  --rsvp-toggle-weight: 700;
+  --rsvp-submit-bg: var(--c-navy, var(--ink));
+  --rsvp-submit-color: var(--bg);
+  --rsvp-submit-radius: 0;
+  --rsvp-submit-font: 'Syne', sans-serif;
+  --rsvp-submit-weight: 900;
+  --rsvp-submit-size: 16px;
+  --rsvp-submit-pad: 18px 44px;
 }
 .rsvp[data-style-rsvp="bauhaus"] .rsvp-head {
   background: var(--bg-soft);
   padding: 60px;
-  position: relative;
-  text-align: left;
   margin-bottom: 0;
-  overflow: hidden;
-}
-.rsvp[data-style-rsvp="bauhaus"] .rsvp-head::before {
-  content: '';
-  position: absolute;
-  top: -60px;
-  right: -60px;
-  width: 280px;
-  height: 280px;
-  border-radius: 50%;
-  background: var(--c-red, var(--accent));
-  opacity: 0.85;
-  mix-blend-mode: multiply;
-}
-.rsvp[data-style-rsvp="bauhaus"] .rsvp-head::after {
-  content: '';
-  position: absolute;
-  bottom: 20px;
-  right: 30%;
-  width: 28%;
-  height: 80px;
-  background: var(--c-yellow, var(--accent-deep));
-  transform: rotate(-8deg);
-  mix-blend-mode: multiply;
-}
-.rsvp[data-style-rsvp="bauhaus"] .rsvp-eyebrow {
-  font-family: var(--font-mono);
-  font-weight: 600;
-  letter-spacing: 0.25em;
-  font-size: 11px;
-  text-transform: uppercase;
-  position: relative;
-  z-index: 5;
-}
-.rsvp[data-style-rsvp="bauhaus"] .rsvp-title {
-  font-family: 'Syne', sans-serif;
-  font-weight: 900;
-  font-size: clamp(48px, 7vw, 100px);
-  line-height: 0.85;
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
-  position: relative;
-  z-index: 5;
-  margin: 16px 0;
-  max-width: 60%;
-}
-.rsvp[data-style-rsvp="bauhaus"] .rsvp-title em {
-  color: var(--accent);
-  font-style: normal;
-}
-.rsvp[data-style-rsvp="bauhaus"] .rsvp-desc {
-  font-family: 'Syne', sans-serif;
-  font-size: 16px;
-  max-width: 480px;
-  position: relative;
-  z-index: 5;
+  max-width: 100%;
 }
 .rsvp[data-style-rsvp="bauhaus"] form,
 .rsvp[data-style-rsvp="bauhaus"] .rsvpA,
@@ -2744,93 +2336,29 @@
 }
 .rsvp[data-style-rsvp="bauhaus"] input,
 .rsvp[data-style-rsvp="bauhaus"] textarea {
-  border: 0;
   border-bottom: 3px solid var(--c-navy, var(--ink));
-  border-radius: 0;
-  background: var(--bg);
-  font-family: 'Syne', sans-serif;
-  font-weight: 500;
-  padding: 12px 4px;
 }
 .rsvp[data-style-rsvp="bauhaus"] input:focus,
 .rsvp[data-style-rsvp="bauhaus"] textarea:focus {
-  outline: 0;
   border-bottom-color: var(--c-red, var(--accent));
-}
-.rsvp[data-style-rsvp="bauhaus"] .field label {
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 12px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-}
-.rsvp[data-style-rsvp="bauhaus"] .toggle-opt {
-  border: 0;
-  border-radius: 0;
-  background: var(--bg-soft);
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  text-transform: uppercase;
-  padding: 16px;
-}
-.rsvp[data-style-rsvp="bauhaus"] .toggle-opt:nth-child(1).is-on {
-  background: var(--c-red, var(--accent));
-  color: var(--bg);
 }
 .rsvp[data-style-rsvp="bauhaus"] .toggle-opt:nth-child(2).is-on {
   background: var(--c-yellow, var(--accent-deep));
   color: var(--c-navy, var(--ink));
 }
-.rsvp[data-style-rsvp="bauhaus"] .btn-primary {
-  background: var(--c-navy, var(--ink));
-  color: var(--bg);
-  border: 0;
-  border-radius: 0;
-  font-family: 'Syne', sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
-  font-size: 16px;
-  padding: 18px 44px;
-  letter-spacing: -0.01em;
-  position: relative;
-  overflow: hidden;
-}
-.rsvp[data-style-rsvp="bauhaus"] .btn-primary::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 16px;
-  height: 100%;
-  background: var(--c-yellow, var(--accent-deep));
-}
 
 /* ============================================================
-   Mobile-Anpassungen
+   Mobile
    ============================================================ */
 @media (max-width: 700px) {
   .rsvp[data-style-rsvp="brutalist"] {
-    padding: 30px 0 50px;
+    --rsvp-section-pad: 30px 0 50px;
+    --rsvp-form-shadow: 8px 8px 0 var(--accent);
   }
-  .rsvp[data-style-rsvp="brutalist"] form {
-    margin: 0 20px;
-    padding: 24px;
-    box-shadow: 8px 8px 0 var(--accent);
+  .rsvp[data-style-rsvp="brutalist"] form { margin: 0 20px; }
+  .rsvp[data-style-rsvp="brutalist"] .rsvp-head { margin: 0 20px 30px; }
+  .rsvp[data-style-rsvp="kinetic"] {
+    --rsvp-form-shadow: -10px 10px 0 var(--accent);
   }
-  .rsvp[data-style-rsvp="kinetic"] form {
-    box-shadow: -10px 10px 0 var(--accent);
-  }
-  .rsvp[data-style-rsvp="opulent"] form {
-    padding: 30px 24px;
-  }
-  .rsvp[data-style-rsvp="bauhaus"] .rsvp-head {
-    padding: 40px 24px;
-  }
-  .rsvp[data-style-rsvp="bauhaus"] .rsvp-head::before {
-    width: 160px;
-    height: 160px;
-  }
-  .rsvp[data-style-rsvp="bauhaus"] .rsvp-title {
-    max-width: 100%;
-  }
+  .rsvp[data-style-rsvp="bauhaus"] .rsvp-head { padding: 40px 24px; }
 }

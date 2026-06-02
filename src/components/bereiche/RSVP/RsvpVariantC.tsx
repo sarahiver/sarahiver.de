@@ -12,7 +12,6 @@ import {
   type RsvpConfig,
 } from './shared';
 import { RsvpHeader, RsvpClosed, RsvpSuccess } from './shared-ui';
-import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 
 /**
  * RSVP Variante C — Chat-Konversation
@@ -266,7 +265,6 @@ export default function RsvpVariantC({ tokens, content }: Props) {
   if (closed) {
     return (
       <div className="rsvp rsvpC-wrap" data-style-rsvp={style}>
-        <StyledBereichBg style={style} />
         <RsvpHeader config={config} />
         <RsvpClosed />
       </div>
@@ -276,7 +274,6 @@ export default function RsvpVariantC({ tokens, content }: Props) {
   if (submitted) {
     return (
       <div className="rsvp rsvpC-wrap" data-style-rsvp={style}>
-        <StyledBereichBg style={style} />
         <RsvpHeader config={config} />
         <RsvpSuccess
           firstName={state.name.split(' ')[0] || ''}
@@ -440,7 +437,6 @@ export default function RsvpVariantC({ tokens, content }: Props) {
 
   return (
     <div className="rsvp rsvpC-wrap" data-style-rsvp={style}>
-        <StyledBereichBg style={style} />
       <RsvpHeader config={config} />
 
       <div className="rsvpC">
