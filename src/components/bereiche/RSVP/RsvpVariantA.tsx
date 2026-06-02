@@ -11,6 +11,7 @@ import {
   type RsvpState,
 } from './shared';
 import { RsvpHeader, RsvpClosed, RsvpSuccess, CustomQuestionField } from './shared-ui';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 
 /**
  * RSVP Variante A — Klassisches Formular
@@ -49,6 +50,7 @@ export default function RsvpVariantA({ tokens, content }: Props) {
   if (closed) {
     return (
       <div className="rsvp rsvpA-wrap" data-style-rsvp={style}>
+        <StyledBereichBg style={style} />
         <RsvpHeader config={config} />
         <RsvpClosed />
       </div>
@@ -58,6 +60,7 @@ export default function RsvpVariantA({ tokens, content }: Props) {
   if (submitted) {
     return (
       <div className="rsvp rsvpA-wrap" data-style-rsvp={style}>
+        <StyledBereichBg style={style} />
         <RsvpHeader config={config} />
         <RsvpSuccess
           firstName={state.name.split(' ')[0] || ''}
@@ -111,6 +114,7 @@ export default function RsvpVariantA({ tokens, content }: Props) {
 
   return (
     <div className="rsvp rsvpA-wrap" data-style-rsvp={style}>
+        <StyledBereichBg style={style} />
       <RsvpHeader config={config} />
 
       <form className="rsvpA" onSubmit={handleSubmit} noValidate>
