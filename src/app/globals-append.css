@@ -1,0 +1,419 @@
+/* ============================================================
+   DESIGN SYSTEM v2 — APPEND BLOCK
+   Bitte ans Ende der bestehenden src/app/globals.css anhängen.
+   Diese Datei NICHT separat einbinden — sie überschreibt absichtlich
+   alte Werte aus :root für 8 Stil-spezifische Layouts.
+   ============================================================ */
+
+/* --- 0. Google Fonts (alle 8 Stile auf einmal) --- */
+@import url('https://fonts.googleapis.com/css2?family=Alumni+Sans+Inline:ital,wght@0,900;1,900&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Cormorant+SC:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Caveat:wght@400..700&family=Karla:ital,wght@0,200..800;1,200..800&family=Manrope:wght@200..800&family=Italiana&family=Syne:wght@700;800&display=swap');
+
+/* --- 1. @property für animierbare Custom Properties (Opulent + Co.) --- */
+@property --shimmer-pos {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+@property --aurora-1 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 50%;
+}
+@property --aurora-2 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 50%;
+}
+
+/* ============================================================
+   STIL 01 · EDITORIAL — Bento + Variable Font Magazine
+   ============================================================ */
+.wedding-site-wrapper[data-style="editorial"] {
+  --bg: #F5F0E8;
+  --ink: #1F1A14;
+  --ink-soft: #5A4F40;
+  --accent: #B85C3A;
+  --accent-deep: #8E4530;
+  --rule: #C9B898;
+  --font-display: 'Fraunces', serif;
+  --font-display-vars: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
+  --font-display-weight: 350;
+  --font-body: 'Manrope', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --display-letter-spacing: -0.03em;
+  --display-line-height: 0.92;
+  --eyebrow-letter-spacing: 0.18em;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+.wedding-site-wrapper[data-style="editorial"] .display,
+.wedding-site-wrapper[data-style="editorial"] .h2-editorial {
+  font-family: var(--font-display);
+  font-variation-settings: var(--font-display-vars);
+  font-weight: var(--font-display-weight);
+  letter-spacing: var(--display-letter-spacing);
+  line-height: var(--display-line-height);
+}
+.wedding-site-wrapper[data-style="editorial"] .display em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+/* ============================================================
+   STIL 02 · BRUTALIST — Marquee + 3D Z-Tilt + Distortion
+   ============================================================ */
+.wedding-site-wrapper[data-style="brutalist"] {
+  --bg: #FFFFFF;
+  --ink: #000000;
+  --ink-soft: #333333;
+  --accent: #E8FF00;
+  --accent-deep: #C5D900;
+  --rule: #000000;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-display-weight: 700;
+  --font-body: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --display-letter-spacing: -0.045em;
+  --display-line-height: 0.82;
+  --display-text-transform: uppercase;
+  --eyebrow-letter-spacing: 0.15em;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+.wedding-site-wrapper[data-style="brutalist"] .display,
+.wedding-site-wrapper[data-style="brutalist"] .h2-editorial {
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  letter-spacing: var(--display-letter-spacing);
+  line-height: var(--display-line-height);
+  text-transform: uppercase;
+}
+.wedding-site-wrapper[data-style="brutalist"] .display em {
+  font-style: normal;
+  background: var(--accent);
+  color: var(--ink);
+  padding: 0 0.1em;
+  display: inline-block;
+  transform: skewX(-6deg);
+}
+.wedding-site-wrapper[data-style="brutalist"] @keyframes br-marquee {
+  to { transform: translateX(-50%); }
+}
+
+/* ============================================================
+   STIL 03 · ORGANIC — Wabernde Formen, Goo, Mesh
+   ============================================================ */
+.wedding-site-wrapper[data-style="organic"] {
+  --bg: #F4F0E6;
+  --bg-deep: #EBE5D2;
+  --ink: #2A2419;
+  --ink-soft: #5A5040;
+  --accent: #B85C3A;
+  --accent-deep: #7C8C6C;
+  --c-sage: #7C8C6C;
+  --c-peach: #E8A98F;
+  --c-coral: #B85C3A;
+  --c-plum: #6B4F5E;
+  --c-gold: #C9A874;
+  --rule: rgba(42, 36, 25, 0.15);
+  --font-display: 'Fraunces', serif;
+  --font-display-vars: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
+  --font-display-weight: 350;
+  --font-display-style: italic;
+  --font-body: 'Karla', sans-serif;
+  --font-script: 'Caveat', cursive;
+  --font-mono: 'JetBrains Mono', monospace;
+  --display-letter-spacing: -0.025em;
+  --display-line-height: 0.95;
+  --eyebrow-letter-spacing: 0.2em;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+.wedding-site-wrapper[data-style="organic"] .display,
+.wedding-site-wrapper[data-style="organic"] .h2-editorial {
+  font-family: var(--font-display);
+  font-variation-settings: var(--font-display-vars);
+  font-weight: var(--font-display-weight);
+  font-style: italic;
+  letter-spacing: var(--display-letter-spacing);
+  line-height: var(--display-line-height);
+}
+.wedding-site-wrapper[data-style="organic"] .display em {
+  font-family: var(--font-script);
+  font-style: normal;
+  color: var(--accent);
+}
+
+/* ============================================================
+   STIL 04 · MONO — Architektur, JetBrains für alles
+   ============================================================ */
+.wedding-site-wrapper[data-style="mono"] {
+  --bg: #FAFAF8;
+  --ink: #0A0A0A;
+  --ink-soft: #6B6B65;
+  --accent: #0A0A0A;
+  --accent-deep: #000000;
+  --rule: #D8D6CF;
+  --font-display: 'JetBrains Mono', monospace;
+  --font-display-weight: 300;
+  --font-body: 'JetBrains Mono', monospace;
+  --font-mono: 'JetBrains Mono', monospace;
+  --display-letter-spacing: -0.04em;
+  --display-line-height: 1.0;
+  --eyebrow-letter-spacing: 0.2em;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+.wedding-site-wrapper[data-style="mono"] .display,
+.wedding-site-wrapper[data-style="mono"] .h2-editorial {
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  letter-spacing: var(--display-letter-spacing);
+  line-height: var(--display-line-height);
+}
+.wedding-site-wrapper[data-style="mono"] .display em {
+  font-style: normal;
+  color: var(--ink-soft);
+}
+
+/* ============================================================
+   STIL 05 · OPULENT — Aurora, Gold-Shimmer, 3D-Stack
+   ============================================================ */
+.wedding-site-wrapper[data-style="opulent"] {
+  --bg: #0E0B08;
+  --bg-soft: #14110E;
+  --bg-mid: #1F1A14;
+  --ink: #F2EAD9;
+  --ink-soft: rgba(242, 234, 217, 0.7);
+  --accent: #C5A572;
+  --accent-deep: #E0C088;
+  --gold: #C5A572;
+  --gold-bright: #E0C088;
+  --rule: rgba(197, 165, 114, 0.4);
+  --font-display: 'Cormorant SC', serif;
+  --font-display-weight: 300;
+  --font-display-style: 'Italiana', serif;
+  --font-body: 'Crimson Pro', serif;
+  --font-body-style: italic;
+  --font-mono: 'JetBrains Mono', monospace;
+  --display-letter-spacing: 0.04em;
+  --display-line-height: 1.0;
+  --eyebrow-letter-spacing: 0.45em;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+.wedding-site-wrapper[data-style="opulent"] .display,
+.wedding-site-wrapper[data-style="opulent"] .h2-editorial {
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  letter-spacing: var(--display-letter-spacing);
+  line-height: var(--display-line-height);
+}
+.wedding-site-wrapper[data-style="opulent"] .display em {
+  font-family: var(--font-display-style);
+  font-style: italic;
+  color: var(--gold);
+}
+
+/* ============================================================
+   STIL 06 · LIQUEFY — Aggressive SVG-Acid-Melt
+   ============================================================ */
+.wedding-site-wrapper[data-style="liquefy"] {
+  --bg: #0D1A10;
+  --bg-soft: #152822;
+  --ink: #D2FFD4;
+  --ink-soft: rgba(210, 255, 212, 0.7);
+  --accent: #D2FFD4;
+  --accent-deep: #A2CBB5;
+  --rule: rgba(210, 255, 212, 0.2);
+  --font-display: 'Fraunces', serif;
+  --font-display-vars: 'opsz' 144;
+  --font-display-weight: 700;
+  --font-display-style: italic;
+  --font-body: 'Syne', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --display-letter-spacing: -0.02em;
+  --display-line-height: 0.88;
+  --eyebrow-letter-spacing: 0.25em;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+.wedding-site-wrapper[data-style="liquefy"] .display,
+.wedding-site-wrapper[data-style="liquefy"] .h2-editorial {
+  font-family: var(--font-display);
+  font-variation-settings: var(--font-display-vars);
+  font-weight: var(--font-display-weight);
+  font-style: italic;
+  letter-spacing: var(--display-letter-spacing);
+  line-height: var(--display-line-height);
+  color: var(--accent);
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+.wedding-site-wrapper[data-style="liquefy"] .display em {
+  font-style: italic;
+  color: var(--accent-deep);
+}
+
+/* ============================================================
+   STIL 07 · KINETIC — Diagonal Marquee + Skewed Magazine
+   ============================================================ */
+.wedding-site-wrapper[data-style="kinetic"] {
+  --bg: #0C0C0C;
+  --bg-soft: #1A1A1A;
+  --ink: #FFFFFF;
+  --ink-soft: rgba(255, 255, 255, 0.7);
+  --accent: #FFCC00;
+  --accent-deep: #E0B400;
+  --rule: rgba(255, 255, 255, 0.15);
+  --font-display: 'Syne', sans-serif;
+  --font-display-weight: 900;
+  --font-display-style: 'Alumni Sans Inline', sans-serif;
+  --font-body: 'Syne', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --display-letter-spacing: -0.04em;
+  --display-line-height: 0.82;
+  --eyebrow-letter-spacing: 0.18em;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+.wedding-site-wrapper[data-style="kinetic"] .display,
+.wedding-site-wrapper[data-style="kinetic"] .h2-editorial {
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  letter-spacing: var(--display-letter-spacing);
+  line-height: var(--display-line-height);
+  text-transform: uppercase;
+}
+.wedding-site-wrapper[data-style="kinetic"] .display em {
+  display: block;
+  font-family: var(--font-display-style);
+  font-style: italic;
+  color: var(--accent);
+  font-weight: 900;
+}
+
+/* ============================================================
+   STIL 08 · BAUHAUS — Geometrische Asymmetrie
+   ============================================================ */
+.wedding-site-wrapper[data-style="bauhaus"] {
+  --bg: #EAE7DF;
+  --bg-soft: #DDD8CC;
+  --ink: #1D2B49;
+  --ink-soft: rgba(29, 43, 73, 0.7);
+  --accent: #E03A3E;
+  --accent-deep: #F5B92B;
+  --c-red: #E03A3E;
+  --c-yellow: #F5B92B;
+  --c-navy: #1D2B49;
+  --rule: rgba(29, 43, 73, 0.15);
+  --font-display: 'Syne', sans-serif;
+  --font-display-weight: 900;
+  --font-body: 'Syne', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --display-letter-spacing: -0.02em;
+  --display-line-height: 0.85;
+  --eyebrow-letter-spacing: 0.25em;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+.wedding-site-wrapper[data-style="bauhaus"] .display,
+.wedding-site-wrapper[data-style="bauhaus"] .h2-editorial {
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  letter-spacing: var(--display-letter-spacing);
+  line-height: var(--display-line-height);
+  text-transform: uppercase;
+}
+.wedding-site-wrapper[data-style="bauhaus"] .display em {
+  font-style: normal;
+  color: var(--accent);
+}
+
+/* ============================================================
+   Globale Animations-Keyframes (von Bereich-Komponenten genutzt)
+   ============================================================ */
+@keyframes br-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes br-marquee-rev {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+@keyframes kin-marquee {
+  from { transform: rotate(-15deg) translateY(-50%) translateX(0); }
+  to   { transform: rotate(-15deg) translateY(-50%) translateX(-50%); }
+}
+@keyframes org-drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(80px, 40px) scale(1.15); }
+  66%      { transform: translate(-40px, 60px) scale(0.85); }
+}
+@keyframes org-drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-100px, -60px) scale(1.2); }
+}
+@keyframes org-drift-c {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(-60px, -50px) scale(1.1); }
+  66%      { transform: translate(80px, -20px) scale(0.9); }
+}
+@keyframes org-drift-d {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-50px, 80px) scale(1.25); }
+}
+@keyframes op-aurora {
+  0%, 100% { --aurora-1: 30%; --aurora-2: 70%; }
+  50%      { --aurora-1: 65%; --aurora-2: 35%; }
+}
+@keyframes op-stars-twinkle {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 0.9; }
+}
+@keyframes op-shimmer {
+  0%   { --shimmer-pos: 0%; }
+  100% { --shimmer-pos: 100%; }
+}
+@keyframes op-gold-flow {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+@keyframes op-stack-float {
+  0%, 100% { transform: rotateX(2deg) rotateY(-1deg); }
+  50%      { transform: rotateX(-2deg) rotateY(2deg); }
+}
+@keyframes liq-blob-shift {
+  0%   { transform: scale(1) rotate(0deg); }
+  100% { transform: scale(1.08) rotate(15deg); }
+}
+@keyframes bau-circle-float {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(20px, 30px); }
+}
+@keyframes bau-rect-rotate {
+  0%, 100% { transform: rotate(-8deg); }
+  50%      { transform: rotate(-3deg) translateX(20px); }
+}
+@keyframes ed-amp-breathe {
+  0%, 100% { transform: rotate(-3deg) scale(1); }
+  50%      { transform: rotate(3deg) scale(1.05); }
+}
+
+/* ============================================================
+   Reduzierte Effekte für reduce-motion / mobile
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .wedding-site-wrapper * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

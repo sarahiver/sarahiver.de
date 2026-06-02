@@ -25,8 +25,6 @@ export async function loadWeddingSite(
       .select('*')
       .eq('slug', slug)
       .maybeSingle(),
-    // Im Published-Mode filtern wir auf is_active. Im Draft-Mode laden wir
-    // alle und filtern erst nach Mapping auf das effektive is_active_draft.
     mode === 'draft'
       ? supabase
           .from('wedding_bereiche')
@@ -46,9 +44,6 @@ export async function loadWeddingSite(
 
   const tokens = tokensResult.data as EffectiveTokens;
 
-  // Im Draft-Mode: site_draft über die View-Werte legen, damit Vorschau
-  // den Bearbeitungszustand zeigt. (View v_effective_tokens kennt nur
-  // Published-Spalten.)
   if (mode === 'draft') {
     try {
       const siteRes = await supabase
@@ -57,14 +52,12 @@ export async function loadWeddingSite(
         .eq('id', tokens.wedding_site_id)
         .maybeSingle();
       const draft = (siteRes.data as { site_draft?: Record<string, unknown> } | null)?.site_draft || {};
-      // Felder, die in EffectiveTokens-Form gemerged werden müssen
       const t = tokens as unknown as Record<string, unknown>;
       if ('hero_image_url' in draft) t.hero_image_url = draft.hero_image_url;
       if ('couple_name_1' in draft) t.couple_name_1 = draft.couple_name_1;
       if ('couple_name_2' in draft) t.couple_name_2 = draft.couple_name_2;
       if ('wedding_date' in draft) t.wedding_date = draft.wedding_date;
       if ('wedding_location' in draft) t.wedding_location = draft.wedding_location;
-      // Farben — Custom-Override checken
       if ('palette_custom_bg' in draft) t.color_bg = draft.palette_custom_bg ?? t.color_bg;
       if ('palette_custom_bg_soft' in draft) t.color_bg_soft = draft.palette_custom_bg_soft ?? t.color_bg_soft;
       if ('palette_custom_accent' in draft) t.color_accent = draft.palette_custom_accent ?? t.color_accent;
@@ -75,8 +68,6 @@ export async function loadWeddingSite(
     }
   }
 
-  // nav_variant separat aus wedding_sites laden (nicht in der View).
-  // Defensive: wenn Spalte/Query fehlschlägt, Fallback auf 'a'.
   let navVariant: string = 'a';
   try {
     const navResult = await supabase
@@ -96,9 +87,6 @@ export async function loadWeddingSite(
   }
   (tokens as unknown as EffectiveTokens & { nav_variant?: string }).nav_variant = navVariant;
 
-  // Bereiche: content_published bzw. content_draft auf content mappen,
-  // damit die Render-Komponenten unverändert weiterlaufen. Im Draft-Mode
-  // zusätzlich variant_draft/display_order_draft/is_active_draft anwenden.
   let bereiche = (bereicheResult.data ?? [])
     .filter((b) => b.wedding_site_id === tokens.wedding_site_id)
     .map((b) => {
@@ -117,17 +105,10 @@ export async function loadWeddingSite(
         content: raw.content_published || raw.content || {},
       } as WeddingBereich;
     })
-    // Erneutes Filtern nach (effektivem) is_active und Sortieren — die
-    // initiale Query filterte auf is_active=true (Published), im Draft-Mode
-    // kann das anders sein. Pragmatisch: alle initial geladenen, danach
-    // effektives Filter und Sort.
     .filter((b) => b.is_active)
     .sort((a, b) => a.display_order - b.display_order);
 
-  // Gästebuch: approved Einträge aus eigener Tabelle laden und in content.entries
-  // injecten, damit die Render-Komponente sie via readEntries() bekommt.
-  // Im Draft-Mode auch pending zeigen, damit das Brautpaar in der Vorschau
-  // sieht, was noch zu moderieren ist (sonst wirkt die Live-Vorschau leer).
+  // Gästebuch-Entries injecten
   const guestbookIdx = bereiche.findIndex((b) => b.bereich_key === 'guestbook');
   if (guestbookIdx !== -1) {
     try {
@@ -146,7 +127,6 @@ export async function loadWeddingSite(
           name: r.name,
           message: r.message,
           created_at: r.created_at,
-          // Im Draft-Mode pending markieren, damit shared-ui ein Badge zeigen könnte
           ...(r.status === 'pending' ? { pending: true } : {}),
         };
       });
@@ -160,8 +140,7 @@ export async function loadWeddingSite(
     }
   }
 
-  // Musikwünsche: Items aus eigener Tabelle laden und in content.items injecten.
-  // Kein Moderationsschritt — alle Einträge sind sofort sichtbar.
+  // Musikwünsche injecten
   const musicIdx = bereiche.findIndex((b) => b.bereich_key === 'musicwishes');
   if (musicIdx !== -1) {
     try {
@@ -191,10 +170,7 @@ export async function loadWeddingSite(
     }
   }
 
-  // Geschenke: Reservierungen aus eigener Tabelle laden und auf die Items
-  // im content.items mergen (reserved=true + reserved_by). Items selbst
-  // werden im Editor gepflegt, Reservierungen sind getrennt, damit ein
-  // Publish nicht versehentlich Reservierungen wegwirft.
+  // Geschenke-Reservierungen mergen
   const giftsIdx = bereiche.findIndex((b) => b.bereich_key === 'gifts');
   if (giftsIdx !== -1) {
     try {
@@ -215,9 +191,6 @@ export async function loadWeddingSite(
             if (guestName) {
               return { ...it, reserved: true, reserved_by: guestName };
             }
-            // Clean: stelle sicher, dass alte reserved-Flags aus content
-            // (falls noch welche da sind) nicht hereinschummeln — nur DB
-            // ist die Wahrheit.
             return { ...it, reserved: false, reserved_by: '' };
           })
         : [];
@@ -230,14 +203,7 @@ export async function loadWeddingSite(
     }
   }
 
-  // Purchase-Filter: nur Bereiche zeigen, die wirklich gebucht sind. So bleibt
-  // Gäste-Seite konsistent zum Dashboard (welches denselben Filter macht).
-  //
-  // Defensiv: Wenn die Query keine Ergebnisse liefert (Tabelle fehlt, RLS
-  // blockiert, leere Booking-Liste eines Pre-Funnel-Datensatzes), filtern wir
-  // NICHT — sonst zeigt die Gäste-Seite gar nichts. Erst wenn Purchases
-  // gefunden werden, wenden wir den Filter an. Das vermeidet das Worst-Case-
-  // Szenario "leere Hochzeitsseite wegen Misskonfiguration".
+  // Purchase-Filter
   try {
     const purchasesResult = await supabase
       .from('wedding_purchases')
@@ -277,14 +243,34 @@ export const SPACING_MULTIPLIER: Record<Spacing, number> = {
 };
 
 /**
- * Per-Stil Image-Filter — gibt Fotos eine konsistente Anmutung.
+ * Per-Stil Image-Filter — gibt Fotos eine konsistente Anmutung pro Stil.
+ *
+ * Design System v2:
+ *   8 Stile statt 5. Image-Filter sind pro Stil grundverschieden,
+ *   damit jedes Brautpaar-Foto sich in den Stil einfügt.
  */
 const IMAGE_FILTERS: Record<string, string> = {
+  // Neue 8 Stile
+  editorial: 'contrast(1.04) saturate(0.92)',
+  brutalist: 'grayscale(1) contrast(1.25)',
+  organic:   'saturate(0.95)',
+  mono:      'grayscale(0.4) contrast(1.02)',
+  opulent:   'sepia(0.2) brightness(1.05) contrast(1.05)',
+  liquefy:   'saturate(0.9) brightness(0.95)',
+  kinetic:   'contrast(1.05) saturate(0.95)',
+  bauhaus:   'grayscale(1) contrast(1.3)',
+  // Legacy-Aliasse, falls noch alte IDs in DB stehen
+  klassisch_warm:   'sepia(0.14) saturate(0.95) contrast(1.02) brightness(1.02)',
+  modern_klar:      'saturate(0.78) contrast(1.06) brightness(1.04)',
+  verspielt_floral: 'saturate(0.82) contrast(0.94) brightness(1.07) sepia(0.08)',
+  minimal_ruhig:    'grayscale(1) contrast(1.05)',
+  bold_festlich:    'saturate(1.08) contrast(1.12) brightness(0.96)',
+  // Kurzform-Aliasse (alt)
   klassisch: 'sepia(0.14) saturate(0.95) contrast(1.02) brightness(1.02)',
-  modern: 'saturate(0.78) contrast(1.06) brightness(1.04)',
-  floral: 'saturate(0.82) contrast(0.94) brightness(1.07) sepia(0.08) hue-rotate(-4deg)',
-  minimal: 'grayscale(1) contrast(1.05)',
-  festlich: 'saturate(1.08) contrast(1.12) brightness(0.96)',
+  modern:    'saturate(0.78) contrast(1.06) brightness(1.04)',
+  floral:    'saturate(0.82) contrast(0.94) brightness(1.07) sepia(0.08)',
+  minimal:   'grayscale(1) contrast(1.05)',
+  festlich:  'saturate(1.08) contrast(1.12) brightness(0.96)',
 };
 
 const PADDING_SCALE = {
@@ -295,11 +281,48 @@ const PADDING_SCALE = {
 };
 
 /**
+ * Baut Cloudinary-URLs für verschiedene Aspect-Ratios aus einer Base-URL.
+ * Wenn die URL kein Cloudinary-Pfad ist, wird sie unverändert zurückgegeben.
+ *
+ * Pattern: .../upload/{transform}/v{version}/{public_id}.jpg
+ */
+export function buildCloudinaryVariants(baseUrl: string | null | undefined): {
+  base: string;
+  portrait: string;
+  square: string;
+  wide: string;
+  tall: string;
+} {
+  const fallback = baseUrl || '';
+  if (!baseUrl || !baseUrl.includes('res.cloudinary.com')) {
+    return { base: fallback, portrait: fallback, square: fallback, wide: fallback, tall: fallback };
+  }
+  // Inject transform-string nach /upload/
+  const inject = (transform: string) =>
+    baseUrl.replace('/upload/', `/upload/${transform}/`);
+
+  return {
+    base:     inject('f_auto,q_auto,w_1600'),
+    portrait: inject('f_auto,q_auto,w_900,c_fill,ar_3:4,g_auto'),
+    square:   inject('f_auto,q_auto,w_900,c_fill,ar_1:1,g_auto'),
+    wide:     inject('f_auto,q_auto,w_1600,c_fill,ar_16:9,g_auto'),
+    tall:     inject('f_auto,q_auto,w_800,c_fill,ar_2:3,g_auto'),
+  };
+}
+
+/**
  * Generiert das CSS-Variable-Inline-Style für eine Hochzeitsseite.
+ *
+ * Design System v2:
+ *   Zusätzlich zu den Basis-Vars werden Cloudinary-Bild-Vars in 5 Aspect-Ratios
+ *   gesetzt (--img-base, --img-portrait, --img-square, --img-wide, --img-tall),
+ *   damit Stile gezielt unterschiedliche Crops nutzen können.
  */
 export function tokensToCSSVariables(tokens: EffectiveTokens): React.CSSProperties {
-  const styleHint = (tokens as unknown as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'klassisch';
-  const imgFilter = IMAGE_FILTERS[styleHint] ?? IMAGE_FILTERS.klassisch;
+  const styleHint = (tokens as unknown as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
+  const imgFilter = IMAGE_FILTERS[styleHint] ?? IMAGE_FILTERS.editorial;
+
+  const imgVars = buildCloudinaryVariants(tokens.hero_image_url);
 
   const style: Record<string, string> = {
     '--bg': tokens.color_bg,
@@ -310,7 +333,7 @@ export function tokensToCSSVariables(tokens: EffectiveTokens): React.CSSProperti
     '--font-display': tokens.font_display,
     '--font-body': tokens.font_body,
     '--font-script': tokens.font_script ?? 'inherit',
-    '--font-mono': "'DM Mono', ui-monospace, monospace",
+    '--font-mono': "'JetBrains Mono', ui-monospace, monospace",
     '--display-weight': String(tokens.display_weight),
     '--display-style': tokens.display_style,
     '--align': tokens.dna_align,
@@ -330,6 +353,12 @@ export function tokensToCSSVariables(tokens: EffectiveTokens): React.CSSProperti
     '--pad-regular': PADDING_SCALE.regular,
     '--pad-airy': PADDING_SCALE.airy,
     '--pad-wide': PADDING_SCALE.wide,
+    // Cloudinary Bild-URLs in 5 Aspect-Ratios als CSS-Vars
+    '--img-base':     `url('${imgVars.base}')`,
+    '--img-portrait': `url('${imgVars.portrait}')`,
+    '--img-square':   `url('${imgVars.square}')`,
+    '--img-wide':     `url('${imgVars.wide}')`,
+    '--img-tall':     `url('${imgVars.tall}')`,
   };
 
   return style as React.CSSProperties;
