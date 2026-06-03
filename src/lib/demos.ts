@@ -1,11 +1,9 @@
 /**
  * Demo-Hochzeiten für die Examples-Sektion v2.
  *
- * 8 fiktive Brautpaare — eine pro Design-Stil. So sieht der User
- * sofort welche Stile verfügbar sind und welche Vibe sie haben.
- *
- * Die URLs sind die geplanten Subdomains. Sobald die Subdomain
- * eingebunden ist, funktioniert "Live ansehen" direkt.
+ * 8 fiktive Brautpaare — eine pro Design-Stil (neues 8-Stil-System).
+ * Das Feld `start` (alter Customizer-Style) ist für Backwards-Compat
+ * mit dem alten Examples.tsx — wird in Phase 2 entfernt.
  */
 
 export interface DemoWedding {
@@ -13,9 +11,10 @@ export interface DemoWedding {
   couple: string;
   date: string;
   location: string;
-  style: string;          // Design-Stil aus design-system-v2 (editorial, brutalist, ...)
-  styleLabel: string;     // schöne Anzeige ("Editorial · warm")
-  config: string;         // Plan-Zeile
+  style: string;          // NEW: Design-Stil aus design-system-v2
+  styleLabel: string;     // NEW: schöne Anzeige
+  start: string;          // OLD: Customizer START_STYLES (klassisch|modern|floral|minimal)
+  config: string;
   url: string;
   featured?: boolean;
   tagline: string;
@@ -29,6 +28,7 @@ export const DEMO_WEDDINGS: DemoWedding[] = [
     location: 'Schloss Wackerbarth, Sachsen',
     style: 'editorial',
     styleLabel: 'Editorial · warm',
+    start: 'klassisch',
     config: 'Standard + 6 Bereiche · 18 €/Monat',
     url: 'julia-tom.sarahiver.de',
     featured: true,
@@ -41,6 +41,7 @@ export const DEMO_WEDDINGS: DemoWedding[] = [
     location: 'Forsthaus Sonne, Schwarzwald',
     style: 'organic',
     styleLabel: 'Organic · weich',
+    start: 'floral',
     config: 'Standard + 3 Bereiche · 14 €/Monat',
     url: 'anna-und-lukas.sarahiver.de',
     tagline: 'Salbei, Rosé, Italic — sanft und natürlich.',
@@ -52,6 +53,7 @@ export const DEMO_WEDDINGS: DemoWedding[] = [
     location: 'Strandhotel Heiligendamm',
     style: 'brutalist',
     styleLabel: 'Brutalist · klar',
+    start: 'minimal',
     config: 'Standard + 9 Bereiche · 21 €/Monat',
     url: 'mia-noah.sarahiver.de',
     tagline: 'Schwarz, weiß, riesengroß. Kompromisslos.',
@@ -63,6 +65,7 @@ export const DEMO_WEDDINGS: DemoWedding[] = [
     location: 'Villa Toskana, Florenz',
     style: 'opulent',
     styleLabel: 'Opulent · golden',
+    start: 'klassisch',
     config: 'Standard + alle Bereiche · 23 €/Monat',
     url: 'elena-felix.sarahiver.de',
     tagline: 'Dark, deep, gold-akzentuiert. Für Abend-Hochzeiten.',
@@ -74,6 +77,7 @@ export const DEMO_WEDDINGS: DemoWedding[] = [
     location: 'Industrie-Loft, Hamburg',
     style: 'mono',
     styleLabel: 'Mono · technisch',
+    start: 'minimal',
     config: 'Standard + 6 Bereiche · 18 €/Monat',
     url: 'lina-jonas.sarahiver.de',
     tagline: 'Monospace, schwarz auf weiß. Architekten-Hochzeit.',
@@ -85,6 +89,7 @@ export const DEMO_WEDDINGS: DemoWedding[] = [
     location: 'Bauhaus-Museum, Dessau',
     style: 'bauhaus',
     styleLabel: 'Bauhaus · primär',
+    start: 'modern',
     config: 'Standard + 3 Bereiche · 14 €/Monat',
     url: 'clara-ben.sarahiver.de',
     tagline: 'Rot, Gelb, Blau, klare Formen. Geometrische Liebe.',
@@ -96,6 +101,7 @@ export const DEMO_WEDDINGS: DemoWedding[] = [
     location: 'Weingut, Pfalz',
     style: 'liquefy',
     styleLabel: 'Liquefy · flüssig',
+    start: 'modern',
     config: 'Standard + 9 Bereiche · 21 €/Monat',
     url: 'paula-jakob.sarahiver.de',
     tagline: 'Tiefe Töne, flüssige Verläufe. Kontemplativ.',
@@ -107,6 +113,7 @@ export const DEMO_WEDDINGS: DemoWedding[] = [
     location: 'Liberté, Hamburg',
     style: 'kinetic',
     styleLabel: 'Kinetic · bewegt',
+    start: 'minimal',
     config: 'Standard + alle Bereiche · 23 €/Monat',
     url: 'sarah-iver.sarahiver.de',
     tagline: 'Marquees, Ticker, Bewegung. Unser eigener Tag.',
