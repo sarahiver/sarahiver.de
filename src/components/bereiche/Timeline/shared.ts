@@ -72,6 +72,61 @@ export function defaultActiveIndex(events: TimelineEvent[]): number {
 }
 
 /**
+ * Parst "HH:MM" zu Minuten seit Mitternacht. Ungültig → null.
+ */
+function parseTimeToMinutes(time: string): number | null {
+  const m = time.match(/^(\d{1,2}):(\d{2})$/);
+  if (!m) return null;
+  const h = parseInt(m[1], 10);
+  const min = parseInt(m[2], 10);
+  if (h > 23 || min > 59) return null;
+  return h * 60 + min;
+}
+
+/**
+ * Berechnet anhand der aktuellen Uhrzeit, welches Event gerade "läuft".
+ * Ein Event läuft, wenn now >= seine Startzeit UND now < Startzeit des
+ * nächsten Events. Das letzte Event läuft ab seiner Startzeit für 3h.
+ *
+ * WICHTIG: nur clientseitig (nach Hydration) aufrufen mit `now` =
+ * new Date() — niemals im SSR-Initial-Render (Hydration-Mismatch).
+ *
+ * Gibt -1 zurück wenn kein Event gerade läuft (z.B. morgens vor allem,
+ * oder spät nachts nach allem).
+ *
+ * Nur sinnvoll am Hochzeitstag selbst — an anderen Tagen gibt es kein
+ * "live". Daher optional ein `weddingDate` zum Tagesabgleich.
+ */
+export function liveEventIndex(
+  events: TimelineEvent[],
+  now: Date,
+  weddingDate?: string,
+): number {
+  if (events.length === 0) return -1;
+
+  // Nur am Hochzeitstag "live" anzeigen
+  if (weddingDate) {
+    const wd = weddingDate.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (wd) {
+      const today = now.toISOString().slice(0, 10);
+      if (today !== `${wd[1]}-${wd[2]}-${wd[3]}`) return -1;
+    }
+  }
+
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  const times = events.map((e) => parseTimeToMinutes(e.time));
+
+  for (let i = 0; i < events.length; i++) {
+    const start = times[i];
+    if (start === null) continue;
+    const next = i + 1 < times.length ? times[i + 1] : null;
+    const end = next !== null ? next : start + 180; // letztes Event: +3h
+    if (nowMin >= start && nowMin < end) return i;
+  }
+  return -1;
+}
+
+/**
  * Emoji-Mapping für Variante A (Badge auf der Karte).
  */
 export function eventEmoji(title: string): string {
