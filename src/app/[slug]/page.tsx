@@ -62,38 +62,42 @@ export default async function WeddingSitePage({ params, searchParams }: PageProp
       : 'S & I';
 
   return (
-    <div
-      style={cssVars}
-      className="wedding-site-wrapper min-h-screen"
-      data-style={style}
-    >
-      <GlobalStyledBg style={style} />
-      <DnaProvider dna={dna}>
-        {navVariant !== 'none' && navItems.length > 0 && (
-          <SiteNav
-            variant={navVariant as 'a' | 'b' | 'c'}
-            items={navItems}
-            coupleShort={coupleShort}
-          />
-        )}
-        <main>
-          {bereiche.map((bereich, index) => {
-            const isLast = index === bereiche.length - 1;
-            const bgKind = getBereichBackground(index, bereich.bereich_key, isLast);
-            return (
-              <section
-                key={bereich.id}
-                id={`bereich-${bereich.bereich_key}`}
-                style={{ background: bgKind === 'bg' ? 'var(--bg)' : 'var(--bg-soft)' }}
-                data-bereich={bereich.bereich_key}
-                data-variant={bereich.variant}
-              >
-                <BereichRenderer bereich={bereich} tokens={tokens} weddingSlug={slug} />
-              </section>
-            );
-          })}
-        </main>
-      </DnaProvider>
-    </div>
+    <>
+      {/* Global ambient BG als SIBLING — nicht Child! */}
+      <GlobalStyledBg style={style} cssVars={cssVars} />
+
+      <div
+        style={cssVars}
+        className="wedding-site-wrapper min-h-screen"
+        data-style={style}
+      >
+        <DnaProvider dna={dna}>
+          {navVariant !== 'none' && navItems.length > 0 && (
+            <SiteNav
+              variant={navVariant as 'a' | 'b' | 'c'}
+              items={navItems}
+              coupleShort={coupleShort}
+            />
+          )}
+          <main>
+            {bereiche.map((bereich, index) => {
+              const isLast = index === bereiche.length - 1;
+              const bgKind = getBereichBackground(index, bereich.bereich_key, isLast);
+              return (
+                <section
+                  key={bereich.id}
+                  id={`bereich-${bereich.bereich_key}`}
+                  style={{ background: bgKind === 'bg' ? 'var(--bg)' : 'var(--bg-soft)' }}
+                  data-bereich={bereich.bereich_key}
+                  data-variant={bereich.variant}
+                >
+                  <BereichRenderer bereich={bereich} tokens={tokens} weddingSlug={slug} />
+                </section>
+              );
+            })}
+          </main>
+        </DnaProvider>
+      </div>
+    </>
   );
 }

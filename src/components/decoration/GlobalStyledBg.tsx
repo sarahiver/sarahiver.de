@@ -1,40 +1,51 @@
 'use client';
 
+import type { CSSProperties } from 'react';
 import DecorationGoo from './DecorationGoo';
 import DecorationAurora from './DecorationAurora';
 import DecorationStars from './DecorationStars';
 import DecorationGrain from './DecorationGrain';
 
 /**
- * GlobalStyledBg — globaler ambient Background-Layer für die Wedding-Site.
+ * GlobalStyledBg — globaler ambient Background-Layer.
  *
- * Wird einmal im Site-Wrapper gerendert (NICHT pro Bereich). Position: fixed,
- * bleibt im Viewport beim Scrollen. Inhalte aller Bereiche scrollen darüber.
+ * WICHTIG: Wird als SIBLING (nicht Child) des wedding-site-wrappers
+ * gerendert. Sonst können transform/filter/will-change auf irgendeinem
+ * Vorfahre den position:fixed brechen, sodass die Blobs mit dem
+ * ersten Bereich rausscrollen.
  *
- * Was hier passiert vs. StyledBereichBg:
- *   - GlobalStyledBg = AMBIENT (Goo-Blobs, Aurora, Stars, Grain, Acid-Blobs).
- *     Pro Stil EIN globales Setting. Bleibt im VP.
- *   - StyledBereichBg = CONTEXT (Brutalist-Marquee überm Form, Mono-Cursor,
- *     Kinetic-Stripes). Pro Bereich, scrollt mit.
+ * Pattern in der Page:
+ *   <>
+ *     <GlobalStyledBg style={style} cssVars={cssVars} />
+ *     <div className="wedding-site-wrapper" style={cssVars} ...>
+ *       ...content...
+ *     </div>
+ *   </>
  *
- * So vermeiden wir den "Blubber-Salat" — User sieht beim Scrollen nicht
- * ständig neue Decorations sondern eine konsistente Atmosphäre.
+ * cssVars werden inline auf den Background-Wrapper gesetzt, damit
+ * var(--accent), var(--bg), etc. korrekt aufgelöst werden — sonst
+ * vererbt das Element die Variables nicht (kein gemeinsamer Parent).
  */
 
 type Props = {
   style: string;
+  cssVars?: CSSProperties;
 };
 
-export default function GlobalStyledBg({ style }: Props) {
+export default function GlobalStyledBg({ style, cssVars }: Props) {
   return (
-    <div className="global-styled-bg" data-style={style} aria-hidden="true">
+    <div
+      className="global-styled-bg"
+      data-style={style}
+      style={cssVars}
+      aria-hidden="true"
+    >
       {style === 'editorial' && <DecorationGrain intensity="soft" />}
 
       {style === 'organic' && (
         <>
           <DecorationGoo intensity="normal" />
           <DecorationGrain intensity="soft" />
-          {/* Zusätzliche große, langsam driftende Blobs für Tiefe */}
           <div className="global-organic-blob global-organic-blob--1" />
           <div className="global-organic-blob global-organic-blob--2" />
           <div className="global-organic-blob global-organic-blob--3" />
@@ -57,9 +68,6 @@ export default function GlobalStyledBg({ style }: Props) {
           <div className="global-liquefy-blob global-liquefy-blob--3" />
         </>
       )}
-
-      {/* Brutalist, Kinetic, Bauhaus: kein globaler BG — zu busy, der
-          Charakter kommt aus dem Layout selbst und pro-Bereich-Decorations */}
     </div>
   );
 }

@@ -3086,22 +3086,13 @@
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
   overflow: hidden;
+  isolation: isolate;
 }
 
-/* Site-Wrapper bekommt position: relative damit fixed-child korrekt liegt */
-.wedding-site-wrapper {
-  position: relative;
-  z-index: 0;
-}
-
-/* Main + alle Sections liegen ÜBER global-styled-bg */
-.wedding-site-wrapper > main,
-.wedding-site-wrapper > main > section {
-  position: relative;
-  z-index: 1;
-}
+/* .wedding-site-wrapper bleibt unverändert — GlobalStyledBg liegt als
+   SIBLING außerhalb, daher kein Stacking-Context-Eingriff hier nötig. */
 
 /* ============================================================
    ORGANIC — 3 große Blobs driften langsam im VP

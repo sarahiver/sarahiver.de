@@ -9,12 +9,9 @@ import type { Metadata } from 'next';
 /**
  * Multi-Tenant Wedding Site Page
  *
- * Wird über die Middleware angesprungen:
- *   sarah-und-iver.sarahiver.de → /site/sarah-und-iver
- *
- * Lädt alle Tokens + Bereiche und rendert die komplette Hochzeitsseite.
- * Setzt globalen ambient Background (GlobalStyledBg, fixed im VP) für den
- * aktuellen Stil — vermeidet wiederholte Blubber pro Bereich.
+ * GlobalStyledBg wird als SIBLING des wedding-site-wrappers gerendert,
+ * NICHT als Child. So bleibt position:fixed auch wirklich relativ
+ * zum Viewport und scrollt nicht mit dem Content raus.
  */
 
 interface PageProps {
@@ -71,27 +68,31 @@ export default async function WeddingSitePage({ params, searchParams }: PageProp
     (tokens as typeof tokens & { start_style_id?: string }).start_style_id ?? 'editorial';
 
   return (
-    <div style={cssVars} className="wedding-site-wrapper min-h-screen" data-style={style}>
-      <GlobalStyledBg style={style} />
-      <DnaProvider dna={dna}>
-        <main>
-          {bereiche.map((bereich, index) => {
-            const isLast = index === bereiche.length - 1;
-            const bgKind = getBereichBackground(index, bereich.bereich_key, isLast);
+    <>
+      {/* Global ambient BG als SIBLING — nicht Child! */}
+      <GlobalStyledBg style={style} cssVars={cssVars} />
 
-            return (
-              <section
-                key={bereich.id}
-                className={bgKind === 'bg' ? 'section-bg' : 'section-bg-soft'}
-                data-bereich={bereich.bereich_key}
-                data-variant={bereich.variant}
-              >
-                <BereichRenderer bereich={bereich} tokens={tokens} />
-              </section>
-            );
-          })}
-        </main>
-      </DnaProvider>
-    </div>
+      <div style={cssVars} className="wedding-site-wrapper min-h-screen" data-style={style}>
+        <DnaProvider dna={dna}>
+          <main>
+            {bereiche.map((bereich, index) => {
+              const isLast = index === bereiche.length - 1;
+              const bgKind = getBereichBackground(index, bereich.bereich_key, isLast);
+
+              return (
+                <section
+                  key={bereich.id}
+                  className={bgKind === 'bg' ? 'section-bg' : 'section-bg-soft'}
+                  data-bereich={bereich.bereich_key}
+                  data-variant={bereich.variant}
+                >
+                  <BereichRenderer bereich={bereich} tokens={tokens} />
+                </section>
+              );
+            })}
+          </main>
+        </DnaProvider>
+      </div>
+    </>
   );
 }
