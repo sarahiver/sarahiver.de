@@ -3,6 +3,7 @@ import { loadWeddingSite, tokensToCSSVariables, getBereichBackground } from '@/l
 import { DnaProvider } from '@/lib/dna-context';
 import { SPACING_MULTIPLIER } from '@/lib/tokens';
 import { BereichRenderer } from '@/components/layout/BereichRenderer';
+import GlobalStyledBg from '@/components/decoration/GlobalStyledBg';
 import type { Metadata } from 'next';
 
 /**
@@ -12,6 +13,8 @@ import type { Metadata } from 'next';
  *   sarah-und-iver.sarahiver.de → /site/sarah-und-iver
  *
  * Lädt alle Tokens + Bereiche und rendert die komplette Hochzeitsseite.
+ * Setzt globalen ambient Background (GlobalStyledBg, fixed im VP) für den
+ * aktuellen Stil — vermeidet wiederholte Blubber pro Bereich.
  */
 
 interface PageProps {
@@ -19,10 +22,8 @@ interface PageProps {
   searchParams: Promise<{ preview?: string }>;
 }
 
-// Cache: 60 Sekunden, falls Brautpaar gerade editiert
 export const revalidate = 60;
 
-// Dynamische SEO-Metadata pro Hochzeit
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const data = await loadWeddingSite(slug);
@@ -43,7 +44,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     description: `Die Hochzeitsseite von ${title}. ${
       data.tokens.wedding_location ? `Hochzeit in ${data.tokens.wedding_location}.` : ''
     }`,
-    robots: { index: false, follow: false }, // private Hochzeitsseiten
+    robots: { index: false, follow: false },
   };
 }
 
@@ -66,8 +67,12 @@ export default async function WeddingSitePage({ params, searchParams }: PageProp
     spacingMultiplier: SPACING_MULTIPLIER[tokens.dna_spacing],
   };
 
+  const style =
+    (tokens as typeof tokens & { start_style_id?: string }).start_style_id ?? 'editorial';
+
   return (
-    <div style={cssVars} className="min-h-screen">
+    <div style={cssVars} className="wedding-site-wrapper min-h-screen" data-style={style}>
+      <GlobalStyledBg style={style} />
       <DnaProvider dna={dna}>
         <main>
           {bereiche.map((bereich, index) => {
@@ -81,10 +86,7 @@ export default async function WeddingSitePage({ params, searchParams }: PageProp
                 data-bereich={bereich.bereich_key}
                 data-variant={bereich.variant}
               >
-                <BereichRenderer
-                  bereich={bereich}
-                  tokens={tokens}
-                />
+                <BereichRenderer bereich={bereich} tokens={tokens} />
               </section>
             );
           })}

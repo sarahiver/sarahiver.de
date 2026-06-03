@@ -311,24 +311,6 @@
   from { transform: rotate(-15deg) translateY(-50%) translateX(0); }
   to   { transform: rotate(-15deg) translateY(-50%) translateX(-50%); }
 }
-@keyframes org-drift-a {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%      { transform: translate(80px, 40px) scale(1.15); }
-  66%      { transform: translate(-40px, 60px) scale(0.85); }
-}
-@keyframes org-drift-b {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50%      { transform: translate(-100px, -60px) scale(1.2); }
-}
-@keyframes org-drift-c {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%      { transform: translate(-60px, -50px) scale(1.1); }
-  66%      { transform: translate(80px, -20px) scale(0.9); }
-}
-@keyframes org-drift-d {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50%      { transform: translate(-50px, 80px) scale(1.25); }
-}
 @keyframes op-aurora {
   0%, 100% { --aurora-1: 30%; --aurora-2: 70%; }
   50%      { --aurora-1: 65%; --aurora-2: 35%; }
@@ -2466,38 +2448,6 @@
 /* ============================================================
    ORGANIC — floating colored blobs with drift
    ============================================================ */
-.styled-bg-organic {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  filter: blur(40px);
-}
-.styled-bg-organic-blob {
-  position: absolute;
-  width: 280px;
-  height: 280px;
-  border-radius: 50%;
-  opacity: 0.5;
-  animation: org-drift 18s ease-in-out infinite;
-}
-.styled-bg-organic-blob--1 {
-  background: var(--accent);
-  top: 5%;
-  left: -80px;
-  animation-delay: 0s;
-}
-.styled-bg-organic-blob--2 {
-  background: var(--accent-deep);
-  bottom: 5%;
-  right: -80px;
-  animation-delay: -9s;
-}
-@keyframes org-drift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%      { transform: translate(60px, -40px) scale(1.1); }
-  66%      { transform: translate(-30px, 30px) scale(0.95); }
-}
 
 /* ============================================================
    MONO — code-comment + blinking cursor
@@ -2575,40 +2525,6 @@
 /* ============================================================
    LIQUEFY — pulsing acid blobs
    ============================================================ */
-.styled-bg-liquefy {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-}
-.styled-bg-liquefy-blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
-  animation: liq-pulse 4s ease-in-out infinite;
-}
-.styled-bg-liquefy-blob--1 {
-  top: 10%;
-  left: 5%;
-  width: 320px;
-  height: 320px;
-  background: var(--accent);
-  opacity: 0.4;
-  animation-delay: 0s;
-}
-.styled-bg-liquefy-blob--2 {
-  bottom: 8%;
-  right: 5%;
-  width: 380px;
-  height: 380px;
-  background: var(--accent-deep);
-  opacity: 0.3;
-  animation-delay: -2s;
-}
-@keyframes liq-pulse {
-  0%, 100% { transform: scale(0.85); opacity: 0.3; }
-  50%      { transform: scale(1.1); opacity: 0.5; }
-}
 
 /* ============================================================
    KINETIC — diagonal scrolling typo stripes
@@ -2694,8 +2610,6 @@
    Mobile reduction
    ============================================================ */
 @media (max-width: 700px) {
-  .styled-bg-organic-blob,
-  .styled-bg-liquefy-blob { width: 180px; height: 180px; }
   .styled-bg-brutalist-star { font-size: 50px; top: 60px; right: 20px; }
   .styled-bg-kinetic-stripe { font-size: 50px; }
   .styled-bg-bauhaus-square { width: 50px; height: 50px; }
@@ -3156,4 +3070,155 @@
   .cdC-bar-label-full { display: none; }
   .cdC-bar-label-short { display: inline; }
   .cd[data-style-countdown="kinetic"] .cdA-unit { transform: none !important; }
+}
+
+/* ============================================================
+   GLOBAL STYLED-BG — ambient Decorations fixed im Viewport
+   ============================================================
+   Liegt im wedding-site-wrapper als erstes Child. Bleibt fixed
+   während User scrollt. Inhalte aller Bereiche scrollen darüber.
+============================================================ */
+
+/* Wrapper: fixed, voll-Viewport, pointer-events: none */
+.global-styled-bg {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* Site-Wrapper bekommt position: relative damit fixed-child korrekt liegt */
+.wedding-site-wrapper {
+  position: relative;
+  z-index: 0;
+}
+
+/* Main + alle Sections liegen ÜBER global-styled-bg */
+.wedding-site-wrapper > main,
+.wedding-site-wrapper > main > section {
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   ORGANIC — 3 große Blobs driften langsam im VP
+   ============================================================ */
+.global-styled-bg[data-style="organic"] .global-organic-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+  animation: org-global-drift 24s ease-in-out infinite;
+}
+.global-organic-blob--1 {
+  width: 480px;
+  height: 480px;
+  background: var(--accent);
+  top: 8%;
+  left: 8%;
+  animation-delay: 0s;
+}
+.global-organic-blob--2 {
+  width: 420px;
+  height: 420px;
+  background: var(--accent-deep);
+  bottom: 12%;
+  right: 10%;
+  animation-delay: -8s;
+}
+.global-organic-blob--3 {
+  width: 320px;
+  height: 320px;
+  background: var(--accent);
+  top: 55%;
+  left: 55%;
+  animation-delay: -16s;
+  opacity: 0.25;
+}
+@keyframes org-global-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(50px, -40px) scale(1.08); }
+  66%      { transform: translate(-30px, 30px) scale(0.94); }
+}
+
+/* ============================================================
+   MONO — globaler Grid-Overlay
+   ============================================================ */
+.global-styled-bg[data-style="mono"] .global-mono-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* ============================================================
+   LIQUEFY — 3 pulsierende Acid-Blobs im VP
+   ============================================================ */
+.global-styled-bg[data-style="liquefy"] .global-liquefy-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  animation: liq-global-pulse 7s ease-in-out infinite;
+}
+.global-liquefy-blob--1 {
+  top: 5%;
+  left: 3%;
+  width: 500px;
+  height: 500px;
+  background: var(--accent);
+  opacity: 0.45;
+  animation-delay: 0s;
+}
+.global-liquefy-blob--2 {
+  bottom: 5%;
+  right: 3%;
+  width: 540px;
+  height: 540px;
+  background: var(--accent-deep);
+  opacity: 0.35;
+  animation-delay: -3s;
+}
+.global-liquefy-blob--3 {
+  top: 40%;
+  left: 50%;
+  width: 380px;
+  height: 380px;
+  background: var(--accent);
+  opacity: 0.25;
+  animation-delay: -5s;
+}
+@keyframes liq-global-pulse {
+  0%, 100% { transform: scale(0.9); }
+  50%      { transform: scale(1.1); }
+}
+
+/* ============================================================
+   Mobile: kleinere Blobs (Performance + weniger Spam)
+   ============================================================ */
+@media (max-width: 700px) {
+  .global-organic-blob,
+  .global-liquefy-blob {
+    width: 240px !important;
+    height: 240px !important;
+    filter: blur(50px);
+  }
+  .global-organic-blob--3,
+  .global-liquefy-blob--3 {
+    display: none;
+  }
+}
+
+/* ============================================================
+   Reduced-motion: Animations weg
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .global-organic-blob,
+  .global-liquefy-blob {
+    animation: none;
+  }
 }
