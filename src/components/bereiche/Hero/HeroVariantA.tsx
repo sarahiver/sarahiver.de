@@ -1,9 +1,5 @@
 import type { EffectiveTokens } from '@/types/supabase';
 import { formatLongDateDE } from '@/lib/date-format';
-import DecorationGoo from '@/components/decoration/DecorationGoo';
-import DecorationAurora from '@/components/decoration/DecorationAurora';
-import DecorationStars from '@/components/decoration/DecorationStars';
-import DecorationGrain from '@/components/decoration/DecorationGrain';
 import DecorationBauhausShapes from '@/components/decoration/DecorationBauhausShapes';
 import DecorationMarquee from '@/components/decoration/DecorationMarquee';
 import DecorationKineticBg from '@/components/decoration/DecorationKineticBg';
@@ -36,19 +32,7 @@ export default function HeroVariantA({ tokens, content }: HeroVariantAProps) {
   return (
     <div className="hero-a" data-style-hero={style}>
       {/* === Stil-spezifische Backgrounds === */}
-      {style === 'editorial' && <DecorationGrain intensity="soft" />}
-      {style === 'organic' && (
-        <>
-          <DecorationGrain intensity="soft" />
-          <DecorationGoo />
-        </>
-      )}
-      {style === 'opulent' && (
-        <>
-          <DecorationAurora />
-          <DecorationStars />
-        </>
-      )}
+
       {style === 'kinetic' && (
         <DecorationKineticBg
           text={`${coupleNames} · ${shortDate} · ${venue || 'Hamburg'}`}

@@ -1,9 +1,5 @@
 import type { EffectiveTokens } from '@/types/supabase';
 import { formatLongDateDE } from '@/lib/date-format';
-import DecorationGoo from '@/components/decoration/DecorationGoo';
-import DecorationAurora from '@/components/decoration/DecorationAurora';
-import DecorationStars from '@/components/decoration/DecorationStars';
-import DecorationGrain from '@/components/decoration/DecorationGrain';
 import DecorationBauhausShapes from '@/components/decoration/DecorationBauhausShapes';
 import DecorationKineticBg from '@/components/decoration/DecorationKineticBg';
 import DecorationLiquefyBlob from '@/components/decoration/DecorationLiquefyBlob';
@@ -46,9 +42,6 @@ export default function HeroVariantB({ tokens, content }: HeroVariantBProps) {
   return (
     <div className="hero-b" data-style-hero={style}>
       {/* Stil-spezifische BG-Decorations (auf der Text-Seite oder global) */}
-      {style === 'editorial' && <DecorationGrain intensity="soft" />}
-      {style === 'organic' && <DecorationGoo intensity="soft" />}
-      {style === 'opulent' && <DecorationAurora />}
       {style === 'kinetic' && (
         <DecorationKineticBg text={`${coupleNames} · ${venue || 'Hamburg'}`} rotation={-15} />
       )}
@@ -105,7 +98,6 @@ export default function HeroVariantB({ tokens, content }: HeroVariantBProps) {
         )}
 
         {/* Stars nach dem Text bei Opulent, damit's nicht hinter Text liegt */}
-        {style === 'opulent' && <DecorationStars density="sparse" />}
       </div>
 
       {/* === RECHTS: Bild === */}

@@ -1,10 +1,6 @@
 import type { EffectiveTokens } from '@/types/supabase';
 import { formatLongDateDE } from '@/lib/date-format';
-import DecorationAurora from '@/components/decoration/DecorationAurora';
-import DecorationStars from '@/components/decoration/DecorationStars';
-import DecorationGrain from '@/components/decoration/DecorationGrain';
 import DecorationMarquee from '@/components/decoration/DecorationMarquee';
-import DecorationGoo from '@/components/decoration/DecorationGoo';
 import DecorationKineticBg from '@/components/decoration/DecorationKineticBg';
 import DecorationBauhausShapes from '@/components/decoration/DecorationBauhausShapes';
 
@@ -81,19 +77,7 @@ export default function HeroVariantC({ tokens, content }: HeroVariantCProps) {
       {/* === Stil-spezifische Overlay-Schichten === */}
       {style === 'editorial' && <div className="hero-c-vignette" aria-hidden="true" />}
       {style === 'mono' && <div className="hero-c-vignette" aria-hidden="true" />}
-      {style === 'opulent' && (
-        <>
-          <div className="hero-c-vignette" aria-hidden="true" />
-          <DecorationAurora blendMode="screen" intensity="strong" />
-          <DecorationStars />
-        </>
-      )}
-      {style === 'organic' && (
-        <>
-          <DecorationGoo intensity="soft" />
-          <DecorationGrain intensity="soft" />
-        </>
-      )}
+      {style === 'opulent' && <div className="hero-c-vignette" aria-hidden="true" />}
       {style === 'liquefy' && (
         <div className="hero-c-liquefy-overlay" aria-hidden="true" />
       )}
