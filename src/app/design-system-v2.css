@@ -3634,3 +3634,351 @@
     --up-btn-shadow: 4px 4px 0 var(--ink);
   }
 }
+
+/* ============================================================
+   DESIGN SYSTEM v2 — GIFTS STYLES PRO STIL
+   ============================================================
+   Layout-Generika bestehen schon in globals.css. Hier nur Overrides
+   pro [data-style-gift="X"] für: eyebrow, title, em, desc, btn,
+   btn-out, input, iban-card, card (B), modal, reserved-tag.
+
+   ORGANIC: alles statisch — keine wobble auf Inputs/Cards/Modal.
+============================================================ */
+
+/* Ornament-Slots default unsichtbar */
+.gift .gift-head-ornament,
+.gift .gift-empty-ornament {
+  display: none;
+}
+
+/* Content above Decorations */
+.gift > *:not([class*="styled-bg-"]):not([class*="Decoration"]) {
+  position: relative;
+  z-index: 5;
+}
+
+/* ===== EDITORIAL ===== */
+.gift[data-style-gift="editorial"] .gift-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.gift[data-style-gift="editorial"] .gift-title {
+  font-family: var(--font-display);
+  font-weight: 350;
+  font-style: italic;
+  letter-spacing: -0.02em;
+}
+.gift[data-style-gift="editorial"] .gift-title em {
+  color: var(--accent);
+  font-style: italic;
+}
+.gift[data-style-gift="editorial"] .gift-btn,
+.gift[data-style-gift="editorial"] .gift-btn-out {
+  border-radius: 2px;
+  letter-spacing: 0.12em;
+}
+.gift[data-style-gift="editorial"] .gift-input {
+  border-radius: 0;
+  border: 0;
+  border-bottom: 1px solid rgba(0,0,0,0.18);
+  background: transparent;
+}
+.gift[data-style-gift="editorial"] .gift-iban,
+.gift[data-style-gift="editorial"] .giftB-iban-card,
+.gift[data-style-gift="editorial"] .gift-modal,
+.gift[data-style-gift="editorial"] .giftB-card {
+  border-radius: 0;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+/* ===== BRUTALIST ===== */
+.gift[data-style-gift="brutalist"] .gift-eyebrow {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 8px 14px;
+  display: inline-block;
+  font-family: var(--font-mono);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+.gift[data-style-gift="brutalist"] .gift-title {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.04em;
+}
+.gift[data-style-gift="brutalist"] .gift-btn {
+  background: var(--accent);
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  border-radius: 0;
+  box-shadow: 6px 6px 0 var(--ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.gift[data-style-gift="brutalist"] .gift-btn:hover:not(:disabled) {
+  transform: translate(-3px, -3px);
+  box-shadow: 9px 9px 0 var(--ink);
+}
+.gift[data-style-gift="brutalist"] .gift-btn-out {
+  border: 3px solid var(--ink);
+  border-radius: 0;
+  background: var(--bg);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.gift[data-style-gift="brutalist"] .gift-input,
+.gift[data-style-gift="brutalist"] .gift-iban,
+.gift[data-style-gift="brutalist"] .giftB-iban-card,
+.gift[data-style-gift="brutalist"] .gift-modal,
+.gift[data-style-gift="brutalist"] .giftB-card {
+  border-radius: 0;
+  border: 3px solid var(--ink);
+}
+.gift[data-style-gift="brutalist"] .giftB-card,
+.gift[data-style-gift="brutalist"] .giftB-iban-card {
+  box-shadow: 8px 8px 0 var(--accent);
+}
+
+/* ===== ORGANIC (statisch, rounded, soft) ===== */
+.gift[data-style-gift="organic"] .gift-eyebrow {
+  font-family: var(--font-script);
+  font-size: 24px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--accent);
+}
+.gift[data-style-gift="organic"] .gift-title {
+  font-style: italic;
+  font-weight: 350;
+}
+.gift[data-style-gift="organic"] .gift-btn,
+.gift[data-style-gift="organic"] .gift-btn-out {
+  border-radius: 100px;
+}
+.gift[data-style-gift="organic"] .gift-btn {
+  background: var(--accent);
+  color: var(--bg);
+}
+.gift[data-style-gift="organic"] .gift-field-label {
+  font-family: var(--font-script);
+  font-size: 16px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--accent);
+}
+.gift[data-style-gift="organic"] .gift-input {
+  border-radius: 24px;
+  border: 1.5px solid rgba(0,0,0,0.1);
+  padding: 14px 20px;
+}
+.gift[data-style-gift="organic"] .gift-iban,
+.gift[data-style-gift="organic"] .giftB-iban-card,
+.gift[data-style-gift="organic"] .gift-modal,
+.gift[data-style-gift="organic"] .giftB-card {
+  border-radius: 24px;
+  background: var(--bg-soft);
+  border: 0;
+}
+
+/* ===== MONO ===== */
+.gift[data-style-gift="mono"] .gift-eyebrow {
+  font-family: var(--font-mono);
+  color: rgba(0,0,0,0.55);
+}
+.gift[data-style-gift="mono"] .gift-title {
+  font-family: var(--font-mono);
+  font-weight: 300;
+  text-transform: lowercase;
+  letter-spacing: -0.04em;
+}
+.gift[data-style-gift="mono"] .gift-title em {
+  color: rgba(0,0,0,0.55);
+  font-style: normal;
+}
+.gift[data-style-gift="mono"] .gift-btn,
+.gift[data-style-gift="mono"] .gift-btn-out,
+.gift[data-style-gift="mono"] .gift-input,
+.gift[data-style-gift="mono"] .gift-iban,
+.gift[data-style-gift="mono"] .giftB-iban-card,
+.gift[data-style-gift="mono"] .gift-modal,
+.gift[data-style-gift="mono"] .giftB-card {
+  border-radius: 0;
+}
+.gift[data-style-gift="mono"] .gift-btn,
+.gift[data-style-gift="mono"] .gift-btn-out {
+  font-family: var(--font-mono);
+}
+
+/* ===== OPULENT ===== */
+.gift[data-style-gift="opulent"] .gift-eyebrow {
+  font-family: 'Italiana', serif;
+  font-size: 13px;
+  letter-spacing: 0.5em;
+  color: var(--gold, var(--accent));
+}
+.gift[data-style-gift="opulent"] .gift-title {
+  font-family: 'Cormorant SC', serif;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+}
+.gift[data-style-gift="opulent"] .gift-title em {
+  font-family: 'Italiana', serif;
+}
+.gift[data-style-gift="opulent"] .gift-btn {
+  background: var(--gold, var(--accent));
+  color: var(--bg);
+  border-radius: 0;
+  font-family: 'Italiana', serif;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+}
+.gift[data-style-gift="opulent"] .gift-btn-out {
+  border-radius: 0;
+  border: 1px solid var(--gold, var(--accent));
+  color: var(--gold, var(--accent));
+  font-family: 'Italiana', serif;
+  letter-spacing: 0.35em;
+}
+.gift[data-style-gift="opulent"] .gift-input,
+.gift[data-style-gift="opulent"] .gift-iban,
+.gift[data-style-gift="opulent"] .giftB-iban-card,
+.gift[data-style-gift="opulent"] .gift-modal,
+.gift[data-style-gift="opulent"] .giftB-card {
+  border-radius: 0;
+  border: 1px solid rgba(197,165,114,0.4);
+}
+
+/* ===== LIQUEFY ===== */
+.gift[data-style-gift="liquefy"] .gift-eyebrow {
+  font-family: var(--font-mono);
+  color: var(--accent-deep);
+  letter-spacing: 0.3em;
+}
+.gift[data-style-gift="liquefy"] .gift-title {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 700;
+}
+.gift[data-style-gift="liquefy"] .gift-title em {
+  color: var(--accent-deep);
+}
+.gift[data-style-gift="liquefy"] .gift-btn,
+.gift[data-style-gift="liquefy"] .gift-btn-out {
+  border-radius: 24px;
+  font-family: 'Fraunces', serif;
+}
+.gift[data-style-gift="liquefy"] .gift-btn {
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 700;
+}
+.gift[data-style-gift="liquefy"] .gift-input {
+  border-radius: 16px;
+  border: 1.5px solid rgba(210,255,212,0.35);
+}
+.gift[data-style-gift="liquefy"] .gift-iban,
+.gift[data-style-gift="liquefy"] .giftB-iban-card,
+.gift[data-style-gift="liquefy"] .gift-modal,
+.gift[data-style-gift="liquefy"] .giftB-card {
+  border-radius: 32px;
+  border: 1px solid rgba(210,255,212,0.3);
+  box-shadow: 0 0 60px rgba(210,255,212,0.25);
+}
+
+/* ===== KINETIC ===== */
+.gift[data-style-gift="kinetic"] .gift-eyebrow {
+  font-family: var(--font-mono);
+  color: var(--accent);
+}
+.gift[data-style-gift="kinetic"] .gift-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.04em;
+}
+.gift[data-style-gift="kinetic"] .gift-btn {
+  background: var(--accent);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  box-shadow: 6px 6px 0 var(--ink);
+  font-family: 'Syne', sans-serif;
+  font-weight: 900;
+  transform: rotate(-2deg);
+  transition: transform 0.2s;
+}
+.gift[data-style-gift="kinetic"] .gift-btn:hover:not(:disabled) {
+  transform: rotate(0deg) scale(1.02);
+}
+.gift[data-style-gift="kinetic"] .gift-btn-out {
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+}
+.gift[data-style-gift="kinetic"] .gift-input,
+.gift[data-style-gift="kinetic"] .gift-iban,
+.gift[data-style-gift="kinetic"] .gift-modal,
+.gift[data-style-gift="kinetic"] .giftB-iban-card,
+.gift[data-style-gift="kinetic"] .giftB-card {
+  border-radius: 0;
+  border: 2px solid var(--ink);
+}
+.gift[data-style-gift="kinetic"] .giftB-card,
+.gift[data-style-gift="kinetic"] .giftB-iban-card {
+  box-shadow: -8px 8px 0 var(--accent);
+}
+
+/* ===== BAUHAUS ===== */
+.gift[data-style-gift="bauhaus"] .gift-eyebrow {
+  font-family: var(--font-mono);
+  letter-spacing: 0.25em;
+  color: var(--c-red, var(--accent));
+}
+.gift[data-style-gift="bauhaus"] .gift-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+.gift[data-style-gift="bauhaus"] .gift-btn {
+  background: var(--c-navy, var(--ink));
+  color: var(--bg);
+  border-radius: 0;
+  font-family: 'Syne', sans-serif;
+  font-weight: 900;
+}
+.gift[data-style-gift="bauhaus"] .gift-btn-out {
+  border: 2px solid var(--c-navy, var(--ink));
+  border-radius: 0;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+}
+.gift[data-style-gift="bauhaus"] .gift-input {
+  border-radius: 0;
+  border: 0;
+  border-bottom: 3px solid var(--c-navy, var(--ink));
+  background: var(--bg);
+}
+.gift[data-style-gift="bauhaus"] .gift-iban,
+.gift[data-style-gift="bauhaus"] .gift-modal,
+.gift[data-style-gift="bauhaus"] .giftB-iban-card,
+.gift[data-style-gift="bauhaus"] .giftB-card {
+  border-radius: 0;
+  background: var(--bg-soft);
+  border: 0;
+}
+
+/* Mobile reduzieren */
+@media (max-width: 700px) {
+  .gift[data-style-gift="brutalist"] .gift-btn { box-shadow: 4px 4px 0 var(--ink); }
+  .gift[data-style-gift="brutalist"] .giftB-card,
+  .gift[data-style-gift="brutalist"] .giftB-iban-card { box-shadow: 4px 4px 0 var(--accent); }
+  .gift[data-style-gift="kinetic"] .gift-btn { box-shadow: 4px 4px 0 var(--ink); }
+  .gift[data-style-gift="kinetic"] .giftB-card,
+  .gift[data-style-gift="kinetic"] .giftB-iban-card { box-shadow: -4px 4px 0 var(--accent); }
+}

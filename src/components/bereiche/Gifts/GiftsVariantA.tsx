@@ -11,6 +11,7 @@ import {
   ReserveModal,
   GiftEmpty,
 } from './shared-ui';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 
 /**
  * Geschenke Variante A — Zeilen-Liste mit Reservieren + IBAN-Karte
@@ -25,12 +26,18 @@ interface Props {
   weddingSlug?: string;
 }
 
-export default function GiftsVariantA({ content, weddingSlug }: Props) {
+export default function GiftsVariantA({ tokens, content, weddingSlug }: Props) {
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const config = readConfig(content);
   const g = useGifts(readItems(content), weddingSlug);
 
   return (
-    <div className="gift giftA-section">
+    <div className="gift giftA-section" data-style-gift={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
       <GiftHeader config={config} />
 
       <div className="giftA-wrap">

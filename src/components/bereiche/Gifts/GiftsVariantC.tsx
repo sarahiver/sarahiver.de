@@ -11,6 +11,7 @@ import {
   ReserveModal,
   GiftEmpty,
 } from './shared-ui';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 
 /**
  * Geschenke Variante C — Editorial: überlappende Foto-Collage + Liste
@@ -26,7 +27,9 @@ interface Props {
   weddingSlug?: string;
 }
 
-export default function GiftsVariantC({ content, weddingSlug }: Props) {
+export default function GiftsVariantC({ tokens, content, weddingSlug }: Props) {
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const config = readConfig(content);
   const g = useGifts(readItems(content), weddingSlug);
 
@@ -35,7 +38,11 @@ export default function GiftsVariantC({ content, weddingSlug }: Props) {
   const showCollage = collage.length > 0;
 
   return (
-    <div className="gift giftC-section">
+    <div className="gift giftC-section" data-style-gift={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
       <GiftHeader config={config} />
 
       <div className="giftC-wrap">

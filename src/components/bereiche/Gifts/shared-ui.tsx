@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import Decor from '@/components/ui/Decor';
 import { renderTitleWithEm, type GiftsConfig, type GiftItem } from './shared';
 import { IconCheck, IconCopy, IconX, IconBookmark } from './icons';
 
@@ -19,9 +18,7 @@ export function GiftHeader({ config }: { config: GiftsConfig }) {
         data-edit-type="text"
         dangerouslySetInnerHTML={{ __html: renderTitleWithEm(config.title) }}
       />
-      <div className="gift-head-decor-wrap">
-        <Decor />
-      </div>
+      <div className="gift-head-ornament" aria-hidden="true" />
       {config.description && (
         <p className="gift-desc" data-editable="gifts.description" data-edit-type="text">
           {config.description}
@@ -257,7 +254,7 @@ export function ReserveModal({
 export function GiftEmpty({ ibanEnabled }: { ibanEnabled: boolean }) {
   return (
     <div className="gift-empty">
-      <Decor />
+      <div className="gift-empty-ornament" aria-hidden="true" />
       <span>
         {ibanEnabled
           ? 'Wir freuen uns über jeden Beitrag zur Reisekasse.'
