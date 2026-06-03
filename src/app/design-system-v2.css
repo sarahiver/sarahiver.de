@@ -2569,41 +2569,35 @@
 }
 
 /* ============================================================
-   BAUHAUS — rotating geometric blocks
-   ============================================================ */
+   BAUHAUS — minimaler konsistenter Akzent pro Bereich
+   ============================================================
+   Statt 4 floating Shapes (Square+Circle+DecorationBauhausShapes)
+   pro Bereich: nur EIN winziges gelbes Quadrat top-right. Konsistent,
+   ruhig, in jeder Reihenfolge gut. Hero hat seine eigene Composition
+   über DecorationBauhausShapes direkt im Hero-Component.
+============================================================ */
 .styled-bg-bauhaus {
   position: absolute;
   inset: 0;
+  pointer-events: none;
   z-index: 0;
-  overflow: hidden;
 }
-.styled-bg-bauhaus-square {
+.styled-bg-bauhaus-marker {
   position: absolute;
-  top: 10%;
-  right: 10%;
-  width: 80px;
-  height: 80px;
+  top: 28px;
+  right: 28px;
+  width: 18px;
+  height: 18px;
   background: var(--c-yellow, var(--accent-deep));
-  animation: bau-rotate 12s linear infinite;
-  mix-blend-mode: multiply;
 }
-.styled-bg-bauhaus-circle {
-  position: absolute;
-  bottom: 12%;
-  left: 8%;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background: var(--c-red, var(--accent));
-  animation: bau-bounce 3s ease-in-out infinite;
-  mix-blend-mode: multiply;
-}
-@keyframes bau-rotate {
-  to { transform: rotate(360deg); }
-}
-@keyframes bau-bounce {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50%      { transform: translateY(-20px) scale(1.05); }
+
+@media (max-width: 700px) {
+  .styled-bg-bauhaus-marker {
+    width: 12px;
+    height: 12px;
+    top: 18px;
+    right: 18px;
+  }
 }
 
 /* ============================================================
@@ -2612,8 +2606,6 @@
 @media (max-width: 700px) {
   .styled-bg-brutalist-star { font-size: 50px; top: 60px; right: 20px; }
   .styled-bg-kinetic-stripe { font-size: 50px; }
-  .styled-bg-bauhaus-square { width: 50px; height: 50px; }
-  .styled-bg-bauhaus-circle { width: 60px; height: 60px; }
 }
 
 /* ============================================================

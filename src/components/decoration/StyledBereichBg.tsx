@@ -1,18 +1,14 @@
-import DecorationBauhausShapes from './DecorationBauhausShapes';
 import DecorationKineticBg from './DecorationKineticBg';
 
 /**
  * StyledBereichBg — pro-Bereich CONTEXT-Decorations.
  *
- * Was hier passiert vs. GlobalStyledBg:
- *   - StyledBereichBg = CONTEXT. Decorations die zum Bereich gehören
- *     (Brutalist-Marquee überm Form, Mono-Cursor neben Eyebrow, etc.)
- *     Scrollen mit dem Bereich mit.
- *   - GlobalStyledBg = AMBIENT (Goo, Aurora, Stars, Grain). Bleibt im VP.
- *     Liegt im Site-Wrapper, NICHT pro Bereich.
- *
- * Ambient-Decorations (Goo, Aurora, Stars, Grain, Acid-Blobs) sind
- * AUS DIESER KOMPONENTE RAUSGENOMMEN — die kommen aus GlobalStyledBg.
+ * BAUHAUS update: drastisch reduziert. Statt 4 Shapes pro Bereich
+ * (DecorationBauhausShapes + Square + Circle) nur noch EIN winziger
+ * konsistenter Akzent (gelbes Quadrat top-right, 18px). Sieht in
+ * jedem Bereich gleich aus, egal in welcher Reihenfolge sie liegen.
+ * Hero behält sein eigenes DecorationBauhausShapes-Direct-Import als
+ * Composition-Spot (der eine prominente Stil-Showcase).
  */
 
 type Props = {
@@ -75,17 +71,14 @@ export default function StyledBereichBg({ style, marqueeText }: Props) {
       );
 
     case 'bauhaus':
+      // Drastisch reduziert: ein winziger konsistenter Akzent statt 4 Shapes
       return (
-        <>
-          <DecorationBauhausShapes shapes={['circle', 'rect']} />
-          <div className="styled-bg-bauhaus" aria-hidden="true">
-            <div className="styled-bg-bauhaus-square" />
-            <div className="styled-bg-bauhaus-circle" />
-          </div>
-        </>
+        <div className="styled-bg-bauhaus" aria-hidden="true">
+          <div className="styled-bg-bauhaus-marker" />
+        </div>
       );
 
-    // Organic, Liquefy: keine context-Decoration mehr — alles ambient global.
+    // Organic, Liquefy: keine context-Decoration — alles ambient global.
     default:
       return null;
   }
