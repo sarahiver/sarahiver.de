@@ -4047,3 +4047,297 @@
     padding: 6px 12px;
   }
 }
+
+/* ============================================================
+   POLISH-PHASE — Pro-Stil-Overrides für die 10 neuen Bereiche
+   ============================================================
+   Nutzt :where()-Listen damit der Selektor in einer Definition
+   alle 10 Bereiche gleichzeitig erfasst. :where() hat 0 Spezifität,
+   d.h. spezifischere Bereich-Regeln können später überschreiben.
+
+   Bereiche: MusicWishes (mw), Guestbook (gb), Accommodations (acc),
+   Directions (dir), Gallery (gal), Timeline (tl), Witnesses (wit),
+   Lovestory (ls), WeddingABC (abc), FAQ (faq).
+
+   Elemente pro Bereich: eyebrow, title, btn (wenn vorhanden), input
+   (wenn vorhanden). Reicht für ~80% des visuellen Charakters.
+============================================================ */
+
+/* --- Variablen-Listen abgekürzt mit :where() --- */
+
+/* === EDITORIAL === */
+.wedding-site-wrapper[data-style="editorial"] :where(
+  .mw-eyebrow, .gb-eyebrow, .acc-eyebrow, .dir-eyebrow,
+  .gal-eyebrow, .tl-eyebrow, .wit-eyebrow, .ls-eyebrow,
+  .abc-eyebrow, .faq-eyebrow
+) {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.wedding-site-wrapper[data-style="editorial"] :where(
+  .mw-title, .gb-title, .acc-title, .dir-title,
+  .gal-title, .tl-title, .wit-title, .ls-title,
+  .abc-title, .faq-title
+) {
+  font-family: var(--font-display);
+  font-weight: 350;
+  font-style: italic;
+  letter-spacing: -0.02em;
+}
+.wedding-site-wrapper[data-style="editorial"] :where(.mw-btn, .gb-btn, .acc-btn, .dir-btn) {
+  border-radius: 2px;
+  letter-spacing: 0.12em;
+}
+.wedding-site-wrapper[data-style="editorial"] :where(.mw-input, .gb-input) {
+  border-radius: 0;
+  border: 0;
+  border-bottom: 1px solid rgba(0,0,0,0.18);
+  background: transparent;
+}
+
+/* === BRUTALIST === */
+.wedding-site-wrapper[data-style="brutalist"] :where(
+  .mw-eyebrow, .gb-eyebrow, .acc-eyebrow, .dir-eyebrow,
+  .gal-eyebrow, .tl-eyebrow, .wit-eyebrow, .ls-eyebrow,
+  .abc-eyebrow, .faq-eyebrow
+) {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 8px 14px;
+  display: inline-block;
+  font-family: var(--font-mono);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+.wedding-site-wrapper[data-style="brutalist"] :where(
+  .mw-title, .gb-title, .acc-title, .dir-title,
+  .gal-title, .tl-title, .wit-title, .ls-title,
+  .abc-title, .faq-title
+) {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.04em;
+}
+.wedding-site-wrapper[data-style="brutalist"] :where(.mw-btn, .gb-btn, .acc-btn, .dir-btn) {
+  background: var(--accent);
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  border-radius: 0;
+  box-shadow: 6px 6px 0 var(--ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.wedding-site-wrapper[data-style="brutalist"] :where(.mw-input, .gb-input) {
+  border: 3px solid var(--ink);
+  border-radius: 0;
+}
+
+/* === ORGANIC === */
+.wedding-site-wrapper[data-style="organic"] :where(
+  .mw-eyebrow, .gb-eyebrow, .acc-eyebrow, .dir-eyebrow,
+  .gal-eyebrow, .tl-eyebrow, .wit-eyebrow, .ls-eyebrow,
+  .abc-eyebrow, .faq-eyebrow
+) {
+  font-family: var(--font-script);
+  font-size: 24px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--accent);
+}
+.wedding-site-wrapper[data-style="organic"] :where(
+  .mw-title, .gb-title, .acc-title, .dir-title,
+  .gal-title, .tl-title, .wit-title, .ls-title,
+  .abc-title, .faq-title
+) {
+  font-style: italic;
+  font-weight: 350;
+}
+.wedding-site-wrapper[data-style="organic"] :where(.mw-btn, .gb-btn, .acc-btn, .dir-btn) {
+  border-radius: 100px;
+  background: var(--accent);
+  color: var(--bg);
+}
+.wedding-site-wrapper[data-style="organic"] :where(.mw-input, .gb-input) {
+  border-radius: 24px;
+  border: 1.5px solid rgba(0,0,0,0.1);
+  padding: 14px 20px;
+}
+
+/* === MONO === */
+.wedding-site-wrapper[data-style="mono"] :where(
+  .mw-eyebrow, .gb-eyebrow, .acc-eyebrow, .dir-eyebrow,
+  .gal-eyebrow, .tl-eyebrow, .wit-eyebrow, .ls-eyebrow,
+  .abc-eyebrow, .faq-eyebrow
+) {
+  font-family: var(--font-mono);
+  color: rgba(0,0,0,0.55);
+}
+.wedding-site-wrapper[data-style="mono"] :where(
+  .mw-title, .gb-title, .acc-title, .dir-title,
+  .gal-title, .tl-title, .wit-title, .ls-title,
+  .abc-title, .faq-title
+) {
+  font-family: var(--font-mono);
+  font-weight: 300;
+  text-transform: lowercase;
+  letter-spacing: -0.04em;
+}
+.wedding-site-wrapper[data-style="mono"] :where(.mw-btn, .gb-btn, .acc-btn, .dir-btn) {
+  border-radius: 0;
+  font-family: var(--font-mono);
+}
+.wedding-site-wrapper[data-style="mono"] :where(.mw-input, .gb-input) {
+  border-radius: 0;
+  font-family: var(--font-mono);
+}
+
+/* === OPULENT === */
+.wedding-site-wrapper[data-style="opulent"] :where(
+  .mw-eyebrow, .gb-eyebrow, .acc-eyebrow, .dir-eyebrow,
+  .gal-eyebrow, .tl-eyebrow, .wit-eyebrow, .ls-eyebrow,
+  .abc-eyebrow, .faq-eyebrow
+) {
+  font-family: 'Italiana', serif;
+  font-size: 13px;
+  letter-spacing: 0.5em;
+  color: var(--gold, var(--accent));
+}
+.wedding-site-wrapper[data-style="opulent"] :where(
+  .mw-title, .gb-title, .acc-title, .dir-title,
+  .gal-title, .tl-title, .wit-title, .ls-title,
+  .abc-title, .faq-title
+) {
+  font-family: 'Cormorant SC', serif;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+}
+.wedding-site-wrapper[data-style="opulent"] :where(.mw-btn, .gb-btn, .acc-btn, .dir-btn) {
+  background: var(--gold, var(--accent));
+  color: var(--bg);
+  border-radius: 0;
+  font-family: 'Italiana', serif;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+}
+.wedding-site-wrapper[data-style="opulent"] :where(.mw-input, .gb-input) {
+  border-radius: 0;
+  border: 1px solid rgba(197,165,114,0.4);
+  background: transparent;
+}
+
+/* === LIQUEFY === */
+.wedding-site-wrapper[data-style="liquefy"] :where(
+  .mw-eyebrow, .gb-eyebrow, .acc-eyebrow, .dir-eyebrow,
+  .gal-eyebrow, .tl-eyebrow, .wit-eyebrow, .ls-eyebrow,
+  .abc-eyebrow, .faq-eyebrow
+) {
+  font-family: var(--font-mono);
+  color: var(--accent-deep);
+  letter-spacing: 0.3em;
+}
+.wedding-site-wrapper[data-style="liquefy"] :where(
+  .mw-title, .gb-title, .acc-title, .dir-title,
+  .gal-title, .tl-title, .wit-title, .ls-title,
+  .abc-title, .faq-title
+) {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 700;
+}
+.wedding-site-wrapper[data-style="liquefy"] :where(.mw-btn, .gb-btn, .acc-btn, .dir-btn) {
+  border-radius: 24px;
+  font-family: 'Fraunces', serif;
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 700;
+}
+.wedding-site-wrapper[data-style="liquefy"] :where(.mw-input, .gb-input) {
+  border-radius: 16px;
+  border: 1.5px solid rgba(210,255,212,0.35);
+}
+
+/* === KINETIC === */
+.wedding-site-wrapper[data-style="kinetic"] :where(
+  .mw-eyebrow, .gb-eyebrow, .acc-eyebrow, .dir-eyebrow,
+  .gal-eyebrow, .tl-eyebrow, .wit-eyebrow, .ls-eyebrow,
+  .abc-eyebrow, .faq-eyebrow
+) {
+  font-family: var(--font-mono);
+  color: var(--accent);
+}
+.wedding-site-wrapper[data-style="kinetic"] :where(
+  .mw-title, .gb-title, .acc-title, .dir-title,
+  .gal-title, .tl-title, .wit-title, .ls-title,
+  .abc-title, .faq-title
+) {
+  font-family: 'Syne', sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.04em;
+}
+.wedding-site-wrapper[data-style="kinetic"] :where(.mw-btn, .gb-btn, .acc-btn, .dir-btn) {
+  background: var(--accent);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  box-shadow: 6px 6px 0 var(--ink);
+  font-family: 'Syne', sans-serif;
+  font-weight: 900;
+  transform: rotate(-2deg);
+}
+.wedding-site-wrapper[data-style="kinetic"] :where(.mw-input, .gb-input) {
+  border-radius: 0;
+  border: 2px solid var(--ink);
+}
+
+/* === BAUHAUS === */
+.wedding-site-wrapper[data-style="bauhaus"] :where(
+  .mw-eyebrow, .gb-eyebrow, .acc-eyebrow, .dir-eyebrow,
+  .gal-eyebrow, .tl-eyebrow, .wit-eyebrow, .ls-eyebrow,
+  .abc-eyebrow, .faq-eyebrow
+) {
+  font-family: var(--font-mono);
+  letter-spacing: 0.25em;
+  color: var(--c-red, var(--accent));
+}
+.wedding-site-wrapper[data-style="bauhaus"] :where(
+  .mw-title, .gb-title, .acc-title, .dir-title,
+  .gal-title, .tl-title, .wit-title, .ls-title,
+  .abc-title, .faq-title
+) {
+  font-family: 'Syne', sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+.wedding-site-wrapper[data-style="bauhaus"] :where(.mw-btn, .gb-btn, .acc-btn, .dir-btn) {
+  background: var(--c-navy, var(--ink));
+  color: var(--bg);
+  border-radius: 0;
+  font-family: 'Syne', sans-serif;
+  font-weight: 900;
+}
+.wedding-site-wrapper[data-style="bauhaus"] :where(.mw-input, .gb-input) {
+  border-radius: 0;
+  border: 0;
+  border-bottom: 3px solid var(--c-navy, var(--ink));
+}
+
+/* ============================================================
+   BAUHAUS-IMG-RESET — Sicherheitsnetz
+   ============================================================
+   Image-8 zeigt graue Boxen statt Bilder bei Bauhaus.
+   Falls irgendwo ein filter/opacity die img überdeckt: reset.
+============================================================ */
+.wedding-site-wrapper[data-style="bauhaus"] img {
+  opacity: 1;
+  filter: none;
+  display: block;
+}
+.wedding-site-wrapper[data-style="bauhaus"] iframe {
+  opacity: 1;
+  filter: none;
+}
