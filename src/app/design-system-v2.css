@@ -4006,3 +4006,44 @@
   width: 100%;
   max-width: 100vw;
 }
+
+/* ============================================================
+   SITENAV — Wrap-Fix für viele Items (14+ Bereiche)
+   ============================================================
+   Variante A (Floating Pill) + B (Top-Bar) haben kein flex-wrap.
+   Bei 14+ Bereichen lief das aus dem Viewport. Lösung: wrap auf
+   beiden, plus max-width + sinnvolles Row-Gap.
+   Pill-Border-Radius runter auf 28px damit's auch in 2-3 Zeilen
+   ok aussieht (statt 999px-Pill, das nur in einer Zeile schön ist).
+============================================================ */
+
+.snavA-pill {
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: min(1100px, 92vw);
+  border-radius: 28px;
+  row-gap: 4px;
+}
+
+.snavB-inner {
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+
+.snavB-links {
+  flex-wrap: wrap;
+  justify-content: center;
+  row-gap: 4px;
+}
+
+/* Bei sehr vielen Items: kleinere Pill-Items damit's nicht zu sehr wrapt */
+@media (min-width: 900px) {
+  .snavA-pill {
+    /* Kompakteres Padding wenn viele Links — pure Heuristik */
+    padding: 5px;
+  }
+  .snavA-link {
+    font-size: 12.5px;
+    padding: 6px 12px;
+  }
+}
