@@ -3982,3 +3982,27 @@
   .gift[data-style-gift="kinetic"] .giftB-card,
   .gift[data-style-gift="kinetic"] .giftB-iban-card { box-shadow: -4px 4px 0 var(--accent); }
 }
+
+/* ============================================================
+   LAYOUT-CONTAINMENT — Catastrophic-Fix für Brutalist/Kinetic
+   ============================================================
+   Sections im wedding-site-wrapper MÜSSEN position:relative +
+   overflow:hidden sein. Sonst clemmen position:absolute Decorations
+   (DecorationKineticBg mit width:200%, KineticBg stripes, etc.) zum
+   <body> und erweitern den viewport horizontal — das produziert die
+   "Content in schmaler Spalte + leerer Raum rechts" Layout-Bruch.
+============================================================ */
+
+.wedding-site-wrapper {
+  overflow-x: clip;
+  max-width: 100vw;
+}
+
+.wedding-site-wrapper > main > section,
+.wedding-site-wrapper > main > section.section-bg,
+.wedding-site-wrapper > main > section.section-bg-soft {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
