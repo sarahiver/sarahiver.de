@@ -11,6 +11,7 @@ import {
 import { useMusicWishesForm } from './useMusicWishesForm';
 import { MwHeader, MwSuccessStrip, MwError, MwDuplicateHint, MwEmpty } from './shared-ui';
 import { IconNote, IconDisc } from './icons';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 
 /**
  * Musikwünsche Variante C — Jukebox / Vinyl-Optik
@@ -26,7 +27,10 @@ interface Props {
   weddingSlug?: string;
 }
 
-export default function MusicWishesVariantC({ content, weddingSlug }: Props) {
+export default function MusicWishesVariantC({ tokens, content, weddingSlug }: Props) {
+
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const eyebrow = (content.eyebrow as string) ?? MUSICWISHES_DEFAULTS.eyebrow;
   const title = (content.title as string) ?? MUSICWISHES_DEFAULTS.title;
   const description = (content.description as string) ?? MUSICWISHES_DEFAULTS.description;
@@ -37,7 +41,11 @@ export default function MusicWishesVariantC({ content, weddingSlug }: Props) {
   const sending = f.phase === 'sending';
 
   return (
-    <div className="mw mwC-section">
+    <div className="mw mwC-section" data-style-music={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
       <MwHeader eyebrow={eyebrow} title={title} description={description} />
 
       <div className="mwC-wrap">

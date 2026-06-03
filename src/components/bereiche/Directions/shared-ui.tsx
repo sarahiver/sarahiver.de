@@ -1,4 +1,3 @@
-import Decor from '@/components/ui/Decor';
 import { renderTitleWithEm, type DirLocation } from './shared';
 import { transitIcon, IconPin } from './icons';
 
@@ -24,9 +23,7 @@ export function DirHeader({
         data-edit-type="text"
         dangerouslySetInnerHTML={{ __html: renderTitleWithEm(title) }}
       />
-      <div className="dir-head-decor-wrap">
-        <Decor />
-      </div>
+      <div className="dir-head-ornament" aria-hidden="true" />
       {description && (
         <p className="dir-desc" data-editable="directions.description" data-edit-type="text">
           {description}
@@ -103,7 +100,7 @@ export function MapFrame({
 export function DirEmpty() {
   return (
     <div className="dir-empty">
-      <Decor />
+      <div className="dir-ornament" aria-hidden="true" />
       <span>Die Anfahrt geben wir euch in Kürze bekannt.</span>
     </div>
   );

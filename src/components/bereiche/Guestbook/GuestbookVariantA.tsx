@@ -6,6 +6,7 @@ import { formatShortDateDE } from '@/lib/date-format';
 import { useGuestbookForm } from './useGuestbookForm';
 import { GbHeader, GbSuccess, GbModHint, GbError, GbEmpty } from './shared-ui';
 import { IconSend } from './icons';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 
 /**
  * Gästebuch Variante A — Formular oben, Einträge als Karten-Raster
@@ -20,7 +21,10 @@ interface Props {
   weddingSlug?: string;
 }
 
-export default function GuestbookVariantA({ content, weddingSlug }: Props) {
+export default function GuestbookVariantA({ tokens, content, weddingSlug }: Props) {
+
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const eyebrow = (content.eyebrow as string) ?? GUESTBOOK_DEFAULTS.eyebrow;
   const title = (content.title as string) ?? GUESTBOOK_DEFAULTS.title;
   const description = (content.description as string) ?? GUESTBOOK_DEFAULTS.description;
@@ -33,7 +37,11 @@ export default function GuestbookVariantA({ content, weddingSlug }: Props) {
   const sending = f.phase === 'sending';
 
   return (
-    <div className="gb gbA-section">
+    <div className="gb gbA-section" data-style-guest={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
       <GbHeader eyebrow={eyebrow} title={title} description={description} />
 
       <div className="gbA-wrap">

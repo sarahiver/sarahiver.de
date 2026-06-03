@@ -1,6 +1,7 @@
 import type { EffectiveTokens } from '@/types/supabase';
 import { DIR_DEFAULTS, readLocations, renderDesc } from './shared';
 import { DirHeader, DirLabelChip, DirTransit, RouteBtn, MapFrame, DirEmpty } from './shared-ui';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 
 /**
  * Anfahrt Variante C — Karten-Stapel, je eigene Map
@@ -15,7 +16,10 @@ interface Props {
   content: Record<string, unknown>;
 }
 
-export default function DirectionsVariantC({ content }: Props) {
+export default function DirectionsVariantC({ tokens, content }: Props) {
+
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const eyebrow = (content.eyebrow as string) ?? DIR_DEFAULTS.eyebrow;
   const title = (content.title as string) ?? DIR_DEFAULTS.title;
   const description = (content.description as string) ?? DIR_DEFAULTS.description;
@@ -23,7 +27,11 @@ export default function DirectionsVariantC({ content }: Props) {
 
   if (items.length === 0) {
     return (
-      <div className="dir dirC-section">
+      <div className="dir dirC-section" data-style-dir={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
         <DirHeader eyebrow={eyebrow} title={title} description={description} />
         <DirEmpty />
       </div>
@@ -31,7 +39,7 @@ export default function DirectionsVariantC({ content }: Props) {
   }
 
   return (
-    <div className="dir dirC-section">
+    <div className="dir dirC-section" data-style-dir={style}>
       <DirHeader eyebrow={eyebrow} title={title} description={description} />
 
       <div className="dirC-wrap">

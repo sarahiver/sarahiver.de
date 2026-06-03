@@ -1,6 +1,7 @@
 import type { EffectiveTokens } from '@/types/supabase';
 import { FAQ_DEFAULTS, readItems, renderAnswer } from './shared';
 import { FaqHeader, FaqEmpty } from './shared-ui';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 
 /**
  * FAQ Variante B — Karten-Raster
@@ -13,14 +14,21 @@ interface Props {
   content: Record<string, unknown>;
 }
 
-export default function FaqVariantB({ content }: Props) {
+export default function FaqVariantB({ tokens, content }: Props) {
+
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const eyebrow = (content.eyebrow as string) ?? FAQ_DEFAULTS.eyebrow;
   const title = (content.title as string) ?? FAQ_DEFAULTS.title;
   const description = (content.description as string) ?? FAQ_DEFAULTS.description;
   const items = readItems(content);
 
   return (
-    <div className="faq faqB-section">
+    <div className="faq faqB-section" data-style-faq={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
       <FaqHeader eyebrow={eyebrow} title={title} description={description} />
 
       {items.length === 0 ? (

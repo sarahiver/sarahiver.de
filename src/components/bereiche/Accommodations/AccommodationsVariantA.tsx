@@ -2,6 +2,7 @@ import type { EffectiveTokens } from '@/types/supabase';
 import { ACC_DEFAULTS, readItems, renderDesc } from './shared';
 import { AccHeader, AccMeta, BookBtn, AccPhoto, AccEmpty } from './shared-ui';
 import { CopyCode } from './CopyCode';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 
 /**
  * Übernachtung Variante A — Foto-Karten (Bild oben, Details unten)
@@ -15,7 +16,10 @@ interface Props {
   content: Record<string, unknown>;
 }
 
-export default function AccommodationsVariantA({ content }: Props) {
+export default function AccommodationsVariantA({ tokens, content }: Props) {
+
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const eyebrow = (content.eyebrow as string) ?? ACC_DEFAULTS.eyebrow;
   const title = (content.title as string) ?? ACC_DEFAULTS.title;
   const description = (content.description as string) ?? ACC_DEFAULTS.description;
@@ -25,7 +29,11 @@ export default function AccommodationsVariantA({ content }: Props) {
     items.length === 1 ? ' is-one' : items.length === 2 ? ' is-two' : '';
 
   return (
-    <div className="acc accA-section">
+    <div className="acc accA-section" data-style-acc={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
       <AccHeader eyebrow={eyebrow} title={title} description={description} />
 
       {items.length === 0 ? (

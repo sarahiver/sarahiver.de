@@ -1,4 +1,3 @@
-import Decor from '@/components/ui/Decor';
 import { renderTitleWithEm } from './shared';
 
 export function AbcHeader({
@@ -23,9 +22,7 @@ export function AbcHeader({
         data-edit-type="text"
         dangerouslySetInnerHTML={{ __html: renderTitleWithEm(title) }}
       />
-      <div className="abc-head-decor-wrap">
-        <Decor />
-      </div>
+      <div className="abc-head-ornament" aria-hidden="true" />
       {description && (
         <p className="abc-desc" data-editable="weddingabc.description" data-edit-type="text">
           {description}
@@ -38,7 +35,7 @@ export function AbcHeader({
 export function AbcEmpty() {
   return (
     <div className="abc-empty">
-      <Decor />
+      <div className="abc-ornament" aria-hidden="true" />
       <span>Unser Hochzeits-ABC füllt sich bald.</span>
     </div>
   );

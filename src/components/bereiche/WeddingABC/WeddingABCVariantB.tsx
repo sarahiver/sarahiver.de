@@ -1,6 +1,7 @@
 import type { EffectiveTokens } from '@/types/supabase';
 import { ABC_DEFAULTS, readEntries, renderText } from './shared';
 import { AbcHeader, AbcEmpty } from './shared-ui';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 
 /**
  * Hochzeits-ABC Variante B — Karten-Raster mit Buchstaben-Badge
@@ -13,14 +14,21 @@ interface Props {
   content: Record<string, unknown>;
 }
 
-export default function WeddingABCVariantB({ content }: Props) {
+export default function WeddingABCVariantB({ tokens, content }: Props) {
+
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const eyebrow = (content.eyebrow as string) ?? ABC_DEFAULTS.eyebrow;
   const title = (content.title as string) ?? ABC_DEFAULTS.title;
   const description = (content.description as string) ?? ABC_DEFAULTS.description;
   const items = readEntries(content);
 
   return (
-    <div className="abc abcB-section">
+    <div className="abc abcB-section" data-style-abc={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
       <AbcHeader eyebrow={eyebrow} title={title} description={description} />
 
       {items.length === 0 ? (

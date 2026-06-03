@@ -1,5 +1,5 @@
 import type { EffectiveTokens } from '@/types/supabase';
-import Decor from '@/components/ui/Decor';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 import {
   LOVESTORY_DEFAULTS,
   readImagesA,
@@ -20,6 +20,9 @@ interface Props {
 }
 
 export default function LovestoryVariantA({ tokens, content }: Props) {
+
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const eyebrow = (content.eyebrow as string) ?? LOVESTORY_DEFAULTS.a_eyebrow;
   const title = (content.title as string) ?? LOVESTORY_DEFAULTS.a_title;
   const when = (content.when as string) ?? LOVESTORY_DEFAULTS.a_when;
@@ -32,7 +35,11 @@ export default function LovestoryVariantA({ tokens, content }: Props) {
   const images = readImagesA(content);
 
   return (
-    <div className="ls lsA">
+    <div className="ls lsA" data-style-ls={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
       <p
         className="ls-eyebrow"
         data-editable="lovestory.eyebrow"
@@ -46,9 +53,7 @@ export default function LovestoryVariantA({ tokens, content }: Props) {
         data-edit-type="text"
         dangerouslySetInnerHTML={{ __html: renderTitleWithEm(title) }}
       />
-      <div className="ls-head-decor-wrap">
-        <Decor />
-      </div>
+      <div className="ls-head-ornament" aria-hidden="true" />
 
       <div className="lsA-single">
         <div className="lsA-images">

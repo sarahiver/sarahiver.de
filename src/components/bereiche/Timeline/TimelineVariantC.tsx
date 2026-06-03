@@ -8,6 +8,8 @@ import {
   defaultActiveIndex,
 } from './shared';
 import { TimelineHeader, LocationPill, NowTag, TimelineEmpty } from './shared-ui';
+import { useLiveEventIndex } from './use-live-event';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 
 /**
  * Timeline Variante C — Classic · Größen-Sprung
@@ -23,18 +25,26 @@ interface Props {
   content: Record<string, unknown>;
 }
 
-export default function TimelineVariantC({ content }: Props) {
+export default function TimelineVariantC({ tokens, content }: Props) {
+
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const eyebrow = (content.eyebrow as string) ?? TIMELINE_DEFAULTS.eyebrow;
   const title = (content.title as string) ?? TIMELINE_DEFAULTS.title;
   const description = (content.description as string) ?? TIMELINE_DEFAULTS.description;
   const events = readEvents(content);
 
   const [active, setActive] = useState(() => defaultActiveIndex(events));
+  const liveIdx = useLiveEventIndex(events, tokens.wedding_date);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   if (events.length === 0) {
     return (
-      <div className="tl tlC-section">
+      <div className="tl tlC-section" data-style-tl={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
         <TimelineHeader eyebrow={eyebrow} title={title} description={description} />
         <TimelineEmpty />
       </div>
@@ -54,7 +64,7 @@ export default function TimelineVariantC({ content }: Props) {
   };
 
   return (
-    <div className="tl tlC-section">
+    <div className="tl tlC-section" data-style-tl={style}>
       <TimelineHeader eyebrow={eyebrow} title={title} description={description} />
 
       <div className="tlC-wrap">
@@ -83,7 +93,7 @@ export default function TimelineVariantC({ content }: Props) {
                   style={{ backgroundImage: `url('${e.image}')` }}
                 />
               )}
-              {e.current && (
+              {i === liveIdx && (
                 <div className="tlC-now-row">
                   <NowTag />
                 </div>

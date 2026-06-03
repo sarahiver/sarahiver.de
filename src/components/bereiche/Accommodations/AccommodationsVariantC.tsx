@@ -11,6 +11,7 @@ import {
 import { AccHeader, AccMeta, AccEmpty } from './shared-ui';
 import { CopyCode } from './CopyCode';
 import { IconExt, IconHeart } from './icons';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 
 /**
  * Übernachtung Variante C — Karte + Liste (Google Maps Embed + Pins)
@@ -32,7 +33,10 @@ interface Props {
   content: Record<string, unknown>;
 }
 
-export default function AccommodationsVariantC({ content }: Props) {
+export default function AccommodationsVariantC({ tokens, content }: Props) {
+
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const eyebrow = (content.eyebrow as string) ?? ACC_DEFAULTS.eyebrow;
   const title = (content.title as string) ?? ACC_DEFAULTS.title;
   const description = (content.description as string) ?? ACC_DEFAULTS.description;
@@ -52,7 +56,11 @@ export default function AccommodationsVariantC({ content }: Props) {
 
   if (items.length === 0) {
     return (
-      <div className="acc accC-section">
+      <div className="acc accC-section" data-style-acc={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
         <AccHeader eyebrow={eyebrow} title={title} description={description} />
         <AccEmpty />
       </div>
@@ -60,7 +68,7 @@ export default function AccommodationsVariantC({ content }: Props) {
   }
 
   return (
-    <div className="acc accC-section">
+    <div className="acc accC-section" data-style-acc={style}>
       <AccHeader eyebrow={eyebrow} title={title} description={description} />
 
       <div className="accC-wrap">

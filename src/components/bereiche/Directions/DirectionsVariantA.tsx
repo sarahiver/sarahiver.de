@@ -1,6 +1,7 @@
 import type { EffectiveTokens } from '@/types/supabase';
 import { DIR_DEFAULTS, readLocations, renderDesc } from './shared';
 import { DirHeader, DirLabelChip, DirTransit, RouteBtn, MapFrame, DirEmpty } from './shared-ui';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 
 /**
  * Anfahrt Variante A — Karte oben, Location-Infos darunter
@@ -14,7 +15,10 @@ interface Props {
   content: Record<string, unknown>;
 }
 
-export default function DirectionsVariantA({ content }: Props) {
+export default function DirectionsVariantA({ tokens, content }: Props) {
+
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const eyebrow = (content.eyebrow as string) ?? DIR_DEFAULTS.eyebrow;
   const title = (content.title as string) ?? DIR_DEFAULTS.title;
   const description = (content.description as string) ?? DIR_DEFAULTS.description;
@@ -22,7 +26,11 @@ export default function DirectionsVariantA({ content }: Props) {
 
   if (items.length === 0) {
     return (
-      <div className="dir dirA-section">
+      <div className="dir dirA-section" data-style-dir={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
         <DirHeader eyebrow={eyebrow} title={title} description={description} />
         <DirEmpty />
       </div>
@@ -33,7 +41,7 @@ export default function DirectionsVariantA({ content }: Props) {
   const gridCls = items.length === 1 ? ' is-one' : '';
 
   return (
-    <div className="dir dirA-section">
+    <div className="dir dirA-section" data-style-dir={style}>
       <DirHeader eyebrow={eyebrow} title={title} description={description} />
 
       <div className="dirA-wrap">

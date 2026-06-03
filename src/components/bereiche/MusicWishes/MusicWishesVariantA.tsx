@@ -5,6 +5,7 @@ import { MUSICWISHES_DEFAULTS, readItems, formatDayMonthDE } from './shared';
 import { useMusicWishesForm } from './useMusicWishesForm';
 import { MwHeader, MwSuccessStrip, MwError, MwDuplicateHint, MwEmpty } from './shared-ui';
 import { IconNote, IconPlus, IconDisc } from './icons';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 
 /**
  * Musikwünsche Variante A — Formular oben, Wunschliste als Songzeilen
@@ -19,7 +20,10 @@ interface Props {
   weddingSlug?: string;
 }
 
-export default function MusicWishesVariantA({ content, weddingSlug }: Props) {
+export default function MusicWishesVariantA({ tokens, content, weddingSlug }: Props) {
+
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const eyebrow = (content.eyebrow as string) ?? MUSICWISHES_DEFAULTS.eyebrow;
   const title = (content.title as string) ?? MUSICWISHES_DEFAULTS.title;
   const description = (content.description as string) ?? MUSICWISHES_DEFAULTS.description;
@@ -30,7 +34,11 @@ export default function MusicWishesVariantA({ content, weddingSlug }: Props) {
   const sending = f.phase === 'sending';
 
   return (
-    <div className="mw mwA-section">
+    <div className="mw mwA-section" data-style-music={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
       <MwHeader eyebrow={eyebrow} title={title} description={description} />
 
       <div className="mwA-wrap">

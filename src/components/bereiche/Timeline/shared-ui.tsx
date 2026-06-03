@@ -1,4 +1,3 @@
-import Decor from '@/components/ui/Decor';
 import { renderTitleWithEm, type TimelineEvent } from './shared';
 
 /**
@@ -26,9 +25,7 @@ export function TimelineHeader({
         data-edit-type="text"
         dangerouslySetInnerHTML={{ __html: renderTitleWithEm(title) }}
       />
-      <div className="tl-head-decor-wrap">
-        <Decor />
-      </div>
+      <div className="tl-head-ornament" aria-hidden="true" />
       {description && (
         <p className="tl-desc" data-editable="timeline.description" data-edit-type="text">
           {description}
@@ -66,19 +63,15 @@ export function LocationPill({
 }) {
   if (!event.location_name) return null;
   const cls = `loc-pill${glass ? ' glass' : ''}${className ? ' ' + className : ''}`;
-  if (event.location_url) {
-    return (
-      <a className={cls} href={event.location_url} target="_blank" rel="noopener noreferrer">
-        <PinIcon />
-        <span>{event.location_name}</span>
-      </a>
-    );
-  }
+  // Echte URL falls vorhanden, sonst Maps-Suche nach dem Namen generieren.
+  const href =
+    event.location_url ||
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location_name)}`;
   return (
-    <span className={cls}>
+    <a className={cls} href={href} target="_blank" rel="noopener noreferrer">
       <PinIcon />
       <span>{event.location_name}</span>
-    </span>
+    </a>
   );
 }
 
@@ -96,14 +89,24 @@ export function NowTag() {
 
 /**
  * Inline-Location für Variante A (kleiner, ohne Pill-Hintergrund).
+ * Klickbar → Google Maps.
  */
 export function LocationInline({ event }: { event: TimelineEvent }) {
   if (!event.location_name) return null;
+  const href =
+    event.location_url ||
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location_name)}`;
   return (
-    <div className="tlA-loc-inline">
+    <a
+      className="tlA-loc-inline"
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={(e) => e.stopPropagation()}
+    >
       <PinIcon />
       <span>{event.location_name}</span>
-    </div>
+    </a>
   );
 }
 

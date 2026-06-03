@@ -1,4 +1,3 @@
-import Decor from '@/components/ui/Decor';
 import { renderTitleWithEm } from './shared';
 import { IconCheck } from './icons';
 
@@ -24,9 +23,7 @@ export function MwHeader({
         data-edit-type="text"
         dangerouslySetInnerHTML={{ __html: renderTitleWithEm(title) }}
       />
-      <div className="mw-head-decor-wrap">
-        <Decor />
-      </div>
+      <div className="mw-head-ornament" aria-hidden="true" />
       {description && (
         <p className="mw-desc" data-editable="musicwishes.description" data-edit-type="text">
           {description}
@@ -70,7 +67,7 @@ export function MwDuplicateHint() {
 export function MwEmpty() {
   return (
     <div className="mw-empty">
-      <Decor />
+      <div className="mw-ornament" aria-hidden="true" />
       <span>Noch keine Wünsche — macht den Anfang!</span>
     </div>
   );

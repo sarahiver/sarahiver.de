@@ -1,6 +1,6 @@
 import type { EffectiveTokens } from '@/types/supabase';
-import Decor from '@/components/ui/Decor';
 import GalleryClient from './GalleryClient';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 import {
   GALLERY_DEFAULTS,
   readImages,
@@ -20,13 +20,20 @@ interface Props {
 }
 
 export default function GalleryVariantC({ tokens, content }: Props) {
+
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const eyebrow = (content.eyebrow as string) ?? GALLERY_DEFAULTS.eyebrow;
   const title = (content.title as string) ?? GALLERY_DEFAULTS.title;
   const intro = (content.intro as string) ?? GALLERY_DEFAULTS.intro;
   const images = readImages(content);
 
   return (
-    <div className="gal galC-wrap">
+    <div className="gal galC-wrap" data-style-gallery={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
       <p
         className="gal-eyebrow"
         data-editable="gallery.eyebrow"
@@ -40,9 +47,7 @@ export default function GalleryVariantC({ tokens, content }: Props) {
         data-edit-type="text"
         dangerouslySetInnerHTML={{ __html: renderTitleWithEm(title) }}
       />
-      <div className="gal-head-decor-wrap">
-        <Decor />
-      </div>
+      <div className="gal-head-ornament" aria-hidden="true" />
       {intro && (
         <p
           className="gal-intro"

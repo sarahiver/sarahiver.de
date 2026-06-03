@@ -9,16 +9,16 @@ import {
   eventEmoji,
 } from './shared';
 import { TimelineHeader, LocationInline, TimelineEmpty } from './shared-ui';
+import { useLiveEventIndex } from './use-live-event';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 
 /**
  * Timeline Variante A — Contemporary · Horizontale Karten
  *
  * Karten hängen an einer horizontalen Rail. Aktive Karte hebt sich
  * (scale + translateY), inaktive sind leicht rotiert (sticker-look).
- * Klick aktiviert eine Karte.
- *
- * Client Component wegen aktivem State. Initial-Active = current-Event
- * (oder 0) — deterministisch, also SSR-safe.
+ * Klick aktiviert eine Karte. Rail-Dot des LIVE-Events pulsiert
+ * (echte Uhrzeit, SSR-safe).
  */
 
 interface Props {
@@ -26,17 +26,25 @@ interface Props {
   content: Record<string, unknown>;
 }
 
-export default function TimelineVariantA({ content }: Props) {
+export default function TimelineVariantA({ tokens, content }: Props) {
+
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const eyebrow = (content.eyebrow as string) ?? TIMELINE_DEFAULTS.eyebrow;
   const title = (content.title as string) ?? TIMELINE_DEFAULTS.title;
   const description = (content.description as string) ?? TIMELINE_DEFAULTS.description;
   const events = readEvents(content);
 
   const [active, setActive] = useState(() => defaultActiveIndex(events));
+  const liveIdx = useLiveEventIndex(events, tokens.wedding_date);
 
   if (events.length === 0) {
     return (
-      <div className="tl tlA-section">
+      <div className="tl tlA-section" data-style-tl={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
         <TimelineHeader eyebrow={eyebrow} title={title} description={description} />
         <TimelineEmpty />
       </div>
@@ -46,7 +54,7 @@ export default function TimelineVariantA({ content }: Props) {
   const safeActive = Math.max(0, Math.min(events.length - 1, active));
 
   return (
-    <div className="tl tlA-section">
+    <div className="tl tlA-section" data-style-tl={style}>
       <TimelineHeader eyebrow={eyebrow} title={title} description={description} />
 
       <div className="tlA-wrap">
@@ -84,7 +92,7 @@ export default function TimelineVariantA({ content }: Props) {
             return (
               <span
                 key={e.id}
-                className={`tlA-rail-dot ${e.current ? 'is-current' : ''}`}
+                className={`tlA-rail-dot ${i === liveIdx ? 'is-current' : ''}`}
                 style={{ left: `${left.toFixed(2)}%` }}
               />
             );

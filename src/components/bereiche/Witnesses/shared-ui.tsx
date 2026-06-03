@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
-import Decor from '@/components/ui/Decor';
 import {
   renderTitleWithEm,
   initialsOf,
@@ -33,9 +32,7 @@ export function WitHeader({
         data-edit-type="text"
         dangerouslySetInnerHTML={{ __html: renderTitleWithEm(title) }}
       />
-      <div className="wit-head-decor-wrap">
-        <Decor />
-      </div>
+      <div className="wit-head-ornament" aria-hidden="true" />
       {description && (
         <p className="wit-desc" data-editable="witnesses.description" data-edit-type="text">
           {description}
@@ -133,7 +130,7 @@ export function WitContacts({
 export function WitEmpty() {
   return (
     <div className="wit-empty">
-      <Decor />
+      <div className="wit-ornament" aria-hidden="true" />
       <span>Ansprechpartner folgen in Kürze.</span>
     </div>
   );

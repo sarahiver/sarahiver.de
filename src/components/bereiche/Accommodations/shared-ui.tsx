@@ -1,4 +1,3 @@
-import Decor from '@/components/ui/Decor';
 import { renderTitleWithEm, type Accommodation } from './shared';
 import { IconClock, IconTag, IconExt, IconBed } from './icons';
 
@@ -24,9 +23,7 @@ export function AccHeader({
         data-edit-type="text"
         dangerouslySetInnerHTML={{ __html: renderTitleWithEm(title) }}
       />
-      <div className="acc-head-decor-wrap">
-        <Decor />
-      </div>
+      <div className="acc-head-ornament" aria-hidden="true" />
       {description && (
         <p className="acc-desc" data-editable="accommodations.description" data-edit-type="text">
           {description}
@@ -99,7 +96,7 @@ export function AccPhoto({
 export function AccEmpty() {
   return (
     <div className="acc-empty">
-      <Decor />
+      <div className="acc-ornament" aria-hidden="true" />
       <span>Unterkunfts-Tipps folgen in Kürze.</span>
     </div>
   );

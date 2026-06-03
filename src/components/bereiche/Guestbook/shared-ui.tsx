@@ -1,4 +1,3 @@
-import Decor from '@/components/ui/Decor';
 import { renderTitleWithEm } from './shared';
 import { IconHeart, IconInfo } from './icons';
 
@@ -24,9 +23,7 @@ export function GbHeader({
         data-edit-type="text"
         dangerouslySetInnerHTML={{ __html: renderTitleWithEm(title) }}
       />
-      <div className="gb-head-decor-wrap">
-        <Decor />
-      </div>
+      <div className="gb-head-ornament" aria-hidden="true" />
       {description && (
         <p className="gb-desc" data-editable="guestbook.description" data-edit-type="text">
           {description}
@@ -83,7 +80,7 @@ export function GbError({ msg }: { msg: string }) {
 export function GbEmpty() {
   return (
     <div className="gb-empty">
-      <Decor />
+      <div className="gb-ornament" aria-hidden="true" />
       <span>Seid die Ersten, die ein paar Worte hinterlassen!</span>
     </div>
   );

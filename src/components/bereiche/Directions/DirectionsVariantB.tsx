@@ -4,6 +4,7 @@ import { useState, useRef, useCallback } from 'react';
 import type { EffectiveTokens } from '@/types/supabase';
 import { DIR_DEFAULTS, readLocations, renderDesc } from './shared';
 import { DirHeader, DirLabelChip, DirTransit, RouteBtn, DirEmpty } from './shared-ui';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 
 /**
  * Anfahrt Variante B — Liste links, Karte rechts (sticky, src-swap)
@@ -21,7 +22,10 @@ interface Props {
   content: Record<string, unknown>;
 }
 
-export default function DirectionsVariantB({ content }: Props) {
+export default function DirectionsVariantB({ tokens, content }: Props) {
+
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const eyebrow = (content.eyebrow as string) ?? DIR_DEFAULTS.eyebrow;
   const title = (content.title as string) ?? DIR_DEFAULTS.title;
   const description = (content.description as string) ?? DIR_DEFAULTS.description;
@@ -44,7 +48,11 @@ export default function DirectionsVariantB({ content }: Props) {
 
   if (items.length === 0) {
     return (
-      <div className="dir dirB-section">
+      <div className="dir dirB-section" data-style-dir={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
         <DirHeader eyebrow={eyebrow} title={title} description={description} />
         <DirEmpty />
       </div>
@@ -54,7 +62,7 @@ export default function DirectionsVariantB({ content }: Props) {
   const active = items[Math.min(activeIdx, items.length - 1)];
 
   return (
-    <div className="dir dirB-section">
+    <div className="dir dirB-section" data-style-dir={style}>
       <DirHeader eyebrow={eyebrow} title={title} description={description} />
 
       <div className="dirB-wrap">
