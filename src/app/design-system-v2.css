@@ -3073,26 +3073,43 @@
 }
 
 /* ============================================================
-   GLOBAL STYLED-BG — ambient Decorations fixed im Viewport
+   GLOBAL STYLED-BG — Animationen für die Blobs
    ============================================================
-   GlobalStyledBg-Komponente nutzt INLINE-Styles für kritische
-   Properties (position:fixed, filter:blur, animation) — deshalb
-   reichen hier nur die @keyframes.
+   Pattern: Klassen referenzieren @keyframes — sonst purgt
+   Lightning CSS / Tailwind v4 unbenutzte Keyframes.
+   Animation-Delays als Modifier-Klassen für Stagger-Effekt.
 ============================================================ */
+
+.global-blob-anim {
+  /* Reine Marker-Klasse — Animation kommt vom Style-Modifier */
+}
+
+.global-blob-anim--organic {
+  animation: org-global-drift 24s ease-in-out infinite;
+}
+
+.global-blob-anim--liquefy {
+  animation: liq-global-pulse 7s ease-in-out infinite;
+}
+
+.global-blob-anim--d3  { animation-delay: -3s;  }
+.global-blob-anim--d5  { animation-delay: -5s;  }
+.global-blob-anim--d8  { animation-delay: -8s;  }
+.global-blob-anim--d16 { animation-delay: -16s; }
 
 @keyframes org-global-drift {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  33%      { transform: translate(50px, -40px) scale(1.08); }
-  66%      { transform: translate(-30px, 30px) scale(0.94); }
+  33%      { transform: translate(60px, -50px) scale(1.1); }
+  66%      { transform: translate(-40px, 40px) scale(0.92); }
 }
 
 @keyframes liq-global-pulse {
-  0%, 100% { transform: scale(0.9); }
-  50%      { transform: scale(1.1); }
+  0%, 100% { transform: scale(0.88); }
+  50%      { transform: scale(1.12); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .global-styled-bg * {
+  .global-blob-anim {
     animation: none !important;
   }
 }

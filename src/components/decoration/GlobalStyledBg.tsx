@@ -7,14 +7,10 @@ import DecorationStars from './DecorationStars';
 import DecorationGrain from './DecorationGrain';
 
 /**
- * GlobalStyledBg — globaler ambient Background, FIXED im Viewport.
+ * GlobalStyledBg — globaler ambient Background, FIXED im Viewport, animiert.
  *
- * Kritische Properties (position, filter, top/left, animation) werden INLINE
- * gesetzt damit kein anderes CSS sie überschreibt. Klassen werden zusätzlich
- * gesetzt für ggf. zukünftige Stil-Anpassungen, aber sind nicht funktional
- * notwendig.
- *
- * Wird als SIBLING (NICHT als child) des wedding-site-wrappers gerendert.
+ * Positioning + Filter inline, Animation per Klasse (sonst purgt Lightning
+ * CSS / Tailwind v4 die @keyframes weil sie nirgends referenziert werden).
  */
 
 type Props = {
@@ -33,56 +29,27 @@ const CONTAINER_STYLE: CSSProperties = {
   overflow: 'hidden',
 };
 
-// Organic blobs — drei Stück, langsam driftend
-const ORGANIC_BLOBS: Array<{ pos: CSSProperties; color: string; opacity: number; delay: string; size: number }> = [
-  {
-    pos: { top: '8%', left: '8%' },
-    color: 'var(--accent)',
-    opacity: 0.4,
-    delay: '0s',
-    size: 480,
-  },
-  {
-    pos: { bottom: '12%', right: '10%' },
-    color: 'var(--accent-deep)',
-    opacity: 0.35,
-    delay: '-8s',
-    size: 420,
-  },
-  {
-    pos: { top: '55%', left: '55%' },
-    color: 'var(--accent)',
-    opacity: 0.25,
-    delay: '-16s',
-    size: 320,
-  },
+type Blob = {
+  pos: CSSProperties;
+  color: string;
+  opacity: number;
+  size: number;
+  animClass: string; // CSS-Klasse für animation (Tailwind/Lightning CSS purge-safe)
+};
+
+const ORGANIC_BLOBS: Blob[] = [
+  { pos: { top: '8%', left: '8%' }, color: 'var(--accent)', opacity: 0.55, size: 520, animClass: 'global-blob-anim global-blob-anim--organic' },
+  { pos: { bottom: '12%', right: '10%' }, color: 'var(--accent-deep)', opacity: 0.5, size: 460, animClass: 'global-blob-anim global-blob-anim--organic global-blob-anim--d8' },
+  { pos: { top: '55%', left: '55%' }, color: 'var(--accent)', opacity: 0.4, size: 360, animClass: 'global-blob-anim global-blob-anim--organic global-blob-anim--d16' },
 ];
 
-const LIQUEFY_BLOBS: Array<{ pos: CSSProperties; color: string; opacity: number; delay: string; size: number }> = [
-  {
-    pos: { top: '5%', left: '3%' },
-    color: 'var(--accent)',
-    opacity: 0.45,
-    delay: '0s',
-    size: 500,
-  },
-  {
-    pos: { bottom: '5%', right: '3%' },
-    color: 'var(--accent-deep)',
-    opacity: 0.35,
-    delay: '-3s',
-    size: 540,
-  },
-  {
-    pos: { top: '40%', left: '50%' },
-    color: 'var(--accent)',
-    opacity: 0.25,
-    delay: '-5s',
-    size: 380,
-  },
+const LIQUEFY_BLOBS: Blob[] = [
+  { pos: { top: '5%', left: '3%' }, color: 'var(--accent)', opacity: 0.55, size: 540, animClass: 'global-blob-anim global-blob-anim--liquefy' },
+  { pos: { bottom: '5%', right: '3%' }, color: 'var(--accent-deep)', opacity: 0.45, size: 580, animClass: 'global-blob-anim global-blob-anim--liquefy global-blob-anim--d3' },
+  { pos: { top: '40%', left: '50%' }, color: 'var(--accent)', opacity: 0.35, size: 420, animClass: 'global-blob-anim global-blob-anim--liquefy global-blob-anim--d5' },
 ];
 
-function organicBlobStyle(blob: typeof ORGANIC_BLOBS[number]): CSSProperties {
+function blobStyle(blob: Blob, blurPx: number): CSSProperties {
   return {
     position: 'absolute',
     width: `${blob.size}px`,
@@ -90,31 +57,12 @@ function organicBlobStyle(blob: typeof ORGANIC_BLOBS[number]): CSSProperties {
     background: blob.color,
     borderRadius: '50%',
     opacity: blob.opacity,
-    filter: 'blur(80px)',
-    animation: `org-global-drift 24s ease-in-out infinite`,
-    animationDelay: blob.delay,
-    ...blob.pos,
-  };
-}
-
-function liquefyBlobStyle(blob: typeof LIQUEFY_BLOBS[number]): CSSProperties {
-  return {
-    position: 'absolute',
-    width: `${blob.size}px`,
-    height: `${blob.size}px`,
-    background: blob.color,
-    borderRadius: '50%',
-    opacity: blob.opacity,
-    filter: 'blur(100px)',
-    animation: `liq-global-pulse 7s ease-in-out infinite`,
-    animationDelay: blob.delay,
+    filter: `blur(${blurPx}px)`,
     ...blob.pos,
   };
 }
 
 export default function GlobalStyledBg({ style, cssVars }: Props) {
-  // CSS-Variables für Decoration-Children: dem Container mitgeben damit
-  // var(--accent) etc. innerhalb auflöst.
   const combinedStyle: CSSProperties = { ...CONTAINER_STYLE, ...cssVars };
 
   return (
@@ -131,7 +79,7 @@ export default function GlobalStyledBg({ style, cssVars }: Props) {
           <DecorationGoo intensity="normal" />
           <DecorationGrain intensity="soft" />
           {ORGANIC_BLOBS.map((blob, i) => (
-            <div key={`org-${i}`} style={organicBlobStyle(blob)} />
+            <div key={`org-${i}`} className={blob.animClass} style={blobStyle(blob, 90)} />
           ))}
         </>
       )}
@@ -158,7 +106,7 @@ export default function GlobalStyledBg({ style, cssVars }: Props) {
       {style === 'liquefy' && (
         <>
           {LIQUEFY_BLOBS.map((blob, i) => (
-            <div key={`liq-${i}`} style={liquefyBlobStyle(blob)} />
+            <div key={`liq-${i}`} className={blob.animClass} style={blobStyle(blob, 110)} />
           ))}
         </>
       )}
