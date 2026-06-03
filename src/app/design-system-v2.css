@@ -4341,3 +4341,36 @@
   opacity: 1;
   filter: none;
 }
+
+/* ============================================================
+   HERO FULL VIEWPORT — 100svh statt fixer min-height
+   ============================================================
+   svh = small viewport height (Mobile-safe, kein iOS-Adressleisten-
+   Springen). Auf Desktop verhält sich identisch zu 100vh.
+   Overrides die 720/760/600px min-height in den Pro-Stil-Sektionen.
+============================================================ */
+.hero-a,
+.hero-b,
+.hero-c {
+  min-height: 100svh;
+}
+
+/* ============================================================
+   BAUHAUS — Shapes dürfen aus Sections ragen
+   ============================================================
+   Layout-Fix setzt section { overflow: hidden } als Schutz vor
+   DecorationKineticBg width:200%. Für Bauhaus-Stil brauchen wir
+   aber overflow:visible damit die runden Shapes über Section-
+   Ränder ragen können (Bauhaus-typischer Look — Shapes als
+   Composition-Element). Kinetic ist hier nicht aktiv, also safe.
+============================================================ */
+.wedding-site-wrapper[data-style="bauhaus"] > main > section {
+  overflow: visible;
+}
+.wedding-site-wrapper[data-style="bauhaus"] .styled-bg-bauhaus {
+  overflow: visible;
+}
+
+/* wedding-site-wrapper bleibt overflow-x: clip — damit der Body
+   horizontal nicht überläuft (also keine horizontalen Scrollbars
+   trotz Bauhaus-Shape-Overflow). */
