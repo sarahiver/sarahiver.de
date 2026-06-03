@@ -1,7 +1,12 @@
 import type { ChangeEvent, RefObject } from 'react';
-import Decor from '@/components/ui/Decor';
 import { renderTitleWithEm, ACCEPTED_TYPES } from './shared';
 import { IconHeart, IconLock } from './icons';
+
+/**
+ * Design System v2: alte <Decor />-Komponente raus, stattdessen ein
+ * semantischer Slot `.up-head-ornament` der pro Stil per CSS gestaltet wird
+ * (analog zu RSVP/Countdown).
+ */
 
 export function UpHeader({
   eyebrow,
@@ -25,9 +30,7 @@ export function UpHeader({
         data-edit-type="text"
         dangerouslySetInnerHTML={{ __html: renderTitleWithEm(title) }}
       />
-      <div className="up-head-decor-wrap">
-        <Decor />
-      </div>
+      <div className="up-head-ornament" aria-hidden="true" />
       {description && (
         <p className="up-desc" data-editable="photoupload.description" data-edit-type="text">
           {description}

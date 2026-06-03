@@ -3113,3 +3113,524 @@
     animation: none !important;
   }
 }
+
+/* ============================================================
+   DESIGN SYSTEM v2 — PHOTOUPLOAD STYLES PRO STIL
+   ============================================================
+   CSS-Variable-Pattern analog zu RSVP/Countdown:
+   1. Defaults auf .up
+   2. Generic Rules verbrauchen die Variablen
+   3. Pro Stil NUR Variable-Overrides + ein paar Layout-Tweaks
+
+   ORGANIC: Form-Elements (Drop-Zone, Inputs, Buttons, Thumbnails) bleiben
+   STATISCH — kein wobble. Charakter aus rounded Borders, Script-Eyebrow,
+   soft Container.
+============================================================ */
+
+/* ============================================================
+   1) DEFAULTS auf .up
+   ============================================================ */
+.up {
+  position: relative;
+  padding: var(--up-section-pad);
+
+  --up-section-pad: clamp(64px, 8vw, 96px) clamp(24px, 5vw, 60px);
+
+  /* Header */
+  --up-head-align: center;
+  --up-eyebrow-font: var(--font-mono);
+  --up-eyebrow-size: 11px;
+  --up-eyebrow-tracking: 0.28em;
+  --up-eyebrow-color: var(--accent);
+  --up-eyebrow-transform: uppercase;
+  --up-eyebrow-bg: transparent;
+  --up-eyebrow-pad: 0;
+  --up-title-font: var(--font-display);
+  --up-title-size: clamp(32px, 4vw, 48px);
+  --up-title-weight: 400;
+  --up-title-style: normal;
+  --up-title-tracking: -0.02em;
+  --up-title-transform: none;
+  --up-title-em-color: var(--accent);
+  --up-title-em-font: inherit;
+  --up-title-em-style: italic;
+  --up-desc-font: var(--font-body);
+  --up-desc-size: 16px;
+  --up-desc-color: var(--ink-soft, rgba(0, 0, 0, 0.6));
+
+  /* Inputs */
+  --up-input-border: 1px solid rgba(0, 0, 0, 0.15);
+  --up-input-radius: 4px;
+  --up-input-bg: var(--bg);
+  --up-input-pad: 12px 14px;
+  --up-input-font: var(--font-body);
+  --up-input-focus-border: var(--accent);
+
+  /* Field-Label */
+  --up-label-font: var(--font-mono);
+  --up-label-size: 11px;
+  --up-label-tracking: 0.15em;
+  --up-label-transform: uppercase;
+  --up-label-color: var(--ink);
+
+  /* Submit-Button */
+  --up-btn-bg: var(--ink);
+  --up-btn-color: var(--bg);
+  --up-btn-border: 0;
+  --up-btn-radius: 4px;
+  --up-btn-font: var(--font-mono);
+  --up-btn-size: 13px;
+  --up-btn-weight: 500;
+  --up-btn-tracking: 0.1em;
+  --up-btn-transform: uppercase;
+  --up-btn-pad: 12px 24px;
+  --up-btn-shadow: none;
+  --up-btn-extra-transform: none;
+
+  /* Drop-Zone (Variant A, C) */
+  --up-drop-border: 2px dashed rgba(0, 0, 0, 0.2);
+  --up-drop-radius: 8px;
+  --up-drop-bg: var(--bg-soft, rgba(0, 0, 0, 0.02));
+  --up-drop-pad: clamp(40px, 6vw, 80px);
+  --up-drop-hover-border: var(--accent);
+
+  /* Card (Variant B) und Box (Variant C right) */
+  --up-card-bg: var(--bg-soft, rgba(0, 0, 0, 0.02));
+  --up-card-border: 1px solid rgba(0, 0, 0, 0.08);
+  --up-card-radius: 12px;
+  --up-card-pad: clamp(28px, 4vw, 48px);
+  --up-card-shadow: none;
+
+  /* Thumbnails */
+  --up-thumb-radius: 4px;
+  --up-thumb-border: 1px solid rgba(0, 0, 0, 0.08);
+
+  /* Variant C: Step numbers */
+  --up-step-num-font: var(--font-display);
+  --up-step-num-color: var(--accent);
+  --up-step-num-weight: 400;
+}
+
+/* Content above Decorations */
+.up > *:not([class*="styled-bg-"]):not([class*="Decoration"]) {
+  position: relative;
+  z-index: 5;
+}
+
+/* ============================================================
+   2) GENERIC RULES
+   ============================================================ */
+.up .up-head {
+  text-align: var(--up-head-align);
+  max-width: 720px;
+  margin: 0 auto 40px;
+}
+.up .up-eyebrow {
+  font-family: var(--up-eyebrow-font);
+  font-size: var(--up-eyebrow-size);
+  letter-spacing: var(--up-eyebrow-tracking);
+  color: var(--up-eyebrow-color);
+  text-transform: var(--up-eyebrow-transform);
+  background: var(--up-eyebrow-bg);
+  padding: var(--up-eyebrow-pad);
+  display: inline-block;
+  margin: 0 0 16px;
+}
+.up .up-title {
+  font-family: var(--up-title-font);
+  font-weight: var(--up-title-weight);
+  font-style: var(--up-title-style);
+  font-size: var(--up-title-size);
+  letter-spacing: var(--up-title-tracking);
+  text-transform: var(--up-title-transform);
+  line-height: 1.05;
+  margin: 12px 0;
+}
+.up .up-title em {
+  color: var(--up-title-em-color);
+  font-family: var(--up-title-em-font);
+  font-style: var(--up-title-em-style);
+}
+.up .up-head-ornament {
+  display: none;
+}
+.up .up-desc {
+  font-family: var(--up-desc-font);
+  font-size: var(--up-desc-size);
+  color: var(--up-desc-color);
+  line-height: 1.65;
+  max-width: 560px;
+  margin: 16px auto 0;
+}
+
+.up .up-input {
+  border: var(--up-input-border);
+  border-radius: var(--up-input-radius);
+  background: var(--up-input-bg);
+  padding: var(--up-input-pad);
+  font-family: var(--up-input-font);
+  width: 100%;
+}
+.up .up-input:focus {
+  outline: 0;
+  border-color: var(--up-input-focus-border);
+}
+
+.up .up-field-label {
+  font-family: var(--up-label-font);
+  font-size: var(--up-label-size);
+  letter-spacing: var(--up-label-tracking);
+  text-transform: var(--up-label-transform);
+  color: var(--up-label-color);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.up .up-btn {
+  background: var(--up-btn-bg);
+  color: var(--up-btn-color);
+  border: var(--up-btn-border);
+  border-radius: var(--up-btn-radius);
+  font-family: var(--up-btn-font);
+  font-size: var(--up-btn-size);
+  font-weight: var(--up-btn-weight);
+  letter-spacing: var(--up-btn-tracking);
+  text-transform: var(--up-btn-transform);
+  padding: var(--up-btn-pad);
+  box-shadow: var(--up-btn-shadow);
+  transform: var(--up-btn-extra-transform);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.up .up-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* Drop-Zone (A + C-mini) */
+.up .upA-drop,
+.up .upC-mini-drop {
+  border: var(--up-drop-border);
+  border-radius: var(--up-drop-radius);
+  background: var(--up-drop-bg);
+  padding: var(--up-drop-pad);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.up .upA-drop.is-drag,
+.up .upC-mini-drop.is-drag,
+.up .upA-drop:hover,
+.up .upC-mini-drop:hover {
+  border-color: var(--up-drop-hover-border);
+}
+
+/* Card (B) und Box (C right) */
+.up .upB-card,
+.up .upC-box {
+  background: var(--up-card-bg);
+  border: var(--up-card-border);
+  border-radius: var(--up-card-radius);
+  padding: var(--up-card-pad);
+  box-shadow: var(--up-card-shadow);
+}
+
+/* Thumbnails */
+.up .up-thumb,
+.up .upB-thumb-mini,
+.up .upC-mini-thumb {
+  border-radius: var(--up-thumb-radius);
+  border: var(--up-thumb-border);
+  overflow: hidden;
+}
+
+/* Variant C: Step numbers */
+.up .upC-step-num {
+  font-family: var(--up-step-num-font);
+  color: var(--up-step-num-color);
+  font-weight: var(--up-step-num-weight);
+  font-size: 32px;
+  line-height: 1;
+}
+
+/* ============================================================
+   3) PRO STIL — Variable-Overrides
+   ============================================================ */
+
+/* EDITORIAL — Magazine, dünne Hairlines */
+.up[data-style-upload="editorial"] {
+  --up-head-align: left;
+  --up-eyebrow-tracking: 0.3em;
+  --up-eyebrow-size: 10px;
+  --up-title-weight: 350;
+  --up-input-border: 0;
+  --up-input-radius: 0;
+  --up-input-bg: transparent;
+  --up-input-pad: 10px 0;
+  --up-label-color: var(--accent);
+  --up-btn-radius: 2px;
+  --up-btn-tracking: 0.12em;
+  --up-btn-size: 11px;
+  --up-drop-border: 1px solid rgba(0, 0, 0, 0.15);
+  --up-drop-radius: 0;
+  --up-card-radius: 0;
+  --up-card-border: 1px solid rgba(0, 0, 0, 0.1);
+  --up-thumb-radius: 0;
+}
+.up[data-style-upload="editorial"] input.up-input {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+/* BRUTALIST — Harte Borders, Yellow, Box-Shadow */
+.up[data-style-upload="brutalist"] {
+  --up-head-align: left;
+  --up-eyebrow-bg: var(--ink);
+  --up-eyebrow-color: var(--bg);
+  --up-eyebrow-pad: 8px 14px;
+  --up-title-weight: 700;
+  --up-title-transform: uppercase;
+  --up-title-tracking: -0.04em;
+  --up-input-border: 3px solid var(--ink);
+  --up-input-radius: 0;
+  --up-input-pad: 12px;
+  --up-input-font: var(--font-display);
+  --up-btn-bg: var(--accent);
+  --up-btn-color: var(--ink);
+  --up-btn-border: 3px solid var(--ink);
+  --up-btn-radius: 0;
+  --up-btn-font: var(--font-display);
+  --up-btn-size: 16px;
+  --up-btn-weight: 700;
+  --up-btn-pad: 14px 28px;
+  --up-btn-shadow: 8px 8px 0 var(--ink);
+  --up-drop-border: 4px dashed var(--ink);
+  --up-drop-radius: 0;
+  --up-drop-bg: var(--bg);
+  --up-card-border: 4px solid var(--ink);
+  --up-card-radius: 0;
+  --up-card-bg: var(--bg);
+  --up-card-shadow: 16px 16px 0 var(--accent);
+  --up-thumb-radius: 0;
+  --up-thumb-border: 3px solid var(--ink);
+}
+.up[data-style-upload="brutalist"] .up-btn:hover:not(:disabled) {
+  transform: translate(-4px, -4px);
+  box-shadow: 12px 12px 0 var(--ink);
+}
+
+/* ORGANIC — Rounded, soft, Caveat-Script, ABER OHNE WOBBLE */
+.up[data-style-upload="organic"] {
+  --up-eyebrow-font: var(--font-script);
+  --up-eyebrow-size: 24px;
+  --up-eyebrow-tracking: 0;
+  --up-eyebrow-transform: none;
+  --up-title-style: italic;
+  --up-title-weight: 350;
+  --up-input-border: 1.5px solid rgba(0, 0, 0, 0.1);
+  --up-input-radius: 24px;
+  --up-input-bg: var(--bg);
+  --up-input-pad: 14px 20px;
+  --up-label-font: var(--font-script);
+  --up-label-size: 16px;
+  --up-label-tracking: 0;
+  --up-label-transform: none;
+  --up-label-color: var(--accent);
+  --up-btn-radius: 100px;
+  --up-btn-bg: var(--accent);
+  --up-btn-color: var(--bg);
+  --up-btn-font: var(--font-display);
+  --up-btn-size: 16px;
+  --up-btn-tracking: 0;
+  --up-btn-transform: none;
+  --up-btn-pad: 14px 32px;
+  --up-drop-border: 2px dashed rgba(0, 0, 0, 0.15);
+  --up-drop-radius: 32px;
+  --up-card-radius: 32px;
+  --up-card-bg: var(--bg-soft);
+  --up-thumb-radius: 16px;
+}
+/* WICHTIG: Inputs, Drop-Zone, Cards, Thumbnails statisch — kein Wobble. */
+
+/* MONO — Terminal-Look, JetBrains */
+.up[data-style-upload="mono"] {
+  --up-head-align: left;
+  --up-eyebrow-font: var(--font-mono);
+  --up-eyebrow-color: rgba(0, 0, 0, 0.55);
+  --up-title-font: var(--font-mono);
+  --up-title-weight: 300;
+  --up-title-tracking: -0.04em;
+  --up-title-transform: lowercase;
+  --up-title-em-color: rgba(0, 0, 0, 0.55);
+  --up-title-em-style: normal;
+  --up-input-border: 1px solid rgba(0, 0, 0, 0.2);
+  --up-input-radius: 0;
+  --up-input-font: var(--font-mono);
+  --up-input-pad: 10px 12px;
+  --up-label-font: var(--font-mono);
+  --up-label-color: rgba(0, 0, 0, 0.55);
+  --up-btn-bg: var(--ink);
+  --up-btn-color: var(--bg);
+  --up-btn-radius: 0;
+  --up-btn-font: var(--font-mono);
+  --up-btn-size: 13px;
+  --up-btn-pad: 12px 24px;
+  --up-drop-border: 1px dashed rgba(0, 0, 0, 0.25);
+  --up-drop-radius: 0;
+  --up-card-radius: 0;
+  --up-card-border: 1px solid rgba(0, 0, 0, 0.2);
+  --up-thumb-radius: 0;
+  --up-step-num-font: var(--font-mono);
+  --up-step-num-weight: 300;
+}
+
+/* OPULENT — Cormorant, Gold borders */
+.up[data-style-upload="opulent"] {
+  --up-eyebrow-font: 'Italiana', serif;
+  --up-eyebrow-size: 13px;
+  --up-eyebrow-tracking: 0.5em;
+  --up-eyebrow-color: var(--gold, var(--accent));
+  --up-title-font: 'Cormorant SC', serif;
+  --up-title-weight: 300;
+  --up-title-tracking: 0.04em;
+  --up-title-em-font: 'Italiana', serif;
+  --up-input-border: 1px solid rgba(197, 165, 114, 0.4);
+  --up-input-radius: 0;
+  --up-input-bg: transparent;
+  --up-input-font: 'Crimson Pro', serif;
+  --up-label-font: 'Italiana', serif;
+  --up-label-tracking: 0.35em;
+  --up-label-color: var(--gold, var(--accent));
+  --up-btn-bg: var(--gold, var(--accent));
+  --up-btn-color: var(--bg);
+  --up-btn-border: 1px solid var(--gold, var(--accent));
+  --up-btn-radius: 0;
+  --up-btn-font: 'Italiana', serif;
+  --up-btn-size: 12px;
+  --up-btn-tracking: 0.4em;
+  --up-btn-pad: 14px 32px;
+  --up-drop-border: 1px solid rgba(197, 165, 114, 0.4);
+  --up-drop-radius: 0;
+  --up-card-border: 1px solid rgba(197, 165, 114, 0.4);
+  --up-card-radius: 0;
+  --up-card-bg: rgba(0, 0, 0, 0.05);
+  --up-thumb-radius: 0;
+  --up-step-num-font: 'Cormorant SC', serif;
+}
+
+/* LIQUEFY — Rounded, Acid-Mint glow */
+.up[data-style-upload="liquefy"] {
+  --up-eyebrow-font: var(--font-mono);
+  --up-eyebrow-color: var(--accent-deep);
+  --up-eyebrow-tracking: 0.3em;
+  --up-title-font: 'Fraunces', serif;
+  --up-title-style: italic;
+  --up-title-weight: 700;
+  --up-title-em-color: var(--accent-deep);
+  --up-input-border: 1.5px solid rgba(210, 255, 212, 0.35);
+  --up-input-radius: 16px;
+  --up-input-font: 'Syne', sans-serif;
+  --up-input-pad: 14px 20px;
+  --up-label-font: 'Syne', sans-serif;
+  --up-label-color: var(--accent);
+  --up-btn-bg: var(--accent);
+  --up-btn-color: var(--bg);
+  --up-btn-radius: 24px;
+  --up-btn-font: 'Fraunces', serif;
+  --up-btn-size: 16px;
+  --up-btn-pad: 14px 32px;
+  --up-btn-tracking: 0;
+  --up-btn-transform: none;
+  --up-btn-weight: 700;
+  --up-drop-radius: 24px;
+  --up-card-radius: 32px;
+  --up-card-shadow: 0 0 60px rgba(210, 255, 212, 0.25);
+  --up-card-border: 1px solid rgba(210, 255, 212, 0.3);
+  --up-thumb-radius: 16px;
+  --up-step-num-font: 'Fraunces', serif;
+}
+
+/* KINETIC — Tilted Submit, Yellow-Shadow */
+.up[data-style-upload="kinetic"] {
+  --up-head-align: left;
+  --up-eyebrow-font: var(--font-mono);
+  --up-eyebrow-color: var(--accent);
+  --up-title-font: 'Syne', sans-serif;
+  --up-title-weight: 900;
+  --up-title-transform: uppercase;
+  --up-title-tracking: -0.04em;
+  --up-input-border: 2px solid var(--ink);
+  --up-input-radius: 0;
+  --up-input-font: 'Syne', sans-serif;
+  --up-label-font: 'Syne', sans-serif;
+  --up-btn-bg: var(--accent);
+  --up-btn-color: var(--ink);
+  --up-btn-border: 2px solid var(--ink);
+  --up-btn-radius: 0;
+  --up-btn-font: 'Syne', sans-serif;
+  --up-btn-weight: 900;
+  --up-btn-size: 16px;
+  --up-btn-pad: 14px 32px;
+  --up-btn-shadow: 8px 8px 0 var(--ink);
+  --up-btn-extra-transform: rotate(-2deg);
+  --up-drop-border: 2px dashed var(--ink);
+  --up-drop-radius: 0;
+  --up-card-border: 2px solid var(--ink);
+  --up-card-radius: 0;
+  --up-card-shadow: -16px 16px 0 var(--accent);
+  --up-thumb-radius: 0;
+}
+.up[data-style-upload="kinetic"] .up-btn:hover:not(:disabled) {
+  transform: rotate(0deg) scale(1.02);
+}
+
+/* BAUHAUS — Navy/Red/Yellow blocks */
+.up[data-style-upload="bauhaus"] {
+  --up-eyebrow-font: var(--font-mono);
+  --up-eyebrow-tracking: 0.25em;
+  --up-eyebrow-color: var(--c-red, var(--accent));
+  --up-title-font: 'Syne', sans-serif;
+  --up-title-weight: 900;
+  --up-title-transform: uppercase;
+  --up-input-border: 0;
+  --up-input-radius: 0;
+  --up-input-bg: var(--bg);
+  --up-input-pad: 12px 4px;
+  --up-input-font: 'Syne', sans-serif;
+  --up-label-font: 'Syne', sans-serif;
+  --up-btn-bg: var(--c-navy, var(--ink));
+  --up-btn-color: var(--bg);
+  --up-btn-radius: 0;
+  --up-btn-font: 'Syne', sans-serif;
+  --up-btn-weight: 900;
+  --up-btn-size: 14px;
+  --up-btn-pad: 14px 32px;
+  --up-drop-border: 0;
+  --up-drop-bg: var(--bg-soft);
+  --up-drop-radius: 0;
+  --up-card-bg: var(--bg-soft);
+  --up-card-border: 0;
+  --up-card-radius: 0;
+  --up-thumb-radius: 0;
+  --up-step-num-font: 'Syne', sans-serif;
+  --up-step-num-weight: 900;
+}
+.up[data-style-upload="bauhaus"] input.up-input {
+  border-bottom: 3px solid var(--c-navy, var(--ink));
+}
+
+/* ============================================================
+   Mobile
+   ============================================================ */
+@media (max-width: 700px) {
+  .up[data-style-upload="brutalist"] {
+    --up-card-shadow: 8px 8px 0 var(--accent);
+    --up-btn-shadow: 4px 4px 0 var(--ink);
+  }
+  .up[data-style-upload="kinetic"] {
+    --up-card-shadow: -8px 8px 0 var(--accent);
+    --up-btn-shadow: 4px 4px 0 var(--ink);
+  }
+}

@@ -4,6 +4,7 @@ import type { EffectiveTokens } from '@/types/supabase';
 import { UPLOAD_DEFAULTS } from './shared';
 import { useUpload } from './useUpload';
 import { UpHeader, UpSuccess, UpPrivacy, UpError, HiddenFileInput } from './shared-ui';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 import { IconUpload, IconX, IconCheck } from './icons';
 
 /**
@@ -19,7 +20,9 @@ interface Props {
   weddingSlug?: string;
 }
 
-export default function PhotoUploadVariantA({ content, weddingSlug }: Props) {
+export default function PhotoUploadVariantA({ tokens, content, weddingSlug }: Props) {
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const eyebrow = (content.eyebrow as string) ?? UPLOAD_DEFAULTS.eyebrow;
   const title = (content.title as string) ?? UPLOAD_DEFAULTS.title;
   const description = (content.description as string) ?? UPLOAD_DEFAULTS.description;
@@ -31,7 +34,11 @@ export default function PhotoUploadVariantA({ content, weddingSlug }: Props) {
   const uploading = u.phase === 'uploading';
 
   return (
-    <div className="up upA-section">
+    <div className="up upA-section" data-style-upload={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
       <UpHeader eyebrow={eyebrow} title={title} description={description} />
       <HiddenFileInput inputRef={u.inputRef} onChange={u.onInputChange} />
 

@@ -4,6 +4,7 @@ import type { EffectiveTokens } from '@/types/supabase';
 import { UPLOAD_DEFAULTS, renderTitleWithEm } from './shared';
 import { useUpload } from './useUpload';
 import { UpHeader, UpSuccess, UpPrivacy, UpError, HiddenFileInput } from './shared-ui';
+import StyledBereichBg from '@/components/decoration/StyledBereichBg';
 import { IconUpload, IconLove } from './icons';
 
 /**
@@ -22,7 +23,9 @@ interface Props {
 const CARD_TITLE = 'Habt ihr ein <em>schönes Foto</em> mit uns?';
 const CARD_SUB = 'Wir sammeln liebste Erinnerungen für eine Überraschung am großen Tag.';
 
-export default function PhotoUploadVariantB({ content, weddingSlug }: Props) {
+export default function PhotoUploadVariantB({ tokens, content, weddingSlug }: Props) {
+  const style =
+    (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
   const eyebrow = (content.eyebrow as string) ?? UPLOAD_DEFAULTS.eyebrow;
   const title = (content.title as string) ?? UPLOAD_DEFAULTS.title;
   const description = (content.description as string) ?? UPLOAD_DEFAULTS.description;
@@ -36,7 +39,11 @@ export default function PhotoUploadVariantB({ content, weddingSlug }: Props) {
   const extra = u.items.length - previews.length;
 
   return (
-    <div className="up upB-section">
+    <div className="up upB-section" data-style-upload={style}>
+      <StyledBereichBg
+        style={style}
+        marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`}
+      />
       <UpHeader eyebrow={eyebrow} title={title} description={description} />
       <HiddenFileInput inputRef={u.inputRef} onChange={u.onInputChange} />
 
