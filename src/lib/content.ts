@@ -41,15 +41,19 @@ export const SIDEBAR = {
 };
 
 export const HERO = {
-  eyebrow: 'Bald für euch da',
-  titlePart1: 'Eure Hochzeitsseite —',
-  titlePart2: 'aus Bereichen,',
-  titlePart3: ' in eurem Stil.',
-  decor: 'Vorfreude.',
-  sub: 'sarahiver.de ist die warme Hochzeitsseiten-Plattform für Brautpaare im DACH-Raum. Wählt einen Stil, mischt eure Farben und Schriften, passt jeden Bereich einzeln an. Eure Seite — wirklich eure.',
-  waitlistPh: 'name@beispiel.de',
-  waitlistCta: 'Auf die Liste',
-  trust: ['DSGVO-konform', 'Hosting in Deutschland', 'Ihr werdet zuerst informiert'],
+  eyebrow: 'Pre-Launch · für die Saison 2027',
+  headlinePart1: 'Eine Hochzeitsseite,',
+  headlinePart2: 'die nach ',
+  headlineEm: 'euch',
+  headlinePart3: ' klingt.',
+  lede:
+    'Acht Stile. Fünfzehn Bereiche. Null Templates. Baut sie selbst zusammen — in einem Nachmittag fertig. 14 Tage gratis testen.',
+  ctaPrimary: 'Jetzt 14 Tage starten',
+  ctaSecondary: 'Acht Stile ansehen',
+  trust: ['DSGVO-konform', 'Hosting in Deutschland', 'Monatlich kündbar'],
+  counterPrefix: 'Frühvogel-Aktion · noch',
+  counterRemaining: '87',
+  counterSuffix: 'von 100 Plätzen — 2 Monate gratis',
 };
 
 export const FEATURES = {

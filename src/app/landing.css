@@ -1,0 +1,513 @@
+/* ============================================================
+   sarahiver.de Landing-Page v2 — Editorial Premium Motion
+   ============================================================
+   Eigene CSS-Datei für die Marketing-Landing.
+   GETRENNT von globals.css (Token-Setup) und design-system-v2.css
+   (Wedding-Sites) — damit Refactor hier nicht die Wedding-Sites
+   anfasst und umgekehrt.
+
+   Layer:
+     1. Typography-Scale (fluid clamp)
+     2. Layout-Primitives (Asymmetric Grids)
+     3. Section-Tokens
+     4. Component-Klassen (Eyebrow, Display, CTA, Mockup, Marquee)
+     5. Motion (Reveal, Marquee, Hover)
+============================================================ */
+
+/* ============================================================
+   1. TYPOGRAPHY-SCALE — Fluid + Display
+============================================================ */
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-terra-deep);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+/* Display: das große, dramatische Editorial-Headline */
+.display-massive {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(2.75rem, 8vw + 0.5rem, 9rem);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  color: var(--color-ink);
+  font-variation-settings: "opsz" 144;
+  text-wrap: balance;
+}
+
+.display-massive em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--color-terra-deep);
+  font-variation-settings: "opsz" 144;
+}
+
+.display-large {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(2.25rem, 5vw + 0.5rem, 5rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--color-ink);
+  font-variation-settings: "opsz" 144;
+  text-wrap: balance;
+}
+
+.display-large em {
+  font-style: italic;
+  color: var(--color-terra-deep);
+}
+
+.lede-large {
+  font-family: var(--font-sans);
+  font-size: clamp(1.0625rem, 1vw + 0.75rem, 1.375rem);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--color-ink-soft);
+  letter-spacing: -0.005em;
+  text-wrap: pretty;
+}
+
+.lede-medium {
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--color-ink-soft);
+}
+
+/* ============================================================
+   2. LAYOUT-PRIMITIVES — Asymmetric Grids
+============================================================ */
+
+.shell {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-inline: clamp(20px, 4vw, 64px);
+}
+
+.shell-tight {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-inline: clamp(20px, 4vw, 64px);
+}
+
+/* Hero-Grid: dramatisch asymmetrisch (Text dominiert) */
+.grid-hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(48px, 6vw, 96px);
+  align-items: end;
+}
+
+@media (min-width: 1024px) {
+  .grid-hero {
+    grid-template-columns: 1.35fr 1fr;
+    align-items: end;
+  }
+}
+
+/* Section-Header: Eyebrow links, Headline groß, Lede rechts */
+.grid-section-head {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  margin-bottom: clamp(48px, 6vw, 96px);
+  align-items: end;
+}
+
+@media (min-width: 900px) {
+  .grid-section-head {
+    grid-template-columns: 1.4fr 1fr;
+  }
+}
+
+/* ============================================================
+   3. SECTION-TOKENS — Padding-Höhen für Landing
+============================================================ */
+
+.section-landing {
+  padding-block: clamp(80px, 10vw, 160px);
+  position: relative;
+}
+
+.section-landing-tight {
+  padding-block: clamp(48px, 6vw, 96px);
+}
+
+.section-landing-hero {
+  min-height: 100svh;
+  padding-block: clamp(80px, 8vw, 120px) clamp(48px, 5vw, 80px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+
+/* ============================================================
+   4. COMPONENT-KLASSEN
+============================================================ */
+
+/* === CTA-Buttons === */
+.btn-primary-large {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 28px;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: white;
+  background: var(--color-ink);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s ease, background 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary-large:hover {
+  transform: translateY(-2px);
+  background: var(--color-terra-deep);
+}
+
+.btn-primary-large .arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.btn-primary-large:hover .arrow {
+  transform: translateX(4px);
+}
+
+.btn-secondary-large {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 4px;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: var(--color-ink);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-ink);
+  border-radius: 0;
+  cursor: pointer;
+  text-decoration: none;
+  transition: gap 0.2s ease, color 0.2s ease;
+}
+
+.btn-secondary-large:hover {
+  gap: 12px;
+  color: var(--color-terra-deep);
+}
+
+/* CTA-Pair Layout */
+.cta-pair {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(16px, 2vw, 32px);
+  margin-block: clamp(32px, 4vw, 48px);
+}
+
+/* === Trust-Row === */
+.trust-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.trust-row > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.trust-row > span::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-sage);
+}
+
+/* === Counter-Badge (Frühvogel) === */
+.counter-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: rgba(181, 116, 106, 0.10);
+  border: 1px solid rgba(181, 116, 106, 0.25);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-terra-deep);
+}
+
+.counter-badge .pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-terra);
+  position: relative;
+}
+
+.counter-badge .pulse::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: var(--color-terra);
+  opacity: 0.4;
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.6); opacity: 0.5; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* === Browser/Phone-Mockup Frame === */
+.mockup-frame {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow:
+    0 1px 2px rgba(45, 37, 32, 0.04),
+    0 16px 40px -8px rgba(45, 37, 32, 0.18),
+    0 32px 80px -16px rgba(45, 37, 32, 0.20);
+  background: var(--color-paper);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.mockup-frame:hover {
+  transform: translateY(-4px);
+}
+
+.mockup-frame-bar {
+  height: 32px;
+  background: var(--color-paper-soft);
+  border-bottom: 1px solid var(--color-rule-soft);
+  display: flex;
+  align-items: center;
+  padding-inline: 14px;
+  gap: 8px;
+}
+
+.mockup-frame-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-rule);
+}
+
+.mockup-frame-url {
+  margin-left: 14px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-muted);
+  letter-spacing: 0.04em;
+}
+
+.mockup-frame-body {
+  aspect-ratio: 4 / 5;
+  background: var(--color-paper);
+  position: relative;
+  overflow: hidden;
+}
+
+/* === Marquee === */
+.marquee-track {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+}
+
+.marquee-content {
+  display: flex;
+  flex-shrink: 0;
+  animation: marquee-scroll 45s linear infinite;
+  gap: 64px;
+  padding-right: 64px;
+  font-family: var(--font-serif);
+  font-size: clamp(1.25rem, 2vw, 1.875rem);
+  font-style: italic;
+  color: var(--color-ink-soft);
+  white-space: nowrap;
+}
+
+.marquee-content > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.marquee-content > span::after {
+  content: '·';
+  font-family: var(--font-serif);
+  color: var(--color-terra);
+  font-size: 1.5em;
+  margin-left: 16px;
+}
+
+@keyframes marquee-scroll {
+  to { transform: translateX(-50%); }
+}
+
+/* === Hero-Mockup Tilt === */
+.hero-mockup-stack {
+  position: relative;
+  perspective: 1200px;
+  margin-top: clamp(0px, 2vw, 24px);
+}
+
+.hero-mockup-stack > .mockup-frame {
+  transform: rotateY(-4deg) rotateX(2deg);
+  transform-origin: left center;
+}
+
+@media (max-width: 1023px) {
+  .hero-mockup-stack > .mockup-frame {
+    transform: none;
+  }
+}
+
+/* ============================================================
+   5. MOTION — Reveal on Scroll (CSS-only via @starting-style)
+============================================================ */
+
+.reveal {
+  animation: reveal-rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.reveal-delay-1 { animation-delay: 100ms; }
+.reveal-delay-2 { animation-delay: 220ms; }
+.reveal-delay-3 { animation-delay: 360ms; }
+.reveal-delay-4 { animation-delay: 520ms; }
+
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal-delay-1, .reveal-delay-2, .reveal-delay-3, .reveal-delay-4 {
+    animation: none;
+  }
+  .marquee-content { animation: none; }
+  .counter-badge .pulse::after { animation: none; }
+}
+
+/* ============================================================
+   6. HERO-MOCKUP DEMO CONTENT — Vorschau einer Wedding-Site
+============================================================
+   Statisches Markup direkt im Mockup-Frame, das eine echte
+   Wedding-Site-Hero im Editorial-Stil andeutet. Kein iframe,
+   keine Loading-Zeit.
+============================================================ */
+
+.demo-hero {
+  position: absolute;
+  inset: 0;
+  padding: clamp(20px, 4%, 36px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(180deg, #FAF6F0 0%, #F4EDE2 100%);
+}
+
+.demo-hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-terra-deep);
+}
+
+.demo-hero-couple {
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 5cqi, 4.5rem);
+  line-height: 0.95;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  color: var(--color-ink);
+}
+
+.demo-hero-couple em {
+  font-style: italic;
+  color: var(--color-terra-deep);
+}
+
+.demo-hero-date {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+  margin-top: 8px;
+}
+
+.demo-hero-rule {
+  width: 64px;
+  height: 1px;
+  background: var(--color-terra);
+  margin-block: 24px;
+}
+
+.demo-hero-meta {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--color-ink-soft);
+  line-height: 1.5;
+}
+
+/* ============================================================
+   7. SECTION-DIVIDERS — subtle Hairlines zwischen Sections
+============================================================ */
+
+.section-divider {
+  height: 1px;
+  background: var(--color-rule-soft);
+  margin-inline: clamp(20px, 4vw, 64px);
+}
