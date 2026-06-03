@@ -5,7 +5,6 @@ import { BereichRenderer } from '@/components/layout/BereichRenderer';
 import { SiteNav } from '@/components/layout/SiteNav';
 import { buildNavItems } from '@/components/layout/nav-config';
 import { isReservedSlug, isValidSlugFormat } from '@/lib/slug-validation';
-import GlobalStyledBg from '@/components/decoration/GlobalStyledBg';
 import type { Metadata } from 'next';
 
 interface PageProps {
@@ -16,8 +15,11 @@ interface PageProps {
 export const revalidate = 60;
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
-  if (isReservedSlug(slug) || !isValidSlugFormat(slug)) {
+  const resolved = await params;
+  const slug = resolved?.slug;
+
+  // Defensive: ohne slug → notFound-Metadata (verhindert Render-Crash)
+  if (!slug || isReservedSlug(slug) || !isValidSlugFormat(slug)) {
     return { title: 'Nicht gefunden' };
   }
   const data = await loadWeddingSite(slug);
@@ -35,11 +37,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function WeddingSitePage({ params, searchParams }: PageProps) {
-  const { slug } = await params;
+  const resolved = await params;
+  const slug = resolved?.slug;
   const sp = await searchParams;
   const mode: 'draft' | 'published' = sp?.preview === 'draft' ? 'draft' : 'published';
 
-  if (isReservedSlug(slug) || !isValidSlugFormat(slug)) notFound();
+  // Defensive: ohne gültigen slug → notFound (kein Crash)
+  if (!slug || isReservedSlug(slug) || !isValidSlugFormat(slug)) notFound();
   const data = await loadWeddingSite(slug, mode);
   if (!data) notFound();
 
@@ -53,7 +57,7 @@ export default async function WeddingSitePage({ params, searchParams }: PageProp
     spacingMultiplier: SPACING_MULTIPLIER[tokens.dna_spacing],
   };
 
-  const style = (tokens as typeof tokens & { start_style_id?: string }).start_style_id ?? 'editorial';
+  const styleHint = (tokens as typeof tokens & { start_style_id?: string }).start_style_id ?? 'klassisch';
   const navVariant = (tokens as typeof tokens & { nav_variant?: string }).nav_variant ?? 'a';
   const navItems = buildNavItems(bereiche.map((b) => b.bereich_key));
   const coupleShort =
@@ -62,42 +66,37 @@ export default async function WeddingSitePage({ params, searchParams }: PageProp
       : 'S & I';
 
   return (
-    <>
-      {/* Global ambient BG als SIBLING — nicht Child! */}
-      <GlobalStyledBg style={style} cssVars={cssVars} />
-
-      <div
-        style={cssVars}
-        className="wedding-site-wrapper min-h-screen"
-        data-style={style}
-      >
-        <DnaProvider dna={dna}>
-          {navVariant !== 'none' && navItems.length > 0 && (
-            <SiteNav
-              variant={navVariant as 'a' | 'b' | 'c'}
-              items={navItems}
-              coupleShort={coupleShort}
-            />
-          )}
-          <main>
-            {bereiche.map((bereich, index) => {
-              const isLast = index === bereiche.length - 1;
-              const bgKind = getBereichBackground(index, bereich.bereich_key, isLast);
-              return (
-                <section
-                  key={bereich.id}
-                  id={`bereich-${bereich.bereich_key}`}
-                  style={{ background: bgKind === 'bg' ? 'var(--bg)' : 'var(--bg-soft)' }}
-                  data-bereich={bereich.bereich_key}
-                  data-variant={bereich.variant}
-                >
-                  <BereichRenderer bereich={bereich} tokens={tokens} weddingSlug={slug} />
-                </section>
-              );
-            })}
-          </main>
-        </DnaProvider>
-      </div>
-    </>
+    <div
+      style={cssVars}
+      className="wedding-site-wrapper min-h-screen"
+      data-style={styleHint}
+    >
+      <DnaProvider dna={dna}>
+        {navVariant !== 'none' && navItems.length > 0 && (
+          <SiteNav
+            variant={navVariant as 'a' | 'b' | 'c'}
+            items={navItems}
+            coupleShort={coupleShort}
+          />
+        )}
+        <main>
+          {bereiche.map((bereich, index) => {
+            const isLast = index === bereiche.length - 1;
+            const bgKind = getBereichBackground(index, bereich.bereich_key, isLast);
+            return (
+              <section
+                key={bereich.id}
+                id={`bereich-${bereich.bereich_key}`}
+                style={{ background: bgKind === 'bg' ? 'var(--bg)' : 'var(--bg-soft)' }}
+                data-bereich={bereich.bereich_key}
+                data-variant={bereich.variant}
+              >
+                <BereichRenderer bereich={bereich} tokens={tokens} weddingSlug={slug} />
+              </section>
+            );
+          })}
+        </main>
+      </DnaProvider>
+    </div>
   );
 }

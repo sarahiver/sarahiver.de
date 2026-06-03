@@ -12,10 +12,22 @@ export const RESERVED_SLUGS = [
   'sarahiver', 'iver', 'sarah',
 ] as const;
 
-export function isReservedSlug(slug: string): boolean {
-  return RESERVED_SLUGS.includes(slug.toLowerCase() as (typeof RESERVED_SLUGS)[number]);
+/**
+ * Defensive Slug-Validierung.
+ *
+ * Beide Funktionen sind robust gegen undefined/null/non-string Input.
+ * Vorher: slug.toLowerCase() crashte mit "Cannot read properties of
+ * undefined (reading 'toLowerCase')" wenn slug fehlt (z.B. bei Pre-
+ * Rendering oder Static Generation mit leeren params).
+ */
+export function isReservedSlug(slug: string | undefined | null): boolean {
+  if (!slug || typeof slug !== 'string') return false;
+  return RESERVED_SLUGS.includes(
+    slug.toLowerCase() as (typeof RESERVED_SLUGS)[number],
+  );
 }
 
-export function isValidSlugFormat(slug: string): boolean {
+export function isValidSlugFormat(slug: string | undefined | null): boolean {
+  if (!slug || typeof slug !== 'string') return false;
   return /^[a-z0-9](?:[a-z0-9-]{1,61}[a-z0-9])?$/i.test(slug);
 }
