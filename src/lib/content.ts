@@ -1,388 +1,182 @@
 /**
- * Zentrale Content-Datei für sarahiver.de v4
- *
- * v4 Änderungen gegenüber v3:
- * - Pricing-Kommunikation: Mindestlaufzeit + Zugriffsdauer prominent
- * - Streichpreis-Logik in Pricing-Aside
- * - Redundanz "je mehr desto günstiger" nur einmal
- * - Customizer: Live-Preview entfernt → Coming-Soon-Placeholder
- * - Hero-Mockup: bleibt vorerst pur (Tool-Hints kommen später)
+ * Landing-Page Content — alle Texte zentral.
+ * Iver kann hier Wording tweaken ohne TSX anfassen zu müssen.
  */
 
-import type { ReactNode } from 'react';
-
-export const SITE_CONFIG = {
-  name: 'sarahiver.de',
-  domain: 'sarahiver.de',
-  tagline: 'Eure Hochzeitsseite, in eurem Stil.',
-  description:
-    'Die warme Hochzeitsseiten-Plattform für Brautpaare im DACH-Raum. Wählt einen Stil, mischt Farben und Schriften, passt jeden Bereich einzeln an.',
-  email: 'hallo@sarahiver.de',
-};
-
-export const NAV_SECTIONS = [
-  { id: 'hero', label: 'Übersicht' },
-  { id: 'features', label: 'Was ihr bekommt' },
-  { id: 'examples', label: 'Beispielseiten' },
-  { id: 'structure', label: 'Aufbau' },
-  { id: 'customizer', label: 'Baukasten' },
-  { id: 'how', label: "So geht's" },
-  { id: 'pricing', label: 'Paket & Preis' },
-  { id: 'voices', label: 'Stimmen' },
-  { id: 'faq', label: 'Fragen' },
-  { id: 'cta', label: 'Loslegen' },
-] as const;
-
-export const SIDEBAR = {
-  quote:
-    'Eine Plattform für eure Hochzeit — gemacht von Menschen, die selbst gerade geheiratet haben.',
-  by: '— Sarah & Iver',
-  tag: 'Pre-Launch',
+export const NAV = {
+  links: [
+    { label: 'Beispiele', href: '#examples' },
+    { label: 'Bereiche', href: '#bereiche' },
+    { label: 'Preise', href: '#pricing' },
+    { label: 'Login', href: '/login' },
+  ],
+  cta: { label: 'Jetzt starten', href: '#config' },
 };
 
 export const HERO = {
-  eyebrow: 'Pre-Launch · für die Saison 2027',
-  headlinePart1: 'Eine Hochzeitsseite,',
-  headlinePart2: 'die nach ',
-  headlineEm: 'euch',
-  headlinePart3: ' klingt.',
-  lede:
-    'Acht Stile. Fünfzehn Bereiche. Null Templates. Baut sie selbst zusammen — in einem Nachmittag fertig. 14 Tage gratis testen.',
-  ctaPrimary: 'Jetzt 14 Tage starten',
-  ctaSecondary: 'Acht Stile ansehen',
-  trust: ['DSGVO-konform', 'Hosting in Deutschland', 'Monatlich kündbar'],
-  counterPrefix: 'Frühvogel-Aktion · noch',
-  counterRemaining: '87',
-  counterSuffix: 'von 100 Plätzen — 2 Monate gratis',
-};
-
-export const FEATURES = {
-  eyebrow: 'Was ihr bekommt',
-  titlePart1: 'Alles für den Tag —',
-  titlePart2: 'nichts darüber hinaus.',
-  lede:
-    'Sechs Werkzeuge, die euer Hochzeits-Organigramm ersetzen. Keine Plug-ins, keine Newsletter, keine Anmeldepflicht für Gäste.',
-  items: [
-    {
-      tone: '',
-      title: 'RSVP – auf einen Blick',
-      body:
-        'Zu- und Absagen, Menüwahl, Allergien, Übernachtungen. Alles auf einem Dashboard. Erinnerungen mit einem Klick.',
-    },
-    {
-      tone: 'sage',
-      title: 'Gästeliste, die mitdenkt',
-      body:
-        'Aus Excel importieren oder direkt pflegen — Sitzordnung, +1, Kinder, Tische. Exportierbar bis zur letzten Sekunde.',
-    },
-    {
-      tone: 'honey',
-      title: 'Wirklich anpassbar — wenn ihr wollt',
-      body:
-        'Start-Stil wählen, fertig. Oder vertiefen: Farben, Schriften und jeden Bereich einzeln. Wir geben gute Vorschläge, ihr habt das letzte Wort.',
-    },
-    {
-      tone: '',
-      title: 'Nur für eure Gäste',
-      body:
-        'Passwortschutz optional pro Bereich — Adresse erst nach RSVP, Galerie erst nach dem Fest. Kein Account nötig.',
-    },
-    {
-      tone: 'sage',
-      title: 'Zweisprachig, wenn ihr wollt',
-      body:
-        'Deutsch immer dabei. Englisch (oder eine andere Sprache) optional dazu — eure Gäste wechseln selbst.',
-    },
-    {
-      tone: 'honey',
-      title: 'Daten bleiben in Deutschland',
-      body:
-        'Hosting in Frankfurt, AV-Vertrag inklusive, kein Tracking. Wir sehen nicht, wer eure Seite besucht.',
-    },
+  eyebrow: 'Studio Hamburg · Cohort 01 · 2026',
+  h1_pre: 'Der',
+  h1_line1: 'schönste Tag',
+  h1_pre2: 'verdient ',
+  h1_em: 'seine eigene',
+  h1_line3: 'Seite.',
+  lede: 'Wir bauen keine Templates. Wir bauen Hochzeitsseiten, die wie Designer-Stücke wirken — nur dass ihr sie selbst zusammenstellt.',
+  bullets: ['8 Stile, keine Templates', '15 Bereiche, frei wählbar', 'Live in unter 30 Minuten'],
+  ctaPrimary: '2 Monate gratis sichern',
+  ctaPrimarySub: '87 / 100 Plätze frei →',
+  ctaSecondary: 'Beispiele ansehen',
+  trustCells: [
+    { label: '9 €/Monat',     num: '01', desc: 'Standard mit 4 Bereichen. Monatlich kündbar.' },
+    { label: 'DSGVO · DE',    num: '02', desc: 'Hosting + Daten in Deutschland. Eure Liste bleibt eure Liste.' },
+    { label: '14 Tage gratis', num: '03', desc: 'Testet alle 8 Stile vor der ersten Abbuchung.' },
   ],
 };
 
 export const EXAMPLES = {
-  eyebrow: 'Beispiele · 8 Stile',
-  titlePart1: 'Acht Stile.',
-  titleEm: 'Eure',
-  titlePart2: ' Wahl.',
-  lede:
-    'Jede Hochzeit hat ihren eigenen Ton. Wählt euren Stil als Startpunkt — Farben, Schriften und Akzente passt ihr dann an.',
-  scrollHint: 'Scrollt seitwärts durch alle acht.',
-  footerLine:
-    'Alle Stile lassen sich auf eurer Seite ausprobieren — kostenlos im 14-Tage-Trial. Wechselt jederzeit.',
-  footerCta: 'Alle Stile testen',
+  eyebrow: 'Beispiel-Hochzeiten · komplett konfiguriert',
+  h_pre: 'Acht Stile.',
+  h_em: 'Eure',
+  h_post: ' Wahl.',
+  lede: 'Jede Hochzeit hat ihren Ton. Wählt euren Startpunkt — den Rest passt ihr in Echtzeit an.',
+  scrollHint: 'Scrollt seitwärts durch alle acht →',
 };
 
-export const STRUCTURE = {
-  eyebrow: 'So ist eure Seite aufgebaut',
-  titlePart1: 'Bausteine —',
-  titleEm: 'nicht starre Vorlagen.',
-  lede:
-    'Eure Hochzeitsseite besteht aus einzelnen Bereichen. Vier sind immer dabei, elf wählt ihr nach Bedarf. Je mehr Bereiche ihr kombiniert, desto günstiger wird jeder einzelne.',
-  legend: {
-    basis: 'IMMER DABEI',
-    zusatz: '+4 € / Monat',
-    featured: 'BESTSELLER',
-  },
-  // KEINE Wiederholung mehr am Footer — der Lede sagt es schon einmal
-  foot: null,
+export const BEREICHE_SECTION = {
+  eyebrow: 'Was eure Gäste sehen',
+  h_pre: 'Bereiche —',
+  h_em: 'nicht',
+  h_post: ' Features.',
+  lede: 'Wir nennen sie Bereiche, weil das ist, was eure Gäste sehen. Nicht Code. Nicht "Funktionalität". Vier sind immer dabei. Elf zusätzliche sind frei wählbar.',
 };
 
-export const CUSTOMIZER = {
-  eyebrow: 'Baukasten',
-  titlePart1: 'So wird das',
-  titleEm: 'eure',
-  titlePart2: ' Seite —',
-  titleSage: 'nicht eine Vorlage.',
-  lede:
-    'Startet mit einem Stil, der zu euch passt. Wir empfehlen euch passende Bereiche — ihr nehmt sie, oder mischt selbst. Farben, Schriften und jeder Bereich später frei anpassbar.',
-  previewComingSoon: 'Live-Vorschau kommt mit dem Launch',
-  previewExplain:
-    'Sobald die ersten Bereiche fertig sind, seht ihr hier eure Auswahl in Echtzeit zusammengebaut.',
-  cheerPool: [
-    'Schöne Wahl!',
-    'Das passt!',
-    'Sehr gut!',
-    'Mhm, schön.',
-    'Genau das.',
-    'Hach.',
-    'Liebe das.',
-    'Stimmig.',
-  ],
-  steps: [
-    { key: 'start', label: 'Start-Stil' },
-    { key: 'palette', label: 'Farben' },
-    { key: 'fonts', label: 'Schriften' },
-    { key: 'blocks', label: 'Bereiche' },
-  ],
-  recommendedLabel: 'Für diesen Stil empfehlen wir',
+export const CONFIG = {
+  eyebrow: 'Euer Pricing — interaktiv',
+  h_pre: 'Stellt euren Plan',
+  h_em: 'live',
+  h_post: ' zusammen.',
+  lede: 'Wählt die Bereiche, die ihr braucht. Der Preis updatet automatisch. Keine Tarif-Falle, kein Lock-In.',
+  cta: 'Diesen Plan starten — 14 Tage gratis',
+  ctaSub: '→',
+  legalLine: 'Mit Kreditkarte. Nach 14 Tagen Abbuchung. Erste 100 Kunden: 2 Monate gratis.',
 };
 
-export const PRINT = {
-  eyebrow: 'Print-Service',
-  titlePart1: 'Und gedruckt —',
-  titleEm: 'passt alles zusammen.',
-  lede:
-    'Eure Farben und Schriften lassen sich für Einladungen, Save-the-Dates und Tischkarten exportieren. Selbst drucken oder von uns gestalten — ihr habt die Wahl.',
-  free: {
-    tag: 'Inklusive',
-    titlePart: 'Druck-Vorlagen ',
-    titleEm: 'kostenlos.',
-    body:
-      'Wir geben euch druckfertige PDF-Vorlagen — eure Farben, eure Schriften, euer Stil. Einfach selbst drucken lassen oder zum Online-Druck. Save-the-Date, Einladung, Tischkarten, Menükarte.',
-    price: '0 €',
-    alt: 'im Paket enthalten',
-    cta: 'PDF-Vorlagen ansehen',
-  },
-  paid: {
-    tag: 'Premium',
-    titlePart: 'Wir gestalten ',
-    titleEm: 'für euch.',
-    body:
-      'Lieber sicher gehen? Ein:e Designer:in von uns gestaltet Einladungen, Save-the-Dates und Tischkarten individuell — gemeinsam mit euch. Druckfertige PDFs in 5 Werktagen.',
-    price: '300 €',
-    alt: 'einmalig · alles dabei',
-    cta: 'Designer:in anfragen',
-  },
+export const PRICING_SECTION = {
+  eyebrow: 'Pricing — transparent',
+  h_pre: '9 €',
+  h_em: 'für alle',
+  h_post: ', mehr nur wenn ihr es braucht.',
+  lede: 'Standard mit 4 Bereichen. Plus weitere, in 3er-Stufen dazubuchbar. Monatlich kündbar.',
+  customDomainTitle: 'Eigene Domain',
+  customDomainDesc: 'Statt julia-tom.sarahiver.de eure eigene Adresse. Einmalige Einrichtung, dann monatlich.',
+  customDomainPrice: '39 € einmalig · 5 €/Monat',
 };
 
-export const HOW = {
-  eyebrow: "So funktioniert's",
-  titlePart1: 'Drei Schritte — und ihr seid',
-  titleEm: 'online.',
-  lede: 'Die meisten Paare brauchen einen Abend. Manche eine Stunde. Niemand braucht Hilfe.',
+export const HOWITWORKS = {
+  eyebrow: 'Von 0 auf live',
+  h_pre: 'Drei Schritte.',
+  h_em: 'Fertig.',
+  h_post: '',
+  lede: 'Keine Anrufe. Keine Beratung. Keine Excel-Tabellen. Ihr klickt zusammen, was zu euch passt — und seid online.',
   steps: [
     {
-      n: '1.',
-      h: 'Eure Seite starten',
-      p:
-        'Mit E-Mail oder Google. Keine Kreditkarte. Ihr bekommt sofort eine sarahiver.de-Subdomain — eigene Domain später, wann ihr wollt.',
-      tip: 'Dauert keine zwei Minuten.',
+      title: 'Stil wählen',
+      desc: 'Acht Stile von Editorial bis Bauhaus. Jeder bringt Schriften, Farben und Akzente mit.',
+      detail: 'Mit einem Klick wechselbar — auch nach Veröffentlichung.',
     },
     {
-      n: '2.',
-      h: 'Stil & Inhalte',
-      p:
-        'Wählt einen Start-Stil. Tragt eure Geschichte, Location, Programm und FAQs ein — wir haben warme Vorlagen für jeden Bereich.',
-      tip: 'Wir helfen euch beim Schreiben.',
+      title: 'Bereiche füllen',
+      desc: 'RSVP, Ablauf, Foto-Upload, Gästebuch — was ihr braucht, in welcher Reihenfolge ihr wollt.',
+      detail: 'Inhalte bleiben gespeichert, auch wenn ein Bereich deaktiviert wird.',
     },
     {
-      n: '3.',
-      h: 'Gäste einladen',
-      p:
-        'Versendet einen Link oder einen QR-Code. Ihr seht Zu- und Absagen live; eure Gäste sehen nur, was sie sehen sollen.',
-      tip: 'Auch Tante Heidi schafft das.',
+      title: 'Online stellen',
+      desc: 'Eure eigene Subdomain auf sarahiver.de — oder eure eigene Domain als Add-On.',
+      detail: 'SSL, DSGVO, Hosting in DE inklusive.',
     },
   ],
-};
-
-/**
- * PRICING v4 — der wichtigste Bereich nach Reviewer-Feedback.
- * Neu: Klare Laufzeit-Erklärung, Streichpreis-Logik.
- */
-export const PRICING = {
-  eyebrow: 'Paket & Preis',
-  titlePart1: 'Faire Preise —',
-  titleEm: 'so wie ihr es braucht.',
-  lede:
-    'Ein Basis-Preis für die vier wichtigsten Bereiche. Pro Zusatz-Bereich ein bisschen mehr — und ab 8 ist Schluss mit Aufpreis. 12 Monate Mindestlaufzeit, 18 Monate Zugriff insgesamt.',
-  pill: 'Pre-Launch-Preis',
-
-  // Klare Laufzeit-Kommunikation
-  termsExplained: {
-    title: 'Wie lange zahlt ihr?',
-    items: [
-      {
-        label: 'Mindestlaufzeit',
-        value: '12 Monate',
-        desc: 'Üblicher Hochzeits-Planungs-Horizont',
-      },
-      {
-        label: 'Seite bleibt online',
-        value: '18 Monate',
-        desc: '6 Monate Nachbereitung inklusive',
-      },
-      {
-        label: 'Danach',
-        value: 'Archiv',
-        desc: 'CSV-Export aller Daten · Galerie als ZIP',
-      },
-    ],
-  },
-
-  asideTitle: 'Im Pre-Launch-Plan enthalten',
-  asideList: [
-    '4 Basis-Bereiche im Basis-Preis',
-    'Voller Baukasten – alle Stile, Farben, Schriften',
-    'Druckfertige PDF-Vorlagen kostenlos',
-    'Unbegrenzte Gäste & RSVP-Antworten',
-    'Hosting in Frankfurt, kein Tracking',
-    'AV-Vertrag und Support inklusive',
-  ],
-  asideCta: 'Auf die Warteliste',
-  asideNote: 'Ihr werdet als Erste informiert — und bekommt 30% Pre-Launch-Rabatt.',
 };
 
 export const VOICES = {
-  eyebrow: 'Stimmen aus dem Closed Beta',
-  titlePart1: 'Was Paare aus der',
-  titleEm: 'Beta',
-  titlePart2: ' sagen.',
-  lede: 'Aktuell testen 38 Paare die Plattform. Hier zwei Stimmen aus der letzten Woche.',
-  items: [
+  eyebrow: 'Warum wir das bauen',
+  founder: {
+    quote: 'Wir haben sarahiver gebaut, weil keine Plattform unsere eigene Hochzeit auch nur ansatzweise verdient hätte. Was wir uns gewünscht hätten — gibt es jetzt.',
+    name: 'Sarah & Iver',
+    role: 'Gründer · Hamburg · Heiraten 07/2026',
+  },
+  beta: [
     {
-      q:
-        'Wir hatten an einem Sonntagabend keine Lust mehr auf Word-Vorlagen. Sechs Stunden später stand die Seite, RSVP lief, und Tante Heidi hat sich allein zurechtgefunden.',
-      name: 'Anna & Lukas K.',
-      meta: 'Beta · Sachsen · Heirat 09/26',
-      ini: 'A',
+      quote: 'Endlich keine pinken Templates mehr. Die Site sieht aus, als hätten wir sie bei einem Studio in Auftrag gegeben — kostet aber 18 € im Monat.',
+      sig: 'L. & J.',
+      meta: 'Pfalz · 2027',
     },
     {
-      q:
-        'Der Baukasten ist anders als alles, was wir vorher gesehen haben. Endlich keine fertige Vorlage, sondern wirklich unsere Farben, unsere Schriften, unser Tempo.',
-      name: 'Mia & Noah B.',
-      meta: 'Beta · Hamburg · Heirat 05/26',
-      ini: 'M',
+      quote: 'Der RSVP-Bereich hat uns zwei Wochen Excel-Arbeit gespart. Plus: Wir können den Stil nach jeder Vorbesprechung mit der Location neu wählen.',
+      sig: 'A. & L.',
+      meta: 'Schwarzwald · 2027',
     },
   ],
-  footStars: '★★★★★',
-  footPart1: 'Beta-Paare',
-  footScore: '9,4 / 10',
-  footPart2: 'Empfehlungswahrscheinlichkeit',
 };
 
-/**
- * FAQ v4 — neue Frage zu Abo-Kommunikation
- */
 export const FAQ = {
-  eyebrow: 'Häufige Fragen',
-  titlePart1: 'Vor dem Start —',
-  titleEm: 'noch eine Sache?',
+  eyebrow: 'Vor dem Start',
+  h_pre: 'Fragen,',
+  h_em: 'vor',
+  h_post: ' dem Checkout.',
   items: [
     {
-      q: 'Ist das ein Abo? Wie lange muss ich zahlen?',
-      a:
-        '12 Monate Mindestlaufzeit — das ist der typische Hochzeits-Planungs-Horizont. Eure Seite bleibt insgesamt 18 Monate online (6 Monate Nachbereitung für Galerie + Gästebuch). Danach bekommt ihr alle Daten als Export und die Seite geht ins Archiv. Keine versteckte Verlängerung, keine Abo-Falle — wir wissen, dass eine Hochzeit kein Streaming-Dienst ist.',
+      q: 'Was kostet sarahiver wirklich?',
+      a: 'Standard 9 €/Monat mit 4 Bereichen. Jede 3er-Stufe weiterer Bereiche +5 / +9 / +12 / +14 €. Custom-Domain optional 39 € einmalig plus 5 €/Monat. Keine Setup-Gebühren, keine Lock-Ins, monatlich kündbar.',
     },
     {
-      q: 'Wann startet sarahiver.de denn nun?',
-      a:
-        'Wir öffnen in Kürze. Genaues Datum verraten wir aktuell nicht — wir wollen lieber gründlich als pünktlich starten. Tragt euch in die Warteliste ein, dann sagen wir euch als Erste Bescheid (mit einem hübschen Pre-Launch-Rabatt obendrauf).',
+      q: 'Bekommen die ersten 100 Kunden wirklich 2 Monate gratis?',
+      a: 'Ja. Es gibt einen Live-Counter auf der Seite, keinen Promo-Code. Sobald 100 Kunden registriert sind, läuft die Aktion aus — Restliche zahlen ab dem 15. Tag.',
     },
     {
-      q: 'Was passiert mit unseren Daten nach der Hochzeit?',
-      a:
-        'Ihr behaltet 18 Monate Zugriff — vom Save-the-Date bis zur Galerie nach dem Fest. Danach bekommt ihr einen CSV-Export eurer RSVP-Liste und ein ZIP eurer Galerie. Nichts wird ohne eure Zustimmung weiterverwendet — das steht so im AV-Vertrag.',
+      q: 'Was passiert nach der Hochzeit?',
+      a: 'Eure Seite bleibt online, so lange ihr das Abo behaltet. Ihr könnt jederzeit kündigen — die Seite geht dann offline, die Daten könnt ihr exportieren.',
     },
     {
-      q: 'Wie unterscheidet sich sarahiver.de von sarahiver.com?',
-      a:
-        'sarahiver.de ist die Self-Service-Plattform — ihr baut eure Seite selbst, in eurem Tempo, mit dem Baukasten. sarahiver.com ist der Done-for-you-Service mit einem Designer-Team an eurer Seite (ab 1.290 €). Gleiche Werte, andere Reisegeschwindigkeit.',
+      q: 'Kann ich den Stil später ändern?',
+      a: 'Ja, jederzeit und beliebig oft. Inhalte werden nicht gelöscht, nur das Design wechselt.',
     },
     {
-      q: 'Können wir wirklich ALLES anpassen?',
-      a:
-        'Farben, Schriften, Spacing und das Layout jedes einzelnen Bereichs — ja. Aber wir geben euch zu jedem Start-Stil eine kuratierte Empfehlung, damit ihr nicht bei null anfangt. So bleibt eure Seite stimmig, auch wenn ihr experimentiert. Was wir bewusst nicht erlauben: HTML-Eingabe oder Custom-CSS.',
+      q: 'Was passiert mit den Gäste-Daten?',
+      a: 'Hosting in Deutschland, DSGVO-konform. RSVP-Antworten gehören euch — keine Auswertung, keine Weitergabe, keine Werbung an eure Gäste.',
+    },
+    {
+      q: 'Bekomme ich die Daten meiner Gäste exportiert?',
+      a: 'Ja. RSVP-Liste, Musikwünsche, Gästebuch-Einträge — alles als CSV oder PDF aus dem Dashboard.',
     },
     {
       q: 'Funktioniert die Seite auch auf Englisch?',
-      a:
-        'Ja. Deutsch ist immer dabei, Englisch oder eine andere Sprache lässt sich parallel pflegen. Eure Gäste wechseln oben rechts; alle automatischen Texte (RSVP-Formular, Bestätigungs-Mails) sind übersetzt.',
+      a: 'Aktuell DE/EN switchbar pro Bereich. Italienisch, Französisch, Spanisch sind in der Roadmap für Saison 2027.',
     },
     {
-      q: 'Wo werden die Daten gehostet?',
-      a:
-        'Bei Hetzner in Frankfurt am Main, ausschließlich in deutschen Rechenzentren. Keine US-Dienste, keine Tracking-Skripte. Wir wissen nicht, wer eure Seite besucht hat — und das soll auch so bleiben.',
-    },
-    {
-      q: 'Brauchen unsere Gäste einen Account?',
-      a:
-        'Nein. Eure Gäste klicken auf den Einladungslink, geben optional ein Passwort ein und können direkt antworten. Wir speichern nur Name, Antwort und Allergien — kein Konto, kein Newsletter.',
-    },
-    {
-      q: 'Was kostet der Print-Service eigentlich?',
-      a:
-        'Die PDF-Vorlagen (Save-the-Date, Einladung, Tischkarten, Menükarte) sind in jedem Paket kostenlos enthalten. Wenn ihr lieber von uns gestalten lasst, sind das 300 € einmalig — inklusive Designer-Gespräch, zwei Korrekturschleifen und druckfertige PDFs.',
+      q: 'Warum sollte ich euch trauen — ihr seid neu?',
+      a: 'Stimmt. Wir starten mit Cohort 01: Erste 100 Brautpaare bekommen 2 Monate gratis und direkten Kontakt zu uns. Wir bauen für unsere eigene Hochzeit mit — der Druck, dass es funktioniert, ist also persönlich.',
     },
   ],
 };
 
-export const CTA = {
-  eyebrow: 'Bereit für eure Seite?',
-  titlePart1: 'Wir bauen gerade —',
-  titleEm: 'seid ihr dabei?',
-  lede:
-    'Tragt euch ein, und ihr seid die Ersten, die loslegen können. Inklusive 30% Pre-Launch-Rabatt auf eure ersten 6 Monate.',
-  waitlistPh: 'name@beispiel.de',
-  waitlistCta: 'Auf die Liste',
-  trust: [
-    { lab: 'Datenschutz', val: 'DSGVO & AV-Vertrag' },
-    { lab: 'Hosting', val: 'Frankfurt, Deutschland' },
-    { lab: 'Pre-Launch', val: '30 % Rabatt für euch' },
-  ],
-  success: 'Danke! Wir melden uns als Erste.',
-  privacy:
-    'Mit dem Eintrag bestätige ich, dass ihr mich kontaktieren dürft. Ich kann mich jederzeit wieder austragen.',
+export const FINAL_CTA = {
+  eyebrow: 'Ihr habt nichts zu verlieren',
+  h_pre: 'Beginnt',
+  h_em: 'euer',
+  h_post: ' Kapitel.',
+  sub: 'Vierzehn Tage gratis testen. Erste 100 Kunden bekommen zusätzlich 2 Monate Bonus. Monatlich kündbar.',
+  cta: 'Jetzt starten',
+  ctaSub: '→',
+  small: '87 / 100 Plätze frei',
+  legal: 'Mit Kreditkarte — Abbuchung erst nach Trial. Kein Promo-Code nötig, der Bonus wird automatisch verrechnet.',
 };
 
 export const FOOTER = {
-  desc:
-    'sarahiver.de ist die Self-Service-Hochzeitsseiten-Plattform für den DACH-Raum. Wir bauen gerade mit Brautpaaren aus der Closed Beta die Werkzeuge, die wir uns selbst gewünscht hätten.',
-  cols: [
-    {
-      h: 'Produkt',
-      links: ['Was ihr bekommt', 'Baukasten', 'Print-Service', 'Roadmap'],
-    },
-    {
-      h: 'Schwester',
-      links: ['sarahiver.com', 'Done-for-you', 'Designer-Team', 'Unterschied'],
-    },
-    {
-      h: 'Rechtlich',
-      links: ['Impressum', 'Datenschutz', 'AGB', 'AV-Vertrag'],
-    },
+  links: [
+    { label: 'Impressum', href: '/impressum' },
+    { label: 'Datenschutz', href: '/datenschutz' },
+    { label: 'AGB', href: '/agb' },
+    { label: 'Kontakt', href: 'mailto:hallo@sarahiver.de' },
+    { label: 'Status', href: '/status' },
   ],
-  meta: ['© 2026 sarahiver UG (i. Gr.)', 'Hamburg', 'Pre-Launch · 2026'],
+  copyright: '© 2026 Sarah & Iver Gentz GbR · Hamburg, Deutschland · Made with love and ink',
 };
