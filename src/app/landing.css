@@ -11,6 +11,12 @@
   --land-crimson: #D63B2F;
   --land-crimson-deep: #B12E25;
   --land-paper: #FFFFFF;
+  --land-max: 1440px;
+}
+
+/* === BODY BG (subtle Frame für Page-Shell) === */
+body:has(.landing) {
+  background: #E6E1D2;
 }
 
 .landing {
@@ -18,6 +24,10 @@
   background: var(--land-bg);
   color: var(--land-ink);
   -webkit-font-smoothing: antialiased;
+  max-width: var(--land-max);
+  margin-inline: auto;
+  box-shadow: 0 0 0 1px rgba(15, 14, 12, 0.04);
+  overflow-x: clip;
 }
 .landing a { color: inherit; }
 
@@ -116,7 +126,11 @@
 }
 
 /* === HERO === */
-.hero { padding: 48px 26px 0; }
+.hero {
+  padding: 48px 26px 0;
+  max-width: var(--land-max);
+  margin-inline: auto;
+}
 .hero h1 { margin: 18px 0 0; }
 .hero h1 em { animation: em-entrance 1.2s cubic-bezier(0.075, 0.82, 0.165, 1); }
 @keyframes em-entrance {
