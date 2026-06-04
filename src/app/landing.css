@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@400;500;700;800;900&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alumni+Sans+Inline:ital,wght@0,900;1,900&family=Caveat:wght@400..700&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Cormorant+SC:wght@300;400;500;600;700&family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@400;500;700;800;900&family=Italiana&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Karla:ital,wght@0,200..800;1,200..800&family=Manrope:wght@200..800&family=Space+Grotesk:wght@300..700&family=Syne:wght@700;800;900&family=DM+Mono:wght@400;500&display=swap');
 
 :root {
   --land-bg: #F5F2EA;
@@ -659,12 +659,13 @@ body:has(.landing) {
 .footer__small { color: var(--land-muted); margin-top: 32px; letter-spacing: 0.08em; font-size: 10px; }
 
 /* ============================================================
-   DASHBOARD — Live Style/Color/Font Picker mit Preview
-   ============================================================ */
+   DASHBOARD — Stil-Switch mit Spec-konformer Live-Vorschau
+   Folgt der Design-System-Spec v2 für jeden der 8 Stile.
+============================================================ */
 
 .dash__body {
   display: grid;
-  grid-template-columns: 380px 1fr;
+  grid-template-columns: 360px 1fr;
   gap: 24px;
   align-items: start;
 }
@@ -675,7 +676,7 @@ body:has(.landing) {
 .dash__controls {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 22px;
   border: 1px solid var(--land-rule);
   background: var(--land-paper);
   padding: 24px 22px;
@@ -690,20 +691,18 @@ body:has(.landing) {
   color: var(--land-muted);
 }
 
-.dash__opts {
+.dash__opts-style {
   display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 6px;
 }
-.dash__opts-style { grid-template-columns: repeat(2, 1fr); }
-.dash__opts-color { grid-template-columns: 1fr; }
-.dash__opts-font  { grid-template-columns: repeat(2, 1fr); }
 
 .dash__opt {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 4px;
-  padding: 10px 12px;
+  padding: 12px 14px;
   background: var(--land-bg);
   border: 1px solid var(--land-rule-soft);
   font-family: 'Inter', sans-serif;
@@ -711,7 +710,6 @@ body:has(.landing) {
   user-select: none;
   transition: all 0.2s ease;
   text-align: left;
-  position: relative;
 }
 .dash__opt:hover { border-color: var(--land-rule); }
 .dash__opt.is-active {
@@ -720,36 +718,42 @@ body:has(.landing) {
   border-color: var(--land-ink);
 }
 .dash__opt-label {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
 }
 .dash__opt-hint {
   font-family: 'DM Mono', monospace;
   font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  opacity: 0.6;
+  opacity: 0.65;
 }
 
-.dash__opt-color {
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
+.dash__tagline {
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  background: var(--land-bg);
+  border: 1px solid var(--land-rule-soft);
 }
-.dash__swatches {
-  display: inline-flex;
-  gap: 4px;
-}
-.dash__swatch {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 1px solid rgba(15, 14, 12, 0.18);
+.dash__tagline-num {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 36px;
+  line-height: 0.9;
+  color: var(--land-crimson);
+  letter-spacing: -0.04em;
   flex-shrink: 0;
 }
-.dash__opt-color.is-active .dash__swatch {
-  border-color: rgba(245, 242, 234, 0.3);
+.dash__tagline p {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--land-ink);
+  margin: 0;
+  align-self: center;
 }
 
 .dash__cta {
@@ -764,12 +768,8 @@ body:has(.landing) {
   font-size: 15px;
   letter-spacing: -0.01em;
   transition: all 0.3s;
-  margin-top: 8px;
 }
-.dash__cta:hover {
-  background: var(--land-ink);
-  padding-left: 28px;
-}
+.dash__cta:hover { background: var(--land-ink); padding-left: 28px; }
 .dash__cta-sub {
   font-family: 'DM Mono', monospace;
   font-size: 10px;
@@ -778,9 +778,8 @@ body:has(.landing) {
   opacity: 0.85;
 }
 
-/* === Preview Wrapper === */
+/* === Preview Frame === */
 .dash__preview-wrap { display: flex; flex-direction: column; gap: 12px; }
-
 .dash__preview-toggle {
   display: none;
   width: 100%;
@@ -791,20 +790,18 @@ body:has(.landing) {
   font-family: 'Inter', sans-serif;
   font-weight: 700;
   font-size: 14px;
-  letter-spacing: -0.01em;
   cursor: pointer;
   align-items: center;
   justify-content: space-between;
 }
-@media (max-width: 900px) {
-  .dash__preview-toggle { display: flex; }
-}
+@media (max-width: 900px) { .dash__preview-toggle { display: flex; } }
 
 .dash__frame {
   border: 1px solid var(--land-rule);
   background: white;
   box-shadow: 0 1px 2px rgba(15, 14, 12, 0.04), 0 16px 40px -12px rgba(15, 14, 12, 0.15);
   position: relative;
+  overflow: hidden;
 }
 @media (max-width: 900px) {
   .dash__frame {
@@ -812,14 +809,10 @@ body:has(.landing) {
     position: fixed;
     inset: 16px;
     z-index: 100;
-    box-shadow: 0 20px 60px -10px rgba(15, 14, 12, 0.3);
     overflow-y: auto;
   }
-  .dash__frame.is-open-mobile {
-    display: block;
-  }
+  .dash__frame.is-open-mobile { display: block; }
 }
-
 .dash__frame-close {
   display: none;
   position: absolute;
@@ -831,14 +824,14 @@ body:has(.landing) {
   background: white;
   border: 1px solid var(--land-rule);
   font-size: 20px;
-  font-weight: 500;
   cursor: pointer;
   line-height: 1;
 }
 @media (max-width: 900px) {
-  .dash__frame.is-open-mobile .dash__frame-close { display: flex; align-items: center; justify-content: center; }
+  .dash__frame.is-open-mobile .dash__frame-close {
+    display: flex; align-items: center; justify-content: center;
+  }
 }
-
 .dash__bar {
   height: 32px;
   background: var(--land-bg-soft);
@@ -851,7 +844,7 @@ body:has(.landing) {
 .dash__bar-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--land-rule-soft); }
 .dash__bar-url {
   margin-left: 14px;
-  font-family: 'DM Mono', monospace;
+  font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
   color: var(--land-muted);
   letter-spacing: 0.04em;
@@ -862,311 +855,480 @@ body:has(.landing) {
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  background: transparent;
   border: 1px solid var(--land-rule-soft);
   color: var(--land-ink-soft);
-  font-family: 'DM Mono', monospace;
+  font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   text-decoration: none;
   transition: all 0.2s;
 }
-.dash__live-link:hover {
-  border-color: var(--land-crimson);
-  color: var(--land-crimson);
-}
+.dash__live-link:hover { border-color: var(--land-crimson); color: var(--land-crimson); }
 
 /* ============================================================
-   DASH-PREVIEW — Mini-Wedding-Site Inhalt (4 Bereiche)
+   DASH-PREVIEW — Spec-konforme Stil-Vorschauen (8 Stile × 4 Bereiche)
 ============================================================ */
+
 .dash-preview {
-  background: var(--dp-bg, var(--land-bg));
-  color: var(--dp-ink, var(--land-ink));
-  font-family: var(--dp-font-body, 'Inter', sans-serif);
+  position: relative;
+}
+.dash-preview > div {
+  position: relative;
+  z-index: 1;
 }
 
-/* === Color Variables per Palette === */
-[data-dp-color="sand-terra"]   { --dp-bg: #FAF6F0; --dp-bg-soft: #F0E6D8; --dp-ink: #1A0E14; --dp-accent: #8B2A2A; --dp-muted: #5A4546; --dp-rule: rgba(26,14,20,0.12); }
-[data-dp-color="salbei-rose"]  { --dp-bg: #EDE7DC; --dp-bg-soft: #E2D8C6; --dp-ink: #3E4A35; --dp-accent: #B5746A; --dp-muted: #5E6E50; --dp-rule: rgba(62,74,53,0.15); }
-[data-dp-color="pur-schiefer"] { --dp-bg: #FFFFFF; --dp-bg-soft: #F4F4F2; --dp-ink: #1A1A1A; --dp-accent: #1A1A1A; --dp-muted: #888888; --dp-rule: rgba(26,26,26,0.12); }
-[data-dp-color="burgund-gold"] { --dp-bg: #1A0E14; --dp-bg-soft: #2D1A1E; --dp-ink: #F4E8D3; --dp-accent: #C9A14F; --dp-muted: #B89A6C; --dp-rule: rgba(201,161,79,0.22); }
-[data-dp-color="olive-honig"]  { --dp-bg: #F3EFE0; --dp-bg-soft: #E8E0C8; --dp-ink: #3D3B22; --dp-accent: #9B8A4F; --dp-muted: #6A6748; --dp-rule: rgba(61,59,34,0.15); }
-
-/* === Font Variables per Pair === */
-[data-dp-font="klassisch-serif"] { --dp-font-display: 'Fraunces', serif; --dp-font-body: 'Inter', sans-serif; --dp-font-mono: 'DM Mono', monospace; }
-[data-dp-font="modern-sans"]     { --dp-font-display: 'Inter', sans-serif; --dp-font-body: 'Inter', sans-serif; --dp-font-mono: 'DM Mono', monospace; }
-[data-dp-font="editorial-mix"]   { --dp-font-display: 'Fraunces', serif; --dp-font-body: 'DM Mono', monospace; --dp-font-mono: 'DM Mono', monospace; }
-[data-dp-font="minimal-mono"]    { --dp-font-display: 'DM Mono', monospace; --dp-font-body: 'DM Mono', monospace; --dp-font-mono: 'DM Mono', monospace; }
-
-/* === Generic Preview Layout (4 Bereiche) === */
+/* Generic Layout (wird pro Stil überschrieben) */
 .dp-hero {
-  padding: clamp(28px, 5%, 56px) clamp(20px, 4%, 40px);
-  background: var(--dp-bg);
+  padding: 40px 32px;
   min-height: 320px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-}
-.dp-eye {
-  font-family: var(--dp-font-mono);
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--dp-accent);
-}
-.dp-couple {
-  font-family: var(--dp-font-display);
-  font-size: clamp(48px, 7vw, 88px);
-  line-height: 0.9;
-  letter-spacing: -0.03em;
-  font-weight: 500;
-  margin: 0;
-  color: var(--dp-ink);
-}
-.dp-amp { margin-inline: 6px; }
-.dp-meta {
-  font-family: var(--dp-font-mono);
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--dp-muted);
-  margin-top: 10px;
-}
-.dp-rule {
-  width: 56px; height: 1px;
-  background: var(--dp-accent);
-  margin-block: 22px;
-}
-.dp-loc {
-  font-family: var(--dp-font-body);
-  font-size: 13px;
-  color: var(--dp-muted);
-  line-height: 1.5;
-}
-
-.dp-countdown {
-  padding: clamp(20px, 4%, 36px);
-  background: var(--dp-bg-soft);
-  border-top: 1px solid var(--dp-rule);
-  border-bottom: 1px solid var(--dp-rule);
-  text-align: center;
-}
-.dp-section-eye {
-  font-family: var(--dp-font-mono);
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--dp-accent);
-  margin-bottom: 12px;
-}
-.dp-countdown-nums {
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
-  gap: clamp(10px, 2vw, 20px);
-}
-.dp-cd-block { display: flex; flex-direction: column; gap: 4px; }
-.dp-cd-block b {
-  font-family: var(--dp-font-display);
-  font-size: clamp(28px, 5vw, 48px);
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  color: var(--dp-ink);
-}
-.dp-cd-block span {
-  font-family: var(--dp-font-mono);
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--dp-muted);
-}
-.dp-cd-sep {
-  font-family: var(--dp-font-display);
-  font-size: clamp(20px, 4vw, 32px);
-  color: var(--dp-accent);
-  line-height: 1;
-}
-
-.dp-rsvp {
-  padding: clamp(20px, 4%, 36px);
-  background: var(--dp-bg);
-  text-align: center;
-}
-.dp-h4 {
-  font-family: var(--dp-font-display);
-  font-size: clamp(24px, 4vw, 36px);
-  line-height: 1;
-  letter-spacing: -0.025em;
-  margin: 0 0 4px;
-  color: var(--dp-ink);
-  font-weight: 500;
-}
-.dp-rsvp-deadline {
-  font-family: var(--dp-font-mono);
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--dp-muted);
-  margin-bottom: 16px;
-}
-.dp-rsvp-btns {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-}
-.dp-btn {
-  padding: 10px 18px;
-  border: 1px solid var(--dp-ink);
-  background: transparent;
-  color: var(--dp-ink);
-  font-family: var(--dp-font-body);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.dp-btn-yes {
-  background: var(--dp-accent);
-  color: var(--dp-bg);
-  border-color: var(--dp-accent);
-}
-.dp-btn:hover { transform: translateY(-1px); }
-
-.dp-lovestory {
-  padding: clamp(20px, 4%, 36px);
-  background: var(--dp-bg-soft);
-  border-top: 1px solid var(--dp-rule);
-  text-align: center;
-}
-.dp-lovestory-text {
-  font-family: var(--dp-font-display);
-  font-style: italic;
-  font-size: clamp(14px, 1.4vw, 17px);
-  line-height: 1.55;
-  color: var(--dp-ink);
-  max-width: 36ch;
-  margin: 12px auto 0;
-}
-
-/* ============================================================
-   Style-Specific Overrides (lay on top of color/font system)
-============================================================ */
-
-/* EDITORIAL — italic em, terra accents (default, kein extra) */
-
-/* ORGANIC — italic display, sage feel */
-.dash-preview[data-style="organic"] .dp-couple { font-style: italic; }
-.dash-preview[data-style="organic"] .dp-lovestory-text { font-style: italic; }
-
-/* BRUTALIST — heavy uppercase, hard lines */
-.dash-preview[data-style="brutalist"] .dp-couple {
-  font-family: 'Inter', sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: -0.045em;
-  line-height: 0.85;
-}
-.dash-preview[data-style="brutalist"] .dp-eye {
-  background: #FFEC3D;
-  color: #000;
-  padding: 4px 10px;
-  align-self: flex-start;
-  font-weight: 700;
-}
-.dash-preview[data-style="brutalist"] .dp-h4 {
-  font-family: 'Inter', sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-.dash-preview[data-style="brutalist"] .dp-rule { height: 4px; }
-
-/* MONO — lowercase, monospace, // and > prefixes */
-.dash-preview[data-style="mono"] .dp-couple {
-  font-family: 'DM Mono', monospace;
-  text-transform: lowercase;
-  font-weight: 500;
-}
-.dash-preview[data-style="mono"] .dp-eye::before { content: '// '; opacity: 0.5; }
-.dash-preview[data-style="mono"] .dp-meta::before { content: '> '; opacity: 0.5; }
-.dash-preview[data-style="mono"] .dp-h4 {
-  font-family: 'DM Mono', monospace;
-  text-transform: lowercase;
-  font-weight: 500;
-}
-.dash-preview[data-style="mono"] .dp-rule {
-  border-top: 1px dashed currentColor;
-  background: transparent;
-  opacity: 0.5;
-  width: 80px;
-}
-
-/* OPULENT — italic, sparkles */
-.dash-preview[data-style="opulent"] .dp-couple { font-style: italic; font-weight: 400; }
-.dash-preview[data-style="opulent"] .dp-h4 { font-style: italic; }
-.dash-preview[data-style="opulent"] .dp-amp { font-style: italic; }
-.dash-preview[data-style="opulent"] .dp-rule {
-  background: linear-gradient(to right, transparent, var(--dp-accent), transparent);
-  width: 96px;
-}
-
-/* LIQUEFY — light weight, soft */
-.dash-preview[data-style="liquefy"] .dp-couple { font-weight: 300; letter-spacing: -0.025em; }
-.dash-preview[data-style="liquefy"] .dp-hero {
-  background:
-    radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--dp-accent) 15%, transparent), transparent 50%),
-    var(--dp-bg);
-}
-
-/* KINETIC — black background regardless of color choice */
-.dash-preview[data-style="kinetic"] .dp-couple {
-  font-family: 'Inter', sans-serif;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: -0.04em;
-}
-.dash-preview[data-style="kinetic"] .dp-h4 {
-  font-family: 'Inter', sans-serif;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-.dash-preview[data-style="kinetic"] .dp-amp { font-style: italic; }
-.dash-preview[data-style="kinetic"] .dp-rule { height: 3px; }
-
-/* BAUHAUS — geometric shape decorations */
-.dash-preview[data-style="bauhaus"] .dp-couple {
-  font-family: 'Inter', sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: -0.03em;
-}
-.dash-preview[data-style="bauhaus"] .dp-h4 {
-  font-family: 'Inter', sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-.dash-preview[data-style="bauhaus"] .dp-hero {
   position: relative;
   overflow: hidden;
 }
-.dash-preview[data-style="bauhaus"] .dp-hero::before {
-  content: '';
-  position: absolute;
-  top: 18%;
-  right: 8%;
-  width: 36px;
-  height: 36px;
+.dp-countdown, .dp-rsvp, .dp-lovestory {
+  padding: 28px 32px;
+  position: relative;
+}
+.dp-couple { font-size: 64px; line-height: 0.9; margin: 0; letter-spacing: -0.03em; }
+.dp-amp { margin-inline: 6px; }
+.dp-eye, .dp-section-eye { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; }
+.dp-meta, .dp-loc, .dp-rsvp-deadline { font-size: 12px; }
+.dp-rule { width: 56px; height: 1px; margin-block: 20px; }
+.dp-h4 { font-size: 32px; line-height: 1; margin: 0 0 6px; letter-spacing: -0.025em; }
+.dp-countdown-nums {
+  display: flex; justify-content: center; align-items: baseline;
+  gap: 18px; margin-top: 14px;
+}
+.dp-cd-block { display: flex; flex-direction: column; gap: 4px; align-items: center; }
+.dp-cd-block b { font-size: 44px; font-weight: 500; line-height: 1; letter-spacing: -0.04em; }
+.dp-cd-block span { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; }
+.dp-cd-sep { font-size: 28px; line-height: 1; }
+.dp-rsvp { text-align: center; }
+.dp-rsvp-deadline { letter-spacing: 0.16em; text-transform: uppercase; margin-block: 6px 16px; }
+.dp-rsvp-btns { display: flex; justify-content: center; gap: 8px; }
+.dp-btn {
+  padding: 10px 18px;
+  border: 1px solid currentColor;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  color: inherit;
+}
+.dp-lovestory { text-align: center; }
+.dp-lovestory-text { font-size: 15px; line-height: 1.55; max-width: 36ch; margin: 10px auto 0; }
+.dp-decor { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+
+/* ============================================================
+   STIL 01 · EDITORIAL — Bone bg, Burnt Sienna, Fraunces + Manrope
+============================================================ */
+.dash-preview[data-style="editorial"] {
+  background: #F5F0E8;
+  color: #1F1A14;
+  font-family: 'Manrope', sans-serif;
+}
+.dash-preview[data-style="editorial"] .dp-eye,
+.dash-preview[data-style="editorial"] .dp-section-eye {
+  font-family: 'JetBrains Mono', monospace;
+  color: #B85C3A;
+  letter-spacing: 0.18em;
+  font-weight: 500;
+}
+.dash-preview[data-style="editorial"] .dp-couple {
+  font-family: 'Fraunces', serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 350;
+  color: #1F1A14;
+}
+.dash-preview[data-style="editorial"] .dp-amp { color: #B85C3A; font-style: italic; }
+.dash-preview[data-style="editorial"] .dp-meta {
+  font-family: 'JetBrains Mono', monospace; color: #5A4F40;
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+.dash-preview[data-style="editorial"] .dp-loc {
+  font-family: 'Manrope', sans-serif; color: #5A4F40; line-height: 1.6;
+}
+.dash-preview[data-style="editorial"] .dp-rule { background: #C9B898; }
+.dash-preview[data-style="editorial"] .dp-countdown { background: #EBE3D2; border-block: 1px solid #C9B898; }
+.dash-preview[data-style="editorial"] .dp-cd-block b { font-family: 'Fraunces', serif; font-variation-settings: 'opsz' 144, 'wght' 300; }
+.dash-preview[data-style="editorial"] .dp-cd-sep { color: #B85C3A; font-family: 'Fraunces', serif; }
+.dash-preview[data-style="editorial"] .dp-h4 { font-family: 'Fraunces', serif; font-variation-settings: 'opsz' 144, 'wght' 400; }
+.dash-preview[data-style="editorial"] .dp-btn-yes { background: #B85C3A; color: #F5F0E8; border-color: #B85C3A; }
+.dash-preview[data-style="editorial"] .dp-lovestory { background: #EBE3D2; border-top: 1px solid #C9B898; }
+.dash-preview[data-style="editorial"] .dp-lovestory-text {
+  font-family: 'Fraunces', serif; font-style: italic;
+  font-variation-settings: 'opsz' 144, 'wght' 350;
+}
+
+/* ============================================================
+   STIL 02 · BRUTALIST — White bg, Black, Electric Yellow #E8FF00
+============================================================ */
+.dash-preview[data-style="brutalist"] {
+  background: #FFFFFF;
+  color: #000000;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.dash-preview[data-style="brutalist"] .dp-hero {
+  border-bottom: 4px solid #000;
+}
+.dash-preview[data-style="brutalist"] .dp-eye,
+.dash-preview[data-style="brutalist"] .dp-section-eye {
+  font-family: 'JetBrains Mono', monospace;
+  background: #E8FF00; color: #000;
+  padding: 4px 10px; align-self: flex-start;
+  font-weight: 600; letter-spacing: 0.15em;
+}
+.dash-preview[data-style="brutalist"] .dp-couple {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700; text-transform: uppercase;
+  letter-spacing: -0.045em; line-height: 0.82;
+  font-size: 88px;
+}
+.dash-preview[data-style="brutalist"] .dp-amp {
+  background: #E8FF00; color: #000;
+  padding: 0 10px; transform: skewX(-8deg);
+  display: inline-block;
+}
+.dash-preview[data-style="brutalist"] .dp-meta {
+  font-family: 'JetBrains Mono', monospace; color: #000;
+  font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+}
+.dash-preview[data-style="brutalist"] .dp-loc {
+  font-family: 'Space Grotesk', sans-serif; color: #000; font-weight: 500;
+}
+.dash-preview[data-style="brutalist"] .dp-rule { background: #000; height: 4px; width: 100%; }
+.dash-preview[data-style="brutalist"] .dp-countdown { border-bottom: 4px solid #000; }
+.dash-preview[data-style="brutalist"] .dp-cd-block b { font-family: 'Space Grotesk', sans-serif; font-weight: 700; }
+.dash-preview[data-style="brutalist"] .dp-cd-sep { color: #E8FF00; -webkit-text-stroke: 1px #000; }
+.dash-preview[data-style="brutalist"] .dp-rsvp { border-bottom: 4px solid #000; }
+.dash-preview[data-style="brutalist"] .dp-h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700; text-transform: uppercase; letter-spacing: -0.04em;
+}
+.dash-preview[data-style="brutalist"] .dp-btn-yes {
+  background: #E8FF00; color: #000; border: 2px solid #000;
+  box-shadow: 4px 4px 0 #000;
+}
+.dash-preview[data-style="brutalist"] .dp-btn-no {
+  border: 2px solid #000; box-shadow: 4px 4px 0 #E8FF00;
+}
+.dash-preview[data-style="brutalist"] .dp-lovestory-text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-style: normal; font-size: 18px; font-weight: 500;
+}
+
+/* ============================================================
+   STIL 03 · ORGANIC — Eggshell, Sage/Peach/Coral/Plum/Gold, Fraunces Italic
+============================================================ */
+.dash-preview[data-style="organic"] {
+  background: #F4F0E6;
+  color: #2A2419;
+  font-family: 'Karla', sans-serif;
+  position: relative;
+}
+.dash-preview[data-style="organic"] .dp-hero { background: #F4F0E6; }
+.dash-preview[data-style="organic"] .dp-hero::before {
+  content: ''; position: absolute;
+  top: -40px; right: -30px;
+  width: 220px; height: 220px; border-radius: 50%;
+  background: radial-gradient(circle, #E8A98F 0%, transparent 70%);
+  filter: blur(20px); z-index: 0;
+}
+.dash-preview[data-style="organic"] .dp-hero::after {
+  content: ''; position: absolute;
+  bottom: -30px; left: -20px;
+  width: 180px; height: 180px; border-radius: 50%;
+  background: radial-gradient(circle, #7C8C6C 0%, transparent 70%);
+  filter: blur(20px); z-index: 0; opacity: 0.7;
+}
+.dash-preview[data-style="organic"] .dp-eye,
+.dash-preview[data-style="organic"] .dp-section-eye {
+  font-family: 'JetBrains Mono', monospace;
+  color: #B85C3A; letter-spacing: 0.2em;
+}
+.dash-preview[data-style="organic"] .dp-couple {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 350;
+  color: #2A2419;
+}
+.dash-preview[data-style="organic"] .dp-amp { color: #B85C3A; }
+.dash-preview[data-style="organic"] .dp-meta,
+.dash-preview[data-style="organic"] .dp-loc { font-family: 'Karla', sans-serif; color: #5A5040; }
+.dash-preview[data-style="organic"] .dp-rule { background: #7C8C6C; }
+.dash-preview[data-style="organic"] .dp-countdown { background: #EBE5D2; }
+.dash-preview[data-style="organic"] .dp-cd-block b { font-family: 'Fraunces', serif; font-style: italic; font-variation-settings: 'opsz' 144, 'wght' 400; }
+.dash-preview[data-style="organic"] .dp-cd-sep { color: #B85C3A; font-family: 'Fraunces', serif; font-style: italic; }
+.dash-preview[data-style="organic"] .dp-rsvp { background: #F4F0E6; }
+.dash-preview[data-style="organic"] .dp-h4 { font-family: 'Fraunces', serif; font-style: italic; font-variation-settings: 'opsz' 144, 'wght' 400; }
+.dash-preview[data-style="organic"] .dp-btn-yes { background: #7C8C6C; color: #F4F0E6; border-color: #7C8C6C; }
+.dash-preview[data-style="organic"] .dp-lovestory { background: #EBE5D2; }
+.dash-preview[data-style="organic"] .dp-lovestory-text { font-family: 'Fraunces', serif; font-style: italic; }
+
+/* ============================================================
+   STIL 04 · MONO — Bone bg, Pure Black, ALLES JetBrains Mono
+============================================================ */
+.dash-preview[data-style="mono"] {
+  background: #FAFAF8;
+  color: #0A0A0A;
+  font-family: 'JetBrains Mono', monospace;
+}
+.dash-preview[data-style="mono"] .dp-hero { border-bottom: 1px solid #D8D6CF; }
+.dash-preview[data-style="mono"] .dp-eye,
+.dash-preview[data-style="mono"] .dp-section-eye {
+  font-family: 'JetBrains Mono', monospace;
+  color: #6B6B65; letter-spacing: 0.2em; font-weight: 500;
+}
+.dash-preview[data-style="mono"] .dp-eye::before,
+.dash-preview[data-style="mono"] .dp-section-eye::before { content: '// '; opacity: 0.5; }
+.dash-preview[data-style="mono"] .dp-couple {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 300; letter-spacing: -0.04em; line-height: 1;
+  text-transform: none;
+  font-size: 52px;
+}
+.dash-preview[data-style="mono"] .dp-amp { color: #6B6B65; }
+.dash-preview[data-style="mono"] .dp-meta::before { content: '[ '; color: #6B6B65; }
+.dash-preview[data-style="mono"] .dp-meta::after { content: ' ]'; color: #6B6B65; }
+.dash-preview[data-style="mono"] .dp-meta,
+.dash-preview[data-style="mono"] .dp-loc { color: #6B6B65; letter-spacing: 0; text-transform: none; font-size: 12px; }
+.dash-preview[data-style="mono"] .dp-rule { background: transparent; border-top: 1px dashed #6B6B65; width: 100px; }
+.dash-preview[data-style="mono"] .dp-countdown { border-bottom: 1px solid #D8D6CF; }
+.dash-preview[data-style="mono"] .dp-cd-block b { font-family: 'JetBrains Mono', monospace; font-weight: 300; }
+.dash-preview[data-style="mono"] .dp-cd-sep { color: #6B6B65; }
+.dash-preview[data-style="mono"] .dp-rsvp { border-bottom: 1px solid #D8D6CF; }
+.dash-preview[data-style="mono"] .dp-h4 {
+  font-family: 'JetBrains Mono', monospace; font-weight: 300;
+  text-transform: none; letter-spacing: -0.03em;
+}
+.dash-preview[data-style="mono"] .dp-btn { border-color: #0A0A0A; }
+.dash-preview[data-style="mono"] .dp-btn-yes { background: #0A0A0A; color: #FAFAF8; }
+.dash-preview[data-style="mono"] .dp-lovestory-text { font-family: 'JetBrains Mono', monospace; font-style: normal; font-size: 13px; line-height: 1.7; }
+
+/* ============================================================
+   STIL 05 · OPULENT — Deep Charcoal, Cream, Gold, Cormorant SC + Italiana
+============================================================ */
+.dash-preview[data-style="opulent"] {
+  background: #0E0B08;
+  color: #F2EAD9;
+  font-family: 'Crimson Pro', serif;
+  font-style: italic;
+}
+.dash-preview[data-style="opulent"] .dp-hero {
+  background:
+    radial-gradient(ellipse 60% 50% at 30% 30%, rgba(197,165,114,0.18), transparent 60%),
+    radial-gradient(ellipse 50% 60% at 80% 70%, rgba(197,165,114,0.12), transparent 60%),
+    #0E0B08;
+}
+.dash-preview[data-style="opulent"] .dp-hero::before {
+  content: ''; position: absolute;
+  top: 20%; right: 18%; font-family: 'Italiana', serif;
+  font-size: 16px; color: #E0C088; opacity: 0.6;
+}
+.dash-preview[data-style="opulent"] .dp-eye,
+.dash-preview[data-style="opulent"] .dp-section-eye {
+  font-family: 'Italiana', serif;
+  color: #C5A572; letter-spacing: 0.45em; text-transform: uppercase;
+  font-style: normal; font-size: 12px;
+}
+.dash-preview[data-style="opulent"] .dp-couple {
+  font-family: 'Cormorant SC', serif; font-weight: 300; font-style: normal;
+  color: #F2EAD9; letter-spacing: 0.04em;
+  background: linear-gradient(110deg, #F2EAD9 0%, #E0C088 50%, #F2EAD9 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.dash-preview[data-style="opulent"] .dp-amp { font-family: 'Italiana', serif; font-style: italic; color: #E0C088; -webkit-text-fill-color: #E0C088; }
+.dash-preview[data-style="opulent"] .dp-meta,
+.dash-preview[data-style="opulent"] .dp-loc {
+  font-family: 'Italiana', serif; color: rgba(242,234,217,0.7);
+  letter-spacing: 0.3em; text-transform: uppercase; font-size: 11px;
+}
+.dash-preview[data-style="opulent"] .dp-rule {
+  background: linear-gradient(to right, transparent, #C5A572, transparent);
+  width: 96px;
+}
+.dash-preview[data-style="opulent"] .dp-countdown { background: #14110E; border-block: 1px solid rgba(197,165,114,0.18); }
+.dash-preview[data-style="opulent"] .dp-cd-block b { font-family: 'Cormorant SC', serif; font-weight: 300; color: #E0C088; }
+.dash-preview[data-style="opulent"] .dp-cd-sep { color: #C5A572; font-family: 'Italiana', serif; }
+.dash-preview[data-style="opulent"] .dp-rsvp { background: #0E0B08; }
+.dash-preview[data-style="opulent"] .dp-rsvp-deadline { font-family: 'Italiana', serif; color: #C5A572; }
+.dash-preview[data-style="opulent"] .dp-h4 { font-family: 'Cormorant SC', serif; font-weight: 300; font-style: normal; color: #F2EAD9; letter-spacing: 0.04em; }
+.dash-preview[data-style="opulent"] .dp-btn { border-color: #C5A572; color: #C5A572; font-style: normal; font-family: 'Italiana', serif; letter-spacing: 0.2em; }
+.dash-preview[data-style="opulent"] .dp-btn-yes { background: #C5A572; color: #0E0B08; }
+.dash-preview[data-style="opulent"] .dp-lovestory { background: #14110E; }
+.dash-preview[data-style="opulent"] .dp-lovestory-text { font-family: 'Crimson Pro', serif; font-style: italic; color: rgba(242,234,217,0.85); font-size: 16px; }
+
+/* ============================================================
+   STIL 06 · LIQUEFY — Dark Forest, Acid Mint, Fraunces Italic + Syne
+============================================================ */
+.dash-preview[data-style="liquefy"] {
+  background: #0D1A10;
+  color: #D2FFD4;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+}
+.dash-preview[data-style="liquefy"] .dp-hero {
+  background:
+    radial-gradient(circle at 80% 30%, rgba(162,203,181,0.25) 0%, transparent 40%),
+    radial-gradient(circle at 20% 70%, rgba(210,255,212,0.15) 0%, transparent 50%),
+    #0D1A10;
+}
+.dash-preview[data-style="liquefy"] .dp-hero::after {
+  content: ''; position: absolute;
+  bottom: -20%; right: -10%;
+  width: 60%; aspect-ratio: 1;
   border-radius: 50%;
-  background: var(--dp-accent);
+  background: radial-gradient(circle, rgba(210,255,212,0.2) 0%, transparent 70%);
+  filter: blur(40px);
+}
+.dash-preview[data-style="liquefy"] .dp-eye,
+.dash-preview[data-style="liquefy"] .dp-section-eye {
+  font-family: 'JetBrains Mono', monospace;
+  color: #A2CBB5; letter-spacing: 0.25em;
+}
+.dash-preview[data-style="liquefy"] .dp-couple {
+  font-family: 'Fraunces', serif; font-style: italic;
+  font-variation-settings: 'opsz' 144, 'wght' 700;
+  color: #D2FFD4;
+}
+.dash-preview[data-style="liquefy"] .dp-amp { color: #A2CBB5; }
+.dash-preview[data-style="liquefy"] .dp-meta,
+.dash-preview[data-style="liquefy"] .dp-loc { font-family: 'Syne', sans-serif; color: #A2CBB5; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-size: 11px; }
+.dash-preview[data-style="liquefy"] .dp-rule { background: #A2CBB5; width: 64px; }
+.dash-preview[data-style="liquefy"] .dp-countdown { background: rgba(162,203,181,0.08); border-block: 1px solid rgba(162,203,181,0.18); }
+.dash-preview[data-style="liquefy"] .dp-cd-block b { font-family: 'Fraunces', serif; font-style: italic; font-weight: 700; color: #D2FFD4; }
+.dash-preview[data-style="liquefy"] .dp-cd-sep { color: #A2CBB5; }
+.dash-preview[data-style="liquefy"] .dp-h4 { font-family: 'Fraunces', serif; font-style: italic; font-weight: 700; }
+.dash-preview[data-style="liquefy"] .dp-btn { color: #D2FFD4; border-color: #A2CBB5; font-family: 'Syne', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+.dash-preview[data-style="liquefy"] .dp-btn-yes { background: #A2CBB5; color: #0D1A10; }
+.dash-preview[data-style="liquefy"] .dp-lovestory { background: rgba(162,203,181,0.04); }
+.dash-preview[data-style="liquefy"] .dp-lovestory-text { font-family: 'Fraunces', serif; font-style: italic; color: #D2FFD4; }
+
+/* ============================================================
+   STIL 07 · KINETIC — Near-Black, Strong Yellow, Syne 900 + Alumni Sans Inline
+============================================================ */
+.dash-preview[data-style="kinetic"] {
+  background: #0C0C0C;
+  color: #FFFFFF;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+}
+.dash-preview[data-style="kinetic"] .dp-hero {
+  overflow: hidden;
+  position: relative;
+  border-bottom: 6px solid #FFCC00;
+}
+.dash-preview[data-style="kinetic"] .dp-hero::before {
+  content: 'SAVE THE DATE · JULIA & TOM · SAVE THE DATE · JULIA & TOM ·';
+  position: absolute;
+  top: 50%; left: -10%; right: -10%;
+  font-family: 'Syne', sans-serif; font-weight: 900;
+  font-size: 80px; line-height: 1; white-space: nowrap;
+  color: rgba(255,204,0,0.10);
+  transform: translateY(-50%) rotate(-15deg);
+  text-transform: uppercase; letter-spacing: -0.04em;
+  pointer-events: none;
+}
+.dash-preview[data-style="kinetic"] .dp-eye,
+.dash-preview[data-style="kinetic"] .dp-section-eye {
+  font-family: 'JetBrains Mono', monospace;
+  color: #FFCC00; letter-spacing: 0.18em;
+}
+.dash-preview[data-style="kinetic"] .dp-couple {
+  font-family: 'Syne', sans-serif; font-weight: 900;
+  text-transform: uppercase; letter-spacing: -0.04em;
+  line-height: 0.82; color: #FFFFFF;
+  font-size: 76px;
+}
+.dash-preview[data-style="kinetic"] .dp-amp {
+  font-family: 'Alumni Sans Inline', serif;
+  font-weight: 900; font-style: italic;
+  color: #FFCC00; text-transform: none;
+}
+.dash-preview[data-style="kinetic"] .dp-meta,
+.dash-preview[data-style="kinetic"] .dp-loc {
+  font-family: 'Syne', sans-serif; font-weight: 700;
+  color: #FFCC00; letter-spacing: 0.12em; text-transform: uppercase; font-size: 13px;
+}
+.dash-preview[data-style="kinetic"] .dp-rule { background: #FFCC00; height: 4px; }
+.dash-preview[data-style="kinetic"] .dp-countdown { background: #0C0C0C; border-bottom: 1px solid rgba(255,204,0,0.3); }
+.dash-preview[data-style="kinetic"] .dp-cd-block b { font-family: 'Syne', sans-serif; font-weight: 900; color: #FFCC00; }
+.dash-preview[data-style="kinetic"] .dp-cd-sep { color: #FFCC00; }
+.dash-preview[data-style="kinetic"] .dp-rsvp { border-bottom: 1px solid rgba(255,204,0,0.3); }
+.dash-preview[data-style="kinetic"] .dp-h4 {
+  font-family: 'Syne', sans-serif; font-weight: 900;
+  text-transform: uppercase; letter-spacing: -0.04em;
+}
+.dash-preview[data-style="kinetic"] .dp-btn { color: #FFFFFF; border-color: #FFCC00; font-family: 'Syne', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+.dash-preview[data-style="kinetic"] .dp-btn-yes { background: #FFCC00; color: #0C0C0C; }
+.dash-preview[data-style="kinetic"] .dp-lovestory-text {
+  font-family: 'Fraunces', serif; font-style: italic;
+  color: #FFFFFF; font-size: 16px;
+}
+
+/* ============================================================
+   STIL 08 · BAUHAUS — Warm Off-White, Deep Navy, Red/Yellow Shapes, Syne 900
+============================================================ */
+.dash-preview[data-style="bauhaus"] {
+  background: #EAE7DF;
+  color: #1D2B49;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+}
+.dash-preview[data-style="bauhaus"] .dp-hero {
+  background: #EAE7DF;
+  overflow: hidden;
+}
+.dash-preview[data-style="bauhaus"] .dp-hero::before {
+  content: ''; position: absolute;
+  top: -50px; right: -30px;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: #E03A3E; opacity: 0.85;
+  mix-blend-mode: multiply;
 }
 .dash-preview[data-style="bauhaus"] .dp-hero::after {
-  content: '';
-  position: absolute;
-  bottom: 20%;
-  right: 14%;
-  width: 22px;
-  height: 22px;
-  background: #E8B83C;
+  content: ''; position: absolute;
+  bottom: 20px; left: -10%;
+  width: 50%; height: 28px;
+  background: #F5B92B; transform: rotate(-8deg);
+  mix-blend-mode: multiply;
+}
+.dash-preview[data-style="bauhaus"] .dp-eye,
+.dash-preview[data-style="bauhaus"] .dp-section-eye {
+  font-family: 'JetBrains Mono', monospace;
+  color: #1D2B49; letter-spacing: 0.25em; font-weight: 600;
+}
+.dash-preview[data-style="bauhaus"] .dp-couple {
+  font-family: 'Syne', sans-serif; font-weight: 900;
+  text-transform: uppercase; letter-spacing: -0.03em;
+  line-height: 0.85; color: #1D2B49;
+}
+.dash-preview[data-style="bauhaus"] .dp-amp { color: #E03A3E; }
+.dash-preview[data-style="bauhaus"] .dp-meta,
+.dash-preview[data-style="bauhaus"] .dp-loc {
+  font-family: 'Syne', sans-serif; font-weight: 700;
+  color: #1D2B49; text-transform: uppercase; letter-spacing: 0.06em; font-size: 12px;
+}
+.dash-preview[data-style="bauhaus"] .dp-rule { background: #1D2B49; height: 3px; width: 80%; }
+.dash-preview[data-style="bauhaus"] .dp-countdown { background: #DDD8C8; border-block: 2px solid #1D2B49; }
+.dash-preview[data-style="bauhaus"] .dp-cd-block b { font-family: 'Syne', sans-serif; font-weight: 900; color: #1D2B49; }
+.dash-preview[data-style="bauhaus"] .dp-cd-sep { color: #E03A3E; font-weight: 900; }
+.dash-preview[data-style="bauhaus"] .dp-rsvp { background: #EAE7DF; }
+.dash-preview[data-style="bauhaus"] .dp-h4 {
+  font-family: 'Syne', sans-serif; font-weight: 900;
+  text-transform: uppercase; line-height: 0.9;
+}
+.dash-preview[data-style="bauhaus"] .dp-btn { color: #1D2B49; border-color: #1D2B49; border-width: 2px; font-family: 'Syne', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.dash-preview[data-style="bauhaus"] .dp-btn-yes { background: #1D2B49; color: #EAE7DF; }
+.dash-preview[data-style="bauhaus"] .dp-btn-yes:hover { background: #E03A3E; border-color: #E03A3E; }
+.dash-preview[data-style="bauhaus"] .dp-lovestory { background: #DDD8C8; border-top: 2px solid #1D2B49; }
+.dash-preview[data-style="bauhaus"] .dp-lovestory-text {
+  font-family: 'Syne', sans-serif; font-style: normal; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em; color: #1D2B49;
+  font-size: 13px; line-height: 1.5;
 }

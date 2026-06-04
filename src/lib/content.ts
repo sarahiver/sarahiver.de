@@ -201,11 +201,9 @@ export const DASHBOARD = {
   h_pre: 'Klickt euch',
   h_em: 'ein Gefühl',
   h_post: ' an.',
-  lede: 'Stellt euren Look hier zusammen. Acht Stile, fünf Farbpaletten, vier Schriften. Sucht aus — die Seite passt sich live an.',
+  lede: 'Acht Stile, jeder mit eigener Schrift, Farbpalette und Bewegungs-DNA. Die Vorschau zeigt euch genau, was ihr bei eurer Hochzeitsseite bekommt.',
 
-  styleLabel: 'Stil',
-  colorLabel: 'Farbe',
-  fontLabel: 'Schrift',
+  styleLabel: 'Wählt euren Stil',
 
   cta: 'Diesen Look starten',
   ctaSub: '14 Tage gratis →',
