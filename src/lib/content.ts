@@ -180,3 +180,15 @@ export const FOOTER = {
   ],
   copyright: '© 2026 Sarah & Iver Gentz GbR · Hamburg, Deutschland · Made with love and ink',
 };
+
+/**
+ * Site-Metadata für layout.tsx (next/metadata API).
+ * Wird in layout.tsx genutzt für <title>, <meta description>, OG-Tags.
+ */
+export const SITE_CONFIG = {
+  name: 'sarahiver.de',
+  tagline: 'Hochzeitsseiten, die wie Designer-Stücke wirken',
+  description:
+    'Eure Hochzeitsseite — selbst zusammengestellt aus 8 Stilen und 15 Bereichen. 9 €/Monat, monatlich kündbar, DSGVO-konform. Erste 100 Kunden bekommen 2 Monate gratis.',
+  domain: 'sarahiver.de',
+};
