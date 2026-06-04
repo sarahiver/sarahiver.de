@@ -192,3 +192,46 @@ export const SITE_CONFIG = {
     'Eure Hochzeitsseite — selbst zusammengestellt aus 8 Stilen und 15 Bereichen. 9 €/Monat, monatlich kündbar, DSGVO-konform. Erste 100 Kunden bekommen 2 Monate gratis.',
   domain: 'sarahiver.de',
 };
+
+/**
+ * Dashboard-Section auf der Landing — Live-Stil-/Farbe-/Schrift-Auswahl.
+ */
+export const DASHBOARD = {
+  eyebrow: 'Live im Browser · keine Anmeldung',
+  h_pre: 'Klickt euch',
+  h_em: 'ein Gefühl',
+  h_post: ' an.',
+  lede: 'Stellt euren Look hier zusammen. Acht Stile, fünf Farbpaletten, vier Schriften. Sucht aus — die Seite passt sich live an.',
+
+  styleLabel: 'Stil',
+  colorLabel: 'Farbe',
+  fontLabel: 'Schrift',
+
+  cta: 'Diesen Look starten',
+  ctaSub: '14 Tage gratis →',
+
+  liveLinkLabel: 'Live-Demo öffnen — Julia & Tom',
+
+  preview: {
+    heroEye: 'Save the Date',
+    coupleA: 'Julia',
+    coupleB: 'Tom',
+    date: '12. September 2027',
+    location: 'Schloss Wackerbarth, Sachsen',
+
+    countdownEye: 'Bis zum großen Tag',
+    countdownDays: 87,
+    countdownHours: 14,
+    countdownMins: 32,
+
+    rsvpEye: 'Antwort bitte',
+    rsvpHead: 'Kommt ihr?',
+    rsvpDeadline: 'Antwort bis 30. Juni 2027',
+    rsvpYes: 'Ich komme',
+    rsvpNo: 'Leider nicht',
+
+    lovestoryEye: 'Unsere Geschichte',
+    lovestoryHead: 'Wo alles begann',
+    lovestoryText: 'Ein verregneter Sonntagabend in Hamburg. Ein zu lautes Café. Drei Stunden, die keiner von uns vergessen wird.',
+  },
+};
