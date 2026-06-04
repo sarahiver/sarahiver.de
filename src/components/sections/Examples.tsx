@@ -1,152 +1,115 @@
+import Link from 'next/link';
 import { EXAMPLES } from '@/lib/content';
-import { DEMO_WEDDINGS } from '@/lib/demos';
-import { getStartStyle, getPalette } from '@/lib/customizer';
-import Section from '@/components/ui/Section';
+import { DEMO_WEDDINGS, type DemoWedding } from '@/lib/demos';
 
 /**
- * Demo-Hochzeiten — 4 echte Beispielseiten.
- * Asymmetrisches Grid: 1 großes Featured links, 3 kleinere rechts.
+ * Examples v2 — 8 Style-Mockups, eine pro Design-Stil.
  *
- * Jede Karte zeigt einen Mini-Mockup im jeweiligen Stil (DNA-basiert).
- * "Live ansehen" → öffnet die echte Subdomain.
+ * Horizontal scrollbarer Strip mit Scroll-Snap. Jede Karte zeigt
+ * einen Mini-Wedding-Hero im jeweiligen Stil. Styling erfolgt über
+ * data-style-mockup-Attribute + CSS — alle Stile in einem React-
+ * Component, keine 8 separaten TSX-Files.
  */
 export default function Examples() {
-  const featured = DEMO_WEDDINGS.find((d) => d.featured) ?? DEMO_WEDDINGS[0];
-  const others = DEMO_WEDDINGS.filter((d) => d.id !== featured.id);
-
   return (
-    <Section id="examples" eyebrow={EXAMPLES.eyebrow} eyebrowNumber="03">
-      <div className="grid lg:grid-cols-[1.2fr_1fr] gap-10 mb-14 items-end">
-        <h2 className="h2-editorial">
-          {EXAMPLES.titlePart1} <em>{EXAMPLES.titleEm}</em>
-          {EXAMPLES.titlePart2}
-        </h2>
-        <p className="lede">{EXAMPLES.lede}</p>
+    <section id="examples" className="section-landing">
+      <div className="shell">
+        {/* === Section Header === */}
+        <div className="grid-section-head">
+          <div>
+            <span className="eyebrow" style={{ marginBottom: '24px', display: 'inline-flex' }}>
+              {EXAMPLES.eyebrow}
+            </span>
+            <h2 className="display-large" style={{ marginTop: '12px' }}>
+              {EXAMPLES.titlePart1}
+              <br />
+              <em>{EXAMPLES.titleEm}</em>{EXAMPLES.titlePart2}
+            </h2>
+          </div>
+          <div style={{ paddingBottom: '8px' }}>
+            <p className="lede-medium" style={{ maxWidth: '38ch' }}>{EXAMPLES.lede}</p>
+            <p className="lede-medium" style={{ marginTop: '16px', maxWidth: '38ch', color: 'var(--color-muted)' }}>
+              <span className="eyebrow" style={{ display: 'inline', fontSize: '10px', marginRight: '8px' }}>↓</span>
+              {EXAMPLES.scrollHint}
+            </p>
+          </div>
+        </div>
       </div>
 
-      {/* Asymmetric grid */}
-      <div className="grid lg:grid-cols-[1.4fr_1fr] gap-6">
-        {/* Featured (big) */}
-        <DemoCard wedding={featured} variant="featured" />
-
-        {/* Smaller stack */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
-          {others.map((d) => (
-            <DemoCard key={d.id} wedding={d} variant="compact" />
+      {/* === Style-Strip (full-bleed horizontal scroll) === */}
+      <div className="style-strip-wrap">
+        <div className="style-strip">
+          {DEMO_WEDDINGS.map((wedding) => (
+            <StyleMockupCard key={wedding.id} wedding={wedding} />
           ))}
         </div>
       </div>
-    </Section>
+
+      {/* === Footer-CTA === */}
+      <div className="shell" style={{ marginTop: 'clamp(48px, 6vw, 80px)', textAlign: 'center' }}>
+        <p className="lede-medium" style={{ maxWidth: '50ch', marginInline: 'auto', marginBottom: '24px' }}>
+          {EXAMPLES.footerLine}
+        </p>
+        <Link href="#pricing" className="btn-primary-large">
+          <span>{EXAMPLES.footerCta}</span>
+          <span className="arrow">→</span>
+        </Link>
+      </div>
+    </section>
   );
 }
 
-interface DemoCardProps {
-  wedding: (typeof DEMO_WEDDINGS)[number];
-  variant: 'featured' | 'compact';
-}
-
-function DemoCard({ wedding, variant }: DemoCardProps) {
-  const style = getStartStyle(wedding.start);
-  const palette = getPalette(style.defaultPalette);
-  const isFeatured = variant === 'featured';
-
-  // Mockup background = palette[0] → palette[1]
-  const bg = `linear-gradient(180deg, ${palette.colors[0]} 0%, ${palette.colors[1]} 100%)`;
-  const accentColor = palette.colors[2];
-  const inkColor = palette.colors[palette.colors.length - 1];
+function StyleMockupCard({ wedding }: { wedding: DemoWedding }) {
+  const initial1 = wedding.couple.split(' & ')[0];
+  const initial2 = wedding.couple.split(' & ')[1];
 
   return (
     <a
       href={`https://${wedding.url}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="group block bg-white rounded-2xl overflow-hidden border border-rule-soft hover:shadow-lift hover:-translate-y-1 transition-all duration-300"
+      className="style-card"
+      data-style-mockup={wedding.style}
     >
-      {/* Mockup */}
-      <div
-        className={`relative px-8 ${isFeatured ? 'pt-12 pb-16' : 'pt-8 pb-10'} overflow-hidden`}
-        style={{
-          background: bg,
-          aspectRatio: isFeatured ? '4 / 3' : '5 / 3',
-        }}
-      >
-        {/* Stil-Tagline */}
-        <div
-          className="font-mono text-[9px] tracking-[0.3em] uppercase mb-3"
-          style={{ color: accentColor }}
-        >
-          {wedding.tagline}
+      {/* Browser-Frame */}
+      <div className="style-card-frame">
+        <div className="style-card-bar">
+          <span className="style-card-dot" />
+          <span className="style-card-dot" />
+          <span className="style-card-dot" />
+          <span className="style-card-url">{wedding.url}</span>
         </div>
-
-        {/* Brautpaar-Name */}
-        <div
-          className={`leading-[0.95] tracking-[-0.015em]`}
-          style={{
-            fontFamily: 'var(--font-serif)',
-            fontWeight: style.id === 'festlich' ? 700 : 400,
-            fontStyle: style.id === 'floral' ? 'italic' : 'normal',
-            fontSize: isFeatured ? 'clamp(34px, 4vw, 56px)' : 'clamp(24px, 2.8vw, 36px)',
-            color: inkColor,
-          }}
-        >
-          {wedding.couple.split(' & ')[0]}{' '}
-          <span
-            style={{
-              fontFamily: 'var(--font-script)',
-              color: accentColor,
-              fontStyle: 'normal',
-              fontWeight: 500,
-            }}
-          >
-            &
-          </span>
-          <br />
-          {wedding.couple.split(' & ')[1]}
-        </div>
-
-        {/* Date + Location */}
-        <p
-          className="text-xs tracking-[0.04em] mt-3"
-          style={{ color: palette.colors[3] }}
-        >
-          {wedding.date}
-          <br />
-          {wedding.location}
-        </p>
-
-        {/* Featured corner badge */}
-        {isFeatured && (
-          <div
-            className="absolute top-5 right-5 px-3 py-1 rounded-full text-[10px] font-mono tracking-[0.18em] uppercase text-white"
-            style={{ background: accentColor }}
-          >
-            Featured
+        <div className="style-card-body">
+          {/* Style-specific Hero — Background + Type via [data-style-mockup] in CSS */}
+          <div className="mockup-hero">
+            <div className="mockup-hero-eyebrow">{wedding.styleLabel}</div>
+            <div className="mockup-hero-main">
+              <h3 className="mockup-hero-couple">
+                <span>{initial1}</span>
+                <span className="mockup-hero-amp">&amp;</span>
+                <span>{initial2}</span>
+              </h3>
+              <div className="mockup-hero-date">{wedding.date}</div>
+              <div className="mockup-hero-rule" />
+              <div className="mockup-hero-location">{wedding.location}</div>
+            </div>
+            {/* Style-Decoration (per Style unterschiedlich, in CSS) */}
+            <div className="mockup-hero-decor" aria-hidden="true">
+              <div className="mockup-hero-decor-1" />
+              <div className="mockup-hero-decor-2" />
+            </div>
           </div>
-        )}
+        </div>
       </div>
 
-      {/* Info Footer */}
-      <div className="p-6 border-t border-rule-soft">
-        <div className="flex items-start justify-between gap-3 mb-3">
-          <div>
-            <div
-              className="text-base font-medium text-ink mb-0.5"
-              style={{ fontFamily: 'var(--font-serif)' }}
-            >
-              {wedding.couple}
-            </div>
-            <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted">
-              {wedding.url}
-            </div>
-          </div>
-          <span
-            className="text-sm font-medium flex-shrink-0 transition-transform group-hover:translate-x-1"
-            style={{ color: 'var(--color-terra)' }}
-          >
-            Live ansehen →
-          </span>
+      {/* Card Info Below Frame */}
+      <div className="style-card-info">
+        <div className="style-card-name">{wedding.styleLabel.split(' · ')[0]}</div>
+        <div className="style-card-tagline">{wedding.tagline}</div>
+        <div className="style-card-meta">
+          <span>{wedding.couple}</span>
+          <span className="style-card-cta">Live ansehen ↗</span>
         </div>
-        <p className="text-xs leading-relaxed text-muted">{wedding.config}</p>
       </div>
     </a>
   );

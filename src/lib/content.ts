@@ -103,13 +103,16 @@ export const FEATURES = {
 };
 
 export const EXAMPLES = {
-  eyebrow: 'Demo-Hochzeiten',
-  titlePart1: 'So',
-  titleEm: 'könnte',
-  titlePart2: ' eure Seite aussehen.',
+  eyebrow: 'Beispiele · 8 Stile',
+  titlePart1: 'Acht Stile.',
+  titleEm: 'Eure',
+  titlePart2: ' Wahl.',
   lede:
-    'Vier Beispielseiten, die wir mit Brautpaaren aus der Closed Beta gebaut haben. Klickt euch durch — jede ist mit dem Baukasten entstanden.',
-  liveLabel: 'Live-Vorschau',
+    'Jede Hochzeit hat ihren eigenen Ton. Wählt euren Stil als Startpunkt — Farben, Schriften und Akzente passt ihr dann an.',
+  scrollHint: 'Scrollt seitwärts durch alle acht.',
+  footerLine:
+    'Alle Stile lassen sich auf eurer Seite ausprobieren — kostenlos im 14-Tage-Trial. Wechselt jederzeit.',
+  footerCta: 'Alle Stile testen',
 };
 
 export const STRUCTURE = {

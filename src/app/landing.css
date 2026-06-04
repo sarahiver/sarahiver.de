@@ -1,17 +1,7 @@
 /* ============================================================
    sarahiver.de Landing-Page v2 — Editorial Premium Motion
    ============================================================
-   Eigene CSS-Datei für die Marketing-Landing.
-   GETRENNT von globals.css (Token-Setup) und design-system-v2.css
-   (Wedding-Sites) — damit Refactor hier nicht die Wedding-Sites
-   anfasst und umgekehrt.
-
-   Layer:
-     1. Typography-Scale (fluid clamp)
-     2. Layout-Primitives (Asymmetric Grids)
-     3. Section-Tokens
-     4. Component-Klassen (Eyebrow, Display, CTA, Mockup, Marquee)
-     5. Motion (Reveal, Marquee, Hover)
+   Phase 1 (Foundation + Hero) + Phase 2 (Examples + 8 Style-Mockups)
 ============================================================ */
 
 /* ============================================================
@@ -39,7 +29,6 @@
   opacity: 0.5;
 }
 
-/* Display: das große, dramatische Editorial-Headline */
 .display-massive {
   font-family: var(--font-serif);
   font-weight: 400;
@@ -93,7 +82,7 @@
 }
 
 /* ============================================================
-   2. LAYOUT-PRIMITIVES — Asymmetric Grids
+   2. LAYOUT-PRIMITIVES
 ============================================================ */
 
 .shell {
@@ -110,7 +99,6 @@
   padding-inline: clamp(20px, 4vw, 64px);
 }
 
-/* Hero-Grid: dramatisch asymmetrisch (Text dominiert) */
 .grid-hero {
   display: grid;
   grid-template-columns: 1fr;
@@ -121,11 +109,9 @@
 @media (min-width: 1024px) {
   .grid-hero {
     grid-template-columns: 1.35fr 1fr;
-    align-items: end;
   }
 }
 
-/* Section-Header: Eyebrow links, Headline groß, Lede rechts */
 .grid-section-head {
   display: grid;
   grid-template-columns: 1fr;
@@ -141,7 +127,7 @@
 }
 
 /* ============================================================
-   3. SECTION-TOKENS — Padding-Höhen für Landing
+   3. SECTION-TOKENS
 ============================================================ */
 
 .section-landing {
@@ -163,10 +149,9 @@
 }
 
 /* ============================================================
-   4. COMPONENT-KLASSEN
+   4. CTA-Buttons
 ============================================================ */
 
-/* === CTA-Buttons === */
 .btn-primary-large {
   display: inline-flex;
   align-items: center;
@@ -183,8 +168,6 @@
   cursor: pointer;
   text-decoration: none;
   transition: transform 0.2s ease, background 0.2s ease;
-  position: relative;
-  overflow: hidden;
 }
 
 .btn-primary-large:hover {
@@ -225,7 +208,6 @@
   color: var(--color-terra-deep);
 }
 
-/* CTA-Pair Layout */
 .cta-pair {
   display: flex;
   flex-wrap: wrap;
@@ -234,7 +216,10 @@
   margin-block: clamp(32px, 4vw, 48px);
 }
 
-/* === Trust-Row === */
+/* ============================================================
+   5. Trust + Counter
+============================================================ */
+
 .trust-row {
   display: flex;
   flex-wrap: wrap;
@@ -260,7 +245,6 @@
   background: var(--color-sage);
 }
 
-/* === Counter-Badge (Frühvogel) === */
 .counter-badge {
   display: inline-flex;
   align-items: center;
@@ -299,7 +283,10 @@
   100% { transform: scale(1.8); opacity: 0; }
 }
 
-/* === Browser/Phone-Mockup Frame === */
+/* ============================================================
+   6. Mockup-Frame (Hero)
+============================================================ */
+
 .mockup-frame {
   position: relative;
   border-radius: 14px;
@@ -348,7 +335,10 @@
   overflow: hidden;
 }
 
-/* === Marquee === */
+/* ============================================================
+   7. Marquee
+============================================================ */
+
 .marquee-track {
   display: flex;
   width: 100%;
@@ -388,7 +378,10 @@
   to { transform: translateX(-50%); }
 }
 
-/* === Hero-Mockup Tilt === */
+/* ============================================================
+   8. Hero-Mockup Tilt
+============================================================ */
+
 .hero-mockup-stack {
   position: relative;
   perspective: 1200px;
@@ -407,44 +400,7 @@
 }
 
 /* ============================================================
-   5. MOTION — Reveal on Scroll (CSS-only via @starting-style)
-============================================================ */
-
-.reveal {
-  animation: reveal-rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-
-.reveal-delay-1 { animation-delay: 100ms; }
-.reveal-delay-2 { animation-delay: 220ms; }
-.reveal-delay-3 { animation-delay: 360ms; }
-.reveal-delay-4 { animation-delay: 520ms; }
-
-@keyframes reveal-rise {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* Respect reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .reveal, .reveal-delay-1, .reveal-delay-2, .reveal-delay-3, .reveal-delay-4 {
-    animation: none;
-  }
-  .marquee-content { animation: none; }
-  .counter-badge .pulse::after { animation: none; }
-}
-
-/* ============================================================
-   6. HERO-MOCKUP DEMO CONTENT — Vorschau einer Wedding-Site
-============================================================
-   Statisches Markup direkt im Mockup-Frame, das eine echte
-   Wedding-Site-Hero im Editorial-Stil andeutet. Kein iframe,
-   keine Loading-Zeit.
+   9. Hero-Demo-Content (für Hero-Mockup)
 ============================================================ */
 
 .demo-hero {
@@ -503,11 +459,621 @@
 }
 
 /* ============================================================
-   7. SECTION-DIVIDERS — subtle Hairlines zwischen Sections
+   10. MOTION — Reveal
 ============================================================ */
+
+.reveal {
+  animation: reveal-rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.reveal-delay-1 { animation-delay: 100ms; }
+.reveal-delay-2 { animation-delay: 220ms; }
+.reveal-delay-3 { animation-delay: 360ms; }
+.reveal-delay-4 { animation-delay: 520ms; }
+
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal-delay-1, .reveal-delay-2, .reveal-delay-3, .reveal-delay-4 {
+    animation: none;
+  }
+  .marquee-content { animation: none; }
+  .counter-badge .pulse::after { animation: none; }
+}
 
 .section-divider {
   height: 1px;
   background: var(--color-rule-soft);
   margin-inline: clamp(20px, 4vw, 64px);
+}
+
+/* ============================================================
+   11. EXAMPLES SECTION — 8-Style-Strip
+============================================================ */
+
+.style-strip-wrap {
+  position: relative;
+  margin-top: clamp(32px, 4vw, 48px);
+}
+
+.style-strip {
+  display: flex;
+  gap: clamp(20px, 2.5vw, 40px);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-inline: clamp(20px, 4vw, 64px);
+  padding-block: 8px clamp(32px, 4vw, 48px);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-rule) transparent;
+}
+
+.style-strip::-webkit-scrollbar {
+  height: 8px;
+}
+
+.style-strip::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.style-strip::-webkit-scrollbar-thumb {
+  background: var(--color-rule);
+  border-radius: 4px;
+}
+
+.style-card {
+  flex: 0 0 auto;
+  width: min(420px, 78vw);
+  scroll-snap-align: center;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.style-card:hover {
+  transform: translateY(-6px);
+}
+
+.style-card:hover .style-card-cta {
+  color: var(--color-terra-deep);
+  gap: 8px;
+}
+
+.style-card-frame {
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow:
+    0 1px 2px rgba(45, 37, 32, 0.04),
+    0 12px 32px -8px rgba(45, 37, 32, 0.15),
+    0 24px 64px -16px rgba(45, 37, 32, 0.18);
+  background: var(--color-paper);
+}
+
+.style-card-bar {
+  height: 30px;
+  background: var(--color-paper-soft);
+  border-bottom: 1px solid var(--color-rule-soft);
+  display: flex;
+  align-items: center;
+  padding-inline: 12px;
+  gap: 6px;
+}
+
+.style-card-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-rule);
+}
+
+.style-card-url {
+  margin-left: 10px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--color-muted);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.style-card-body {
+  aspect-ratio: 4 / 5;
+  position: relative;
+  overflow: hidden;
+}
+
+.style-card-info {
+  padding-block: 20px 4px;
+  padding-inline: 4px;
+}
+
+.style-card-name {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  line-height: 1.1;
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+.style-card-tagline {
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  color: var(--color-ink-soft);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.style-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.style-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-ink);
+  transition: color 0.2s ease, gap 0.2s ease;
+}
+
+/* ============================================================
+   12. MOCKUP-HERO — Style-spezifisches Inneres der Karten
+============================================================ */
+
+.mockup-hero {
+  position: absolute;
+  inset: 0;
+  padding: clamp(16px, 4%, 28px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  container-type: inline-size;
+}
+
+.mockup-hero-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.mockup-hero-couple {
+  font-size: clamp(1.875rem, 11cqi, 4rem);
+  line-height: 0.95;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+.mockup-hero-couple span {
+  display: inline;
+}
+
+.mockup-hero-amp {
+  margin-inline: 4px;
+}
+
+.mockup-hero-date {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+
+.mockup-hero-rule {
+  width: 48px;
+  height: 1px;
+  margin-block: 16px;
+}
+
+.mockup-hero-location {
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.mockup-hero-decor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* === EDITORIAL — warm cream, Fraunces, terra accent === */
+[data-style-mockup="editorial"] .mockup-hero {
+  background: linear-gradient(180deg, #FAF6F0 0%, #F4EDE2 100%);
+}
+[data-style-mockup="editorial"] .mockup-hero-eyebrow {
+  font-family: var(--font-mono);
+  color: var(--color-terra-deep);
+}
+[data-style-mockup="editorial"] .mockup-hero-couple {
+  font-family: var(--font-serif);
+  color: var(--color-ink);
+  font-variation-settings: "opsz" 144;
+}
+[data-style-mockup="editorial"] .mockup-hero-amp {
+  font-style: italic;
+  color: var(--color-terra-deep);
+}
+[data-style-mockup="editorial"] .mockup-hero-date,
+[data-style-mockup="editorial"] .mockup-hero-location {
+  font-family: var(--font-mono);
+  color: var(--color-ink-soft);
+}
+[data-style-mockup="editorial"] .mockup-hero-rule {
+  background: var(--color-terra);
+}
+[data-style-mockup="editorial"] .mockup-hero-decor-1 {
+  position: absolute;
+  top: 14%;
+  right: -20%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(212,165,116,0.18) 0%, transparent 70%);
+}
+
+/* === ORGANIC — sage + rose, italic Fraunces === */
+[data-style-mockup="organic"] .mockup-hero {
+  background: linear-gradient(180deg, #EDE7DC 0%, #DCD3C0 100%);
+}
+[data-style-mockup="organic"] .mockup-hero-eyebrow {
+  font-family: var(--font-mono);
+  color: #5E6E50;
+}
+[data-style-mockup="organic"] .mockup-hero-couple {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: #3E4A35;
+  font-variation-settings: "opsz" 144;
+}
+[data-style-mockup="organic"] .mockup-hero-amp {
+  color: #B5746A;
+}
+[data-style-mockup="organic"] .mockup-hero-date,
+[data-style-mockup="organic"] .mockup-hero-location {
+  font-family: var(--font-sans);
+  color: #5E6E50;
+}
+[data-style-mockup="organic"] .mockup-hero-rule {
+  background: #8A9A7B;
+}
+[data-style-mockup="organic"] .mockup-hero-decor-1 {
+  position: absolute;
+  bottom: -15%;
+  left: -10%;
+  width: 50%;
+  height: 50%;
+  background: radial-gradient(circle, rgba(138,154,123,0.4) 0%, transparent 70%);
+  filter: blur(8px);
+}
+[data-style-mockup="organic"] .mockup-hero-decor-2 {
+  position: absolute;
+  top: -10%;
+  right: -10%;
+  width: 40%;
+  height: 40%;
+  background: radial-gradient(circle, rgba(232,201,192,0.5) 0%, transparent 70%);
+  filter: blur(12px);
+}
+
+/* === BRUTALIST — Schwarz/Weiß, riesige Inter Heavy === */
+[data-style-mockup="brutalist"] .mockup-hero {
+  background: #FFFFFF;
+  padding: clamp(12px, 3%, 20px);
+}
+[data-style-mockup="brutalist"] .mockup-hero-eyebrow {
+  font-family: var(--font-mono);
+  color: #000;
+  font-weight: 700;
+  background: #FFEC3D;
+  padding: 3px 8px;
+  align-self: flex-start;
+  letter-spacing: 0.12em;
+}
+[data-style-mockup="brutalist"] .mockup-hero-couple {
+  font-family: var(--font-sans);
+  font-weight: 900;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: -0.045em;
+  line-height: 0.85;
+  font-size: clamp(2.25rem, 14cqi, 5rem);
+}
+[data-style-mockup="brutalist"] .mockup-hero-amp {
+  background: #000;
+  color: #FFEC3D;
+  padding: 0 8px;
+  display: inline-block;
+}
+[data-style-mockup="brutalist"] .mockup-hero-date,
+[data-style-mockup="brutalist"] .mockup-hero-location {
+  font-family: var(--font-mono);
+  color: #000;
+  font-weight: 600;
+}
+[data-style-mockup="brutalist"] .mockup-hero-rule {
+  background: #000;
+  height: 3px;
+  width: 100%;
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+[data-style-mockup="brutalist"] .mockup-hero-decor-1 {
+  position: absolute;
+  top: 14%;
+  right: 10%;
+  width: 24px;
+  height: 24px;
+  background: #FF3D3D;
+  border-radius: 50%;
+}
+
+/* === MONO — alles Monospace, schwarz auf weiß === */
+[data-style-mockup="mono"] .mockup-hero {
+  background: #FFFFFF;
+  padding: clamp(16px, 4%, 28px);
+}
+[data-style-mockup="mono"] .mockup-hero-eyebrow {
+  font-family: var(--font-mono);
+  color: #555;
+}
+[data-style-mockup="mono"] .mockup-hero-eyebrow::before {
+  content: '// ';
+  color: #999;
+}
+[data-style-mockup="mono"] .mockup-hero-couple {
+  font-family: var(--font-mono);
+  color: #000;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  text-transform: lowercase;
+  font-size: clamp(1.5rem, 10cqi, 3.5rem);
+}
+[data-style-mockup="mono"] .mockup-hero-amp {
+  color: #999;
+  margin-inline: 8px;
+}
+[data-style-mockup="mono"] .mockup-hero-date {
+  font-family: var(--font-mono);
+  color: #555;
+}
+[data-style-mockup="mono"] .mockup-hero-date::before {
+  content: '> ';
+  color: #999;
+}
+[data-style-mockup="mono"] .mockup-hero-location {
+  font-family: var(--font-mono);
+  color: #777;
+}
+[data-style-mockup="mono"] .mockup-hero-rule {
+  border-top: 1px dashed #999;
+  background: transparent;
+  width: 100%;
+}
+
+/* === OPULENT — dark + gold === */
+[data-style-mockup="opulent"] .mockup-hero {
+  background: linear-gradient(180deg, #1A1814 0%, #0F0D0B 100%);
+}
+[data-style-mockup="opulent"] .mockup-hero-eyebrow {
+  font-family: var(--font-mono);
+  color: #C9A14F;
+}
+[data-style-mockup="opulent"] .mockup-hero-couple {
+  font-family: var(--font-serif);
+  color: #F0E6D2;
+  font-variation-settings: "opsz" 144;
+  font-style: italic;
+}
+[data-style-mockup="opulent"] .mockup-hero-amp {
+  color: #D4A574;
+  font-style: italic;
+}
+[data-style-mockup="opulent"] .mockup-hero-date,
+[data-style-mockup="opulent"] .mockup-hero-location {
+  font-family: var(--font-mono);
+  color: #C9A14F;
+}
+[data-style-mockup="opulent"] .mockup-hero-rule {
+  background: linear-gradient(to right, transparent, #D4A574, transparent);
+  width: 80px;
+  height: 1px;
+}
+[data-style-mockup="opulent"] .mockup-hero-decor-1 {
+  position: absolute;
+  top: 16%;
+  right: 16%;
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: #D4A574;
+  opacity: 0.6;
+}
+[data-style-mockup="opulent"] .mockup-hero-decor-1::before { content: '✦'; }
+[data-style-mockup="opulent"] .mockup-hero-decor-2 {
+  position: absolute;
+  bottom: 24%;
+  right: 12%;
+  font-family: var(--font-serif);
+  font-size: 9px;
+  color: #C9A14F;
+  opacity: 0.5;
+}
+[data-style-mockup="opulent"] .mockup-hero-decor-2::before { content: '✧'; }
+
+/* === LIQUEFY — dunkles Grün, flüssig === */
+[data-style-mockup="liquefy"] .mockup-hero {
+  background:
+    radial-gradient(circle at 30% 40%, #2A5240 0%, transparent 50%),
+    radial-gradient(circle at 75% 70%, #1A3D2E 0%, transparent 50%),
+    #14322A;
+}
+[data-style-mockup="liquefy"] .mockup-hero-eyebrow {
+  font-family: var(--font-mono);
+  color: #B8C7BD;
+}
+[data-style-mockup="liquefy"] .mockup-hero-couple {
+  font-family: var(--font-serif);
+  color: #E8EFE9;
+  font-variation-settings: "opsz" 144;
+  font-weight: 300;
+}
+[data-style-mockup="liquefy"] .mockup-hero-amp {
+  color: #8FA899;
+  font-style: italic;
+}
+[data-style-mockup="liquefy"] .mockup-hero-date,
+[data-style-mockup="liquefy"] .mockup-hero-location {
+  font-family: var(--font-sans);
+  color: #B8C7BD;
+}
+[data-style-mockup="liquefy"] .mockup-hero-rule {
+  background: #5A7864;
+  width: 56px;
+}
+[data-style-mockup="liquefy"] .mockup-hero-decor-1 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(200,220,210,0.08) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  filter: blur(20px);
+}
+
+/* === KINETIC — schwarz mit gelb/rot, energetisch === */
+[data-style-mockup="kinetic"] .mockup-hero {
+  background: #000000;
+  padding: clamp(14px, 4%, 24px);
+  overflow: hidden;
+}
+[data-style-mockup="kinetic"] .mockup-hero-eyebrow {
+  font-family: var(--font-mono);
+  color: #FFEC3D;
+}
+[data-style-mockup="kinetic"] .mockup-hero-couple {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  letter-spacing: -0.04em;
+  line-height: 0.88;
+  font-size: clamp(2rem, 13cqi, 4.5rem);
+}
+[data-style-mockup="kinetic"] .mockup-hero-amp {
+  color: #FFEC3D;
+  font-style: italic;
+  margin-inline: 0;
+}
+[data-style-mockup="kinetic"] .mockup-hero-date,
+[data-style-mockup="kinetic"] .mockup-hero-location {
+  font-family: var(--font-mono);
+  color: #FFEC3D;
+  font-weight: 600;
+}
+[data-style-mockup="kinetic"] .mockup-hero-rule {
+  background: #FFEC3D;
+  height: 3px;
+  width: 64px;
+}
+[data-style-mockup="kinetic"] .mockup-hero-decor-1 {
+  position: absolute;
+  bottom: -1px;
+  left: -10%;
+  right: -10%;
+  height: 14px;
+  background: #FFEC3D;
+  font-family: var(--font-mono);
+  font-size: 7px;
+  letter-spacing: 0.2em;
+  display: flex;
+  align-items: center;
+  color: #000;
+  font-weight: 700;
+  padding-inline: 12px;
+  transform: rotate(-2deg);
+}
+[data-style-mockup="kinetic"] .mockup-hero-decor-1::before {
+  content: 'SAVE · THE · DATE · SAVE · THE · DATE · SAVE · THE · DATE';
+  white-space: nowrap;
+}
+[data-style-mockup="kinetic"] .mockup-hero-decor-2 {
+  position: absolute;
+  top: 4px;
+  right: -4px;
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 100px;
+  color: rgba(255, 236, 61, 0.12);
+  line-height: 0.8;
+}
+[data-style-mockup="kinetic"] .mockup-hero-decor-2::before { content: '★'; }
+
+/* === BAUHAUS — Primärfarben + Geometrie === */
+[data-style-mockup="bauhaus"] .mockup-hero {
+  background: #F5F1E8;
+  padding: clamp(16px, 4%, 28px);
+}
+[data-style-mockup="bauhaus"] .mockup-hero-eyebrow {
+  font-family: var(--font-mono);
+  color: #C8443E;
+  font-weight: 600;
+}
+[data-style-mockup="bauhaus"] .mockup-hero-couple {
+  font-family: var(--font-sans);
+  font-weight: 900;
+  color: #1A1816;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  line-height: 0.9;
+  font-size: clamp(1.875rem, 12cqi, 4rem);
+}
+[data-style-mockup="bauhaus"] .mockup-hero-amp {
+  color: #2C5AA0;
+  font-weight: 900;
+}
+[data-style-mockup="bauhaus"] .mockup-hero-date,
+[data-style-mockup="bauhaus"] .mockup-hero-location {
+  font-family: var(--font-mono);
+  color: #1A1816;
+  font-weight: 500;
+}
+[data-style-mockup="bauhaus"] .mockup-hero-rule {
+  background: #1A1816;
+  height: 2px;
+  width: 80%;
+}
+[data-style-mockup="bauhaus"] .mockup-hero-decor-1 {
+  position: absolute;
+  top: 18%;
+  right: 12%;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #C8443E;
+}
+[data-style-mockup="bauhaus"] .mockup-hero-decor-2 {
+  position: absolute;
+  bottom: 14%;
+  right: 22%;
+  width: 18px;
+  height: 18px;
+  background: #E8B83C;
 }
