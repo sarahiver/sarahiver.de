@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { loadWeddingSite, tokensToCSSVariables, getBereichBackground } from '@/lib/tokens';
+import { resolveStyleId } from '@/lib/style-migration';
 import { DnaProvider } from '@/lib/dna-context';
 import { SPACING_MULTIPLIER } from '@/lib/tokens';
 import { BereichRenderer } from '@/components/layout/BereichRenderer';
@@ -12,6 +13,11 @@ import type { Metadata } from 'next';
  *   sarah-und-iver.sarahiver.de → /site/sarah-und-iver
  *
  * Defensive: Wenn slug fehlt → notFound() statt Crash.
+ *
+ * WICHTIG (Design System v2): Der äußere Wrapper braucht
+ *   className="wedding-site-wrapper" + data-style={…}
+ * damit die `.wedding-site-wrapper[data-style="X"]`-CSS-Blöcke greifen.
+ * Ohne diese beiden Attribute rendert die Subdomain-Seite ungestylt.
  */
 
 interface PageProps {
@@ -66,8 +72,18 @@ export default async function WeddingSitePage({ params, searchParams }: PageProp
     spacingMultiplier: SPACING_MULTIPLIER[tokens.dna_spacing],
   };
 
+  // Stil auflösen (alte ID → neue, sonst 'editorial'). Macht das Rendering
+  // unabhängig vom DB-Migrationsstand.
+  const styleHint = resolveStyleId(
+    (tokens as typeof tokens & { start_style_id?: string }).start_style_id,
+  );
+
   return (
-    <div style={cssVars} className="min-h-screen">
+    <div
+      style={cssVars}
+      className="wedding-site-wrapper min-h-screen"
+      data-style={styleHint}
+    >
       <DnaProvider dna={dna}>
         <main>
           {bereiche.map((bereich, index) => {
@@ -78,6 +94,7 @@ export default async function WeddingSitePage({ params, searchParams }: PageProp
               <section
                 key={bereich.id}
                 className={bgKind === 'bg' ? 'section-bg' : 'section-bg-soft'}
+                style={{ background: bgKind === 'bg' ? 'var(--bg)' : 'var(--bg-soft)' }}
                 data-bereich={bereich.bereich_key}
                 data-variant={bereich.variant}
               >

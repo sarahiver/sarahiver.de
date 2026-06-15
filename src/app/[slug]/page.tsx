@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { loadWeddingSite, tokensToCSSVariables, getBereichBackground, SPACING_MULTIPLIER } from '@/lib/tokens';
+import { resolveStyleId } from '@/lib/style-migration';
 import { DnaProvider } from '@/lib/dna-context';
 import { BereichRenderer } from '@/components/layout/BereichRenderer';
 import { SiteNav } from '@/components/layout/SiteNav';
@@ -57,7 +58,11 @@ export default async function WeddingSitePage({ params, searchParams }: PageProp
     spacingMultiplier: SPACING_MULTIPLIER[tokens.dna_spacing],
   };
 
-  const styleHint = (tokens as typeof tokens & { start_style_id?: string }).start_style_id ?? 'klassisch';
+  // Stil auflösen: gültige neue ID bleibt, alte ID wird gemappt, sonst 'editorial'.
+  // Macht das Rendering unabhängig vom DB-Migrationsstand.
+  const styleHint = resolveStyleId(
+    (tokens as typeof tokens & { start_style_id?: string }).start_style_id,
+  );
   const navVariant = (tokens as typeof tokens & { nav_variant?: string }).nav_variant ?? 'a';
   const navItems = buildNavItems(bereiche.map((b) => b.bereich_key));
   const coupleShort =

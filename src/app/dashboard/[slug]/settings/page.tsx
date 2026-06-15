@@ -5,6 +5,7 @@ import StammdatenTab from './StammdatenTab';
 import StilTab from './StilTab';
 import { loadDashboardData } from '@/lib/dashboard-data';
 import { loadAllPresets } from '@/lib/presets';
+import { resolveStyleId } from '@/lib/style-migration';
 import { notFound } from 'next/navigation';
 
 /**
@@ -59,7 +60,7 @@ export default async function SettingsPage({
                 <StilTab
                   slug={slug}
                   initial={{
-                    start_style_id: data.site.start_style_id || 'klassisch',
+                    start_style_id: resolveStyleId(data.site.start_style_id),
                     palette_preset_id: data.site.palette_preset_id,
                     font_preset_id: data.site.font_preset_id,
                     custom_bg: data.site.palette_custom_bg,
