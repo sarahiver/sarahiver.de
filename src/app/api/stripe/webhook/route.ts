@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
   // --- Idempotenz: event nur einmal verarbeiten ---
   const insertEvent = await admin
     .from('stripe_events')
-    .insert({ id: event.id, type: event.type, payload: event as unknown as Record<string, unknown> });
+    .insert({ id: event.id, type: event.type, payload: event as unknown as Record<string, unknown> } as never);
   if (insertEvent.error) {
     // Primary-Key-Konflikt ⇒ schon verarbeitet ⇒ ok, 200 zurück
     if (insertEvent.error.code === '23505') {
@@ -157,7 +157,7 @@ async function updateBySubscription(
   if (!subscriptionId) return;
   const { error } = await admin
     .from('wedding_sites')
-    .update(patch)
+    .update(patch as never)
     .eq('stripe_subscription_id', subscriptionId);
   if (error) console.error('[webhook] update by subscription failed:', error);
 }

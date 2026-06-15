@@ -83,7 +83,7 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
 
   if (existing) {
     siteId = (existing as { id: string }).id;
-    await admin.from('wedding_sites').update(billing).eq('id', siteId);
+    await admin.from('wedding_sites').update(billing as never).eq('id', siteId);
     // Bereiche/Käufe nicht erneut anlegen (Unique-Index schützt zusätzlich).
     await sendLoginMail(input.email, redirectTo);
     return { ok: true, siteId, userId };
@@ -99,7 +99,7 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
       start_style_id: input.style,
       status: 'draft',
       ...billing,
-    })
+    } as never)
     .select('id')
     .single();
 
@@ -126,7 +126,7 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
     content_published: {},
   }));
 
-  const { error: bErr } = await admin.from('wedding_bereiche').insert(bereicheRows);
+  const { error: bErr } = await admin.from('wedding_bereiche').insert(bereicheRows as never);
   if (bErr) console.error('[provision] bereiche insert failed:', bErr);
 
   // --- 4) Käufe freischalten (Gating in tokens.ts greift hierauf) ---------
@@ -134,7 +134,7 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
     wedding_site_id: siteId,
     bereich_key: key,
   }));
-  const { error: pErr } = await admin.from('wedding_purchases').insert(purchaseRows);
+  const { error: pErr } = await admin.from('wedding_purchases').insert(purchaseRows as never);
   if (pErr) console.error('[provision] purchases insert failed:', pErr);
 
   // --- 5) Login-Mail senden -----------------------------------------------
