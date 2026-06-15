@@ -19,6 +19,23 @@ import { tierForCount, type Tier } from '@/lib/funnel';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+/**
+ * Liest current_period_end null-sicher aus einer Subscription.
+ *
+ * In neueren Stripe-API-Versionen liegt current_period_end nicht mehr auf
+ * der Subscription-Wurzel, sondern auf den Items. Fehlt der Wert komplett,
+ * geben wir null zurück — niemals `new Date(NaN).toISOString()` (das wirft
+ * und führte zu 500ern auf customer.subscription.updated).
+ */
+function subPeriodEndISO(sub: Stripe.Subscription): string | null {
+  const root = (sub as unknown as { current_period_end?: number }).current_period_end;
+  const item = (sub.items?.data?.[0] as unknown as { current_period_end?: number } | undefined)
+    ?.current_period_end;
+  const ts = typeof root === 'number' ? root : typeof item === 'number' ? item : null;
+  if (ts === null || !Number.isFinite(ts)) return null;
+  return new Date(ts * 1000).toISOString();
+}
+
 export async function POST(req: NextRequest) {
   const stripe = getStripe();
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -69,7 +86,9 @@ export async function POST(req: NextRequest) {
         const periodEnd = inv.lines?.data?.[0]?.period?.end ?? null;
         await updateBySubscription(admin, subId, {
           subscription_status: 'active',
-          ...(periodEnd ? { current_period_end: new Date(periodEnd * 1000).toISOString() } : {}),
+          ...(typeof periodEnd === 'number' && Number.isFinite(periodEnd)
+            ? { current_period_end: new Date(periodEnd * 1000).toISOString() }
+            : {}),
         });
         break;
       }
@@ -81,9 +100,10 @@ export async function POST(req: NextRequest) {
       }
       case 'customer.subscription.updated': {
         const sub = event.data.object as Stripe.Subscription;
+        const periodEnd = subPeriodEndISO(sub);
         await updateBySubscription(admin, sub.id, {
           subscription_status: sub.status,
-          current_period_end: new Date(sub.current_period_end * 1000).toISOString(),
+          ...(periodEnd ? { current_period_end: periodEnd } : {}),
         });
         break;
       }
@@ -122,7 +142,7 @@ async function handleCheckoutCompleted(stripe: Stripe, session: Stripe.Checkout.
   if (subscriptionId) {
     const sub = await stripe.subscriptions.retrieve(subscriptionId);
     status = sub.status;
-    periodEnd = new Date(sub.current_period_end * 1000).toISOString();
+    periodEnd = subPeriodEndISO(sub);
   }
 
   const addons = (m.addons || '').split(',').map((s) => s.trim()).filter(Boolean);
