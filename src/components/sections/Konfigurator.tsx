@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { CONFIG } from '@/lib/content';
 import { STANDARD_BEREICHE, ZUSATZ_BEREICHE, priceForZusatzCount } from '@/lib/bereiche-katalog';
+import { normalizeAddonKey } from '@/lib/funnel';
 
 export default function Konfigurator() {
   const [activeZusatz, setActiveZusatz] = useState<Set<string>>(new Set());
@@ -30,6 +31,19 @@ export default function Konfigurator() {
     if (count <= 9) return '+9 Bereiche';
     return 'Alle 15 Bereiche';
   }, [count]);
+
+  // Auswahl in die /signup-URL tragen (Keys auf DB-Namen normalisiert)
+  const signupHref = useMemo(() => {
+    const keys = Array.from(activeZusatz)
+      .map((k) => normalizeAddonKey(k))
+      .filter(Boolean)
+      .join(',');
+    const params = new URLSearchParams();
+    if (keys) params.set('addons', keys);
+    if (customDomain) params.set('domain', '1');
+    const q = params.toString();
+    return q ? `/signup?${q}` : '/signup';
+  }, [activeZusatz, customDomain]);
 
   return (
     <section id="config" className="section rule-top">
@@ -107,12 +121,12 @@ export default function Konfigurator() {
 
             {customDomain && (
               <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 11, color: 'var(--land-muted)', letterSpacing: '0.04em' }}>
-                + 39 € einmalige Einrichtung im ersten Monat
+                + {setupFee} € einmalige Einrichtung im ersten Monat
               </div>
             )}
 
             <div className="config__cta">
-              <a href="/signup">
+              <a href={signupHref}>
                 <span>{CONFIG.cta}</span>
                 <span>{CONFIG.ctaSub}</span>
               </a>
