@@ -89,6 +89,28 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
     return { ok: true, siteId, userId };
   }
 
+  // --- 2a) Default-Palette + -Font des gewählten Stils auflösen -----------
+  // DB-Constraint "palette_source_check" verlangt: ENTWEDER palette_preset_id
+  // NOT NULL + alle Custom NULL — ODER palette_preset_id NULL + alle 5 Custom
+  // gefüllt. Beim Anlegen gehen wir in den Preset-Modus mit der Default-Palette
+  // des Stils; alle palette_custom_* bleiben NULL. font_preset_id wird ebenfalls
+  // aus dem Stil-Default gesetzt (Spalte ist NOT NULL).
+  const { data: styleRow, error: styleErr } = await admin
+    .from('start_styles')
+    .select('default_palette_id, default_font_id')
+    .eq('id', input.style)
+    .maybeSingle();
+
+  if (styleErr || !styleRow) {
+    console.error('[provision] start_styles lookup failed for style', input.style, styleErr);
+    return { ok: false, error: 'style preset lookup failed' };
+  }
+
+  const { default_palette_id, default_font_id } = styleRow as {
+    default_palette_id: string;
+    default_font_id: string;
+  };
+
   const { data: site, error: siteErr } = await admin
     .from('wedding_sites')
     .insert({
@@ -97,6 +119,8 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
       couple_name_2: input.name2,
       wedding_date: input.weddingDate,
       start_style_id: input.style,
+      palette_preset_id: default_palette_id, // Preset-Modus (Custom bleibt NULL)
+      font_preset_id: default_font_id,
       status: 'draft',
       ...billing,
     } as never)
