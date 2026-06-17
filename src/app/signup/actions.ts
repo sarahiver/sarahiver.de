@@ -28,6 +28,10 @@ export type CheckoutResult = { url: string } | { error: string };
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const ADDON_SET = new Set<string>(ADDON_KEYS);
 
+// 14 Tage kostenlos testen, dann startet die Abo-Phase automatisch.
+// Über STRIPE_TRIAL_DAYS (Vercel-Env) ohne Code-Edit anpassbar.
+const TRIAL_DAYS = Number(process.env.STRIPE_TRIAL_DAYS) || 14;
+
 export async function startCheckout(input: CheckoutInput): Promise<CheckoutResult> {
   const email = (input.email || '').trim().toLowerCase();
   const name1 = (input.name1 || '').trim();
@@ -114,8 +118,14 @@ export async function startCheckout(input: CheckoutInput): Promise<CheckoutResul
       customer_email: email,
       line_items: lineItems,
       allow_promotion_codes: true,
+      // Karte sofort hinterlegen, damit nach dem Trial automatisch abgerechnet wird.
+      payment_method_collection: 'always',
       metadata,
-      subscription_data: { metadata },
+      subscription_data: {
+        metadata,
+        // 14 Tage kostenlos — erst danach startet die Abrechnung.
+        trial_period_days: TRIAL_DAYS,
+      },
       success_url: `${appUrl}/signup/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/signup?canceled=1`,
     });
