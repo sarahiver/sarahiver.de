@@ -210,6 +210,9 @@ export async function publishSite(p: PublishSitePayload): Promise<ActionResult> 
   const draft = row.site_draft || {};
   const updatePayload: Record<string, unknown> = {
     site_is_dirty: false,
+    // Erst hiermit greifen die public_can_read_published_* RLS-Policies
+    // (Gäste sehen die Seite erst nach dem Veröffentlichen).
+    status: 'published',
     site_published_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };

@@ -63,6 +63,10 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
   // --- 2) Site idempotent anlegen / Billing aktualisieren -----------------
   const billing = {
     owner_user_id: userId,
+    // RLS-Policies auf wedding_bereiche/-sites prüfen teils user_id (Alt-Spalte),
+    // teils owner_user_id. Beide auf denselben Auth-User setzen, damit der Owner
+    // seine (auch unveröffentlichten) Bereiche lesen/bearbeiten darf.
+    user_id: userId,
     stripe_customer_id: input.stripeCustomerId,
     stripe_subscription_id: input.stripeSubscriptionId,
     subscription_status: input.subscriptionStatus,
