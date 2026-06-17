@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, useTransition, type ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { updateStammdaten } from './actions';
+import { updateStammdaten, setAccountPassword } from './actions';
 import SaveStatusIndicator, { type SaveStatus } from '@/components/dashboard/SaveStatusIndicator';
 
 interface Props {
@@ -34,6 +34,36 @@ export default function StammdatenTab({ slug, initial }: Props) {
   const [date, setDate] = useState(initial.wedding_date_local);
   const [time, setTime] = useState(initial.wedding_time_local);
   const [location, setLocation] = useState(initial.wedding_location);
+
+  // Passwort-Abschnitt — bewusste Aktion mit Button, KEIN Auto-Save.
+  const [pw1, setPw1] = useState('');
+  const [pw2, setPw2] = useState('');
+  const [pwBusy, setPwBusy] = useState(false);
+  const [pwMsg, setPwMsg] = useState<{ ok: boolean; text: string } | null>(null);
+
+  const savePassword = useCallback(() => {
+    setPwMsg(null);
+    if (pw1.length < 8) {
+      setPwMsg({ ok: false, text: 'Passwort muss mindestens 8 Zeichen haben.' });
+      return;
+    }
+    if (pw1 !== pw2) {
+      setPwMsg({ ok: false, text: 'Die beiden Passwörter stimmen nicht überein.' });
+      return;
+    }
+    setPwBusy(true);
+    startTransition(async () => {
+      const res = await setAccountPassword(pw1);
+      setPwBusy(false);
+      if (res.ok) {
+        setPw1('');
+        setPw2('');
+        setPwMsg({ ok: true, text: 'Passwort gespeichert. Ihr könnt euch ab jetzt auch mit Passwort einloggen.' });
+      } else {
+        setPwMsg({ ok: false, text: res.error || 'Passwort konnte nicht gesetzt werden.' });
+      }
+    });
+  }, [pw1, pw2]);
 
   useEffect(() => {
     if (status === 'ok') {
@@ -132,6 +162,48 @@ export default function StammdatenTab({ slug, initial }: Props) {
           Kurze Bezeichnung — Adresse und Wegbeschreibung pflegt ihr im Anfahrt-Editor.
         </p>
       </div>
+
+      <section className="dash-form-section">
+        <h3 className="dash-form-section-title">Passwort</h3>
+        <p className="dash-form-section-desc">
+          Optional: Legt ein Passwort fest, um euch künftig auch ohne Magic-Link einzuloggen.
+          Der Login per Magic-Link funktioniert weiterhin.
+        </p>
+
+        <div className="dash-form-row">
+          <div className="dash-form-field">
+            <label className="dash-form-label" htmlFor="pw1">Neues Passwort</label>
+            <input
+              id="pw1"
+              type="password"
+              className="dash-input"
+              value={pw1}
+              onChange={(e) => setPw1(e.target.value)}
+              placeholder="Mindestens 8 Zeichen"
+              autoComplete="new-password"
+            />
+          </div>
+          <div className="dash-form-field">
+            <label className="dash-form-label" htmlFor="pw2">Wiederholen</label>
+            <input
+              id="pw2"
+              type="password"
+              className="dash-input"
+              value={pw2}
+              onChange={(e) => setPw2(e.target.value)}
+              autoComplete="new-password"
+            />
+          </div>
+        </div>
+
+        {pwMsg && (
+          <p className={`dash-form-msg ${pwMsg.ok ? 'is-ok' : 'is-err'}`}>{pwMsg.text}</p>
+        )}
+
+        <button type="button" className="dash-btn" onClick={savePassword} disabled={pwBusy}>
+          {pwBusy ? 'Wird gespeichert …' : 'Passwort festlegen'}
+        </button>
+      </section>
     </div>
   );
 }

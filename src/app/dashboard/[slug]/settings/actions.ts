@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
+import { createSupabaseServerClient } from '@/lib/supabase-server';
 
 /**
  * Server Actions für den Settings-Editor.
@@ -257,6 +258,37 @@ export async function updateNavigation(p: NavPayload): Promise<ActionResult> {
 
   revalidatePath(`/dashboard/${p.slug}`, 'layout');
   revalidatePath(`/${p.slug}`, 'layout');
+  return { ok: true };
+}
+
+// ====================================================================
+// KONTO / PASSWORT
+// ====================================================================
+
+/**
+ * Setzt (oder ändert) das Passwort des aktuell eingeloggten Users.
+ *
+ * Nutzt die bestehende Session (z. B. aus dem Magic-Link-Login) — daher der
+ * Server-Client mit Cookies, NICHT der Admin-Client. `updateUser({ password })`
+ * funktioniert auch für Accounts, die bisher kein Passwort hatten; Magic-Link
+ * bleibt danach parallel nutzbar.
+ */
+export async function setAccountPassword(password: string): Promise<ActionResult> {
+  if (!password || password.length < 8) {
+    return { ok: false, error: 'Passwort muss mindestens 8 Zeichen haben.' };
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'Sitzung abgelaufen — bitte neu einloggen.' };
+
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) {
+    console.error('[setAccountPassword] failed:', error);
+    return { ok: false, error: 'Passwort konnte nicht gesetzt werden.' };
+  }
   return { ok: true };
 }
 
