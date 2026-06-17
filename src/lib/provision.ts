@@ -34,8 +34,7 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
   const admin = createSupabaseAdminClient();
   if (!admin) return { ok: false, error: 'admin client unavailable' };
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://sarahiver.de';
-  const redirectTo = `${appUrl}/auth/callback?next=${encodeURIComponent(`/dashboard/${input.slug}`)}`;
+  const nextPath = `/dashboard/${input.slug}`;
 
   // --- 1) Account sicherstellen -------------------------------------------
   let userId: string | null = null;
@@ -84,7 +83,7 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
     siteId = (existing as { id: string }).id;
     await admin.from('wedding_sites').update(billing as never).eq('id', siteId);
     // Bereiche/Käufe nicht erneut anlegen (Unique-Index schützt zusätzlich).
-    await sendLoginMail(admin, input.email, redirectTo);
+    await sendLoginMail(admin, input.email, nextPath);
     return { ok: true, siteId, userId };
   }
 
@@ -161,7 +160,7 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
   if (pErr) console.error('[provision] purchases insert failed:', pErr);
 
   // --- 5) Login-Mail senden -----------------------------------------------
-  await sendLoginMail(admin, input.email, redirectTo);
+  await sendLoginMail(admin, input.email, nextPath);
 
   return { ok: true, siteId, userId };
 }
@@ -171,34 +170,33 @@ type AdminClient = NonNullable<ReturnType<typeof createSupabaseAdminClient>>;
 /**
  * Schickt dem Paar den Magic-Link zum ersten Login.
  *
- * Robust gegen Supabase-SMTP-Ausfälle: Wir erzeugen den Magic-Link über
- * `admin.generateLink()` (löst KEINEN SMTP-Versand auf Supabase-Seite aus,
- * gibt nur den fertigen Link zurück) und stellen die Mail selbst über die
- * Brevo-Transactional-API zu.
+ * Robust gegen Supabase-SMTP-Ausfälle UND localhost-/Fragment-Bug: Wir erzeugen
+ * den Token über `generateLink` (löst KEINEN SMTP-Versand aus), bauen daraus
+ * einen Link auf UNSERE App-Domain (/auth/confirm?token_hash=…) und stellen die
+ * Mail über die Brevo-Transactional-API zu. Kein action_link → kein #-Fragment,
+ * kein Site-URL-Fallback auf localhost.
  *
- * Voraussetzungen (Vercel-Env):
- *   - BREVO_API_KEY        (hast du bereits für die Waitlist)
- *   - BREVO_SENDER_EMAIL   (z. B. hallo@sarahiver.de — in Brevo verifiziert)
- *   - BREVO_SENDER_NAME    (optional, Default "S&I. Wedding")
- *
- * Wirft nie — Fehler werden geloggt, der Webhook bleibt 200 (sonst würde
- * Stripe den ganzen Event neu zustellen).
+ * Env: BREVO_API_KEY, BREVO_SENDER_EMAIL (verifiziert), BREVO_SENDER_NAME (opt.).
+ * Wirft nie — Fehler werden geloggt, der Webhook bleibt 200.
  */
-async function sendLoginMail(admin: AdminClient, email: string, redirectTo: string): Promise<void> {
+async function sendLoginMail(admin: AdminClient, email: string, nextPath: string): Promise<void> {
   try {
-    // 1) Magic-Link erzeugen (kein Mailversand durch Supabase)
-    const { data, error } = await admin.auth.admin.generateLink({
-      type: 'magiclink',
-      email,
-      options: { redirectTo },
-    });
-    if (error || !data?.properties?.action_link) {
+    // 1) Token erzeugen (kein Mailversand durch Supabase)
+    const { data, error } = await admin.auth.admin.generateLink({ type: 'magiclink', email });
+    if (error || !data?.properties?.hashed_token) {
       console.error('[provision] generateLink failed:', error);
       return;
     }
-    const actionLink = data.properties.action_link;
 
-    // 2) Mail über Brevo-Transactional-API zustellen
+    // 2) Link auf unsere /auth/confirm-Route bauen
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://sarahiver.de';
+    const u = new URL(`${appUrl}/auth/confirm`);
+    u.searchParams.set('token_hash', data.properties.hashed_token);
+    u.searchParams.set('type', data.properties.verification_type);
+    u.searchParams.set('next', nextPath);
+    const link = u.toString();
+
+    // 3) Mail über Brevo-Transactional-API zustellen
     const apiKey = process.env.BREVO_API_KEY;
     const senderEmail = process.env.BREVO_SENDER_EMAIL || 'hallo@sarahiver.de';
     const senderName = process.env.BREVO_SENDER_NAME || 'S&I. Wedding';
@@ -218,7 +216,7 @@ async function sendLoginMail(admin: AdminClient, email: string, redirectTo: stri
         sender: { name: senderName, email: senderEmail },
         to: [{ email }],
         subject: 'Euer Login-Link für eure Hochzeitsseite',
-        htmlContent: loginMailHtml(actionLink),
+        htmlContent: loginMailHtml(link),
       }),
     });
 

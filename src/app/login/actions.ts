@@ -22,24 +22,22 @@ export async function signInPassword(email: string, password: string): Promise<A
 /**
  * Magic-Link anfordern (kein neuer User — nur bestehende Accounts).
  *
- * Versand läuft über `generateLink` (erzeugt nur den Link, kein Supabase-SMTP)
- * + Brevo-Transactional-API — unabhängig vom Supabase-SMTP.
+ * Versand über `generateLink` (erzeugt nur Token, kein Supabase-SMTP) +
+ * Brevo-API. Verlinkt wird unser eigener /auth/confirm-Endpoint mit token_hash
+ * (kein action_link → kein #-Fragment, kein localhost-Fallback).
  */
 export async function sendMagicLink(email: string): Promise<AuthResult> {
   const addr = email.trim().toLowerCase();
   const admin = createSupabaseAdminClient();
   if (!admin) return { error: 'Service nicht verfügbar. Bitte später erneut versuchen.' };
 
-  const { data, error } = await admin.auth.admin.generateLink({
-    type: 'magiclink',
-    email: addr,
-    options: { redirectTo: `${APP}/auth/callback?next=/dashboard` },
-  });
-  if (error || !data?.properties?.action_link) {
+  const { data, error } = await admin.auth.admin.generateLink({ type: 'magiclink', email: addr });
+  if (error || !data?.properties?.hashed_token) {
     console.error('[auth] magiclink generateLink failed:', error);
     return { error: 'Link konnte nicht gesendet werden. Bitte erneut versuchen.' };
   }
 
+  const link = confirmLink(data.properties.hashed_token, data.properties.verification_type, '/dashboard');
   const ok = await sendBrevo(
     addr,
     'Euer Login-Link für eure Hochzeitsseite',
@@ -47,7 +45,7 @@ export async function sendMagicLink(email: string): Promise<AuthResult> {
       heading: 'Euer Login-Link',
       body: 'Hallo ihr beiden, über den Button kommt ihr direkt in euer Dashboard.',
       buttonLabel: 'Zum Dashboard',
-      link: data.properties.action_link,
+      link,
     }),
   );
   if (!ok) return { error: 'Link konnte nicht gesendet werden. Bitte erneut versuchen.' };
@@ -57,9 +55,9 @@ export async function sendMagicLink(email: string): Promise<AuthResult> {
 /**
  * Passwort-Reset-Mail anfordern.
  *
- * Versand über `generateLink` (type: recovery) + Brevo-API. Aus Datenschutz-
- * Sicht melden wir IMMER "gesendet" zurück (kein Account-Enumeration), egal ob
- * die Adresse existiert oder der Versand intern scheiterte.
+ * Versand über `generateLink` (type: recovery) + Brevo-API, verlinkt auf
+ * /auth/confirm. Aus Datenschutz-Sicht melden wir IMMER "gesendet" zurück
+ * (kein Account-Enumeration), egal ob die Adresse existiert.
  */
 export async function requestPasswordReset(email: string): Promise<AuthResult> {
   const addr = email.trim().toLowerCase();
@@ -69,16 +67,13 @@ export async function requestPasswordReset(email: string): Promise<AuthResult> {
     return { sent: true };
   }
 
-  const { data, error } = await admin.auth.admin.generateLink({
-    type: 'recovery',
-    email: addr,
-    options: { redirectTo: `${APP}/auth/callback?next=/reset-password` },
-  });
-  if (error || !data?.properties?.action_link) {
+  const { data, error } = await admin.auth.admin.generateLink({ type: 'recovery', email: addr });
+  if (error || !data?.properties?.hashed_token) {
     console.error('[auth] reset generateLink failed:', error);
     return { sent: true };
   }
 
+  const link = confirmLink(data.properties.hashed_token, data.properties.verification_type, '/reset-password');
   const ok = await sendBrevo(
     addr,
     'Passwort zurücksetzen',
@@ -86,7 +81,7 @@ export async function requestPasswordReset(email: string): Promise<AuthResult> {
       heading: 'Passwort zurücksetzen',
       body: 'Ihr habt angefordert, euer Passwort zurückzusetzen. Über den Button vergebt ihr ein neues.',
       buttonLabel: 'Neues Passwort vergeben',
-      link: data.properties.action_link,
+      link,
     }),
   );
   if (!ok) console.error('[auth] reset: Brevo send failed for', addr);
@@ -107,15 +102,21 @@ export async function setNewPassword(password: string): Promise<AuthResult> {
 }
 
 // ---------------------------------------------------------------------------
-// Brevo-Transactional-Versand (server-only)
+// Helpers
 // ---------------------------------------------------------------------------
 
+/** Baut den /auth/confirm-Link auf unsere App-Domain (kein Supabase-Redirect). */
+function confirmLink(tokenHash: string, type: string, next: string): string {
+  const u = new URL(`${APP}/auth/confirm`);
+  u.searchParams.set('token_hash', tokenHash);
+  u.searchParams.set('type', type);
+  u.searchParams.set('next', next);
+  return u.toString();
+}
+
 /**
- * Stellt eine Mail über die Brevo-Transactional-API zu. Gibt true bei Erfolg
- * zurück, sonst false (mit Log). Voraussetzungen in Vercel-Env:
- *   - BREVO_API_KEY
- *   - BREVO_SENDER_EMAIL  (in Brevo verifizierter Absender)
- *   - BREVO_SENDER_NAME   (optional, Default "S&I. Wedding")
+ * Stellt eine Mail über die Brevo-Transactional-API zu. true bei Erfolg.
+ * Env: BREVO_API_KEY, BREVO_SENDER_EMAIL (verifiziert), BREVO_SENDER_NAME (opt.).
  */
 async function sendBrevo(to: string, subject: string, htmlContent: string): Promise<boolean> {
   const apiKey = process.env.BREVO_API_KEY;
