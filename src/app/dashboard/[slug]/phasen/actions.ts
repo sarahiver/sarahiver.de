@@ -94,19 +94,33 @@ export async function savePhases(p: PhasePayload): Promise<PhaseResult> {
 }
 
 /** „Jetzt aktivieren" — Phase sofort manuell live (enabled + Datum geleert). */
-export async function activatePhaseNow(slug: string, phase: 'std' | 'archiv'): Promise<PhaseResult> {
+
+const VARIANT_FIELDS = [
+  'std_hero_variant',
+  'std_countdown_variant',
+  'archiv_hero_variant',
+  'archiv_fotoupload_variant',
+] as const;
+type VariantField = (typeof VARIANT_FIELDS)[number];
+
+/**
+ * Einzelne Komponenten-Variante sofort persistieren (wie der VariantPicker der
+ * Bereich-Editoren). Damit aktualisiert sich die Vorschau live nach jedem Klick.
+ */
+export async function setPhaseVariant(slug: string, field: string, value: Variant): Promise<PhaseResult> {
+  if (!(VARIANT_FIELDS as readonly string[]).includes(field)) return { error: 'Unbekanntes Feld.' };
+  const v: Variant = value === 'b' || value === 'c' ? value : 'a';
+
   const res = await authedSite(slug);
   if (!res.ok) return { error: res.error };
 
-  const patch =
-    phase === 'std'
-      ? { std_enabled: true, std_until: null }
-      : { archiv_enabled: true, archiv_from: null };
-
-  const { error } = await res.admin.from('wedding_sites').update(patch as never).eq('id', res.site.id);
+  const { error } = await res.admin
+    .from('wedding_sites')
+    .update({ [field as VariantField]: v } as never)
+    .eq('id', res.site.id);
   if (error) {
-    console.error('[activatePhaseNow] update failed:', error);
-    return { error: 'Aktivieren fehlgeschlagen. Bitte erneut versuchen.' };
+    console.error('[setPhaseVariant] update failed:', error);
+    return { error: 'Speichern fehlgeschlagen. Bitte erneut versuchen.' };
   }
 
   revalidatePath(`/dashboard/${slug}`, 'layout');

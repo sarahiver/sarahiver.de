@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Variant } from '@/types/supabase';
 import EditorShell from '@/components/dashboard/EditorShell';
-import { savePhases } from './actions';
+import { savePhases, setPhaseVariant } from './actions';
 
 interface Props {
   slug: string;
@@ -63,6 +63,20 @@ export default function PhasenForm({ slug, initial }: Props) {
   const stdMode = deriveMode(stdEnabled, stdUntil);
   const archivMode = deriveMode(archivEnabled, archivFrom);
 
+  // Variante sofort persistieren + Vorschau live neu laden (wie VariantPicker).
+  function applyVariant(field: string, value: Variant, setLocal: (v: Variant) => void) {
+    setLocal(value); // optimistisch
+    void setPhaseVariant(slug, field, value).then((res) => {
+      if (!('error' in res)) {
+        window.dispatchEvent(new Event('dashboard:editor-saved'));
+        router.refresh();
+      } else {
+        setStatus('error');
+        setMsg(res.error);
+      }
+    });
+  }
+
   function setStdModeTo(m: ActMode) {
     if (m === 'off') setStdEnabled(false);
     if (m === 'now') {
@@ -101,6 +115,7 @@ export default function PhasenForm({ slug, initial }: Props) {
       return;
     }
     setStatus('saved');
+    window.dispatchEvent(new Event('dashboard:editor-saved'));
     router.refresh();
   }
 
@@ -135,8 +150,8 @@ export default function PhasenForm({ slug, initial }: Props) {
               onDate={setStdUntil}
             />
             <div style={divider} />
-            <VariantRow label="Hero" hint="Namen, Bild, Datum, Ort" value={stdHero} onChange={setStdHero} />
-            <VariantRow label="Countdown" hint="Countdown bis zum großen Tag" value={stdCountdown} onChange={setStdCountdown} />
+            <VariantRow label="Hero" hint="Namen, Bild, Datum, Ort" value={stdHero} onChange={(v) => applyVariant('std_hero_variant', v, setStdHero)} />
+            <VariantRow label="Countdown" hint="Countdown bis zum großen Tag" value={stdCountdown} onChange={(v) => applyVariant('std_countdown_variant', v, setStdCountdown)} />
             <p style={tip}>
               Die Inhalte (Namen, Datum, Bild …) pflegt ihr in den Editoren{' '}
               <a href={`/dashboard/${slug}/bereiche/hero`} style={link}>Hero</a> und{' '}
@@ -153,7 +168,7 @@ export default function PhasenForm({ slug, initial }: Props) {
               onDate={setArchivFrom}
             />
             <div style={divider} />
-            <VariantRow label="Hero" hint="Kopf der Archiv-Seite" value={archivHero} onChange={setArchivHero} />
+            <VariantRow label="Hero" hint="Kopf der Archiv-Seite" value={archivHero} onChange={(v) => applyVariant('archiv_hero_variant', v, setArchivHero)} />
             <label style={field}>
               <span style={lbl}>Danksagung (Text)</span>
               <textarea
@@ -163,7 +178,7 @@ export default function PhasenForm({ slug, initial }: Props) {
                 style={{ ...input, minHeight: 100, resize: 'vertical', lineHeight: 1.5, maxWidth: '100%' }}
               />
             </label>
-            <VariantRow label="Fotoupload" hint="Gäste laden ihre Bilder hoch" value={archivFoto} onChange={setArchivFoto} />
+            <VariantRow label="Fotoupload" hint="Gäste laden ihre Bilder hoch" value={archivFoto} onChange={(v) => applyVariant('archiv_fotoupload_variant', v, setArchivFoto)} />
             <p style={tip}>
               Bilder für die Danksagung, die Download-Galerie und deren Varianten folgen im nächsten Schritt.
             </p>
