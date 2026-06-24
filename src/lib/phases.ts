@@ -24,18 +24,26 @@ export interface PhaseConfig {
   std_enabled: boolean;
   std_until: string | null;
   std_variant: Variant;
+  std_hero_variant: Variant;
+  std_countdown_variant: Variant;
   archiv_enabled: boolean;
   archiv_from: string | null;
   archiv_message: string | null;
+  archiv_hero_variant: Variant;
+  archiv_fotoupload_variant: Variant;
 }
 
 export const DEFAULT_PHASE_CONFIG: PhaseConfig = {
   std_enabled: false,
   std_until: null,
   std_variant: 'a',
+  std_hero_variant: 'a',
+  std_countdown_variant: 'a',
   archiv_enabled: false,
   archiv_from: null,
   archiv_message: null,
+  archiv_hero_variant: 'a',
+  archiv_fotoupload_variant: 'a',
 };
 
 /** Welche Bereiche eine Phase zeigt. */
@@ -73,20 +81,28 @@ export async function loadSitePhase(slug: string): Promise<SitePhaseResult | nul
 
   const { data, error } = await admin
     .from('wedding_sites')
-    .select('id, std_enabled, std_until, std_variant, archiv_enabled, archiv_from, archiv_message')
+    .select(
+      'id, std_enabled, std_until, std_variant, std_hero_variant, std_countdown_variant, archiv_enabled, archiv_from, archiv_message, archiv_hero_variant, archiv_fotoupload_variant',
+    )
     .eq('slug', slug)
     .maybeSingle();
 
   if (error || !data) return null;
-  const r = data as { id: string } & Partial<PhaseConfig>;
+  const r = data as { id: string } & Record<string, unknown>;
+
+  const asV = (v: unknown, fb: Variant = 'a'): Variant => (v === 'b' || v === 'c' ? v : v === 'a' ? 'a' : fb);
 
   const config: PhaseConfig = {
-    std_enabled: r.std_enabled ?? false,
-    std_until: r.std_until ?? null,
-    std_variant: (r.std_variant as Variant) ?? 'a',
-    archiv_enabled: r.archiv_enabled ?? false,
-    archiv_from: r.archiv_from ?? null,
-    archiv_message: r.archiv_message ?? null,
+    std_enabled: (r.std_enabled as boolean) ?? false,
+    std_until: (r.std_until as string) ?? null,
+    std_variant: asV(r.std_variant),
+    std_hero_variant: asV(r.std_hero_variant),
+    std_countdown_variant: asV(r.std_countdown_variant),
+    archiv_enabled: (r.archiv_enabled as boolean) ?? false,
+    archiv_from: (r.archiv_from as string) ?? null,
+    archiv_message: (r.archiv_message as string) ?? null,
+    archiv_hero_variant: asV(r.archiv_hero_variant),
+    archiv_fotoupload_variant: asV(r.archiv_fotoupload_variant),
   };
 
   return { siteId: r.id, phase: resolvePhase(config), config };

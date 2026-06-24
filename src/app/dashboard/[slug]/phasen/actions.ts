@@ -21,10 +21,13 @@ export interface PhasePayload {
   slug: string;
   std_enabled: boolean;
   std_until: string | null; // ISO oder null
-  std_variant: Variant;
+  std_hero_variant: Variant;
+  std_countdown_variant: Variant;
   archiv_enabled: boolean;
   archiv_from: string | null; // ISO oder null
   archiv_message: string | null;
+  archiv_hero_variant: Variant;
+  archiv_fotoupload_variant: Variant;
 }
 
 export type PhaseResult = { ok: true } | { error: string };
@@ -63,17 +66,20 @@ export async function savePhases(p: PhasePayload): Promise<PhaseResult> {
   if (!res.ok) return { error: res.error };
   const { admin, site } = res;
 
-  const variant: Variant = p.std_variant === 'b' || p.std_variant === 'c' ? p.std_variant : 'a';
+  const v = (x: Variant): Variant => (x === 'b' || x === 'c' ? x : 'a');
 
   const { error } = await admin
     .from('wedding_sites')
     .update({
       std_enabled: !!p.std_enabled,
       std_until: cleanDate(p.std_until),
-      std_variant: variant,
+      std_hero_variant: v(p.std_hero_variant),
+      std_countdown_variant: v(p.std_countdown_variant),
       archiv_enabled: !!p.archiv_enabled,
       archiv_from: cleanDate(p.archiv_from),
       archiv_message: p.archiv_message?.trim() || null,
+      archiv_hero_variant: v(p.archiv_hero_variant),
+      archiv_fotoupload_variant: v(p.archiv_fotoupload_variant),
     } as never)
     .eq('id', site.id);
 

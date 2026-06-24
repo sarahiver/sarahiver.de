@@ -98,13 +98,29 @@ export default async function WeddingSitePage({ params, searchParams }: PageProp
   let danksagung: string | null = null;
 
   if (phase === 'std' && phaseInfo) {
-    const stdVariant: Variant = phaseInfo.config.std_variant;
     const loaded = await loadPhaseBereiche(phaseInfo.siteId, STD_KEYS);
-    // STD hat 3 Layout-Varianten: dieselbe Variante für Hero + Countdown.
-    renderBereiche = loaded.map((b) => ({ ...b, variant: stdVariant }) as WeddingBereich);
+    // STD: Hero und Countdown haben jeweils eine eigene Variante (A/B/C).
+    renderBereiche = loaded.map((b) => {
+      const v: Variant =
+        b.bereich_key === 'hero'
+          ? phaseInfo.config.std_hero_variant
+          : b.bereich_key === 'countdown'
+            ? phaseInfo.config.std_countdown_variant
+            : (b.variant as Variant);
+      return { ...b, variant: v } as WeddingBereich;
+    });
     showNav = false;
   } else if (phase === 'archiv' && phaseInfo) {
-    renderBereiche = await loadPhaseBereiche(phaseInfo.siteId, ARCHIV_KEYS);
+    const loaded = await loadPhaseBereiche(phaseInfo.siteId, ARCHIV_KEYS);
+    renderBereiche = loaded.map((b) => {
+      const v: Variant =
+        b.bereich_key === 'hero'
+          ? phaseInfo.config.archiv_hero_variant
+          : b.bereich_key === 'photoupload'
+            ? phaseInfo.config.archiv_fotoupload_variant
+            : (b.variant as Variant);
+      return { ...b, variant: v } as WeddingBereich;
+    });
     danksagung = phaseInfo.config.archiv_message;
     showNav = false;
   }

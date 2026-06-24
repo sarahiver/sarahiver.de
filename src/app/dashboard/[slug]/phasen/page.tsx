@@ -7,11 +7,14 @@ import type { Variant } from '@/types/supabase';
 /**
  * /dashboard/[slug]/phasen
  *
- * Steuerung des Seiten-Lebenszyklus: Save-the-Date (davor) und Archiv (danach).
- * Beide an/aus + optionales Datum. Die Hauptseite läuft dazwischen automatisch.
+ * Lebenszyklus der Seite: Save-the-Date (davor) und Archiv (danach), je mit
+ * Aktivierung (Aus / Jetzt live / Per Datum), Komponenten-Varianten (A/B/C)
+ * und rechter Live-Vorschau.
  */
 
 export const dynamic = 'force-dynamic';
+
+const asV = (v: unknown): Variant => (v === 'b' || v === 'c' ? v : 'a');
 
 export default async function PhasenPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -22,16 +25,19 @@ export default async function PhasenPage({ params }: { params: Promise<{ slug: s
   const initial = {
     std_enabled: !!s.std_enabled,
     std_until: s.std_until ?? null,
-    std_variant: (s.std_variant as Variant) || 'a',
+    std_hero_variant: asV(s.std_hero_variant),
+    std_countdown_variant: asV(s.std_countdown_variant),
     archiv_enabled: !!s.archiv_enabled,
     archiv_from: s.archiv_from ?? null,
     archiv_message: s.archiv_message ?? null,
+    archiv_hero_variant: asV(s.archiv_hero_variant),
+    archiv_fotoupload_variant: asV(s.archiv_fotoupload_variant),
   };
 
   return (
     <DashboardSection
       title="Save-the-Date & Archiv"
-      description="Eure Seite begleitet den ganzen Weg: vorher ein Save-the-Date, danach ein Archiv zum Erinnern."
+      description="Eure Seite begleitet den ganzen Weg: vorher ein Save-the-Date, danach ein Archiv. Links steuern, rechts live sehen."
     >
       <PhasenForm slug={slug} initial={initial} />
     </DashboardSection>

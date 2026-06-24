@@ -27,6 +27,8 @@ interface Props {
   bereichKey?: string;
   /** Standard true (Bereich-Editoren). False für globale Settings. */
   mobileBlock?: boolean;
+  /** Optional zusätzlicher Query-String für die Vorschau, z.B. "&phase=std". */
+  previewQuery?: string;
   editorTitle?: string;
   editorDescription?: string;
   reloadKey?: number;
@@ -37,6 +39,7 @@ export default function EditorShell({
   weddingSlug,
   bereichKey,
   mobileBlock = true,
+  previewQuery = '',
   editorTitle,
   editorDescription,
   reloadKey = 0,
@@ -74,7 +77,7 @@ export default function EditorShell({
   const bustSuffix = previewBust > 0 ? `&t=${previewBust}` : '';
   const anchor = bereichKey ? `#bereich-${bereichKey}` : '';
   const previewParam = previewMode === 'draft' ? '?preview=draft' : '?preview=1';
-  const previewSrc = `/${weddingSlug}${previewParam}${bustSuffix}${anchor}`;
+  const previewSrc = `/${weddingSlug}${previewParam}${previewQuery}${bustSuffix}${anchor}`;
   const previewLinkSrc = `/${weddingSlug}${anchor}`;
 
   // Nach jedem iframe-Load: zum Top des iframe-Dokuments scrollen. Das löst

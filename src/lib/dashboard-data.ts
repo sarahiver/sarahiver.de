@@ -51,10 +51,16 @@ export interface WeddingSiteRecord {
   std_enabled?: boolean | null;
   std_until?: string | null;
   std_variant?: string | null;
+  std_hero_variant?: string | null;
+  std_countdown_variant?: string | null;
   archiv_enabled?: boolean | null;
   archiv_from?: string | null;
   archiv_message?: string | null;
   archiv_email_sent_at?: string | null;
+  archiv_hero_variant?: string | null;
+  archiv_fotoupload_variant?: string | null;
+  archiv_danksagung_variant?: string | null;
+  archiv_gallery_variant?: string | null;
 }
 
 export interface DashboardData {
