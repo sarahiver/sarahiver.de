@@ -47,6 +47,14 @@ export interface WeddingSiteRecord {
   pending_tier?: string | null;
   pending_downgrade_at?: string | null;
   pending_keep_keys?: string[] | null;
+  // --- Phasen: Save-the-Date & Archiv ---
+  std_enabled?: boolean | null;
+  std_until?: string | null;
+  std_variant?: string | null;
+  archiv_enabled?: boolean | null;
+  archiv_from?: string | null;
+  archiv_message?: string | null;
+  archiv_email_sent_at?: string | null;
 }
 
 export interface DashboardData {

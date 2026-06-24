@@ -146,6 +146,7 @@ export function buildDashboardNav(args: {
       label: 'Einstellungen',
       items: [
         { id: 'bereiche', label: 'Bereiche & Reihenfolge', href: 'bereiche', icon: 'layers' },
+        { id: 'phasen', label: 'Save-the-Date & Archiv', href: 'phasen', icon: 'home' },
         { id: 'settings', label: 'Stil & Stammdaten', href: 'settings', icon: 'sliders' },
         { id: 'navigation', label: 'Navigation', href: 'navigation', icon: 'menu' },
       ],
