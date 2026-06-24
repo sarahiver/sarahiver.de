@@ -36,6 +36,13 @@ export interface WeddingSiteRecord {
   site_is_dirty?: boolean;
   site_published_at?: string | null;
   created_at?: string;
+  // --- Billing (vom Stripe-Webhook gepflegt; via select('*') geladen) ---
+  subscription_status?: string | null;
+  subscription_tier?: string | null;
+  current_period_end?: string | null;
+  stripe_customer_id?: string | null;
+  stripe_subscription_id?: string | null;
+  trial_reminders_sent?: number[] | null;
 }
 
 export interface DashboardData {

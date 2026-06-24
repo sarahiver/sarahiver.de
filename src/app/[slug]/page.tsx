@@ -6,6 +6,8 @@ import { BereichRenderer } from '@/components/layout/BereichRenderer';
 import { SiteNav } from '@/components/layout/SiteNav';
 import { buildNavItems } from '@/components/layout/nav-config';
 import { isReservedSlug, isValidSlugFormat } from '@/lib/slug-validation';
+import { loadSiteAccess } from '@/lib/subscription';
+import SiteUnavailable from '@/components/layout/SiteUnavailable';
 import type { Metadata } from 'next';
 
 interface PageProps {
@@ -45,6 +47,14 @@ export default async function WeddingSitePage({ params, searchParams }: PageProp
 
   // Defensive: ohne gültigen slug → notFound (kein Crash)
   if (!slug || isReservedSlug(slug) || !isValidSlugFormat(slug)) notFound();
+
+  // Abo-Gating: gekündigte/uneinbringliche Seiten nicht mehr ausliefern.
+  // Nur im published-Modus — die Draft-Vorschau (Owner) bleibt erreichbar.
+  if (mode === 'published') {
+    const access = await loadSiteAccess(slug);
+    if (access.blocked) return <SiteUnavailable />;
+  }
+
   const data = await loadWeddingSite(slug, mode);
   if (!data) notFound();
 
