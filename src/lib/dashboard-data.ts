@@ -43,6 +43,10 @@ export interface WeddingSiteRecord {
   stripe_customer_id?: string | null;
   stripe_subscription_id?: string | null;
   trial_reminders_sent?: number[] | null;
+  // --- Geplanter Downgrade (greift zum Periodenende) ---
+  pending_tier?: string | null;
+  pending_downgrade_at?: string | null;
+  pending_keep_keys?: string[] | null;
 }
 
 export interface DashboardData {

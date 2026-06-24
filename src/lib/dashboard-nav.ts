@@ -57,25 +57,28 @@ export function buildDashboardNav(args: {
 
   const isPurchased = (k: BereichKey) => purchasedKeys.includes(k);
 
-  // Editor-Items: nur gebuchte Bereiche. Sortiert nach display_order — falls
-  // ein gebuchter Bereich noch keinen wedding_bereiche-Eintrag hat, hängen
-  // wir ihn ans Ende (Pre-Setup-Stand).
+  // Editor-Items: nur gebuchte UND aktive Bereiche. Ein abgewählter Bereich
+  // (is_active=false) wird nicht gerendert und gehört deshalb auch nicht in
+  // die "Inhalte pflegen"-Leiste — sonst pflegt man Inhalte, die nirgends
+  // erscheinen. Zum erneuten Bearbeiten wird der Bereich auf der Seite
+  // "Bereiche & Reihenfolge" wieder aktiviert.
+  //
+  // Pre-Setup-Fall: ein frisch gebuchter Bereich ohne wedding_bereiche-Zeile
+  // (b === undefined) gilt als sichtbar, damit man ihn befüllen kann. Nur ein
+  // EXPLIZIT inaktiver Bereich (Zeile existiert, is_active=false) wird versteckt.
   const editorItems: DashboardNavItem[] = purchasedKeys
     .map((k) => {
       const b = bereiche.find((b) => b.bereich_key === k);
-      return {
-        key: k,
-        order: b?.display_order ?? 999,
-        item: {
-          id: `edit-${k}`,
-          label: bereichLabel(k),
-          href: `bereiche/${k}`,
-          icon: 'pencil',
-        } as DashboardNavItem,
-      };
+      return { key: k, row: b, order: b?.display_order ?? 999 };
     })
+    .filter((x) => x.row?.is_active !== false)
     .sort((a, b) => a.order - b.order)
-    .map((x) => x.item);
+    .map((x) => ({
+      id: `edit-${x.key}`,
+      label: bereichLabel(x.key),
+      href: `bereiche/${x.key}`,
+      icon: 'pencil',
+    }) as DashboardNavItem);
 
   return [
     {

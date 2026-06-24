@@ -6,12 +6,14 @@ import { ADDON_KEYS, STANDARD_KEYS, TIERS, tierForCount, BEREICH_LABEL, type Tie
 import type { BereichKey } from '@/types/supabase';
 import { notFound } from 'next/navigation';
 import UpgradeClient, { type AddableItem } from './UpgradeClient';
+import DowngradeClient, { type DowngradeAddon } from './DowngradeClient';
 
 /**
  * /dashboard/[slug]/upgrade
  *
- * Zeigt gebuchte Bereiche und erlaubt Nachbuchen über die Tier-Stufen
- * (funnel.ts) — der Tarifwechsel läuft über Stripe (siehe actions.ts).
+ * Pakete verwalten: gebuchte Bereiche, Hochbuchen (Tier-Upgrade über Stripe)
+ * und Runterbuchen (Downgrade zum Periodenende). Ist ein Downgrade geplant,
+ * wird nur dieser Hinweis + „Aufheben" gezeigt.
  */
 
 export const dynamic = 'force-dynamic';
@@ -23,12 +25,10 @@ export default async function UpgradePage({ params }: { params: Promise<{ slug: 
 
   const purchased = new Set<BereichKey>(data.purchasedKeys);
 
-  // Gebuchte Bereiche (Standard + bereits gekaufte Zusatz), für die Übersicht.
   const purchasedItems = [...STANDARD_KEYS, ...ADDON_KEYS]
     .filter((k) => purchased.has(k as BereichKey))
     .map((k) => COMPONENT_CATALOG[k as BereichKey]);
 
-  // Nachbuchbar = Zusatz-Bereiche, die noch nicht gebucht sind.
   const addable: AddableItem[] = ADDON_KEYS.filter((k) => !purchased.has(k)).map((k) => ({
     key: k,
     label: BEREICH_LABEL[k] || COMPONENT_CATALOG[k].label,
@@ -36,12 +36,26 @@ export default async function UpgradePage({ params }: { params: Promise<{ slug: 
     icon: COMPONENT_CATALOG[k].icon,
   }));
 
-  const currentAddonCount = ADDON_KEYS.filter((k) => purchased.has(k)).length;
+  const currentAddonKeys = ADDON_KEYS.filter((k) => purchased.has(k));
+  const currentAddons: DowngradeAddon[] = currentAddonKeys.map((k) => ({
+    key: k,
+    label: BEREICH_LABEL[k] || COMPONENT_CATALOG[k].label,
+  }));
+  const currentAddonCount = currentAddonKeys.length;
   const currentTier: Tier = (data.site.subscription_tier as Tier) || tierForCount(currentAddonCount);
   const isTrialing = data.site.subscription_status === 'trialing';
 
+  const pending =
+    data.site.pending_tier
+      ? {
+          tier: data.site.pending_tier as Tier,
+          effectiveAt: data.site.pending_downgrade_at ?? null,
+          keepKeys: data.site.pending_keep_keys ?? [],
+        }
+      : null;
+
   return (
-    <DashboardSection title="Pakete & Upgrades" description="Was ihr habt — und was ihr noch dazubuchen könnt.">
+    <DashboardSection title="Pakete & Upgrades" description="Was ihr habt — dazubuchen oder reduzieren.">
       {/* Aktuelle Stufe */}
       <div style={tierBar}>
         <div>
@@ -83,23 +97,45 @@ export default async function UpgradePage({ params }: { params: Promise<{ slug: 
         </div>
       </div>
 
-      {/* Nachbuchen */}
-      <div className="dash-upgrade-block">
-        <div className="dash-upgrade-block-head">
-          <h2 className="dash-h2">Bereiche dazubuchen</h2>
-          <span className="dash-upgrade-count">{addable.length} verfügbar</span>
+      {pending ? (
+        /* Geplanter Wechsel — nur Hinweis + Aufheben */
+        <div className="dash-upgrade-block">
+          <div className="dash-upgrade-block-head">
+            <h2 className="dash-h2">Geplanter Wechsel</h2>
+          </div>
+          <DowngradeClient slug={slug} addons={currentAddons} currentTier={currentTier} pending={pending} />
         </div>
-        <p className="dash-help-text">
-          Wählt aus, was ihr ergänzen möchtet — wir zeigen euch sofort, ob und wie sich der Preis ändert.
-        </p>
-        <UpgradeClient
-          slug={slug}
-          addable={addable}
-          currentAddonCount={currentAddonCount}
-          currentTier={currentTier}
-          isTrialing={isTrialing}
-        />
-      </div>
+      ) : (
+        <>
+          {/* Nachbuchen */}
+          <div className="dash-upgrade-block">
+            <div className="dash-upgrade-block-head">
+              <h2 className="dash-h2">Bereiche dazubuchen</h2>
+              <span className="dash-upgrade-count">{addable.length} verfügbar</span>
+            </div>
+            <p className="dash-help-text">
+              Wählt aus, was ihr ergänzen möchtet — wir zeigen euch sofort, ob und wie sich der Preis ändert.
+            </p>
+            <UpgradeClient
+              slug={slug}
+              addable={addable}
+              currentAddonCount={currentAddonCount}
+              currentTier={currentTier}
+              isTrialing={isTrialing}
+            />
+          </div>
+
+          {/* Reduzieren */}
+          {currentAddons.length > 0 && (
+            <div className="dash-upgrade-block">
+              <div className="dash-upgrade-block-head">
+                <h2 className="dash-h2">Stufe reduzieren</h2>
+              </div>
+              <DowngradeClient slug={slug} addons={currentAddons} currentTier={currentTier} pending={null} />
+            </div>
+          )}
+        </>
+      )}
     </DashboardSection>
   );
 }
