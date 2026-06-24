@@ -87,19 +87,19 @@ export async function savePhases(p: PhasePayload): Promise<PhaseResult> {
   return { ok: true };
 }
 
-/** „Archiv jetzt online stellen" — sofort aktiv (enabled + Datum geleert). */
-export async function archivGoLiveNow(slug: string): Promise<PhaseResult> {
+/** „Jetzt aktivieren" — Phase sofort manuell live (enabled + Datum geleert). */
+export async function activatePhaseNow(slug: string, phase: 'std' | 'archiv'): Promise<PhaseResult> {
   const res = await authedSite(slug);
   if (!res.ok) return { error: res.error };
-  const { admin, site } = res;
 
-  const { error } = await admin
-    .from('wedding_sites')
-    .update({ archiv_enabled: true, archiv_from: null } as never)
-    .eq('id', site.id);
+  const patch =
+    phase === 'std'
+      ? { std_enabled: true, std_until: null }
+      : { archiv_enabled: true, archiv_from: null };
 
+  const { error } = await res.admin.from('wedding_sites').update(patch as never).eq('id', res.site.id);
   if (error) {
-    console.error('[archivGoLiveNow] update failed:', error);
+    console.error('[activatePhaseNow] update failed:', error);
     return { error: 'Aktivieren fehlgeschlagen. Bitte erneut versuchen.' };
   }
 

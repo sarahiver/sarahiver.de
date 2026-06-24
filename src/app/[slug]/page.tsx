@@ -17,7 +17,11 @@ interface PageProps {
   searchParams: Promise<{ preview?: string; phase?: string }>;
 }
 
-export const revalidate = 60;
+// Immer frisch rendern: Phasen-Schalter + Inhaltsänderungen müssen sofort
+// greifen (sonst „hängt" die Seite im alten Zustand). Hochzeitsseiten haben
+// moderaten Traffic — der Verzicht auf ISR-Caching ist hier der richtige
+// Trade-off für Korrektheit.
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const resolved = await params;
