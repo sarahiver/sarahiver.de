@@ -6,6 +6,7 @@ import DashboardTopbar from '@/components/dashboard/DashboardTopbar';
 import DashboardErrorBoundary from '@/components/dashboard/DashboardErrorBoundary';
 import { DashboardDataProvider } from '@/components/dashboard/DashboardDataProvider';
 import SubscriptionBanner from '@/components/dashboard/SubscriptionBanner';
+import DemoBanner from '@/components/dashboard/DemoBanner';
 
 /**
  * Layout für /dashboard/[slug]/*
@@ -72,6 +73,7 @@ export default async function DashboardLayout({
           dirtyState={dirtyState}
         />
         <main className="dash-content">
+          <DemoBanner slug={slug} />
           <DashboardErrorBoundary>
             <SubscriptionBanner
               slug={slug}

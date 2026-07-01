@@ -6,7 +6,7 @@ export const RESERVED_SLUGS = [
   'home', 'index', 'app', 'www', 'mail', 'help', 'support',
   'about', 'blog', 'news', 'press', 'jobs', 'careers',
   'pricing', 'preise', 'features', 'funktionen', 'baukasten',
-  'customizer', 'demo', 'demos', 'examples', 'beispiele',
+  'customizer', 'demo', 'demos', 'examples', 'beispiele', 'testen',
   'roadmap', 'changelog',
   'oauth', 'sso',
   'sarahiver', 'iver', 'sarah',

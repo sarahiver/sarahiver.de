@@ -229,3 +229,18 @@
 .lp3-citem.focus{outline:2px solid var(--au);outline-offset:-1px}
 .lp3-vseg-wide{display:flex;gap:6px}
 .lp3-vseg-wide .lp3-vb{flex:1;height:34px}
+
+/* ===== Beispiel-Galerie ===== */
+.lp3-examples{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:8px}
+.lp3-excard{display:flex;flex-direction:column;background:var(--pan);border:1px solid var(--ln);border-radius:16px;overflow:hidden;text-decoration:none;color:inherit;transition:transform .18s ease,border-color .18s ease}
+.lp3-excard:hover{transform:translateY(-4px);border-color:var(--au)}
+.lp3-exthumb{position:relative;aspect-ratio:4/3;overflow:hidden}
+.lp3-exthumb img{width:100%;height:100%;object-fit:cover;display:block}
+.lp3-extag{position:absolute;top:10px;left:10px;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--pg);background:var(--au);padding:4px 10px;border-radius:999px}
+.lp3-exbody{padding:16px 16px 18px}
+.lp3-exbody h3{font-family:var(--disp);font-size:19px;margin:0 0 4px}
+.lp3-exbody p{font-size:13.5px;color:var(--mut);line-height:1.5;margin:0 0 12px}
+.lp3-exlink{font-size:13px;font-weight:600;color:var(--au)}
+.lp3-extry{margin-top:26px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.lp3-extry p{max-width:520px;color:var(--mut);font-size:14.5px;line-height:1.6;margin:0}
+@media (max-width:860px){.lp3-examples{grid-template-columns:1fr}}

@@ -8,10 +8,10 @@ export function LandingHeader() {
       <div className="wrap in">
         <a href="#top" className="lp3-logo">sarah<span>iver</span>.de</a>
         <nav className="lp3-nav" aria-label="Hauptnavigation">
-          <a href="#studio">Baukasten</a>
+          <a href="#beispiele">Beispiele</a>
           <a href="#preise">Preise</a>
           <a href="/login">Login</a>
-          <a href="#studio" className="cta">Kostenlos starten</a>
+          <a href="#beispiele" className="cta">Kostenlos starten</a>
         </nav>
       </div>
     </header>
@@ -31,7 +31,7 @@ export function LandingHero() {
           unter einer Stunde. Kein Code, kein Stress.
         </p>
         <div className="actions">
-          <a href="#studio" className="cta gold">Jetzt ausprobieren</a>
+          <a href="#beispiele" className="cta gold">Jetzt ausprobieren</a>
           <span className="cc">14 Tage gratis · <b>keine Kreditkarte</b></span>
         </div>
         <div className="lp3-trust">
@@ -228,9 +228,46 @@ export function LandingFooter() {
       <div className="wrap">
         <h2>Baut die Seite, die <b>nur euch gehört.</b></h2>
         <p className="cc" style={{ marginBottom: 8 }}>14 Tage kostenlos · keine Kreditkarte nötig</p>
-        <a href="#studio" className="cta">Genau so übernehmen &amp; starten</a>
+        <a href="#beispiele" className="cta">Genau so übernehmen &amp; starten</a>
         <p className="lp3-credit">Beispielbilder: Pexels (freie Lizenz) · Beispieldaten &amp; Stimmen zu Demozwecken</p>
       </div>
     </footer>
+  );
+}
+
+/** Beispiel-Galerie: 1-3 echte Demo-Seiten, "Live ansehen" oeffnet die echte /[slug]. */
+const EXAMPLES = [
+  { slug: 'sarah-und-iver', style: 'Editorial', couple: 'Sarah & Iver', blurb: 'Redaktionell und ruhig, viel Weißraum, klare Typo.', img: IMG.g1 },
+  { slug: 'mila-und-theo', style: 'Organic', couple: 'Mila & Theo', blurb: 'Weich und natürlich, warme Töne, sommerlich.', img: IMG.g2 },
+  { slug: 'johanna-und-felix', style: 'Opulent', couple: 'Johanna & Felix', blurb: 'Edel und festlich, tiefe Farben, goldene Akzente.', img: IMG.g3 },
+];
+
+export function StyleExamples() {
+  return (
+    <section className="lp3-band" id="beispiele" aria-labelledby="ex-title">
+      <div className="wrap">
+        <div className="lp3-sechead">
+          <p className="lp3-eyebrow">Echte Beispiele</p>
+          <h2 id="ex-title">So kann eure Seite aussehen</h2>
+          <p className="lp3-lead">Drei fertige Hochzeitsseiten in drei Grundstilen — jede live, mit echten Inhalten. Schaut euch um.</p>
+        </div>
+        <div className="lp3-examples">
+          {EXAMPLES.map((e) => (
+            <a key={e.slug} className="lp3-excard" href={`/${e.slug}`} target="_blank" rel="noopener noreferrer">
+              <div className="lp3-exthumb"><img src={e.img} alt={`Beispiel im Stil ${e.style}`} loading="lazy" /><span className="lp3-extag">{e.style}</span></div>
+              <div className="lp3-exbody">
+                <h3>{e.couple}</h3>
+                <p>{e.blurb}</p>
+                <span className="lp3-exlink">Live ansehen &nearr;</span>
+              </div>
+            </a>
+          ))}
+        </div>
+        <div className="lp3-extry">
+          <p>Lieber selbst ausprobieren? Öffnet ein fertig gefülltes Beispiel-Dashboard und testet alles durch — ohne Anmeldung.</p>
+          <a href="/testen" className="cta gold">Selbst ausprobieren &rarr;</a>
+        </div>
+      </div>
+    </section>
   );
 }
