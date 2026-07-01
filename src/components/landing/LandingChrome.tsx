@@ -1,6 +1,6 @@
 import React from 'react';
 import { PRICING_TIERS } from '@/lib/bereiche-katalog';
-import { IMG, DEMO } from './landing-data';
+import { IMG } from './landing-data';
 
 export function LandingHeader() {
   return (

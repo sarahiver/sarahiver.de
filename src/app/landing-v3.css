@@ -210,3 +210,22 @@
   .lp3-nav a:not(.cta){display:none}
 }
 @media(max-width:560px){.lp3-flow{grid-template-columns:1fr}.lp3-ptable{grid-template-columns:1fr}.lp3-proof{gap:24px}}
+
+/* ===== Fokus-Modus (A) ===== */
+.lp3-stage{background:var(--pg2);overflow:hidden}
+.lp3-stage .wedding-site-wrapper{min-height:0}
+.lp3-focusbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 12px;background:var(--pan);border-bottom:1px solid var(--ln)}
+.lp3-focusnav{display:flex;align-items:center;gap:10px}
+.lp3-focusnav button{width:26px;height:26px;border-radius:7px;border:1px solid var(--ln);color:var(--tx);background:none;cursor:pointer;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center}
+.lp3-focusnav button:hover{border-color:var(--au)}
+.lp3-focusnav .fname{font-size:12px;font-weight:600;color:var(--tx);min-width:120px;text-align:center}
+.lp3-allbtn{font-size:11px;font-weight:600;color:var(--mut);border:1px solid var(--ln);border-radius:8px;padding:6px 11px;background:none;cursor:pointer}
+.lp3-allbtn.on,.lp3-allbtn:hover{border-color:var(--au);color:var(--tx)}
+/* Zusatz-Bereich Zeile: Checkbox + Name getrennt klickbar */
+.lp3-citem{padding:0}
+.lp3-citem.lock{padding:8px 11px}
+.lp3-cbox{background:none;border:none;cursor:pointer;padding:8px 6px 8px 11px;display:flex;align-items:center}
+.lp3-cname{background:none;border:none;cursor:pointer;color:var(--tx);font:inherit;font-size:13px;font-weight:500;text-align:left;padding:8px 11px 8px 0;flex:1}
+.lp3-citem.focus{outline:2px solid var(--au);outline-offset:-1px}
+.lp3-vseg-wide{display:flex;gap:6px}
+.lp3-vseg-wide .lp3-vb{flex:1;height:34px}
