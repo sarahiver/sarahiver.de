@@ -1,46 +1,45 @@
-import SiteHeader from '@/components/layout/SiteHeader';
-import Footer from '@/components/layout/Footer';
-import Hero from '@/components/sections/Hero';
-import Dashboard from '@/components/sections/Dashboard';
-import Bereiche from '@/components/sections/Bereiche';
-import Konfigurator from '@/components/sections/Konfigurator';
-import Pricing from '@/components/sections/Pricing';
-import HowItWorks from '@/components/sections/HowItWorks';
-import Voices from '@/components/sections/Voices';
-import Faq from '@/components/sections/Faq';
-import FinalCta from '@/components/sections/FinalCta';
+import {
+  LandingHeader,
+  LandingHero,
+  StudioIntro,
+  LandingFlow,
+  LandingFounderProof,
+  LandingGallery,
+  LandingPricing,
+  LandingFaq,
+  LandingFooter,
+} from '@/components/landing/LandingChrome';
+import Configurator from '@/components/landing/Configurator';
 
 /**
- * sarahiver.de — Marketing Landing v2 (Modern Studio)
+ * sarahiver.de — Marketing Landing v3 (Emotional Studio)
  *
- * Section-Reihenfolge — conversion-optimiert:
- *   Hero          → emotional hook + CTA
- *   Dashboard     → "live ausprobieren" engagement-hook
- *   Bereiche      → was bekomme ich konkret? (Substanz)
- *   Konfigurator  → User wählt Bereiche, sieht eigenen Preis live
- *   Pricing       → klare Tabelle für die, die noch zweifeln
- *   HowItWorks    → 3 simple Schritte
- *   Voices        → Trust (Founder-Note + 2 Beta-Stimmen)
- *   Faq           → Einwände vor dem Checkout abbauen
- *   FinalCta      → letzter dramatic close
- *
- * Examples-Section wurde entfernt — das Dashboard erfüllt jetzt
- * die gleiche Funktion (8 Stile zeigen), aber interaktiv.
+ * Conversion-fokussiert, emotional, funktionsbeschreibend:
+ *   Hero            → großes Paarfoto, Vertrauen, klarer CTA
+ *   Studio          → interaktiver Baukasten mit Beispieldaten + Live-Preis
+ *                     (ersetzt die alten Hero-/Dashboard-/Bereiche-/Examples-Sektionen)
+ *   Flow            → echter Onboarding-Ablauf (Anmelden → live)
+ *   Founder + Proof → Vertrauen (Gründer-Note, Kennzahlen, Stimmen)
+ *   Gallery         → emotionale Paarfotos
+ *   Pricing         → echtes Tier-Modell aus bereiche-katalog.ts
+ *   Faq             → Einwände abbauen (semantische <details>)
+ *   Footer          → finaler CTA
  */
 export default function Home() {
   return (
-    <div className="landing">
-      <SiteHeader />
-      <Hero />
-      <Dashboard />
-      <Bereiche />
-      <Konfigurator />
-      <Pricing />
-      <HowItWorks />
-      <Voices />
-      <Faq />
-      <FinalCta />
-      <Footer />
+    <div className="lp3">
+      <LandingHeader />
+      <main>
+        <LandingHero />
+        <StudioIntro />
+        <Configurator />
+        <LandingFlow />
+        <LandingFounderProof />
+        <LandingGallery />
+        <LandingPricing />
+        <LandingFaq />
+      </main>
+      <LandingFooter />
     </div>
   );
 }
