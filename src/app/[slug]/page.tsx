@@ -6,7 +6,7 @@ import { BereichRenderer } from '@/components/layout/BereichRenderer';
 import { SiteNav } from '@/components/layout/SiteNav';
 import { buildNavItems } from '@/components/layout/nav-config';
 import { isReservedSlug, isValidSlugFormat } from '@/lib/slug-validation';
-import { loadSiteAccess } from '@/lib/subscription';
+import { loadSiteAccess } from '@/lib/access';
 import { loadSitePhase, loadPhaseBereiche, STD_KEYS, ARCHIV_KEYS, type SitePhase } from '@/lib/phases';
 import SiteUnavailable from '@/components/layout/SiteUnavailable';
 import type { WeddingBereich, Variant } from '@/types/supabase';

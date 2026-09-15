@@ -1,64 +1,78 @@
 /**
- * Pricing-Logik für sarahiver.de v4
+ * Pricing v5 — Einmalzahlung (Entscheidung Sept. 2026).
  *
- * Basis: 19€/Monat (4 Basis-Bereiche)
- * 11 Zusatz-Bereiche mit Volumen-Rabatt
+ * Löst das Abo-Modell (19 €/Monat + Bereiche-Staffel) vollständig ab:
+ *   - EIN Preis, EINE Zahlung, alle Bereiche inklusive
+ *   - Laufzeit statt Abo: die Seite ist einen definierten Zeitraum online
+ *   - Keine Verlängerung im MVP (bewusste Entscheidung)
  *
- * Stufen kalibriert für 11 Zusatz-Bereiche:
- * - 1 Bereich: +4€ (Stückpreis)
- * - 2: +7€ (3€ marginal)
- * - 3: +9€ (2€ marginal) ⭐ "Sweet Spot"
- * - 4: +11€
- * - 5: +13€
- * - 6: +15€
- * - 7: +17€
- * - 8-11: +20€ (Cap = "Komplettpaket")
- *
- * Mindest-Laufzeit: 12 Monate (siehe PRICING_TERMS)
+ * Diese Datei ist die einzige Quelle für Preise und Laufzeit. Stripe-Preise
+ * werden NICHT hier gepflegt, sondern in Vercel-Envs (siehe PRICE_ENV_*),
+ * damit Test- und Live-Modus denselben Code teilen.
  */
 
-export const BASE_PRICE = 19;
-export const COMPLETE_PACKAGE_PRICE = 20;
-export const MIN_TERM_MONTHS = 12;
-export const ACCESS_PERIOD_MONTHS = 18;
+/** Anzeigepreise (nur für die UI — abgerechnet wird der Stripe-Price). */
+export const WEBSITE_PRICE_EUR = 69;
+export const DOMAIN_SETUP_PRICE_EUR = 39;
+
+/** Stripe-Price-IDs kommen aus diesen Environment-Variablen. */
+export const PRICE_ENV_WEBSITE = 'STRIPE_PRICE_WEBSITE';
+export const PRICE_ENV_DOMAIN = 'STRIPE_PRICE_DOMAIN_SETUP';
+
+/** Grundlaufzeit ab Kaufdatum. */
+export const ACCESS_MONTHS = 12;
 
 /**
- * Aufpreis-Tabelle: Index = Anzahl Add-On-Bereiche
+ * Mindestlaufzeit NACH dem Hochzeitstag.
+ *
+ * Grund: wer die Seite als Save-the-Date 14 Monate vor der Hochzeit anlegt,
+ * hätte mit reinen "12 Monate ab Kauf" eine abgelaufene Seite genau am
+ * Hochzeitstag. Ohne Verlängerungsoption im MVP wäre das ein Supportfall
+ * ohne Lösung. Deshalb: die Laufzeit endet frühestens 3 Monate nach der
+ * Hochzeit — in aller Regel greift trotzdem die 12-Monats-Regel.
  */
-export const ADDON_PRICES = [0, 4, 7, 9, 11, 13, 15, 17, 20, 20, 20, 20] as const;
+export const MIN_MONTHS_AFTER_WEDDING = 3;
 
-export const TOTAL_ADDONS = 11;
-
-export function calculateAddonPrice(count: number): number {
-  if (count <= 0) return 0;
-  if (count >= 8) return COMPLETE_PACKAGE_PRICE;
-  return ADDON_PRICES[count];
-}
-
-export function calculateSavings(count: number): {
-  monthly: number;
-  yearly: number;
-  percentage: number;
-} {
-  if (count <= 1) return { monthly: 0, yearly: 0, percentage: 0 };
-  const withoutDiscount = count * 4;
-  const actualPrice = calculateAddonPrice(count);
-  const monthly = Math.max(0, withoutDiscount - actualPrice);
-  return {
-    monthly,
-    yearly: monthly * MIN_TERM_MONTHS,
-    percentage: withoutDiscount > 0 ? Math.round((monthly / withoutDiscount) * 100) : 0,
-  };
-}
-
-export function calculateTotal(count: number): number {
-  return BASE_PRICE + calculateAddonPrice(count);
+function addMonths(date: Date, months: number): Date {
+  const d = new Date(date.getTime());
+  const targetDay = d.getDate();
+  d.setMonth(d.getMonth() + months);
+  // Monatsenden abfangen (31.01. + 1 Monat → 03.03. statt 28.02.)
+  if (d.getDate() < targetDay) d.setDate(0);
+  return d;
 }
 
 /**
- * Gesamt-Vertragskosten über die Mindestlaufzeit.
- * Beantwortet die Frage "Was kostet mich das insgesamt?"
+ * Enddatum der Laufzeit: 12 Monate ab Kauf, mindestens aber 3 Monate nach
+ * dem Hochzeitsdatum. Ohne gültiges Hochzeitsdatum greift nur die 12er-Regel.
  */
-export function calculateLifetimeCost(count: number): number {
-  return calculateTotal(count) * MIN_TERM_MONTHS;
+export function computeAccessUntil(paidAt: Date, weddingDateISO?: string | null): Date {
+  const base = addMonths(paidAt, ACCESS_MONTHS);
+
+  if (!weddingDateISO) return base;
+  const wedding = new Date(weddingDateISO);
+  if (Number.isNaN(wedding.getTime())) return base;
+
+  const floor = addMonths(wedding, MIN_MONTHS_AFTER_WEDDING);
+  return floor.getTime() > base.getTime() ? floor : base;
+}
+
+/** Volle Resttage bis zu einem ISO-Zeitpunkt (0, wenn bereits vorbei). */
+export function daysUntil(iso: string): number {
+  const end = new Date(iso).getTime();
+  if (!Number.isFinite(end)) return NaN;
+  return Math.max(0, Math.ceil((end - Date.now()) / 86_400_000));
+}
+
+/** "14. Juli 2027" */
+export function formatDateDe(iso: string): string {
+  try {
+    return new Intl.DateTimeFormat('de-DE', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+    }).format(new Date(iso));
+  } catch {
+    return iso;
+  }
 }

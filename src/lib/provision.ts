@@ -1,10 +1,14 @@
 import { createSupabaseAdminClient } from './supabase-admin';
-import { STANDARD_KEYS, ADDON_KEYS, normalizeAddonKey, type Tier } from './funnel';
+import { ALL_BEREICH_KEYS } from './funnel';
+import { computeAccessUntil } from './pricing';
 
 /**
- * Provisioning — vom Stripe-Webhook aufgerufen, nachdem eine Zahlung
- * erfolgreich war. Legt Account + Hochzeitsseite + Bereiche + Käufe an
- * und mailt dem Paar den Login-Link.
+ * Provisioning — vom Stripe-Webhook aufgerufen, nachdem die Einmalzahlung
+ * durch ist. Legt Account + Hochzeitsseite + alle Bereiche + Käufe an,
+ * setzt das Laufzeitende und mailt dem Paar den Login-Link.
+ *
+ * Seit Sept. 2026 gibt es keine Pakete mehr: jede bezahlte Seite bekommt
+ * alle 15 Bereiche freigeschaltet.
  *
  * Idempotent über den Slug: existiert die Site schon, werden nur die
  * Billing-Felder aktualisiert (kein doppeltes Anlegen).
@@ -19,13 +23,15 @@ export interface ProvisionInput {
   name2: string;
   weddingDate: string; // YYYY-MM-DD
   style: string;
-  tier: Tier;
-  addons: string[];
+  /** Kunde möchte eine eigene Domain (39 € Add-on). */
   domain: boolean;
+  /** Wunschdomain aus dem Domain-Check auf der Landing, z. B. "leaundben.de". */
+  domainWish: string | null;
   stripeCustomerId: string | null;
-  stripeSubscriptionId: string | null;
-  subscriptionStatus: string | null;
-  currentPeriodEnd: string | null; // ISO
+  stripePaymentIntentId: string | null;
+  stripeCheckoutSessionId: string | null;
+  /** Zeitpunkt der Zahlung (ISO). Basis für die Laufzeit. */
+  paidAt: string;
 }
 
 export type ProvisionResult = { ok: true; siteId: string; userId: string } | { ok: false; error: string };
@@ -61,6 +67,12 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
   }
 
   // --- 2) Site idempotent anlegen / Billing aktualisieren -----------------
+  const paidAt = new Date(input.paidAt);
+  const accessUntil = computeAccessUntil(
+    Number.isNaN(paidAt.getTime()) ? new Date() : paidAt,
+    input.weddingDate,
+  );
+
   const billing = {
     owner_user_id: userId,
     // RLS-Policies auf wedding_bereiche/-sites prüfen teils user_id (Alt-Spalte),
@@ -68,11 +80,13 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
     // seine (auch unveröffentlichten) Bereiche lesen/bearbeiten darf.
     user_id: userId,
     stripe_customer_id: input.stripeCustomerId,
-    stripe_subscription_id: input.stripeSubscriptionId,
-    subscription_status: input.subscriptionStatus,
-    subscription_tier: input.tier,
-    current_period_end: input.currentPeriodEnd,
+    stripe_payment_intent_id: input.stripePaymentIntentId,
+    stripe_checkout_session_id: input.stripeCheckoutSessionId,
+    purchase_status: 'paid',
+    paid_at: Number.isNaN(paidAt.getTime()) ? new Date().toISOString() : paidAt.toISOString(),
+    access_until: accessUntil.toISOString(),
     custom_domain_status: input.domain ? 'pending' : 'none',
+    custom_domain: input.domainWish,
   };
 
   const { data: existing } = await admin
@@ -135,11 +149,8 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
   }
   siteId = (site as { id: string }).id;
 
-  // --- 3) Bereiche anlegen (Standard + gewählte Zusatz) -------------------
-  const addonKeys = Array.from(
-    new Set(input.addons.map((k) => normalizeAddonKey(k)).filter(Boolean) as string[]),
-  );
-  const allKeys = [...STANDARD_KEYS, ...ADDON_KEYS.filter((k) => addonKeys.includes(k))];
+  // --- 3) Bereiche anlegen (alle 15 — im Preis enthalten) ----------------
+  const allKeys = [...ALL_BEREICH_KEYS];
 
   const bereicheRows = allKeys.map((key, index) => ({
     wedding_site_id: siteId,
@@ -156,6 +167,7 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
   if (bErr) console.error('[provision] bereiche insert failed:', bErr);
 
   // --- 4) Käufe freischalten (Gating in tokens.ts greift hierauf) ---------
+  // Alle Bereiche, weil es keine Pakete mehr gibt.
   const purchaseRows = allKeys.map((key) => ({
     wedding_site_id: siteId,
     bereich_key: key,

@@ -3,14 +3,21 @@ import type Stripe from 'stripe';
 import { getStripe } from '@/lib/stripe';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import { provisionSite } from '@/lib/provision';
-import { tierForCount, type Tier } from '@/lib/funnel';
 
 /**
  * Stripe-Webhook — server-only, Service-Role.
  *
  * Stripe-Endpoint: https://<app>/api/stripe/webhook
- * Events: checkout.session.completed, invoice.paid, invoice.payment_failed,
- *         customer.subscription.updated, customer.subscription.deleted
+ *
+ * Events seit der Umstellung auf Einmalzahlung:
+ *   checkout.session.completed          → provisionieren (mode: 'payment')
+ *   checkout.session.async_payment_succeeded → dito, für verzögerte Zahlarten
+ *   checkout.session.async_payment_failed    → nur loggen (nichts provisioniert)
+ *   charge.refunded                     → Zugriff entziehen
+ *
+ * Alt-Sites aus der Abo-Zeit werden weiter bedient (customer.subscription.*,
+ * invoice.*), damit bestehende Seiten nicht plötzlich offline gehen. Sobald
+ * keine aktiven Abos mehr existieren, kann dieser Block raus.
  *
  * Idempotenz: jede event.id wird via Tabelle `stripe_events` nur einmal
  * verarbeitet (Stripe stellt teils mehrfach zu).
@@ -18,23 +25,6 @@ import { tierForCount, type Tier } from '@/lib/funnel';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-/**
- * Liest current_period_end null-sicher aus einer Subscription.
- *
- * In neueren Stripe-API-Versionen liegt current_period_end nicht mehr auf
- * der Subscription-Wurzel, sondern auf den Items. Fehlt der Wert komplett,
- * geben wir null zurück — niemals `new Date(NaN).toISOString()` (das wirft
- * und führte zu 500ern auf customer.subscription.updated).
- */
-function subPeriodEndISO(sub: Stripe.Subscription): string | null {
-  const root = (sub as unknown as { current_period_end?: number }).current_period_end;
-  const item = (sub.items?.data?.[0] as unknown as { current_period_end?: number } | undefined)
-    ?.current_period_end;
-  const ts = typeof root === 'number' ? root : typeof item === 'number' ? item : null;
-  if (ts === null || !Number.isFinite(ts)) return null;
-  return new Date(ts * 1000).toISOString();
-}
 
 export async function POST(req: NextRequest) {
   const stripe = getStripe();
@@ -63,7 +53,12 @@ export async function POST(req: NextRequest) {
   // --- Idempotenz: event nur einmal verarbeiten ---
   const insertEvent = await admin
     .from('stripe_events')
-    .insert({ id: event.id, type: event.type, payload: event as unknown as Record<string, unknown> } as never);
+    .insert({
+      id: event.id,
+      type: event.type,
+      payload: event as unknown as Record<string, unknown>,
+    } as never);
+
   if (insertEvent.error) {
     // Primary-Key-Konflikt ⇒ schon verarbeitet ⇒ ok, 200 zurück
     if (insertEvent.error.code === '23505') {
@@ -75,36 +70,46 @@ export async function POST(req: NextRequest) {
 
   try {
     switch (event.type) {
-      case 'checkout.session.completed': {
+      case 'checkout.session.completed':
+      case 'checkout.session.async_payment_succeeded': {
         const session = event.data.object as Stripe.Checkout.Session;
-        await handleCheckoutCompleted(stripe, session);
+        await handleCheckoutCompleted(admin, session);
         break;
       }
-      case 'invoice.paid': {
-        const inv = event.data.object as Stripe.Invoice;
-        const subId = typeof inv.subscription === 'string' ? inv.subscription : inv.subscription?.id;
-        const periodEnd = inv.lines?.data?.[0]?.period?.end ?? null;
-        await updateBySubscription(admin, subId, {
-          subscription_status: 'active',
-          ...(typeof periodEnd === 'number' && Number.isFinite(periodEnd)
-            ? { current_period_end: new Date(periodEnd * 1000).toISOString() }
-            : {}),
-        });
+
+      case 'checkout.session.async_payment_failed': {
+        const session = event.data.object as Stripe.Checkout.Session;
+        console.error('[webhook] async payment failed for session', session.id, session.metadata?.slug);
         break;
       }
+
+      case 'charge.refunded': {
+        const charge = event.data.object as Stripe.Charge;
+        const pi =
+          typeof charge.payment_intent === 'string'
+            ? charge.payment_intent
+            : charge.payment_intent?.id ?? null;
+        if (pi) {
+          const { error } = await admin
+            .from('wedding_sites')
+            .update({ purchase_status: 'refunded' } as never)
+            .eq('stripe_payment_intent_id', pi);
+          if (error) console.error('[webhook] refund update failed:', error);
+        }
+        break;
+      }
+
+      // --- Alt-Sites aus der Abo-Zeit ------------------------------------
       case 'invoice.payment_failed': {
         const inv = event.data.object as Stripe.Invoice;
-        const subId = typeof inv.subscription === 'string' ? inv.subscription : inv.subscription?.id;
+        const subId =
+          typeof inv.subscription === 'string' ? inv.subscription : inv.subscription?.id;
         await updateBySubscription(admin, subId, { subscription_status: 'past_due' });
         break;
       }
       case 'customer.subscription.updated': {
         const sub = event.data.object as Stripe.Subscription;
-        const periodEnd = subPeriodEndISO(sub);
-        await updateBySubscription(admin, sub.id, {
-          subscription_status: sub.status,
-          ...(periodEnd ? { current_period_end: periodEnd } : {}),
-        });
+        await updateBySubscription(admin, sub.id, { subscription_status: sub.status });
         break;
       }
       case 'customer.subscription.deleted': {
@@ -112,6 +117,7 @@ export async function POST(req: NextRequest) {
         await updateBySubscription(admin, sub.id, { subscription_status: 'canceled' });
         break;
       }
+
       default:
         // andere Events ignorieren
         break;
@@ -125,7 +131,23 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ received: true });
 }
 
-async function handleCheckoutCompleted(stripe: Stripe, session: Stripe.Checkout.Session) {
+type AdminClient = NonNullable<ReturnType<typeof createSupabaseAdminClient>>;
+
+async function handleCheckoutCompleted(admin: AdminClient, session: Stripe.Checkout.Session) {
+  // Abo-Checkouts gibt es nicht mehr — aber ein Alt-Event darf nicht in den
+  // Einmalzahlungs-Pfad laufen.
+  if (session.mode !== 'payment') {
+    console.warn('[webhook] checkout.completed in mode', session.mode, '— ignoriert', session.id);
+    return;
+  }
+
+  // Bei verzögerten Zahlarten ist die Session zwar completed, das Geld aber
+  // noch nicht da. Dann kommt später async_payment_succeeded.
+  if (session.payment_status === 'unpaid') {
+    console.log('[webhook] session completed, payment pending —', session.id);
+    return;
+  }
+
   const m = (session.metadata || {}) as Record<string, string>;
   const email = session.customer_email || session.customer_details?.email || '';
   if (!email || !m.slug) {
@@ -133,20 +155,14 @@ async function handleCheckoutCompleted(stripe: Stripe, session: Stripe.Checkout.
     return;
   }
 
-  const customerId = typeof session.customer === 'string' ? session.customer : session.customer?.id ?? null;
-  const subscriptionId =
-    typeof session.subscription === 'string' ? session.subscription : session.subscription?.id ?? null;
+  const customerId =
+    typeof session.customer === 'string' ? session.customer : session.customer?.id ?? null;
+  const paymentIntentId =
+    typeof session.payment_intent === 'string'
+      ? session.payment_intent
+      : session.payment_intent?.id ?? null;
 
-  let status: string | null = null;
-  let periodEnd: string | null = null;
-  if (subscriptionId) {
-    const sub = await stripe.subscriptions.retrieve(subscriptionId);
-    status = sub.status;
-    periodEnd = subPeriodEndISO(sub);
-  }
-
-  const addons = (m.addons || '').split(',').map((s) => s.trim()).filter(Boolean);
-  const tier: Tier = (m.tier as Tier) || tierForCount(addons.length);
+  const paidAt = new Date((session.created || Math.floor(Date.now() / 1000)) * 1000).toISOString();
 
   const res = await provisionSite({
     email,
@@ -155,19 +171,16 @@ async function handleCheckoutCompleted(stripe: Stripe, session: Stripe.Checkout.
     name2: m.name2 || '',
     weddingDate: m.wedding_date || '',
     style: m.style || 'editorial',
-    tier,
-    addons,
     domain: m.domain === '1',
+    domainWish: m.domain_wish || null,
     stripeCustomerId: customerId,
-    stripeSubscriptionId: subscriptionId,
-    subscriptionStatus: status,
-    currentPeriodEnd: periodEnd,
+    stripePaymentIntentId: paymentIntentId,
+    stripeCheckoutSessionId: session.id,
+    paidAt,
   });
 
   if (!res.ok) console.error('[webhook] provisioning failed:', res.error, session.id);
 }
-
-type AdminClient = NonNullable<ReturnType<typeof createSupabaseAdminClient>>;
 
 async function updateBySubscription(
   admin: AdminClient,

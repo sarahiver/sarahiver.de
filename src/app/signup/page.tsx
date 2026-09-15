@@ -1,35 +1,35 @@
 import SignupForm from './SignupForm';
 
 /**
- * /signup — Onboarding-Einstieg in den Self-Service-Funnel.
+ * /signup — Einstieg in den Self-Service-Funnel (Einmalzahlung).
  *
- * Übernimmt die Konfigurator-Auswahl per Query (?addons=key,key&domain=1)
- * und startet nach dem Ausfüllen den Stripe-Checkout (Server Action).
+ * Übernimmt die Wunschdomain aus dem Domain-Check der Landing
+ * (?domain=lea-und-ben.de) und startet nach dem Ausfüllen den
+ * Stripe-Checkout (Server Action).
  */
 
 export const metadata = {
-  title: 'Hochzeitsseite buchen — sarahiver.de',
+  title: 'Hochzeitswebsite bestellen — sarahiver.de',
   robots: { index: false, follow: false },
 };
+
+/** Nur übernehmen, was wie eine Domain aussieht — der Wert kommt aus der URL. */
+function sanitizeDomain(raw: string | undefined): string {
+  const v = (raw || '').trim().toLowerCase();
+  return /^[a-z0-9äöüß][a-z0-9äöüß-]{1,62}\.[a-z]{2,20}$/.test(v) ? v : '';
+}
 
 export default async function SignupPage({
   searchParams,
 }: {
-  searchParams: Promise<{ addons?: string; domain?: string; canceled?: string }>;
+  searchParams: Promise<{ domain?: string; canceled?: string }>;
 }) {
   const sp = await searchParams;
-  const initialAddons = (sp?.addons || '')
-    .split(',')
-    .map((s) => s.trim())
-    .filter(Boolean);
-  const initialDomain = sp?.domain === '1';
-  const canceled = sp?.canceled === '1';
 
   return (
     <SignupForm
-      initialAddons={initialAddons}
-      initialDomain={initialDomain}
-      canceled={canceled}
+      initialDomainWish={sanitizeDomain(sp?.domain)}
+      canceled={sp?.canceled === '1'}
     />
   );
 }

@@ -7,6 +7,9 @@
  *   3. Inhalte pflegen (Bereich-Editoren — pro aktivem Bereich ein Eintrag)
  *   4. Einstellungen (Stil, Stammdaten, Bereich-Verwaltung)
  *
+ * Seit der Umstellung auf Einmalzahlung gibt es keinen Paket-Bereich mehr —
+ * alle 15 Bereiche sind im Preis enthalten.
+ *
  * Die Bereich-Editoren werden dynamisch aus den geladenen Bereichen
  * generiert (siehe buildContentEditorItems in der Dashboard-Component).
  */
@@ -149,13 +152,6 @@ export function buildDashboardNav(args: {
         { id: 'phasen', label: 'Save-the-Date & Archiv', href: 'phasen', icon: 'home' },
         { id: 'settings', label: 'Stil & Stammdaten', href: 'settings', icon: 'sliders' },
         { id: 'navigation', label: 'Navigation', href: 'navigation', icon: 'menu' },
-      ],
-    },
-    {
-      id: 'upgrade',
-      label: 'Pakete & Upgrades',
-      items: [
-        { id: 'upgrade', label: 'Komponenten dazubuchen', href: 'upgrade', icon: 'plus' },
       ],
     },
   ].filter((s) => s.items.length > 0);

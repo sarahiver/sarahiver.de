@@ -13,7 +13,7 @@
 
 export type Tier = 'std' | 'p3' | 'p6' | 'p9' | 'p11';
 
-/** Immer enthalten (Basis 9 €). */
+/** Beim Anlegen zuerst angelegt (früher: „Basis-Bereiche"). */
 export const STANDARD_KEYS = ['hero', 'countdown', 'rsvp', 'lovestory'] as const;
 
 /** Frei wählbare Zusatz-Bereiche (11). */
@@ -32,6 +32,13 @@ export const ADDON_KEYS = [
 ] as const;
 
 export type AddonKey = (typeof ADDON_KEYS)[number];
+
+/**
+ * Alle 15 Bereiche. Seit der Umstellung auf Einmalzahlung (Sept. 2026) sind
+ * sie ausnahmslos im Preis enthalten — die Trennung Standard/Zusatz existiert
+ * nur noch als Reihenfolge beim Anlegen einer neuen Seite.
+ */
+export const ALL_BEREICH_KEYS = [...STANDARD_KEYS, ...ADDON_KEYS] as const;
 
 const ADDON_SET = new Set<string>(ADDON_KEYS);
 
@@ -67,7 +74,16 @@ export const BEREICH_LABEL: Record<string, string> = {
   weddingabc: 'Hochzeits-ABC',
 };
 
-/** Tier-Stufen: Anzahl Zusatz-Bereiche → Tier + Monatspreis + Stripe-Env. */
+/* ---------------------------------------------------------------------------
+ * ABGELÖST — Abo-Staffel aus dem alten Modell.
+ *
+ * Seit Sept. 2026 gilt Einmalzahlung (siehe lib/pricing.ts). Die folgenden
+ * Exporte werden vom neuen Funnel NICHT mehr benutzt; sie bleiben nur, damit
+ * die stillgelegten Upgrade-/Downgrade-Dateien weiter kompilieren. Beim
+ * Aufräumen dieser Dateien kann der ganze Block ersatzlos weg.
+ * ------------------------------------------------------------------------- */
+
+/** @deprecated Abo-Modell — nicht mehr verwenden. */
 export const TIERS: Record<Tier, { maxAddons: number; monthly: number; label: string; priceEnv: string }> = {
   std: { maxAddons: 0, monthly: 9, label: 'Standard', priceEnv: 'STRIPE_PRICE_STD' },
   p3: { maxAddons: 3, monthly: 14, label: 'Plus 3', priceEnv: 'STRIPE_PRICE_P3' },
@@ -76,7 +92,7 @@ export const TIERS: Record<Tier, { maxAddons: number; monthly: number; label: st
   p11: { maxAddons: 11, monthly: 23, label: 'Komplett', priceEnv: 'STRIPE_PRICE_P11' },
 };
 
-/** Tier aus der Anzahl gewählter Zusatz-Bereiche. */
+/** @deprecated Abo-Modell — nicht mehr verwenden. */
 export function tierForCount(count: number): Tier {
   if (count <= 0) return 'std';
   if (count <= 3) return 'p3';
@@ -85,10 +101,12 @@ export function tierForCount(count: number): Tier {
   return 'p11';
 }
 
+/** @deprecated Domain-Preis steht jetzt in lib/pricing.ts. */
 export const DOMAIN_MONTHLY_PRICE = 5;
+/** @deprecated Domain-Preis steht jetzt in lib/pricing.ts. */
 export const DOMAIN_SETUP_PRICE = 39;
 
-/** Monatspreis gesamt (Tier + optional Domain). */
+/** @deprecated Abo-Modell — nicht mehr verwenden. */
 export function monthlyTotal(count: number, domain: boolean): number {
   return TIERS[tierForCount(count)].monthly + (domain ? DOMAIN_MONTHLY_PRICE : 0);
 }

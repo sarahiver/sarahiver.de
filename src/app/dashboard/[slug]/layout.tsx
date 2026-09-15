@@ -5,7 +5,7 @@ import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import DashboardTopbar from '@/components/dashboard/DashboardTopbar';
 import DashboardErrorBoundary from '@/components/dashboard/DashboardErrorBoundary';
 import { DashboardDataProvider } from '@/components/dashboard/DashboardDataProvider';
-import SubscriptionBanner from '@/components/dashboard/SubscriptionBanner';
+import AccessBanner from '@/components/dashboard/AccessBanner';
 import DemoBanner from '@/components/dashboard/DemoBanner';
 
 /**
@@ -75,10 +75,10 @@ export default async function DashboardLayout({
         <main className="dash-content">
           <DemoBanner slug={slug} />
           <DashboardErrorBoundary>
-            <SubscriptionBanner
-              slug={slug}
-              status={data.site.subscription_status}
-              currentPeriodEnd={data.site.current_period_end}
+            <AccessBanner
+              accessUntil={
+                (data.site as { access_until?: string | null }).access_until ?? null
+              }
             />
             <DashboardDataProvider
               site={data.site}

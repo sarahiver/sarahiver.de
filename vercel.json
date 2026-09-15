@@ -1,12 +1,3 @@
 {
-  "crons": [
-    {
-      "path": "/api/cron/trial-reminders",
-      "schedule": "0 9 * * *"
-    },
-    {
-      "path": "/api/cron/apply-downgrades",
-      "schedule": "0 4 * * *"
-    }
-  ]
+  "crons": []
 }

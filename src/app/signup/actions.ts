@@ -4,13 +4,15 @@ import { getStripe } from '@/lib/stripe';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import { isReservedSlug, isValidSlugFormat } from '@/lib/slug-validation';
 import { VALID_STYLE_IDS } from '@/lib/style-migration';
-import {
-  ADDON_KEYS,
-  TIERS,
-  tierForCount,
-  normalizeAddonKey,
-  type AddonKey,
-} from '@/lib/funnel';
+import { PRICE_ENV_DOMAIN, PRICE_ENV_WEBSITE } from '@/lib/pricing';
+
+/**
+ * Stripe-Checkout — Einmalzahlung (mode: 'payment').
+ *
+ * Kein Abo, kein Trial, keine Karte auf Vorrat: das Paar zahlt einmal, die
+ * Seite wird im Webhook provisioniert. Alle Bereiche sind enthalten, deshalb
+ * gibt es hier auch keine Bereichs-Auswahl mehr.
+ */
 
 export interface CheckoutInput {
   email: string;
@@ -19,18 +21,16 @@ export interface CheckoutInput {
   weddingDate: string; // YYYY-MM-DD
   slug: string;
   style: string;
-  addons: string[]; // DB-Keys (oder alte Keys — werden normalisiert)
+  /** Eigene Domain als Add-on dazubuchen. */
   domain: boolean;
+  /** Wunschdomain aus dem Domain-Check, z. B. "leaundben.de". */
+  domainWish?: string;
 }
 
 export type CheckoutResult = { url: string } | { error: string };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const ADDON_SET = new Set<string>(ADDON_KEYS);
-
-// 14 Tage kostenlos testen, dann startet die Abo-Phase automatisch.
-// Über STRIPE_TRIAL_DAYS (Vercel-Env) ohne Code-Edit anpassbar.
-const TRIAL_DAYS = Number(process.env.STRIPE_TRIAL_DAYS) || 14;
+const DOMAIN_RE = /^[a-z0-9äöüß][a-z0-9äöüß-]{1,62}\.[a-z]{2,20}$/;
 
 export async function startCheckout(input: CheckoutInput): Promise<CheckoutResult> {
   const email = (input.email || '').trim().toLowerCase();
@@ -39,38 +39,37 @@ export async function startCheckout(input: CheckoutInput): Promise<CheckoutResul
   const slug = (input.slug || '').trim().toLowerCase();
   const style = (input.style || '').trim();
   const weddingDate = (input.weddingDate || '').trim();
+  const domainWish = (input.domainWish || '').trim().toLowerCase();
 
   // --- Validierung ---
   if (!EMAIL_RE.test(email)) return { error: 'Bitte eine gültige E-Mail angeben.' };
   if (!name1 || !name2) return { error: 'Bitte beide Namen angeben.' };
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(weddingDate)) return { error: 'Bitte ein gültiges Hochzeitsdatum wählen.' };
-  if (!isValidSlugFormat(slug)) return { error: 'Die Adresse darf nur Buchstaben, Zahlen und Bindestriche enthalten.' };
-  if (isReservedSlug(slug)) return { error: 'Diese Adresse ist reserviert — bitte eine andere wählen.' };
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(weddingDate)) {
+    return { error: 'Bitte ein gültiges Hochzeitsdatum wählen.' };
+  }
+  if (!isValidSlugFormat(slug)) {
+    return { error: 'Die Adresse darf nur Buchstaben, Zahlen und Bindestriche enthalten.' };
+  }
+  if (isReservedSlug(slug)) {
+    return { error: 'Diese Adresse ist reserviert — bitte eine andere wählen.' };
+  }
   if (!VALID_STYLE_IDS.includes(style as (typeof VALID_STYLE_IDS)[number])) {
     return { error: 'Bitte einen gültigen Stil wählen.' };
   }
-
-  // Zusatz-Bereiche normalisieren + deduplizieren
-  const addons = Array.from(
-    new Set(
-      (input.addons || [])
-        .map((k) => normalizeAddonKey(k))
-        .filter((k): k is AddonKey => Boolean(k)),
-    ),
-  );
-  if (addons.length > ADDON_KEYS.length) return { error: 'Zu viele Zusatz-Bereiche.' };
-
-  const tier = tierForCount(addons.length);
-  const tierCfg = TIERS[tier];
+  if (input.domain && domainWish && !DOMAIN_RE.test(domainWish)) {
+    return { error: 'Die Wunschdomain sieht nicht gültig aus — z. B. lea-und-ben.de.' };
+  }
 
   // --- Slug-Verfügbarkeit ---
   const admin = createSupabaseAdminClient();
   if (!admin) return { error: 'Service nicht verfügbar. Bitte später erneut versuchen.' };
+
   const { data: existing, error: slugErr } = await admin
     .from('wedding_sites')
     .select('id')
     .eq('slug', slug)
     .maybeSingle();
+
   if (slugErr) {
     console.error('[startCheckout] slug check failed:', slugErr);
     return { error: 'Adresse konnte nicht geprüft werden. Bitte erneut versuchen.' };
@@ -81,21 +80,23 @@ export async function startCheckout(input: CheckoutInput): Promise<CheckoutResul
   const stripe = getStripe();
   if (!stripe) return { error: 'Zahlung ist gerade nicht verfügbar. Bitte später erneut versuchen.' };
 
-  const tierPriceId = process.env[tierCfg.priceEnv];
-  if (!tierPriceId) {
-    console.error(`[startCheckout] Missing env ${tierCfg.priceEnv}`);
+  const websitePriceId = process.env[PRICE_ENV_WEBSITE];
+  if (!websitePriceId) {
+    console.error(`[startCheckout] Missing env ${PRICE_ENV_WEBSITE}`);
     return { error: 'Preis-Konfiguration fehlt. Bitte beim Anbieter melden.' };
   }
 
-  const lineItems: { price: string; quantity: number }[] = [{ price: tierPriceId, quantity: 1 }];
+  const lineItems: { price: string; quantity: number }[] = [
+    { price: websitePriceId, quantity: 1 },
+  ];
 
   if (input.domain) {
-    const domMonthly = process.env.STRIPE_PRICE_DOMAIN_MONTHLY;
-    const domSetup = process.env.STRIPE_PRICE_DOMAIN_SETUP;
-    if (domMonthly) lineItems.push({ price: domMonthly, quantity: 1 });
-    // Einmalige Einrichtung: in subscription-mode landet ein one-time Price auf
-    // der ersten Rechnung. Falls Stripe das ablehnt, einfach diesen Block entfernen.
-    if (domSetup) lineItems.push({ price: domSetup, quantity: 1 });
+    const domainPriceId = process.env[PRICE_ENV_DOMAIN];
+    if (!domainPriceId) {
+      console.error(`[startCheckout] Missing env ${PRICE_ENV_DOMAIN}`);
+      return { error: 'Preis-Konfiguration fehlt. Bitte beim Anbieter melden.' };
+    }
+    lineItems.push({ price: domainPriceId, quantity: 1 });
   }
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://sarahiver.de';
@@ -107,25 +108,22 @@ export async function startCheckout(input: CheckoutInput): Promise<CheckoutResul
     name2,
     wedding_date: weddingDate,
     style,
-    tier,
-    addons: addons.join(','),
     domain: input.domain ? '1' : '0',
+    domain_wish: input.domain ? domainWish : '',
   };
 
   try {
     const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
+      mode: 'payment',
       customer_email: email,
+      customer_creation: 'always',
       line_items: lineItems,
       allow_promotion_codes: true,
-      // Karte sofort hinterlegen, damit nach dem Trial automatisch abgerechnet wird.
-      payment_method_collection: 'always',
+      // Rechnung für den Kunden — bei einer Einmalzahlung erzeugt Stripe die
+      // sonst nicht automatisch.
+      invoice_creation: { enabled: true },
       metadata,
-      subscription_data: {
-        metadata,
-        // 14 Tage kostenlos — erst danach startet die Abrechnung.
-        trial_period_days: TRIAL_DAYS,
-      },
+      payment_intent_data: { metadata },
       success_url: `${appUrl}/signup/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/signup?canceled=1`,
     });
