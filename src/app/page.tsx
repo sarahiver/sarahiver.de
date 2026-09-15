@@ -1,38 +1,29 @@
-import {
-  LandingHeader,
-  LandingHero,
-  StyleExamples,
-  LandingFlow,
-  LandingFounderProof,
-  LandingGallery,
-  LandingPricing,
-  LandingFaq,
-  LandingFooter,
-} from '@/components/landing/LandingChrome';
+import type { Metadata } from 'next';
+import LandingV4 from '@/components/landing-v4/LandingV4';
+import { SEO } from '@/lib/landing-v4';
 
 /**
- * sarahiver.de — Marketing Landing (Emotional + Beispiele + CTA)
+ * sarahiver.de — Landing v4 (Mockup-Umsetzung, Sept. 2026).
  *
- * Statt eingebettetem Konfigurator: kuratierte Beispiel-Galerie mit echten
- * Demo-Seiten ("Live ansehen" -> /[slug]) + CTA "Selbst ausprobieren" (/testen,
- * Sandbox-Dashboard). Demos werden via /api/seed-demos angelegt.
+ * Self-Service-Produkt, Einmalzahlung 69 €. Die alte Landing v3
+ * (components/landing/LandingChrome.tsx) bleibt im Repo, wird aber nicht mehr
+ * gerendert.
  */
 export const dynamic = 'force-static';
 
+export const metadata: Metadata = {
+  title: SEO.title,
+  description: SEO.description,
+  openGraph: {
+    title: SEO.title,
+    description: SEO.description,
+    url: 'https://sarahiver.de',
+    siteName: 'sarahiver.de',
+    locale: 'de_DE',
+    type: 'website',
+  },
+};
+
 export default function Home() {
-  return (
-    <div className="lp3">
-      <LandingHeader />
-      <main>
-        <LandingHero />
-        <StyleExamples />
-        <LandingFlow />
-        <LandingFounderProof />
-        <LandingGallery />
-        <LandingPricing />
-        <LandingFaq />
-      </main>
-      <LandingFooter />
-    </div>
-  );
+  return <LandingV4 />;
 }
