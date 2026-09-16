@@ -30,6 +30,23 @@ export const PRE_LAUNCH_MODE = process.env.NEXT_PUBLIC_PRE_LAUNCH !== 'off';
 export const CHECKOUT_ENABLED = !PRE_LAUNCH_MODE;
 
 /**
+ * Routen, auf denen das Launch Gate NIE erscheinen darf.
+ *
+ * Wer aus der Bestätigungsmail kommt, hat sich gerade eingetragen — ihn dort
+ * erneut zum Eintragen aufzufordern, wäre der schlechteste Moment dafür.
+ * Der Abgleich passiert über den Pfad, nicht über Client-State: ein Redirect
+ * lädt die Seite neu, jeder gemerkte Zustand wäre damit verloren.
+ */
+export const GATE_EXCLUDED_PATHS = ['/launch', '/signup'];
+
+/** Darf das Gate auf diesem Pfad erscheinen? */
+export function gateAllowedOnPath(pathname: string): boolean {
+  return !GATE_EXCLUDED_PATHS.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`),
+  );
+}
+
+/**
  * Merker im Browser. Wer das Gate geschlossen hat, sieht es eine Weile nicht
  * wieder. Version im Schlüssel, damit ein späterer Textwechsel es erneut zeigen
  * kann.
@@ -82,7 +99,7 @@ export const CONFIRM_COPY = {
   ok: {
     eyebrow: 'Anmeldung bestätigt',
     title: 'Ihr seid dabei.',
-    text: `Wir informieren euch zum offiziellen Start von sarahiver.de am ${LAUNCH_DATE_LABEL}.`,
+    text: `Eure E-Mail-Adresse wurde bestätigt. Wir informieren euch zum offiziellen Start von sarahiver.de am ${LAUNCH_DATE_LABEL}.`,
   },
   invalid: {
     eyebrow: 'Link nicht gültig',

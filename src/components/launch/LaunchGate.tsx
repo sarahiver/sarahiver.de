@@ -1,11 +1,13 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import {
   GATE_COPY,
   GATE_SNOOZE_DAYS,
   GATE_STORAGE_KEY,
   PRE_LAUNCH_MODE,
+  gateAllowedOnPath,
 } from '@/lib/launch';
 import LaunchSignupForm from './LaunchSignupForm';
 
@@ -17,15 +19,25 @@ import LaunchSignupForm from './LaunchSignupForm';
  * Modal verlinkt. Wer schließt, hat für {GATE_SNOOZE_DAYS} Tage Ruhe.
  *
  * Ein-/Ausschalten ausschließlich über PRE_LAUNCH_MODE in lib/launch.ts.
+ *
+ * Zwei Sperren sorgen dafür, dass das Gate nie über der Bestätigungsseite
+ * liegt. Erstens die Architektur: die Komponente hängt ausschließlich in
+ * app/page.tsx, also an der Landing-Route — nicht im Layout. Zweitens diese
+ * Pfadprüfung, falls das Gate später doch einmal weiter oben eingehängt wird.
+ * Beide wirken beim ersten Render, nicht erst nach einem Effekt: nach einem
+ * Redirect aus der E-Mail gibt es keinen Client-State, auf den man sich
+ * verlassen könnte.
  */
 export default function LaunchGate() {
+  const pathname = usePathname();
+  const allowedHere = gateAllowedOnPath(pathname ?? '/');
   const [open, setOpen] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
   const lastFocused = useRef<HTMLElement | null>(null);
 
   // Erst nach dem Mount entscheiden — localStorage gibt es serverseitig nicht.
   useEffect(() => {
-    if (!PRE_LAUNCH_MODE) return;
+    if (!PRE_LAUNCH_MODE || !allowedHere) return;
 
     let snoozedUntil = 0;
     try {
@@ -39,7 +51,7 @@ export default function LaunchGate() {
     lastFocused.current = document.activeElement as HTMLElement | null;
     const t = window.setTimeout(() => setOpen(true), 450);
     return () => window.clearTimeout(t);
-  }, []);
+  }, [allowedHere]);
 
   const close = useCallback(() => {
     setOpen(false);
@@ -102,7 +114,7 @@ export default function LaunchGate() {
     };
   }, [open, close]);
 
-  if (!PRE_LAUNCH_MODE || !open) return null;
+  if (!PRE_LAUNCH_MODE || !allowedHere || !open) return null;
 
   return (
     <div className="sdlg" role="presentation">

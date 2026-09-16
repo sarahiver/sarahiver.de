@@ -1,13 +1,22 @@
 import type { Metadata } from 'next';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import { CONFIRM_COPY } from '@/lib/launch';
+import StripToken from '@/components/launch/StripToken';
 
 /**
  * /launch/bestaetigt?token=… — Schritt 2 des Double Opt-In.
  *
  * Erst hier wird aus `pending` ein `confirmed`. Der Token wird dabei entwertet,
- * damit ein Link nur einmal funktioniert. Ohne gültigen Token gibt es eine
- * freundliche Fehlermeldung statt eines Serverfehlers.
+ * damit ein Link nur einmal funktioniert.
+ *
+ * Kein Launch Gate: die Komponente hängt ausschließlich an der Landing-Route
+ * (app/page.tsx), diese Seite rendert sie nie — weder beim Redirect aus der
+ * Mail noch beim Reload oder direkten Aufruf.
+ *
+ * Nach erfolgreicher Bestätigung ersetzt StripToken den Token in der Adresszeile
+ * durch `ok=1`. Deshalb akzeptiert diese Seite auch `ok=1` als reinen
+ * Anzeigezustand — sie bestätigt damit nichts, sie zeigt nur weiterhin das
+ * richtige Ergebnis, wenn jemand neu lädt.
  */
 
 export const dynamic = 'force-dynamic';
@@ -52,21 +61,25 @@ async function confirm(token: string): Promise<boolean> {
 export default async function ConfirmPage({
   searchParams,
 }: {
-  searchParams: Promise<{ token?: string }>;
+  searchParams: Promise<{ token?: string; ok?: string }>;
 }) {
-  const { token } = await searchParams;
-  const ok = await confirm((token || '').trim());
-  const copy = ok ? CONFIRM_COPY.ok : CONFIRM_COPY.invalid;
+  const { token, ok: okParam } = await searchParams;
+
+  const cleaned = (token || '').trim();
+  const confirmed = cleaned ? await confirm(cleaned) : okParam === '1';
+  const copy = confirmed ? CONFIRM_COPY.ok : CONFIRM_COPY.invalid;
 
   return (
     <main className="sdlg-page">
+      {confirmed && cleaned ? <StripToken /> : null}
+
       <div className="sdlg-page-in">
         <p className="sdlg-eyebrow">{copy.eyebrow}</p>
         <h1 className="sdlg-title">{copy.title}</h1>
         <p className="sdlg-text">{copy.text}</p>
 
         <div className="sdlg-explore-actions sdlg-page-actions">
-          <a className="sdlg-btn sdlg-btn--gold" href={CONFIRM_COPY.ctaDemos.href}>
+          <a className="sdlg-btn sdlg-btn--primary" href={CONFIRM_COPY.ctaDemos.href}>
             {CONFIRM_COPY.ctaDemos.label}
           </a>
           <a className="sdlg-btn sdlg-btn--ghost" href={CONFIRM_COPY.ctaDashboard.href}>
