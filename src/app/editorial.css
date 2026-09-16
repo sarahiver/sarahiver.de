@@ -673,6 +673,15 @@
    ========================================================================= */
 
 [data-style-gallery='editorial'] {
+  /* Bezugsrahmen für die Dekorationsebene.
+     StyledBereichBg rendert .styled-bg-editorial mit position:absolute;inset:0.
+     Ohne positionierten Vorfahren hängt sie sich an den nächsten gefundenen —
+     in /allelements war das der QA-Block, der A, B UND C enthält. Die Ebene
+     war dadurch 3678px hoch statt 933 und malte Haarlinie und "Ed. 01" quer
+     über alle drei Varianten. Genau das sah wie B-Reste in C aus.
+     Im Produktivpfad ist der Effekt derselbe, nur größer: dort ist der
+     nächste positionierte Vorfahre der Seiten-Wrapper. */
+  position: relative;
   padding-inline: var(--gutter);
   /* Die Galerie war eine der längsten Sektionen der Seite. Weniger Polsterung
      ist Teil der Kompaktheit, nicht nur die Kachelgröße. */
@@ -700,6 +709,15 @@
    ========================================================================= */
 
 [data-style-gallery='editorial'] {
+  /* Bezugsrahmen für die Dekorationsebene.
+     StyledBereichBg rendert .styled-bg-editorial mit position:absolute;inset:0.
+     Ohne positionierten Vorfahren hängt sie sich an den nächsten gefundenen —
+     in /allelements war das der QA-Block, der A, B UND C enthält. Die Ebene
+     war dadurch 3678px hoch statt 933 und malte Haarlinie und "Ed. 01" quer
+     über alle drei Varianten. Genau das sah wie B-Reste in C aus.
+     Im Produktivpfad ist der Effekt derselbe, nur größer: dort ist der
+     nächste positionierte Vorfahre der Seiten-Wrapper. */
+  position: relative;
   padding-inline: var(--gutter);
   /* Die Galerie war eine der längsten Sektionen der Seite. Weniger Polsterung
      ist Teil der Kompaktheit, nicht nur die Kachelgröße. */
