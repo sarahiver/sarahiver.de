@@ -106,21 +106,67 @@
   align-items: start;
 }
 [data-style-ls='editorial'] .lsA-images {
-  position: static;
+  position: relative;
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--sp-3);
+  /* Ungleiche Abstände: nach der Auftaktaufnahme etwas mehr Luft, danach
+     enger — die drei Bilder lesen sich dadurch als Folge, nicht als Liste. */
+  gap: var(--sp-5);
   block-size: auto;
   aspect-ratio: auto;
+  /* Platz für die Zählschiene links. */
+  padding-left: clamp(30px, 3.4vw, 52px);
+  counter-reset: lsplate;
+}
+/* Die Schiene verbindet die Aufnahmen sichtbar zu einer Sequenz. */
+[data-style-ls='editorial'] .lsA-images::before {
+  content: '';
+  position: absolute;
+  inset-block: 0.4em 1.2em;
+  inset-inline-start: clamp(10px, 1.2vw, 18px);
+  inline-size: 1px;
+  background: var(--ed-rule);
 }
 [data-style-ls='editorial'] .lsA-img,
 [data-style-ls='editorial'] .lsA-single:hover .lsA-img {
-  position: static;
+  /* relative statt static, weil die Plattennummer daran hängt — dann müssen
+     aber die Versatzwerte der Basis (left/right/top/bottom für das gedrehte
+     Foto-Cluster) ausdrücklich zurückgenommen werden, sonst verschieben sie
+     die Aufnahmen gegeneinander. */
+  position: relative;
+  inset: auto;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  left: auto;
   inline-size: 100%;
+  /* Die Basis kappt den Überstand — die Plattennummer sitzt aber außerhalb
+     des Bildrahmens auf der Schiene. */
+  overflow: visible;
   border-radius: 0;
+  /* Die Basis rahmt die Aufnahmen weiß ein — im Magazin steht ein Bild
+     ohne Passepartout. */
+  padding: 0;
+  background: none;
+  border: 0;
   box-shadow: none;
   transform: none;
+  counter-increment: lsplate;
 }
+/* Plattennummer als Marginalie auf der Schiene. */
+[data-style-ls='editorial'] .lsA-img::before {
+  content: counter(lsplate, decimal-leading-zero);
+  position: absolute;
+  top: 0.15em;
+  left: calc(-1 * clamp(30px, 3.4vw, 52px));
+  inline-size: clamp(30px, 3.4vw, 52px);
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  line-height: 1;
+}
+[data-style-ls='editorial'] .lsA-img--2 { margin-block: var(--sp-2); }
 [data-style-ls='editorial'] .lsA-img--1 { aspect-ratio: var(--ar-classic); }
 [data-style-ls='editorial'] .lsA-img--2 { aspect-ratio: var(--ar-portrait); }
 [data-style-ls='editorial'] .lsA-img--3 { aspect-ratio: var(--ar-classic); }
@@ -133,7 +179,11 @@
 [data-style-ls='editorial'] .lsA-text {
   border-top: 1px solid var(--ed-rule-strong);
   padding-top: var(--sp-4);
+  /* Die Basis zentriert den Erzähltext. Auf einer Magazinseite hängt er an
+     derselben linken Achse wie die Überschrift darüber. */
+  text-align: left;
 }
+[data-style-ls='editorial'] .lsA-text > * { text-align: left; }
 [data-style-ls='editorial'] .lsA-eyebrow {
   font-size: var(--fs-1);
   letter-spacing: var(--ed-meta-ls);
@@ -151,7 +201,7 @@
   max-inline-size: var(--ed-measure);
   margin-top: var(--sp-4);
 }
-[data-style-ls='editorial'] .lsA-sig { margin-top: var(--sp-5); }
+[data-style-ls='editorial'] .lsA-sig { margin-top: var(--sp-5); text-align: left; }
 
 /* --- B · EDITORIAL — gesetztes Magazinraster -----------------------------
    Zweite Runde. Vorher wechselten Bild und Text zeilenweise die Seite (7/5,
@@ -222,6 +272,13 @@
 }
 [data-style-ls='editorial'] .lsB-item:hover .lsB-img-wrap img { transform: scale(1.02); }
 [data-style-ls='editorial'] .lsB-text { position: relative; }
+/* Station 4 setzt ihren Text in Spalte 1 — dort hätte die hängende Ziffer
+   keinen Rand mehr und liefe aus der Seite. Nur dort steht sie im Fluss. */
+[data-style-ls='editorial'] .lsB-item:nth-child(5n + 4) .lsB-num {
+  position: static;
+  display: block;
+  margin-bottom: var(--sp-2);
+}
 [data-style-ls='editorial'] .lsB-num {
   position: absolute;
   top: -0.2em;
@@ -373,9 +430,19 @@
 /* 2 — schmales Hochformat links. */
 [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 2) { grid-column: 1 / span 4; }
 [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 2) .lsC-img { aspect-ratio: var(--ar-portrait); }
-/* 3 — Quadrat rechts, tief eingestiegen. */
+/* 3 — Detailaufnahme: kleines Quadrat rechts, tief eingestiegen.
+   Der Punkt aus der Review war, ob dieses Modul wie eine versehentlich
+   verkleinerte Section wirkt. Es bleibt — aber als klar gekennzeichnetes
+   Motiv: schmalere Satzbreite, Beschriftung eine Stufe kleiner, Titel auf
+   Bildunterschrift-Ebene. Damit liest es sich als Detail im Bildbogen und
+   nicht als Miniatur einer eigenen Komponente. */
 [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 3) { grid-column: 7 / span 3; padding-top: var(--sp-9); }
 [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 3) .lsC-img { aspect-ratio: var(--ar-square); }
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 3) .lsC-eyebrow,
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 3) .lsC-title,
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 3) .lsC-desc { max-inline-size: 26ch; }
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 3) .lsC-title { font-size: var(--fs-4); }
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 3) .lsC-desc { font-size: var(--fs-2); }
 /* 4 — großes Querformat über acht Spalten an der rechten Kante. */
 [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 4) { grid-column: 5 / -1; }
 [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 4) .lsC-img { aspect-ratio: var(--ar-classic); }
