@@ -847,3 +847,360 @@
 [data-style-gallery='editorial'] .galC-tile {
   min-block-size: var(--touch);
 }
+
+/* =========================================================================
+   EDITORIAL HERO — Revision
+   -------------------------------------------------------------------------
+   Ausgangslage: A und B waren gespiegelte Hälften desselben Prinzips (Bild
+   links/Text rechts bzw. umgekehrt), C war das klassische Full-Bleed-Hero
+   mit mittig gesetzten Namen. Drei Abwandlungen einer Idee, keine drei
+   Prinzipien.
+
+   Jetzt drei verschiedene Magazin-Kompositionen. Der Prüfstein: ohne Farbe
+   und Schrift, nur als graue Flächen, muss man sie auseinanderhalten können.
+
+     A  COVER      Foto über die volle Fläche. Kopfzeile oben wie ein
+                   Masthead, Namen tief im unteren Drittel, Coverlines in
+                   der Fußzeile. Erkennungsbild: EINE Fläche.
+     B  SPREAD     Zwei ungleiche Seiten mit sichtbarem Bundsteg (56/44).
+                   Das Bild hängt oben an und lässt unten Luft, der Text
+                   sitzt unten links. Erkennungsbild: ZWEI Flächen,
+                   diagonal gewichtet.
+     C  STATEMENT  Papier statt Foto. Die Namen tragen die Fläche, das Bild
+                   ist ein angeschnittenes Hochformat rechts unten, das der
+                   Satz überlagert. Erkennungsbild: viel Leere, ein kleiner
+                   Bildblock.
+
+   Nur Editorial. Alle Regeln hängen an [data-style-hero="editorial"], die
+   sieben anderen Stile bleiben unberührt.
+   ========================================================================= */
+
+/* --- A · COVER ----------------------------------------------------------- */
+.hero-a[data-style-hero='editorial'] {
+  position: relative;
+  min-height: min(92vh, 900px);
+  padding: 0;
+  background: #241C17;
+  overflow: hidden;
+  isolation: isolate;
+}
+.hero-a[data-style-hero='editorial'] .hero-a-image {
+  position: absolute;
+  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: var(--img-base);
+  background-position: center 34%;
+  filter: contrast(1.04) saturate(0.9);
+}
+/* Verlauf oben und unten: oben trägt er den Masthead, unten die Namen.
+   In der Mitte bleibt das Foto unangetastet. */
+.hero-a[data-style-hero='editorial']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(28, 22, 18, 0.46) 0%,
+    rgba(28, 22, 18, 0) 24%,
+    rgba(28, 22, 18, 0) 46%,
+    rgba(28, 22, 18, 0.74) 100%
+  );
+}
+.hero-a[data-style-hero='editorial'] .hero-a-content {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  width: 100%;
+  max-width: none;
+  min-height: min(92vh, 900px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto 1fr auto auto;
+  padding: clamp(20px, 3.2vw, 44px);
+  text-align: left;
+  color: #F7F2E9;
+}
+.hero-a[data-style-hero='editorial'] .hero-a-eyebrow {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  justify-self: stretch;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: clamp(9px, 0.78vw, 11px);
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: rgba(247, 242, 233, 0.82);
+  padding-bottom: clamp(10px, 1.4vw, 16px);
+  border-bottom: 1px solid rgba(247, 242, 233, 0.34);
+  margin: 0;
+}
+.hero-a[data-style-hero='editorial'] .hero-a-title {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  align-self: end;
+  color: #FFFFFF;
+  font-size: clamp(38px, 7.2vw, 122px);
+  line-height: 0.9;
+  letter-spacing: -0.035em;
+  max-inline-size: 15ch;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  margin: 0 0 clamp(18px, 2.6vw, 34px);
+}
+.hero-a[data-style-hero='editorial'] .hero-a-title .amp {
+  color: var(--accent);
+  animation: none;
+}
+.hero-a[data-style-hero='editorial'] .hero-a-date,
+.hero-a[data-style-hero='editorial'] .hero-a-location {
+  grid-row: 4;
+  align-self: end;
+  font-family: var(--font-body);
+  font-size: clamp(10px, 0.82vw, 12px);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(247, 242, 233, 0.86);
+  margin: 0;
+  padding-top: clamp(10px, 1.4vw, 16px);
+  border-top: 1px solid rgba(247, 242, 233, 0.28);
+}
+.hero-a[data-style-hero='editorial'] .hero-a-date { grid-column: 1; }
+.hero-a[data-style-hero='editorial'] .hero-a-location {
+  grid-column: 2;
+  justify-self: end;
+  text-align: right;
+}
+
+/* --- B · SPREAD ---------------------------------------------------------- */
+.hero-b[data-style-hero='editorial'] {
+  position: relative;
+  display: grid;
+  grid-template-columns: 56% 44%;
+  align-items: stretch;
+  min-height: min(90vh, 880px);
+  background: var(--bg);
+  overflow: hidden;
+}
+/* Der Bundsteg. Eine Haarlinie, keine Dekoration — sie erklärt die
+   Zweiteilung der Seite. */
+.hero-b[data-style-hero='editorial']::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 56%;
+  width: 1px;
+  background: color-mix(in srgb, var(--ink) 16%, transparent);
+  z-index: 3;
+}
+.hero-b[data-style-hero='editorial'] .hero-b-text {
+  align-self: end;
+  color: var(--ink);
+  padding: 0 clamp(24px, 4vw, 72px) clamp(52px, 9vh, 104px) clamp(24px, 5.4vw, 96px);
+  /* Bewusst in px, nicht in ch: ch bezieht sich auf die Schriftgröße DIESES
+     Elements (16px), nicht auf die der Namen — 32ch hätten die Spalte auf
+     rund 250px eingeschnürt und die Namen mitten im Wort gebrochen. */
+  max-inline-size: min(100%, 560px);
+}
+.hero-b[data-style-hero='editorial'] .hero-b-eyebrow {
+  font-family: var(--font-body);
+  font-size: clamp(9px, 0.74vw, 11px);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.hero-b[data-style-hero='editorial'] .hero-b-title {
+  font-size: clamp(32px, 5.2vw, 78px);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  /* Nur an Trennstellen umbrechen — kein Bruch mitten im Namen. */
+  hyphens: auto;
+  margin-top: clamp(14px, 2vw, 24px);
+}
+.hero-b[data-style-hero='editorial'] .hero-b-rule {
+  inline-size: clamp(48px, 7vw, 96px);
+  block-size: 1px;
+  background: color-mix(in srgb, var(--ink) 34%, transparent);
+  margin: clamp(20px, 3vw, 34px) 0 clamp(14px, 2vw, 20px);
+}
+.hero-b[data-style-hero='editorial'] .hero-b-meta > *,
+.hero-b[data-style-hero='editorial'] .hero-b-intro {
+  font-family: var(--font-body);
+  font-size: clamp(11px, 0.86vw, 13px);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.hero-b[data-style-hero='editorial'] .hero-b-intro {
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: clamp(13px, 1vw, 15px);
+  line-height: 1.6;
+  margin-top: clamp(14px, 2vw, 22px);
+  max-inline-size: 34ch;
+}
+.hero-b[data-style-hero='editorial'] .hero-b-image-col {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+}
+/* Das Bild hängt oben an und lässt unten Luft — dadurch steht es dem tief
+   gesetzten Text diagonal gegenüber statt ihn zu spiegeln. */
+.hero-b[data-style-hero='editorial'] .hero-b-image {
+  position: absolute;
+  inset: -4% 0 24% 0;
+  background-image: var(--img-tall);
+  background-position: center 40%;
+  filter: contrast(1.03) saturate(0.9);
+}
+
+/* --- C · STATEMENT ------------------------------------------------------- */
+.hero-c[data-style-hero='editorial'] {
+  position: relative;
+  min-height: min(96vh, 940px);
+  background: var(--bg);
+  color: var(--ink);
+  overflow: hidden;
+}
+/* Kein Vollbild mehr: das Foto wird ein angeschnittenes Hochformat, das der
+   Satz überlagern darf. */
+.hero-c[data-style-hero='editorial'] .hero-c-image {
+  inset: auto clamp(-40px, -3vw, -16px) clamp(40px, 8vh, 96px) auto;
+  inline-size: clamp(190px, 27vw, 380px);
+  block-size: clamp(260px, 48vh, 540px);
+  background-image: var(--img-tall);
+  background-position: center;
+  filter: contrast(1.04) saturate(0.9);
+  z-index: 1;
+}
+.hero-c[data-style-hero='editorial'] .hero-c-vignette { display: none; }
+.hero-c[data-style-hero='editorial'] .hero-c-content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: min(96vh, 940px);
+  padding: clamp(20px, 3.2vw, 44px);
+  color: var(--ink);
+}
+.hero-c[data-style-hero='editorial'] .hero-c-eyebrow,
+.hero-c[data-style-hero='editorial'] .hero-c-volume {
+  font-family: var(--font-body);
+  font-size: clamp(9px, 0.74vw, 11px);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.hero-c[data-style-hero='editorial'] .hero-c-mid {
+  align-self: center;
+  text-align: left;
+}
+.hero-c[data-style-hero='editorial'] .hero-c-title {
+  color: var(--ink);
+  mix-blend-mode: normal;
+  font-size: clamp(40px, 11vw, 176px);
+  line-height: 0.84;
+  letter-spacing: -0.045em;
+  max-inline-size: 13ch;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+.hero-c[data-style-hero='editorial'] .hero-c-title .amp {
+  color: var(--accent);
+  font-style: italic;
+}
+.hero-c[data-style-hero='editorial'] .hero-c-bot {
+  border-top: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+  color: var(--ink-soft);
+}
+.hero-c[data-style-hero='editorial'] .hero-c-bot * {
+  font-family: var(--font-body);
+  font-size: clamp(10px, 0.82vw, 12px);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* --- Mobil: eigene Kompositionen, keine verkleinerten Desktops ----------- */
+@media (max-width: 900px) {
+  /* A bleibt Cover — nur die Fußzeile stapelt, damit die Coverlines nicht
+     zu zweispaltigen Schnipseln werden. */
+  .hero-a[data-style-hero='editorial'],
+  .hero-a[data-style-hero='editorial'] .hero-a-content {
+    min-height: min(88vh, 760px);
+  }
+  .hero-a[data-style-hero='editorial'] .hero-a-content {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto auto auto;
+    padding: 20px;
+  }
+  .hero-a[data-style-hero='editorial'] .hero-a-title {
+    grid-column: 1;
+    font-size: clamp(34px, 11vw, 60px);
+    max-inline-size: 12ch;
+  }
+  .hero-a[data-style-hero='editorial'] .hero-a-date { grid-column: 1; grid-row: 4; }
+  .hero-a[data-style-hero='editorial'] .hero-a-location {
+    grid-column: 1;
+    grid-row: 5;
+    justify-self: start;
+    text-align: left;
+    border-top: 0;
+    padding-top: 6px;
+  }
+
+  /* B wird zur gestapelten Doppelseite: Bild oben angeschnitten, Bundsteg
+     dreht sich in die Waagerechte. */
+  .hero-b[data-style-hero='editorial'] {
+    grid-template-columns: 1fr;
+    grid-template-rows: 46vh auto;
+    min-height: 0;
+  }
+  .hero-b[data-style-hero='editorial']::before {
+    top: 46vh;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    inline-size: auto;
+    block-size: 1px;
+  }
+  .hero-b[data-style-hero='editorial'] .hero-b-image-col { grid-row: 1; }
+  .hero-b[data-style-hero='editorial'] .hero-b-image { inset: 0 -12% 0 0; }
+  .hero-b[data-style-hero='editorial'] .hero-b-text {
+    grid-row: 2;
+    padding: 30px 20px 52px;
+    max-inline-size: none;
+  }
+  .hero-b[data-style-hero='editorial'] .hero-b-title {
+    font-size: clamp(30px, 9vw, 46px);
+  }
+  /* Die Tafelbeschriftung sitzt auf dem Desktop in der Lücke unter dem Bild.
+     Einspaltig gibt es diese Lücke nicht — dort wird sie zum weißen Balken
+     quer über dem Foto. Auf dem Telefon trägt sie nichts bei. */
+  .hero-b[data-style-hero='editorial'] .hero-b-image-caption { display: none; }
+
+  /* C bleibt typografisch: der Satz führt, das Bild wird zum Band, das rechts
+     aus der Fläche läuft. */
+  .hero-c[data-style-hero='editorial'],
+  .hero-c[data-style-hero='editorial'] .hero-c-content {
+    min-height: min(92vh, 780px);
+  }
+  .hero-c[data-style-hero='editorial'] .hero-c-content { padding: 20px; }
+  .hero-c[data-style-hero='editorial'] .hero-c-title {
+    font-size: clamp(38px, 13vw, 68px);
+    max-inline-size: 11ch;
+  }
+  .hero-c[data-style-hero='editorial'] .hero-c-image {
+    inset: auto -14% 88px auto;
+    inline-size: 72%;
+    block-size: 30vh;
+  }
+  .hero-c[data-style-hero='editorial'] .hero-c-mid {
+    align-self: start;
+    padding-top: clamp(16px, 5vh, 40px);
+  }
+}
