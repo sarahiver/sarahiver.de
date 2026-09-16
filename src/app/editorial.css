@@ -1245,11 +1245,36 @@
   color: var(--ink-soft);
 }
 
-/* --- A · BALANCED — gesetzte Zeile mit Haarlinien ------------------------
-   Keine vier Karten, sondern eine Tabellenzeile: oben und unten eine
-   Haarlinie, dazwischen vier gleich breite Spalten, getrennt durch feine
-   Vertikalen. Ruhig und symmetrisch — das ist die Rolle von A.
+/* --- A · BALANCED — redaktioneller Informationsblock ---------------------
+   Zweite Runde. Vorher: fünf zentrierte Zahlen zwischen Haarlinien — richtige
+   Richtung, aber die Symmetrie plus die zentrierten Labels ließen es wie ein
+   Countdown-Widget aussehen.
+
+   Jetzt eine gesetzte Tabelle: Kopfzeile mit Haarlinie, darunter fünf Spalten,
+   in denen Label OBEN und Zahl darunter auf einer gemeinsamen linken Achse
+   sitzen. Gleiche Gewichte, gleicher Rhythmus — A bleibt die ruhige Variante —
+   aber die linke Achse und die Labelstellung machen daraus Informationsdesign
+   statt Widget. Bewusst OHNE Randziffern: die gehören zu B.
    ------------------------------------------------------------------------ */
+.cdA-wrap[data-style-countdown='editorial'] { text-align: left; }
+.cdA-wrap[data-style-countdown='editorial'] .cd-eyebrow,
+.cdA-wrap[data-style-countdown='editorial'] .cd-footer {
+  inline-size: min(100%, 1040px);
+  margin-inline: auto;
+}
+/* Kopfzeile: Eyebrow links, die Linie läuft bis zum rechten Rand durch. */
+.cdA-wrap[data-style-countdown='editorial'] .cd-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2vw, 22px);
+  margin-bottom: clamp(18px, 2.4vw, 26px);
+}
+.cdA-wrap[data-style-countdown='editorial'] .cd-eyebrow::after {
+  content: '';
+  flex: 1 1 auto;
+  block-size: 1px;
+  background: var(--cd-rule);
+}
 .cdA-wrap[data-style-countdown='editorial'] .cdA-grid {
   display: grid;
   /* Die Komponente liefert fünf Einheiten (Monate bis Sekunden), nicht vier.
@@ -1257,9 +1282,9 @@
   grid-auto-flow: column;
   grid-auto-columns: minmax(0, 1fr);
   gap: 0;
-  inline-size: min(100%, 1000px);
+  inline-size: min(100%, 1040px);
   margin-inline: auto;
-  padding: clamp(24px, 3vw, 40px) 0 clamp(20px, 2.6vw, 32px);
+  padding: 0;
   border-block: 1px solid var(--cd-rule-strong);
   background: none;
   border-radius: 0;
@@ -1267,71 +1292,101 @@
 }
 .cdA-wrap[data-style-countdown='editorial'] .cdA-unit {
   min-inline-size: 0;
-  padding-inline: clamp(8px, 1.6vw, 24px);
+  /* Label oben, Zahl darunter — die Reihenfolge im DOM ist umgekehrt. */
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  align-items: flex-start;
+  text-align: left;
+  padding: clamp(12px, 1.6vw, 18px) clamp(10px, 1.8vw, 26px) clamp(20px, 2.6vw, 30px);
   border-left: 1px solid var(--cd-rule);
 }
-.cdA-wrap[data-style-countdown='editorial'] .cdA-unit:first-child { border-left: 0; }
+.cdA-wrap[data-style-countdown='editorial'] .cdA-unit:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
 .cdA-wrap[data-style-countdown='editorial'] .cd-num {
-  font-size: clamp(38px, 6.4vw, 96px);
-  line-height: 1;
-  letter-spacing: -0.04em;
+  font-size: clamp(38px, 6vw, 88px);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums lining-nums;
 }
 .cdA-wrap[data-style-countdown='editorial'] .cd-label {
-  margin-top: clamp(10px, 1.4vw, 16px);
-  font-size: clamp(9px, 0.72vw, 11px);
+  margin: 0 0 clamp(14px, 2vw, 22px);
+  font-size: clamp(9px, 0.7vw, 10.5px);
+  letter-spacing: 0.26em;
   color: var(--muted);
 }
+.cdA-wrap[data-style-countdown='editorial'] .cd-footer {
+  margin-top: clamp(18px, 2.4vw, 26px);
+  text-align: left;
+}
 
-/* --- B · EDITORIAL — eine dominante Einheit, drei nachgeordnete ----------
-   Magazin-Infografik: "Tage" bekommt die linke Fläche, Stunden/Minuten/
-   Sekunden stehen rechts als gesetzte Liste mit Haarlinien. Dazu
-   Randziffern 01–04 als Mikrotypografie. Asymmetrisch statt vier gleiche.
+/* --- B · EDITORIAL — zwei Achsen, drei Gewichte -------------------------
+   Zweite Runde. Vorher: eine große Einheit links, vier gleich behandelte
+   rechts — die Fläche wirkte eher leer als gesetzt.
+
+   Jetzt eine Diagonale mit drei klaren Gewichtsstufen:
+     Monate   dominant, tief links auf der Hauptachse
+     Tage     sekundär, hoch rechts — die beiden spannen die Diagonale auf
+     Rest     tertiär, als knappe Registerzeilen unter Tage
+   Links läuft der Datumsstempel vertikal als Marginalie mit. Die Idee ist
+   die Beziehung der drei Stufen zueinander, nicht die Menge der Elemente.
    ------------------------------------------------------------------------ */
 .cdB-wrap[data-style-countdown='editorial'] {
-  --fc-w: clamp(40px, 5vw, 66px);
-  --fc-h: clamp(58px, 7.4vw, 96px);
+  --fc-w: clamp(30px, 3.4vw, 46px);
+  --fc-h: clamp(42px, 5vw, 64px);
   text-align: left;
   counter-reset: cdunit;
 }
 .cdB-wrap[data-style-countdown='editorial'] .cd-eyebrow,
 .cdB-wrap[data-style-countdown='editorial'] .cd-footer {
-  inline-size: min(100%, 960px);
+  inline-size: min(100%, 1040px);
   margin-inline: auto;
 }
-.cdB-wrap[data-style-countdown='editorial'] .cd-date-stamp-wrap {
-  inline-size: min(100%, 960px);
-  margin-inline: auto;
-  justify-content: flex-start;
-  margin-bottom: clamp(26px, 4vw, 44px);
-}
-.cdB-wrap[data-style-countdown='editorial'] .cd-date-stamp {
-  background: none;
-  border: 0;
-  border-bottom: 1px solid var(--cd-rule-strong);
-  border-radius: 0;
-  padding: 0 0 6px;
-  font-family: var(--font-body);
-  font-size: clamp(10px, 0.8vw, 12px);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
+.cdB-wrap[data-style-countdown='editorial'] .cd-eyebrow {
+  margin-bottom: clamp(20px, 3vw, 34px);
 }
 .cdB-wrap[data-style-countdown='editorial'] .cdB-row {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-  column-gap: clamp(28px, 5vw, 80px);
+  grid-template-columns: clamp(26px, 3vw, 44px) minmax(0, 1.05fr) minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
+  column-gap: clamp(24px, 4vw, 64px);
   row-gap: 0;
   align-items: start;
-  inline-size: min(100%, 960px);
+  inline-size: min(100%, 1040px);
   margin-inline: auto;
   flex-wrap: nowrap;
+}
+/* Der Datumsstempel läuft vertikal in der Marginalspalte mit. */
+.cdB-wrap[data-style-countdown='editorial'] .cd-date-stamp-wrap {
+  grid-column: 1;
+  grid-row: 1 / -1;
+  margin: 0;
+  display: block;
+  align-self: stretch;
+}
+.cdB-wrap[data-style-countdown='editorial'] .cd-date-stamp {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  background: none;
+  border: 0;
+  border-right: 1px solid var(--cd-rule);
+  border-radius: 0;
+  padding: 0 clamp(8px, 1.2vw, 14px) 0 0;
+  block-size: 100%;
+  font-family: var(--font-body);
+  font-size: clamp(9px, 0.72vw, 11px);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 .cdB-wrap[data-style-countdown='editorial'] .cdB-unit {
   counter-increment: cdunit;
   align-items: flex-start;
-  gap: clamp(10px, 1.4vw, 16px);
+  gap: clamp(8px, 1.2vw, 14px);
+  min-inline-size: 0;
 }
-/* Randziffer — dieselbe Mikrotypografie wie im Hero B. */
 .cdB-wrap[data-style-countdown='editorial'] .cdB-unit::before {
   content: counter(cdunit, decimal-leading-zero);
   font-family: var(--font-body);
@@ -1339,38 +1394,65 @@
   letter-spacing: 0.2em;
   color: var(--muted);
 }
-/* Die erste Einheit trägt die Fläche links. */
+/* 01 Monate — das dominante Gewicht, tief gesetzt. */
 .cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(1) {
-  --fc-w: clamp(58px, 8.6vw, 116px);
-  --fc-h: clamp(86px, 12.6vw, 164px);
-  grid-column: 1;
-  /* Über die volle Höhe der Liste und mittig gesetzt — sonst klebt die
-     dominante Einheit oben und darunter steht eine tote Fläche. */
+  --fc-w: clamp(62px, 9.4vw, 132px);
+  --fc-h: clamp(94px, 14vw, 190px);
+  grid-column: 2;
+  /* Über die volle Höhe der rechten Spalte, unten verankert: dadurch entsteht
+     die Diagonale von Tage (oben rechts) zu Monate (unten links), ohne dass
+     links eine ganze leere Zeile stehen bleibt. */
   grid-row: 1 / -1;
-  align-self: center;
+  align-self: end;
 }
 .cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(1) .cd-label {
-  font-size: clamp(11px, 0.9vw, 14px);
-  letter-spacing: 0.26em;
+  font-size: clamp(11px, 0.92vw, 14px);
+  letter-spacing: 0.28em;
+  color: var(--ink);
 }
-/* Die übrigen drei als gesetzte Liste rechts. */
-.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(n + 2) {
-  grid-column: 2;
+/* 02 Tage — das zweite Gewicht, hoch rechts. Zusammen mit 01 entsteht die
+   Diagonale, die die Komposition trägt. */
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(2) {
+  --fc-w: clamp(40px, 5.4vw, 74px);
+  --fc-h: clamp(58px, 8vw, 106px);
+  grid-column: 3;
+  grid-row: 1;
+  align-items: flex-end;
+  text-align: right;
+  justify-self: end;
+  padding-bottom: clamp(12px, 1.8vw, 26px);
+}
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(2) .cd-label {
+  letter-spacing: 0.24em;
+  color: var(--ink-soft);
+}
+/* 03–05 — Registerzeilen. */
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(n + 3) {
+  grid-column: 3;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: clamp(10px, 1.6vw, 20px);
-  padding-block: clamp(12px, 1.8vw, 20px);
+  gap: clamp(10px, 1.6vw, 18px);
+  padding-block: clamp(9px, 1.2vw, 13px);
   border-top: 1px solid var(--cd-rule);
 }
-.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(2) { border-top: 0; padding-top: 0; }
-.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(n + 2) .cd-label {
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(3) { grid-row: 2; }
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(4) { grid-row: 3; }
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(5) {
+  grid-row: 4;
+  border-bottom: 1px solid var(--cd-rule);
+}
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(n + 3) .cd-label {
   order: 2;
   margin-top: 0;
   font-size: clamp(9px, 0.72vw, 11px);
   color: var(--muted);
 }
-.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(n + 2) .cdB-cards { order: 3; }
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(n + 3) .cdB-cards { order: 3; }
+.cdB-wrap[data-style-countdown='editorial'] .cd-footer {
+  margin-top: clamp(26px, 4vw, 48px);
+  text-align: left;
+}
 
 /* Flip-Karten als flache Tafeln.
    Die Geometrie und die Flip-Mechanik bleiben unangetastet — ohne sie zeigt
@@ -1382,7 +1464,7 @@
   inline-size: var(--fc-w);
   block-size: var(--fc-h);
   font-family: var(--font-display);
-  font-size: calc(var(--fc-h) * 0.6);
+  font-size: calc(var(--fc-h) * 0.62);
   font-weight: 350;
   letter-spacing: -0.03em;
   box-shadow: none;
@@ -1503,50 +1585,76 @@
 
 /* --- Mobil --------------------------------------------------------------- */
 @media (max-width: 900px) {
-  /* A: aus vier Spalten werden zwei — vier Zahlen nebeneinander sind auf
-     390px nur noch Ziffernbrei. */
+  /* A bleibt eine Tabelle, nur zweispaltig. Fünf Zahlen nebeneinander sind
+     auf 390px Ziffernbrei. */
   .cdA-wrap[data-style-countdown='editorial'] .cdA-grid {
     grid-auto-flow: row;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    padding-block: 20px 16px;
+  }
+  .cdA-wrap[data-style-countdown='editorial'] .cdA-unit {
+    padding: 14px 0 18px;
+    border-left: 0;
+  }
+  .cdA-wrap[data-style-countdown='editorial'] .cdA-unit:nth-child(even) {
+    border-left: 1px solid var(--cd-rule);
+    padding-left: 18px;
+  }
+  .cdA-wrap[data-style-countdown='editorial'] .cdA-unit:nth-child(n + 3) {
+    border-top: 1px solid var(--cd-rule);
   }
   /* Fünf Einheiten auf zwei Spalten: die letzte nimmt die volle Breite. */
   .cdA-wrap[data-style-countdown='editorial'] .cdA-unit:last-child {
     grid-column: 1 / -1;
   }
-  .cdA-wrap[data-style-countdown='editorial'] .cdA-unit {
-    padding-block: 14px;
-    border-left: 0;
-  }
-  .cdA-wrap[data-style-countdown='editorial'] .cdA-unit:nth-child(even) {
-    border-left: 1px solid var(--cd-rule);
-  }
-  .cdA-wrap[data-style-countdown='editorial'] .cdA-unit:nth-child(n + 3) {
-    border-top: 1px solid var(--cd-rule);
-  }
-  .cdA-wrap[data-style-countdown='editorial'] .cd-num { font-size: clamp(40px, 13vw, 64px); }
+  .cdA-wrap[data-style-countdown='editorial'] .cd-num { font-size: clamp(38px, 12vw, 60px); }
 
-  /* B: die dominante Einheit rückt nach oben, die Liste darunter — die
-     Gewichtung bleibt, die Achse dreht sich. */
+  /* B behält die Idee — zwei Gewichte in der Diagonale, drei Registerzeilen
+     darunter —, dreht sie aber in eine Spalte: Monate links, Tage rechts
+     daneben und tiefer gesetzt, dann die Register. Der Datumsstempel legt
+     sich waagerecht, vertikale Marginalien brauchen Höhe. */
   .cdB-wrap[data-style-countdown='editorial'] .cdB-row {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 16px;
+  }
+  .cdB-wrap[data-style-countdown='editorial'] .cd-date-stamp-wrap {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    margin-bottom: 22px;
+  }
+  .cdB-wrap[data-style-countdown='editorial'] .cd-date-stamp {
+    writing-mode: horizontal-tb;
+    transform: none;
+    border-right: 0;
+    border-bottom: 1px solid var(--cd-rule);
+    padding: 0 0 6px;
+    block-size: auto;
   }
   .cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(1) {
     grid-column: 1;
-    grid-row: auto;
-    --fc-w: clamp(56px, 17vw, 84px);
-    --fc-h: clamp(84px, 25vw, 124px);
-    padding-bottom: clamp(18px, 4vw, 26px);
-  }
-  .cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(n + 2) {
-    grid-column: 1;
-    --fc-w: clamp(30px, 9vw, 44px);
-    --fc-h: clamp(44px, 13vw, 62px);
+    grid-row: 2;
+    align-self: start;
+    --fc-w: clamp(50px, 15vw, 76px);
+    --fc-h: clamp(76px, 23vw, 116px);
   }
   .cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(2) {
-    border-top: 1px solid var(--cd-rule);
-    padding-top: clamp(12px, 2.4vw, 18px);
+    grid-column: 2;
+    grid-row: 2;
+    align-self: end;
+    padding-bottom: 0;
+    --fc-w: clamp(34px, 10vw, 50px);
+    --fc-h: clamp(50px, 15vw, 74px);
   }
+  .cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(n + 3) {
+    grid-column: 1 / -1;
+    --fc-w: clamp(26px, 7.5vw, 36px);
+    --fc-h: clamp(38px, 11vw, 50px);
+  }
+  .cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(3) {
+    grid-row: 3;
+    margin-top: clamp(22px, 5vw, 32px);
+  }
+  .cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(4) { grid-row: 4; }
+  .cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(5) { grid-row: 5; }
 
   /* C: das Statement bleibt das Statement, nur kleiner gesetzt. */
   .cdC-wrap[data-style-countdown='editorial'] .cdC-bar-row:first-child .cdC-bar-num {
@@ -1562,5 +1670,13 @@
     .cdC-bar-row:not(:first-child) .cdC-bar-label-full { display: none; }
   .cdC-wrap[data-style-countdown='editorial'] .cdC-bar-row:not(:first-child) .cdC-bar-label-short {
     display: inline;
+  }
+  /* Die Basis tauscht auf schmalen Geräten generell auf die Kurzlabels. Unter
+     der Statement-Zahl stand dadurch ein einsames "M" — dort bleibt das Wort. */
+  .cdC-wrap[data-style-countdown='editorial'] .cdC-bar-row:first-child .cdC-bar-label-full {
+    display: inline;
+  }
+  .cdC-wrap[data-style-countdown='editorial'] .cdC-bar-row:first-child .cdC-bar-label-short {
+    display: none;
   }
 }
