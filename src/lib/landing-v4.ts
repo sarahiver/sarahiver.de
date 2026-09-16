@@ -88,7 +88,7 @@ export const FEATURES = {
     { icon: 'heart', title: 'Alle wichtigen Inhalte', text: 'Countdown, Ablauf, Location, RSVP, Galerie und mehr.' },
     { icon: 'devices', title: 'Auf allen Geräten', text: 'Sieht auf Smartphone, Tablet und Desktop großartig aus.' },
     { icon: 'pen', title: 'Einfach selbst erstellen', text: 'Ohne Vorkenntnisse. In wenigen Minuten.' },
-    { icon: 'infinity', title: 'Einmal zahlen.', text: '69 € einmalig. Keine laufenden Kosten.' },
+    { icon: 'infinity', title: 'Einmal zahlen.', text: '69 € einmalig. 12 Monate online, keine laufenden Kosten.' },
   ],
 };
 
@@ -164,12 +164,12 @@ export const PRICING = {
   eyebrow: 'Transparent & fair',
   h2: 'Ein Preis. Alles drin.',
   includes: [
-    'Alle acht Design-Vorlagen',
-    'Alle Funktionen (RSVP, Galerie, Countdown …)',
+    'Alle acht Designs, alle 15 Bereiche',
+    'Dashboard, Hosting und SSL inklusive',
     'Eigene Inhalte, Texte und Bilder',
-    'Mobil optimiert',
-    'Unbegrenzt bearbeitbar',
-    'Keine Abo-Kosten',
+    'Mobil optimiert, unbegrenzt bearbeitbar',
+    '12 Monate online — mindestens bis 3 Monate nach der Hochzeit',
+    'Kein Abo, keine automatische Verlängerung',
   ],
   card: {
     eyebrow: 'Unser Preis',

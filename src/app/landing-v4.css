@@ -5,38 +5,46 @@
    ========================================================================= */
 
 .sdv4 {
+  /* Sarahiver Brand — identisch zu den @theme-Tokens in globals.css.
+     Die acht Wedding Styles (design-system-v2.css) bleiben davon unberührt:
+     Brand = Rahmen, Wedding Style = Produkt. */
+
   /* Flächen */
-  --ink: #0E0D0B;
-  --ink-soft: #17150F;
-  --cream: #F7F4ED;
-  --cream-2: #EFEBE1;
+  --paper: #FAF6F0;
+  --paper-soft: #F4EDE2;
+  --paper-edge: #ECE2D0;
   --card: #FFFFFF;
-  --grey: #E8E4DB;
+
+  /* Dunkle Bänder — warmes Braunschwarz, kein reines Schwarz */
+  --dark: #2D211C;
+  --dark-soft: #3A2C26;
 
   /* Text */
-  --tx: #1A1714;
-  --tx-soft: #463F37;
-  --mut: #6E665B;
-  --tx-on-dark: #F6F3EC;
-  --mut-on-dark: #BDB6AA;
+  --ink: #2D2520;
+  --ink-soft: #5A4F46;
+  --muted: #8A7F73;
+  --on-dark: #F4EDE2;
+  --muted-on-dark: #C4B8A9;
 
-  /* Akzent */
-  --gold: #E0BC5C;
-  --gold-deep: #C9A44A;
-  --gold-ink: #1A1206;
-  --gold-on-light: #A98C44;
+  /* Akzente */
+  --terra: #B5746A;
+  --terra-deep: #8E574E;
+  --terra-ink: #FFFFFF;
+  --terra-on-light: #8E574E;
+  --sage: #8A9A7B;
+  --honey: #D4A574;
 
   /* Linien */
-  --line: #DFD9CC;
-  --line-dark: rgba(255, 255, 255, 0.16);
+  --rule: #E2D6C1;
+  --rule-dark: rgba(244, 237, 226, 0.18);
 
   /* Schrift */
-  --disp: 'Cormorant Garamond', 'Times New Roman', Georgia, serif;
+  --disp: 'Fraunces', 'Times New Roman', Georgia, serif;
   --body: 'Inter', system-ui, -apple-system, sans-serif;
-  --script: 'Caveat', 'Segoe Script', cursive;
+  --script: 'Caveat', cursive;
 
-  background: var(--cream);
-  color: var(--tx);
+  background: var(--paper);
+  color: var(--ink);
   font-family: var(--body);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
@@ -53,7 +61,7 @@
 .sdv4 a { color: inherit; text-decoration: none; }
 
 .sdv4 :focus-visible {
-  outline: 2px solid var(--gold);
+  outline: 2px solid var(--terra);
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -85,30 +93,32 @@
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--gold-on-light);
+  color: var(--terra-on-light);
   margin-bottom: 16px;
 }
-.sdv4 .sd-eyebrow--gold { color: var(--gold); }
+.sdv4 .sd-eyebrow--on-dark { color: var(--honey); }
 .sdv4 .sd-center { text-align: center; }
 
 .sdv4 .sd-h2 {
   font-family: var(--disp);
-  font-weight: 400;
-  font-size: clamp(30px, 3.6vw, 44px);
-  line-height: 1.12;
-  letter-spacing: -0.005em;
-  color: var(--tx);
+  font-weight: 300;
+  font-variation-settings: 'opsz' 120, 'SOFT' 0, 'WONK' 0;
+  /* Fraunces läuft breiter als die alte Schnitt — Größen entsprechend ruhiger. */
+  font-size: clamp(27px, 3.1vw, 39px);
+  line-height: 1.14;
+  letter-spacing: -0.012em;
+  color: var(--ink);
 }
 .sdv4 .sd-h2 em { font-style: italic; }
-.sdv4 .sd-h2--light { color: var(--tx-on-dark); }
+.sdv4 .sd-h2--light { color: var(--on-dark); }
 
 .sdv4 .sd-lede {
   font-size: 15px;
   line-height: 1.65;
-  color: var(--mut);
+  color: var(--muted);
   max-width: 34em;
 }
-.sdv4 .sd-lede--light { color: var(--mut-on-dark); }
+.sdv4 .sd-lede--light { color: var(--muted-on-dark); }
 
 .sdv4 .sd-btn {
   display: inline-flex;
@@ -127,14 +137,14 @@
 }
 .sdv4 .sd-btn:hover { transform: translateY(-1px); }
 
-.sdv4 .sd-btn--gold { background: var(--gold); color: var(--gold-ink); }
-.sdv4 .sd-btn--gold:hover { background: var(--gold-deep); }
+.sdv4 .sd-btn--primary { background: var(--terra); color: var(--terra-ink); }
+.sdv4 .sd-btn--primary:hover { background: var(--terra-deep); }
 
-.sdv4 .sd-btn--dark { background: var(--ink); color: var(--tx-on-dark); }
-.sdv4 .sd-btn--dark:hover { background: #2A2621; }
+.sdv4 .sd-btn--ink { background: var(--dark); color: var(--on-dark); }
+.sdv4 .sd-btn--ink:hover { background: #2A2621; }
 
-.sdv4 .sd-btn--white { background: #fff; color: var(--tx); border-color: var(--line); }
-.sdv4 .sd-btn--white:hover { background: #FBFAF7; }
+.sdv4 .sd-btn--soft { background: #fff; color: var(--ink); border-color: var(--rule); }
+.sdv4 .sd-btn--soft:hover { background: #FBFAF7; }
 
 .sdv4 .sd-btn--sm { padding: 11px 22px; font-size: 13px; }
 .sdv4 .sd-btn--lg { padding: 17px 32px; font-size: 15px; }
@@ -148,7 +158,7 @@
   font-family: var(--script);
   font-size: 19px;
   line-height: 1.35;
-  color: var(--tx-on-dark);
+  color: var(--on-dark);
   opacity: .92;
   pointer-events: none;
 }
@@ -175,10 +185,10 @@
   font-size: 17px;
   font-weight: 400;
   letter-spacing: -0.01em;
-  color: var(--tx-on-dark);
+  color: var(--on-dark);
 }
 .sdv4 .sd-logo b { font-weight: 700; }
-.sdv4 .sd-logo--dark { color: var(--tx); }
+.sdv4 .sd-logo--dark { color: var(--ink); }
 
 .sdv4 .sd-nav {
   display: flex;
@@ -187,18 +197,18 @@
 }
 .sdv4 .sd-nav a {
   font-size: 13.5px;
-  color: rgba(246, 243, 236, 0.82);
+  color: rgba(244, 237, 226, 0.82);
   transition: color .2s ease;
 }
 .sdv4 .sd-nav a:hover { color: #fff; }
-.sdv4 .sd-nav .sd-btn { color: var(--gold-ink); }
+.sdv4 .sd-nav .sd-btn { color: var(--terra-ink); }
 
 /* -------------------------------------------------------------------------
    Hero
    ------------------------------------------------------------------------- */
 .sdv4 .sd-hero {
   position: relative;
-  background: var(--ink);
+  background: var(--dark);
   overflow: hidden;
   isolation: isolate;
 }
@@ -215,8 +225,8 @@
   inset: 0;
   z-index: -1;
   background:
-    linear-gradient(90deg, rgba(10,9,8,.93) 0%, rgba(10,9,8,.82) 38%, rgba(10,9,8,.35) 68%, rgba(10,9,8,.28) 100%),
-    linear-gradient(180deg, rgba(10,9,8,.6) 0%, rgba(10,9,8,0) 26%);
+    linear-gradient(90deg, rgba(37,28,23,.93) 0%, rgba(37,28,23,.82) 38%, rgba(37,28,23,.35) 68%, rgba(37,28,23,.28) 100%),
+    linear-gradient(180deg, rgba(37,28,23,.6) 0%, rgba(37,28,23,0) 26%);
 }
 .sdv4 .sd-hero-in {
   display: grid;
@@ -231,10 +241,12 @@
 .sdv4 .sd-hero h1 {
   font-family: var(--disp);
   font-weight: 400;
-  font-size: clamp(38px, 4.7vw, 60px);
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-  color: var(--tx-on-dark);
+  font-weight: 300;
+  font-variation-settings: 'opsz' 144, 'SOFT' 0, 'WONK' 0;
+  font-size: clamp(34px, 4.1vw, 53px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--on-dark);
 }
 .sdv4 .sd-hero h1 em { font-style: italic; }
 .sdv4 .sd-hero .sd-lede { margin: 26px 0 32px; max-width: 30em; }
@@ -250,8 +262,8 @@
   align-items: center;
   gap: 7px;
   font-size: 14px;
-  color: rgba(246, 243, 236, .88);
-  border-bottom: 1px solid rgba(246, 243, 236, .3);
+  color: rgba(244, 237, 226, .88);
+  border-bottom: 1px solid rgba(244, 237, 226, .3);
   padding-bottom: 2px;
   transition: color .2s ease, border-color .2s ease;
 }
@@ -268,9 +280,9 @@
   align-items: center;
   gap: 9px;
   font-size: 13px;
-  color: rgba(246, 243, 236, 0.85);
+  color: rgba(244, 237, 226, 0.85);
 }
-.sdv4 .sd-ticks svg { color: var(--gold); flex: none; }
+.sdv4 .sd-ticks svg { color: var(--honey); flex: none; }
 
 /* Hero-Visual sitzt bündig auf der Unterkante des Hero-Bandes.
    Das Mockup-PNG hat unten 6,0547 % transparenten Rand (gemessen: sichtbare
@@ -313,7 +325,7 @@
 .sdv4 .sd-device-screen {
   position: absolute;
   overflow: hidden;
-  background: #1B1713;
+  background: #2D211C;
 }
 .sdv4 .sd-device-screen--laptop { z-index: 1; border-radius: 3px; }
 .sdv4 .sd-device-screen--phone { z-index: 2; border-radius: 9% / 4.2%; }
@@ -323,7 +335,7 @@
   position: relative;
   width: 100%;
   height: 100%;
-  background-color: #2B231C;
+  background-color: #3A2C26;
   background-size: cover;
   background-position: center;
   display: flex;
@@ -372,7 +384,7 @@
 .sdv4 .sd-miniphone-hero {
   position: relative;
   height: 38%;
-  background-color: #2B231C;
+  background-color: #3A2C26;
   background-size: cover;
   background-position: center;
   display: flex;
@@ -418,12 +430,12 @@
 .sdv4 .sd-miniphone-row b { font-size: 1.2cqi; font-weight: 500; color: #4A443B; white-space: nowrap; }
 
 .sdv4 .sd-note--hero { right: -46px; top: 30px; width: 132px; }
-.sdv4 .sd-note--hero svg { left: -58px; top: 40px; color: var(--gold); transform: scaleY(-1); }
+.sdv4 .sd-note--hero svg { left: -58px; top: 40px; color: var(--honey); transform: scaleY(-1); }
 
 /* -------------------------------------------------------------------------
    Features
    ------------------------------------------------------------------------- */
-.sdv4 .sd-features { background: var(--cream); padding: 92px 0 96px; }
+.sdv4 .sd-features { background: var(--paper); padding: 92px 0 96px; }
 .sdv4 .sd-features .sd-h2 { max-width: 20em; margin: 0 auto; }
 .sdv4 .sd-feature-grid {
   display: grid;
@@ -438,7 +450,7 @@
   align-items: center;
   gap: 16px;
 }
-.sdv4 .sd-feature-ico { color: var(--tx); }
+.sdv4 .sd-feature-ico { color: var(--ink); }
 .sdv4 .sd-feature h3 {
   font-family: var(--body);
   font-size: 14.5px;
@@ -448,7 +460,7 @@
 .sdv4 .sd-feature p {
   font-size: 13px;
   line-height: 1.6;
-  color: var(--mut);
+  color: var(--muted);
   max-width: 19em;
   margin-top: -6px;
 }
@@ -456,7 +468,7 @@
 /* -------------------------------------------------------------------------
    Demos
    ------------------------------------------------------------------------- */
-.sdv4 .sd-demos { background: var(--cream-2); padding: 84px 0 90px; }
+.sdv4 .sd-demos { background: var(--paper-soft); padding: 84px 0 90px; }
 .sdv4 .sd-demos-in {
   display: grid;
   grid-template-columns: minmax(0, 270px) minmax(0, 1fr);
@@ -485,7 +497,7 @@
   aspect-ratio: 4 / 3;
   border-radius: 8px;
   overflow: hidden;
-  background-color: #3A332B;
+  background-color: #3A2C26;
   background-size: cover;
   background-position: center;
 }
@@ -524,7 +536,7 @@
   height: 30px;
   border-radius: 50%;
   background: #fff;
-  color: var(--tx);
+  color: var(--ink);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -532,7 +544,7 @@
 }
 .sdv4 .sd-demo-meta { padding: 14px 2px 0; }
 .sdv4 .sd-demo-meta h4 { font-family: var(--body); font-size: 14px; font-weight: 600; }
-.sdv4 .sd-demo-meta p { font-size: 12.5px; color: var(--mut); margin-top: 4px; }
+.sdv4 .sd-demo-meta p { font-size: 12.5px; color: var(--muted); margin-top: 4px; }
 
 .sdv4 .sd-cbtn {
   position: absolute;
@@ -540,9 +552,9 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  border: 1px solid var(--line);
+  border: 1px solid var(--rule);
   background: #fff;
-  color: var(--tx);
+  color: var(--ink);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -550,7 +562,7 @@
   z-index: 3;
   transition: background .2s ease, border-color .2s ease;
 }
-.sdv4 .sd-cbtn:hover { background: var(--cream); }
+.sdv4 .sd-cbtn:hover { background: var(--paper); }
 .sdv4 .sd-cbtn--prev { left: 0; }
 .sdv4 .sd-cbtn--next { right: 0; }
 
@@ -559,7 +571,7 @@
    ------------------------------------------------------------------------- */
 .sdv4 .sd-domain {
   position: relative;
-  background-color: #141A12;
+  background-color: #2D211C;
   background-size: cover;
   background-position: center;
   padding: 84px 0 88px;
@@ -571,7 +583,7 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(180deg, rgba(14,18,12,.86) 0%, rgba(14,18,12,.8) 100%);
+  background: linear-gradient(180deg, rgba(38,30,24,.86) 0%, rgba(38,30,24,.8) 100%);
 }
 .sdv4 .sd-domain .sd-lede { margin: 14px auto 0; }
 .sdv4 .sd-domain-wrap { position: relative; }
@@ -588,7 +600,7 @@
   padding: 7px 7px 7px 22px;
   box-shadow: 0 18px 40px rgba(0, 0, 0, .3);
 }
-.sdv4 .sd-domain-pfx { font-size: 13.5px; color: var(--mut); flex: none; }
+.sdv4 .sd-domain-pfx { font-size: 13.5px; color: var(--muted); flex: none; }
 .sdv4 .sd-domain-form input {
   flex: 1 1 auto;
   min-width: 0;
@@ -596,7 +608,7 @@
   background: transparent;
   font-family: var(--body);
   font-size: 14px;
-  color: var(--tx);
+  color: var(--ink);
   padding: 10px 4px;
 }
 .sdv4 .sd-domain-form input::placeholder { color: #A39B8E; }
@@ -607,7 +619,7 @@
   background: transparent;
   font-family: var(--body);
   font-size: 13.5px;
-  color: var(--tx-soft);
+  color: var(--ink-soft);
   padding: 8px 2px;
   cursor: pointer;
 }
@@ -619,33 +631,33 @@
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: rgba(246, 243, 236, .9);
+  color: rgba(244, 237, 226, .9);
 }
 .sdv4 .sd-domain-msg b { color: #fff; font-weight: 600; }
-.sdv4 .sd-domain-msg svg { color: var(--gold); flex: none; }
+.sdv4 .sd-domain-msg svg { color: var(--honey); flex: none; }
 .sdv4 .sd-domain-ok {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 14px;
 }
-.sdv4 .sd-domain-fine { font-size: 12px; color: rgba(246, 243, 236, .6); }
+.sdv4 .sd-domain-fine { font-size: 12px; color: rgba(244, 237, 226, .62); }
 
 .sdv4 .sd-domain-hint {
   margin: 16px auto 0;
   font-size: 12.5px;
-  color: rgba(246, 243, 236, .72);
+  color: rgba(244, 237, 226, .72);
   min-height: 18px;
 }
-.sdv4 .sd-domain-hint a { color: var(--gold); text-decoration: underline; text-underline-offset: 3px; }
+.sdv4 .sd-domain-hint a { color: var(--honey); text-decoration: underline; text-underline-offset: 3px; }
 
 .sdv4 .sd-note--domain { right: 8px; top: 122px; width: 168px; text-align: left; }
-.sdv4 .sd-note--domain svg { left: -66px; top: 44px; color: var(--gold); }
+.sdv4 .sd-note--domain svg { left: -66px; top: 44px; color: var(--honey); }
 
 /* -------------------------------------------------------------------------
    Preise
    ------------------------------------------------------------------------- */
-.sdv4 .sd-pricing { background: var(--cream); padding: 92px 0 96px; }
+.sdv4 .sd-pricing { background: var(--paper); padding: 92px 0 96px; }
 .sdv4 .sd-pricing-in {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 0.78fr) minmax(0, 0.78fr);
@@ -658,9 +670,9 @@
   align-items: flex-start;
   gap: 11px;
   font-size: 13.5px;
-  color: var(--tx-soft);
+  color: var(--ink-soft);
 }
-.sdv4 .sd-checks svg { color: var(--tx); flex: none; margin-top: 2px; }
+.sdv4 .sd-checks svg { color: var(--ink); flex: none; margin-top: 2px; }
 
 .sdv4 .sd-price-card {
   background: var(--card);
@@ -671,16 +683,18 @@
 }
 .sdv4 .sd-price {
   font-family: var(--disp);
-  font-size: 62px;
+  font-weight: 300;
+  font-variation-settings: 'opsz' 144;
+  font-size: 54px;
   line-height: 1;
   letter-spacing: -0.02em;
   margin-top: 6px;
 }
-.sdv4 .sd-price-sub { font-size: 12.5px; color: var(--mut); margin-top: 8px; }
+.sdv4 .sd-price-sub { font-size: 12.5px; color: var(--muted); margin-top: 8px; }
 .sdv4 .sd-price-card .sd-btn { margin-top: 26px; }
 
 .sdv4 .sd-addon-card {
-  background: var(--grey);
+  background: var(--paper-edge);
   border-radius: 6px;
   padding: 26px 24px 24px;
 }
@@ -692,13 +706,13 @@
 }
 .sdv4 .sd-addon-head h3 { font-family: var(--disp); font-size: 19px; }
 .sdv4 .sd-addon-price { font-size: 14px; font-weight: 600; flex: none; }
-.sdv4 .sd-addon-card p { font-size: 12.5px; line-height: 1.6; color: var(--mut); margin-top: 12px; }
+.sdv4 .sd-addon-card p { font-size: 12.5px; line-height: 1.6; color: var(--muted); margin-top: 12px; }
 .sdv4 .sd-addon-card .sd-btn { margin-top: 20px; }
 
 /* -------------------------------------------------------------------------
    4 Schritte
    ------------------------------------------------------------------------- */
-.sdv4 .sd-steps { background: var(--cream-2); padding: 84px 0 92px; }
+.sdv4 .sd-steps { background: var(--paper-soft); padding: 84px 0 92px; }
 .sdv4 .sd-steps-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -706,7 +720,7 @@
   margin-top: 58px;
 }
 .sdv4 .sd-step { position: relative; padding-right: 26px; }
-.sdv4 .sd-step-ico { color: var(--tx); margin-bottom: 20px; }
+.sdv4 .sd-step-ico { color: var(--ink); margin-bottom: 20px; }
 .sdv4 .sd-step-title {
   display: flex;
   align-items: baseline;
@@ -714,8 +728,8 @@
   font-size: 15px;
   font-weight: 600;
 }
-.sdv4 .sd-step-num { font-size: 12px; font-weight: 500; color: var(--mut); font-variant-numeric: tabular-nums; }
-.sdv4 .sd-step p { font-size: 12.5px; line-height: 1.6; color: var(--mut); margin-top: 7px; max-width: 17em; }
+.sdv4 .sd-step-num { font-size: 12px; font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; }
+.sdv4 .sd-step p { font-size: 12.5px; line-height: 1.6; color: var(--muted); margin-top: 7px; max-width: 17em; }
 .sdv4 .sd-step-arrow {
   position: absolute;
   right: -2px;
@@ -727,7 +741,7 @@
 /* -------------------------------------------------------------------------
    FAQ
    ------------------------------------------------------------------------- */
-.sdv4 .sd-faq { background: var(--cream); padding: 88px 0 92px; }
+.sdv4 .sd-faq { background: var(--paper); padding: 88px 0 92px; }
 .sdv4 .sd-faq-in {
   display: grid;
   grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
@@ -736,7 +750,7 @@
 }
 .sdv4 .sd-faq-copy .sd-lede { margin: 18px 0 28px; font-size: 14px; }
 .sdv4 .sd-acc { border-top: 0; }
-.sdv4 .sd-acc-item { border-bottom: 1px solid var(--line); }
+.sdv4 .sd-acc-item { border-bottom: 1px solid var(--rule); }
 .sdv4 .sd-acc-q {
   width: 100%;
   display: flex;
@@ -749,7 +763,7 @@
   font-family: var(--body);
   font-size: 14px;
   font-weight: 400;
-  color: var(--tx);
+  color: var(--ink);
   text-align: left;
   cursor: pointer;
 }
@@ -757,14 +771,14 @@
   flex: none;
   font-size: 17px;
   line-height: 1;
-  color: var(--mut);
+  color: var(--muted);
   transition: transform .2s ease;
 }
 .sdv4 .sd-acc-item[data-open='true'] .sd-acc-sign { transform: rotate(45deg); }
 .sdv4 .sd-acc-a {
   font-size: 13.5px;
   line-height: 1.7;
-  color: var(--mut);
+  color: var(--muted);
   padding: 0 40px 20px 2px;
   max-width: 46em;
 }
@@ -774,7 +788,7 @@
    ------------------------------------------------------------------------- */
 .sdv4 .sd-final {
   position: relative;
-  background-color: #241C16;
+  background-color: #2D211C;
   background-size: cover;
   background-position: center 55%;
   padding: 104px 0 110px;
@@ -786,7 +800,7 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(180deg, rgba(20,16,12,.72) 0%, rgba(20,16,12,.62) 100%);
+  background: linear-gradient(180deg, rgba(37,28,23,.72) 0%, rgba(37,28,23,.62) 100%);
 }
 .sdv4 .sd-final .sd-h2 { font-size: clamp(30px, 3.9vw, 46px); }
 .sdv4 .sd-final .sd-lede { margin: 16px auto 32px; }
@@ -794,7 +808,7 @@
 /* -------------------------------------------------------------------------
    Footer
    ------------------------------------------------------------------------- */
-.sdv4 .sd-footer { background: var(--ink); color: var(--tx-on-dark); padding: 28px 0; }
+.sdv4 .sd-footer { background: var(--dark); color: var(--on-dark); padding: 28px 0; }
 .sdv4 .sd-footer-in {
   display: flex;
   align-items: center;
@@ -803,16 +817,16 @@
   flex-wrap: wrap;
 }
 .sdv4 .sd-footer-links { display: flex; gap: 26px; flex-wrap: wrap; }
-.sdv4 .sd-footer-links a { font-size: 13px; color: rgba(246, 243, 236, .78); }
+.sdv4 .sd-footer-links a { font-size: 13px; color: rgba(244, 237, 226, .78); }
 .sdv4 .sd-footer-links a:hover { color: #fff; }
 .sdv4 .sd-social { display: flex; gap: 16px; }
-.sdv4 .sd-social a { color: rgba(246, 243, 236, .78); }
+.sdv4 .sd-social a { color: rgba(244, 237, 226, .78); }
 .sdv4 .sd-social a:hover { color: #fff; }
 
 /* -------------------------------------------------------------------------
    Stile & Schriften
    ------------------------------------------------------------------------- */
-.sdv4 .sd-styles { background: var(--cream); padding: 92px 0 96px; }
+.sdv4 .sd-styles { background: var(--paper); padding: 92px 0 96px; }
 .sdv4 .sd-styles-lede { margin: 18px auto 0; max-width: 46em; }
 .sdv4 .sd-style-grid {
   display: grid;
@@ -822,7 +836,7 @@
 }
 .sdv4 .sd-style-link {
   display: block;
-  border: 1px solid var(--line);
+  border: 1px solid var(--rule);
   border-radius: 8px;
   overflow: hidden;
   background: #fff;
@@ -851,7 +865,7 @@
 .sdv4 .sd-style-body { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
 .sdv4 .sd-style-meta { padding: 14px 16px 0; }
 .sdv4 .sd-style-meta h3 { font-family: var(--body); font-size: 14px; font-weight: 600; }
-.sdv4 .sd-style-meta p { font-size: 12.5px; color: var(--mut); margin-top: 3px; }
+.sdv4 .sd-style-meta p { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
 .sdv4 .sd-style-foot {
   display: flex;
   align-items: center;
@@ -866,13 +880,13 @@
   border-radius: 50%;
   border: 1px solid rgba(0, 0, 0, .08);
 }
-.sdv4 .sd-style-fonts { font-size: 10.5px; color: var(--mut); text-align: right; }
+.sdv4 .sd-style-fonts { font-size: 10.5px; color: var(--muted); text-align: right; }
 .sdv4 .sd-styles-cta { margin-top: 44px; }
 
 /* -------------------------------------------------------------------------
    Demo-Dashboard
    ------------------------------------------------------------------------- */
-.sdv4 .sd-demoentry { background: var(--cream-2); padding: 76px 0 80px; }
+.sdv4 .sd-demoentry { background: var(--paper-soft); padding: 76px 0 80px; }
 .sdv4 .sd-demoentry-in {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
@@ -915,7 +929,7 @@
   .sdv4 .sd-hero-copy { max-width: none; }
   .sdv4 .sd-hero-scrim {
     background:
-      linear-gradient(180deg, rgba(10,9,8,.72) 0%, rgba(10,9,8,.9) 42%, rgba(10,9,8,.92) 100%);
+      linear-gradient(180deg, rgba(37,28,23,.72) 0%, rgba(37,28,23,.9) 42%, rgba(37,28,23,.92) 100%);
   }
   .sdv4 .sd-device { margin: 0 auto; }
   .sdv4 .sd-hero-visual { margin-bottom: -80px; }

@@ -1,10 +1,15 @@
 import type { Metadata } from 'next';
 import './globals.css';
+// Wedding Styles der Kundenseiten — eigenständige Ebene, bleibt unberührt.
 import './design-system-v2.css';
-import './landing.css';
-import './landing-v3.css';
+// Sarahiver Brand: Landing + Launch Gate.
 import './landing-v4.css';
 import './launch-gate.css';
+// Entkoppelt: landing.css und landing-v3.css gehörten zur alten Landing
+// (Klassen .landing / .lp3-*). Keine gerenderte Route nutzt sie noch; der
+// Import lud u. a. 14 Google-Schriftfamilien nach. Dateien und die zugehörigen
+// Komponenten unter components/landing und components/sections können gelöscht
+// werden.
 import { SITE_CONFIG } from '@/lib/content';
 
 export const metadata: Metadata = {

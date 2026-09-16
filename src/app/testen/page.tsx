@@ -35,7 +35,7 @@ export default function TestenPage() {
             <h1 style={h1}>Das hat nicht geklappt</h1>
             <p style={p}>{error}</p>
             <a href="/testen" style={btn}>Nochmal versuchen</a>
-            <a href="/" style={{ ...p, color: '#9a938a', marginTop: 8, textDecoration: 'underline' }}>Zurück zur Startseite</a>
+            <a href="/" style={{ ...p, color: '#8A7F73', marginTop: 8, textDecoration: 'underline' }}>Zurück zur Startseite</a>
           </>
         )}
       </div>
@@ -44,9 +44,9 @@ export default function TestenPage() {
   );
 }
 
-const wrap: React.CSSProperties = { minHeight: '100dvh', display: 'grid', placeItems: 'center', background: '#0A0908', color: '#F3EFE9', fontFamily: 'Inter, system-ui, sans-serif', padding: 24 };
+const wrap: React.CSSProperties = { minHeight: '100dvh', display: 'grid', placeItems: 'center', background: '#2D211C', color: '#F4EDE2', fontFamily: 'Inter, system-ui, sans-serif', padding: 24 };
 const box: React.CSSProperties = { textAlign: 'center', maxWidth: 420, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 };
-const spinner: React.CSSProperties = { width: 40, height: 40, borderRadius: '50%', border: '3px solid rgba(212,175,55,.25)', borderTopColor: '#D4AF37', animation: 'spin .8s linear infinite', marginBottom: 8 };
-const h1: React.CSSProperties = { fontFamily: 'Fraunces, Georgia, serif', fontSize: 24, fontWeight: 500, margin: 0 };
-const p: React.CSSProperties = { fontSize: 15, lineHeight: 1.6, color: '#c9c2b8', margin: 0 };
-const btn: React.CSSProperties = { marginTop: 12, background: '#D4AF37', color: '#0A0908', fontWeight: 600, fontSize: 15, padding: '12px 22px', borderRadius: 10, textDecoration: 'none' };
+const spinner: React.CSSProperties = { width: 40, height: 40, borderRadius: '50%', border: '3px solid rgba(244,237,226,.22)', borderTopColor: '#B5746A', animation: 'spin .8s linear infinite', marginBottom: 8 };
+const h1: React.CSSProperties = { fontFamily: 'Fraunces, Georgia, serif', fontSize: 25, fontWeight: 300, margin: 0 };
+const p: React.CSSProperties = { fontSize: 15, lineHeight: 1.6, color: '#C4B8A9', margin: 0 };
+const btn: React.CSSProperties = { marginTop: 12, background: '#B5746A', color: '#FFFFFF', fontWeight: 500, fontSize: 15, padding: '13px 24px', borderRadius: 999, textDecoration: 'none' };

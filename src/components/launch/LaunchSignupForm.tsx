@@ -74,7 +74,7 @@ export default function LaunchSignupForm() {
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? 'sdlg-error' : undefined}
         />
-        <button type="submit" className="sdlg-btn sdlg-btn--gold" disabled={pending}>
+        <button type="submit" className="sdlg-btn sdlg-btn--primary" disabled={pending}>
           {pending ? GATE_COPY.submitting : GATE_COPY.submit}
         </button>
       </div>

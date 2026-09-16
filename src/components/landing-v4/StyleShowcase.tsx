@@ -100,7 +100,7 @@ export default async function StyleShowcase() {
         </ul>
 
         <div className="sd-center sd-styles-cta">
-          <a className="sd-btn sd-btn--dark" href={STYLES_SECTION.cta.href}>
+          <a className="sd-btn sd-btn--ink" href={STYLES_SECTION.cta.href}>
             {STYLES_SECTION.cta.label}
             <IconArrowRight size={14} />
           </a>

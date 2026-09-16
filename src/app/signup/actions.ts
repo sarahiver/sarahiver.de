@@ -5,6 +5,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import { isReservedSlug, isValidSlugFormat } from '@/lib/slug-validation';
 import { VALID_STYLE_IDS } from '@/lib/style-migration';
 import { PRICE_ENV_DOMAIN, PRICE_ENV_WEBSITE } from '@/lib/pricing';
+import { CHECKOUT_ENABLED, LAUNCH_DATE_LABEL } from '@/lib/launch';
 
 /**
  * Stripe-Checkout — Einmalzahlung (mode: 'payment').
@@ -33,6 +34,13 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DOMAIN_RE = /^[a-z0-9äöüß][a-z0-9äöüß-]{1,62}\.[a-z]{2,20}$/;
 
 export async function startCheckout(input: CheckoutInput): Promise<CheckoutResult> {
+  // Verbindliche Kaufsperre vor dem Launch. Die Prüfung steht hier und nicht
+  // nur in der Seite, damit sie sich nicht durch direkten Aufruf der Action
+  // oder der URL umgehen lässt.
+  if (!CHECKOUT_ENABLED) {
+    return { error: `Der Verkauf startet am ${LAUNCH_DATE_LABEL}. Bis dahin könnt ihr euch für die Startbenachrichtigung eintragen.` };
+  }
+
   const email = (input.email || '').trim().toLowerCase();
   const name1 = (input.name1 || '').trim();
   const name2 = (input.name2 || '').trim();

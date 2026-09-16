@@ -1,11 +1,18 @@
 import SignupForm from './SignupForm';
+import PrelaunchNotice from '@/components/launch/PrelaunchNotice';
+import { PRE_LAUNCH_MODE } from '@/lib/launch';
 
 /**
- * /signup — Einstieg in den Self-Service-Funnel (Einmalzahlung).
+ * /signup — Einstieg in den Kauf-Funnel (Einmalzahlung).
  *
- * Übernimmt die Wunschdomain aus dem Domain-Check der Landing
- * (?domain=lea-und-ben.de) und startet nach dem Ausfüllen den
- * Stripe-Checkout (Server Action).
+ * Vor dem 15.10.2026 wird hier NICHT das Formular gezeigt, sondern der
+ * Prelaunch-Zustand: kein Checkout, stattdessen Launch-Anmeldung und die
+ * beiden offenen Ziele Demoseiten und Dashboard. Gesteuert allein über
+ * PRE_LAUNCH_MODE in lib/launch.ts; die verbindliche Sperre sitzt zusätzlich
+ * in der Server Action.
+ *
+ * Nach dem Launch übernimmt die Wunschdomain aus dem Domain-Check der Landing
+ * (?domain=lea-und-ben.de) die Vorbelegung.
  */
 
 export const metadata = {
@@ -24,6 +31,8 @@ export default async function SignupPage({
 }: {
   searchParams: Promise<{ domain?: string; canceled?: string }>;
 }) {
+  if (PRE_LAUNCH_MODE) return <PrelaunchNotice />;
+
   const sp = await searchParams;
 
   return (

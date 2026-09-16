@@ -72,8 +72,8 @@ type Tone = 'info' | 'warn';
 function shell(tone: Tone): React.CSSProperties {
   const palette =
     tone === 'warn'
-      ? { bg: '#FCEEEC', border: '#F3CFC9', ink: '#7A1F1A' }
-      : { bg: '#F1F4EF', border: '#D8E0CF', ink: '#3F4A33' };
+      ? { bg: '#F6E4E0', border: '#E8C9C0', ink: '#8E574E' }
+      : { bg: '#EEF1EA', border: '#C8D2BC', ink: '#5E6E50' };
   return {
     display: 'flex',
     alignItems: 'center',
@@ -104,11 +104,11 @@ const btnBase: React.CSSProperties = {
   fontSize: 13,
   fontWeight: 600,
   textDecoration: 'none',
-  padding: '9px 16px',
-  borderRadius: 8,
+  padding: '10px 18px',
+  borderRadius: 999,
   whiteSpace: 'nowrap',
 };
-const btnSolid: React.CSSProperties = { ...btnBase, background: '#0F0E0C', color: '#FFFFFF' };
+const btnSolid: React.CSSProperties = { ...btnBase, background: '#B5746A', color: '#FFFFFF' };
 const btnGhost: React.CSSProperties = {
   ...btnBase,
   background: 'transparent',

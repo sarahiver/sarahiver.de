@@ -105,7 +105,7 @@ export default function DomainCheck() {
 
         <button
           type="submit"
-          className="sd-btn sd-btn--gold sd-btn--sm"
+          className="sd-btn sd-btn--primary sd-btn--sm"
           disabled={status === 'checking'}
         >
           {status === 'checking' ? DOMAIN.checking : DOMAIN.cta}
@@ -124,7 +124,7 @@ export default function DomainCheck() {
               <b>{checked}</b> {r.free}
             </p>
             <a
-              className="sd-btn sd-btn--gold sd-btn--sm"
+              className="sd-btn sd-btn--primary sd-btn--sm"
               href={`${DOMAIN.target}?domain=${encodeURIComponent(checked)}`}
             >
               {r.freeCta}

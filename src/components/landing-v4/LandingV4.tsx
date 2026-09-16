@@ -96,7 +96,7 @@ export default function LandingV4() {
                 {l.label}
               </a>
             ))}
-            <a className="sd-btn sd-btn--gold sd-btn--sm" href={NAV.cta.href}>
+            <a className="sd-btn sd-btn--primary sd-btn--sm" href={NAV.cta.href}>
               {NAV.cta.label}
             </a>
           </nav>
@@ -111,7 +111,7 @@ export default function LandingV4() {
 
           <div className="sd-wrap sd-hero-in">
             <div className="sd-hero-copy">
-              <p className="sd-eyebrow sd-eyebrow--gold">{HERO.eyebrow}</p>
+              <p className="sd-eyebrow sd-eyebrow--on-dark">{HERO.eyebrow}</p>
               <h1>
                 {HERO.h1[0]}
                 <br />
@@ -122,7 +122,7 @@ export default function LandingV4() {
               <p className="sd-lede sd-lede--light">{HERO.lede}</p>
 
               <div className="sd-hero-actions">
-                <a className="sd-btn sd-btn--gold sd-btn--lg" href={HERO.cta.href}>
+                <a className="sd-btn sd-btn--primary sd-btn--lg" href={HERO.cta.href}>
                   {HERO.cta.label}
                   <IconArrowRight />
                 </a>
@@ -187,7 +187,7 @@ export default function LandingV4() {
                 {DEMOS.h2[1]}
               </h2>
               <p className="sd-lede">{DEMOS.lede}</p>
-              <a className="sd-btn sd-btn--dark sd-btn--sm" href={DEMOS.cta.href}>
+              <a className="sd-btn sd-btn--ink sd-btn--sm" href={DEMOS.cta.href}>
                 {DEMOS.cta.label}
                 <IconArrowRight size={14} />
               </a>
@@ -215,7 +215,7 @@ export default function LandingV4() {
                   </li>
                 ))}
               </ul>
-              <a className="sd-btn sd-btn--dark sd-btn--block" href={DEMO_ENTRY.cta.href}>
+              <a className="sd-btn sd-btn--ink sd-btn--block" href={DEMO_ENTRY.cta.href}>
                 {DEMO_ENTRY.cta.label}
                 <IconArrowRight size={14} />
               </a>
@@ -230,7 +230,7 @@ export default function LandingV4() {
           style={{ backgroundImage: `url(${LANDING_IMAGES.domain})` }}
         >
           <div className="sd-wrap sd-domain-wrap">
-            <p className="sd-eyebrow sd-eyebrow--gold">{DOMAIN.eyebrow}</p>
+            <p className="sd-eyebrow sd-eyebrow--on-dark">{DOMAIN.eyebrow}</p>
             <h2 className="sd-h2 sd-h2--light">{DOMAIN.h2}</h2>
             <p className="sd-lede sd-lede--light">{DOMAIN.lede}</p>
 
@@ -270,7 +270,7 @@ export default function LandingV4() {
                 {PRICING.card.price} {PRICING.card.currency}
               </p>
               <p className="sd-price-sub">{PRICING.card.sub}</p>
-              <a className="sd-btn sd-btn--dark sd-btn--block" href={PRICING.card.cta.href}>
+              <a className="sd-btn sd-btn--primary sd-btn--block" href={PRICING.card.cta.href}>
                 {PRICING.card.cta.label}
                 <IconArrowRight size={14} />
               </a>
@@ -284,7 +284,7 @@ export default function LandingV4() {
               </div>
               <p>{PRICING.addon.text}</p>
               <a
-                className="sd-btn sd-btn--white sd-btn--block sd-btn--sm"
+                className="sd-btn sd-btn--soft sd-btn--block sd-btn--sm"
                 href={PRICING.addon.cta.href}
               >
                 {PRICING.addon.cta.label}
@@ -329,7 +329,7 @@ export default function LandingV4() {
               <p className="sd-eyebrow">{FAQ.eyebrow}</p>
               <h2 className="sd-h2">{FAQ.h2}</h2>
               <p className="sd-lede">{FAQ.lede}</p>
-              <a className="sd-btn sd-btn--dark sd-btn--sm" href={FAQ.cta.href}>
+              <a className="sd-btn sd-btn--ink sd-btn--sm" href={FAQ.cta.href}>
                 {FAQ.cta.label}
                 <IconArrowRight size={14} />
               </a>
@@ -345,14 +345,14 @@ export default function LandingV4() {
           style={{ backgroundImage: `url(${LANDING_IMAGES.hero})` }}
         >
           <div className="sd-wrap">
-            <p className="sd-eyebrow sd-eyebrow--gold">{FINAL.eyebrow}</p>
+            <p className="sd-eyebrow sd-eyebrow--on-dark">{FINAL.eyebrow}</p>
             <h2 className="sd-h2 sd-h2--light">
               {FINAL.h2[0]}
               <em>{FINAL.h2[1]}</em>
               {FINAL.h2[2]}
             </h2>
             <p className="sd-lede sd-lede--light">{FINAL.lede}</p>
-            <a className="sd-btn sd-btn--gold sd-btn--lg" href={FINAL.cta.href}>
+            <a className="sd-btn sd-btn--primary sd-btn--lg" href={FINAL.cta.href}>
               {FINAL.cta.label}
               <IconArrowRight />
             </a>

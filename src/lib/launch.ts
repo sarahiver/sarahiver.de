@@ -20,6 +20,16 @@ export const LAUNCH_DATE_LABEL = '15. Oktober 2026';
 export const PRE_LAUNCH_MODE = process.env.NEXT_PUBLIC_PRE_LAUNCH !== 'off';
 
 /**
+ * Kauf-Schalter. Vor dem Launch darf kein Stripe-Checkout starten — weder über
+ * die Landing noch durch direkten Aufruf von /signup. Geprüft wird das an zwei
+ * Stellen: in der Seite (Anzeige) UND in der Server Action (verbindlich).
+ *
+ * Hängt bewusst am selben Schalter: am 15.10.2026 wird mit PRE_LAUNCH_MODE
+ * automatisch auch der Kauf freigeschaltet.
+ */
+export const CHECKOUT_ENABLED = !PRE_LAUNCH_MODE;
+
+/**
  * Merker im Browser. Wer das Gate geschlossen hat, sieht es eine Weile nicht
  * wieder. Version im Schlüssel, damit ein späterer Textwechsel es erneut zeigen
  * kann.
@@ -58,6 +68,14 @@ export const GATE_COPY = {
     title: 'Ihr seid schon dabei.',
     text: 'Eure Anmeldung ist bestätigt — wir melden uns zum Start.',
   },
+};
+
+/** Zustand von /signup vor dem Launch. */
+export const PRELAUNCH_SIGNUP_COPY = {
+  eyebrow: 'Noch nicht ganz',
+  title: `sarahiver.de startet am ${LAUNCH_DATE_LABEL}.`,
+  text:
+    'Kaufen könnt ihr eure Hochzeitswebsite ab dem Starttermin. Tragt euch ein, dann sagen wir euch Bescheid, sobald es losgeht.',
 };
 
 export const CONFIRM_COPY = {
