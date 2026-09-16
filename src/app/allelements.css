@@ -159,3 +159,48 @@
 }
 /* Lange Listen: nicht sichtbare Bereiche überspringen das Layout. */
 .ae-block { content-visibility: auto; contain-intrinsic-size: auto 900px; }
+
+/* --- A/B/C nebeneinander -------------------------------------------------
+   Drei komplette Seiten in einem Blick. Auf Desktop rendert jede Spalte
+   intern mit 1440px und wird per transform verkleinert — Drittelbreite
+   direkt im iframe würde drei Tablet-Layouts zeigen statt drei
+   Desktop-Kompositionen.
+   ------------------------------------------------------------------------ */
+.ae-compare {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 12px;
+  align-items: start;
+}
+.ae-compare.is-mobile { justify-items: center; }
+.ae-compare-col { min-inline-size: 0; }
+.ae-compare-head {
+  font-size: 11px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: #9A9088;
+  padding: 4px 2px 8px;
+}
+.ae-compare-port {
+  overflow: hidden;
+  border: 1px solid #322B26;
+  border-radius: 6px;
+  background: #fff;
+}
+.ae-compare-frame { border: 0; display: block; }
+
+@media (max-width: 1100px) {
+  .ae-compare { grid-template-columns: 1fr; }
+}
+
+.ae-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #EDE7DE;
+  cursor: pointer;
+}
+.ae-hint-fine { margin-top: 10px; font-size: 11px; line-height: 1.5; color: #7E756D; }

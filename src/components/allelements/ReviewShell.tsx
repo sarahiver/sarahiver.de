@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { StyleId } from '@/lib/style-migration';
 import {
   bereichLabel,
@@ -18,8 +18,13 @@ import type { ContentLoad } from '@/lib/allelements-data';
  * selbst lädt dabei nicht neu; nur der iframe bekommt eine neue src.
  */
 
+type View = 'components' | 'full' | 'compare';
+
+/** Breite, mit der die Vergleichsspalten intern rendern. */
+const COMPARE_WIDTH = 1440;
+
 interface Props {
-  view: 'components' | 'full';
+  view: View;
   style: StyleId;
   styles: StyleId[];
   viewport: 'desktop' | 'mobile';
@@ -34,7 +39,14 @@ interface Props {
 const LOADS: ContentLoad[] = ['kurz', 'mittel', 'lang'];
 
 export default function ReviewShell(props: Props) {
-  const [view, setView] = useState(props.view);
+  const [view, setView] = useState<View>(props.view);
+  const [syncScroll, setSyncScroll] = useState(true);
+  const compareRefs = useRef<(HTMLIFrameElement | null)[]>([null, null, null]);
+  const compareCol = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+  // Höhe der Vergleichsspalten. Wird im Effekt gemessen — beim Serverrendern
+  // gibt es kein window.
+  const [portH, setPortH] = useState(760);
   const [style, setStyle] = useState<StyleId>(props.style);
   const [viewport, setViewport] = useState(props.viewport);
   const [load, setLoad] = useState<ContentLoad>(props.load);
@@ -53,6 +65,77 @@ export default function ReviewShell(props: Props) {
 
   const frameWidth = viewport === 'mobile' ? 390 : '100%';
 
+  /** URLs der drei Vergleichsspalten — immer Full Page, Preset A/B/C. */
+  const compareSrcs = useMemo(
+    () =>
+      (['a', 'b', 'c'] as ComponentVariant[]).map(
+        (v) =>
+          `/allelements?${new URLSearchParams({
+            embed: '1',
+            view: 'full',
+            style,
+            load,
+            config: v,
+          }).toString()}`,
+      ),
+    [style, load],
+  );
+
+  /**
+   * Die Spalten rendern intern mit 1440px und werden per transform skaliert.
+   * Würde man den iframe einfach auf Drittelbreite setzen, sähe man drei
+   * Tablet-Layouts nebeneinander und nicht drei Desktop-Kompositionen.
+   * Auf Mobil entfällt das: 390px passen dreimal nebeneinander.
+   */
+  useEffect(() => {
+    if (view !== 'compare') return;
+    const el = compareCol.current;
+    if (!el) return;
+
+    const measure = () => {
+      setPortH(Math.max(400, window.innerHeight - 190));
+      if (viewport === 'mobile') {
+        setScale(1);
+        return;
+      }
+      const w = el.getBoundingClientRect().width;
+      setScale(w > 0 ? w / COMPARE_WIDTH : 1);
+    };
+
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [view, viewport]);
+
+  /** Gleichlauf beim Scrollen — sonst vergleicht man Äpfel mit Seite 3. */
+  const attachSync = useCallback(
+    (index: number) => () => {
+      const frame = compareRefs.current[index];
+      const win = frame?.contentWindow;
+      if (!win) return;
+
+      let busy = false;
+      win.addEventListener(
+        'scroll',
+        () => {
+          if (!syncScroll || busy) return;
+          busy = true;
+          const top = win.scrollY;
+          compareRefs.current.forEach((other, i) => {
+            if (i === index) return;
+            other?.contentWindow?.scrollTo({ top });
+          });
+          window.requestAnimationFrame(() => {
+            busy = false;
+          });
+        },
+        { passive: true },
+      );
+    },
+    [syncScroll],
+  );
+
   return (
     <div className="ae">
       <header className="ae-bar">
@@ -60,14 +143,14 @@ export default function ReviewShell(props: Props) {
           <span className="ae-brand">Design Review</span>
 
           <div className="ae-group" role="group" aria-label="Ansicht">
-            {(['components', 'full'] as const).map((v) => (
+            {(['components', 'full', 'compare'] as View[]).map((v) => (
               <button
                 key={v}
                 type="button"
                 className={`ae-btn${view === v ? ' is-on' : ''}`}
                 onClick={() => setView(v)}
               >
-                {v === 'components' ? 'Components' : 'Full Page'}
+                {v === 'components' ? 'Components' : v === 'full' ? 'Full Page' : 'A/B/C nebeneinander'}
               </button>
             ))}
           </div>
@@ -197,6 +280,28 @@ export default function ReviewShell(props: Props) {
                 </li>
               ))}
             </ul>
+          ) : view === 'compare' ? (
+            <div className="ae-hint">
+              <p>
+                Drei komplette Seiten in {style}: links alle Bereiche in Variante A, in der
+                Mitte B, rechts C.
+              </p>
+              <label className="ae-check">
+                <input
+                  type="checkbox"
+                  checked={syncScroll}
+                  onChange={(e) => setSyncScroll(e.target.checked)}
+                />
+                Gleichlauf beim Scrollen
+              </label>
+              {viewport === 'desktop' && (
+                <p className="ae-hint-fine">
+                  Jede Spalte rendert intern mit {COMPARE_WIDTH}px und wird auf{' '}
+                  {Math.round(scale * 100)}% verkleinert — die Kompositionen bleiben also
+                  Desktop-Kompositionen.
+                </p>
+              )}
+            </div>
           ) : (
             <p className="ae-hint">
               Preset {(preset ?? 'a').toUpperCase()}: alle 15 Bereiche in Variante{' '}
@@ -205,16 +310,51 @@ export default function ReviewShell(props: Props) {
           )}
         </nav>
 
-        <div className={`ae-frame-wrap${viewport === 'mobile' ? ' is-mobile' : ''}`}>
-          <iframe
-            id="ae-frame"
-            key={src}
-            className="ae-frame"
-            src={src}
-            title="Vorschau"
-            style={{ width: frameWidth }}
-          />
-        </div>
+        {view === 'compare' ? (
+          <div className={`ae-compare${viewport === 'mobile' ? ' is-mobile' : ''}`}>
+            {compareSrcs.map((cs, i) => (
+              <div className="ae-compare-col" key={cs} ref={i === 0 ? compareCol : undefined}>
+                <div className="ae-compare-head">Preset {'ABC'[i]}</div>
+                <div
+                  className="ae-compare-port"
+                  style={{ height: portH }}
+                >
+                  <iframe
+                    key={cs}
+                    ref={(el) => {
+                      compareRefs.current[i] = el;
+                    }}
+                    className="ae-compare-frame"
+                    src={cs}
+                    title={`Preset ${'ABC'[i]}`}
+                    onLoad={attachSync(i)}
+                    style={
+                      viewport === 'desktop'
+                        ? {
+                            width: COMPARE_WIDTH,
+                            height: Math.round(portH / (scale || 1)),
+                            transform: `scale(${scale})`,
+                            transformOrigin: 'top left',
+                          }
+                        : { width: 390, height: portH }
+                    }
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className={`ae-frame-wrap${viewport === 'mobile' ? ' is-mobile' : ''}`}>
+            <iframe
+              id="ae-frame"
+              key={src}
+              className="ae-frame"
+              src={src}
+              title="Vorschau"
+              style={{ width: frameWidth }}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

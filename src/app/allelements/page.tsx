@@ -57,7 +57,12 @@ export default async function AllElementsPage({
 }) {
   const sp = await searchParams;
 
-  const view = sp.view === 'full' ? 'full' : 'components';
+  // 'compare' ist eine reine Sicht der Review-Oberfläche: drei Full-Page-
+  // Vorschauen nebeneinander. Die Vorschau selbst (embed) kennt nur
+  // 'components' und 'full'.
+  const view =
+    sp.view === 'full' ? 'full' : sp.view === 'compare' ? 'compare' : 'components';
+  const stageView = view === 'components' ? 'components' : 'full';
   const style = resolveStyleId(sp.style) as StyleId;
   const viewport = sp.viewport === 'mobile' ? 'mobile' : 'desktop';
   const load = readLoad(sp.load);
@@ -97,7 +102,13 @@ export default async function AllElementsPage({
     : FALLBACK_PALETTE;
 
   const stage = (
-    <PreviewStage view={view} style={style} palette={palette} variants={variants} load={load} />
+    <PreviewStage
+      view={stageView}
+      style={style}
+      palette={palette}
+      variants={variants}
+      load={load}
+    />
   );
 
   // --- Vorschau im iframe: nur die Bühne ---
