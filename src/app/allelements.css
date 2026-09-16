@@ -1,0 +1,161 @@
+/* =========================================================================
+   /allelements — Review-Chrome.
+   Gilt ausschließlich für die Steuerung und die Beschriftungen. Innerhalb
+   der Vorschau (iframe bzw. .wedding-site-wrapper) wird NICHTS überschrieben:
+   keine Hintergründe, keine Typografie, keine Abstände. Was dort steht, ist
+   die Produktionsdarstellung.
+   ========================================================================= */
+
+.ae {
+  --ae-bg: #14110F;
+  --ae-panel: #1D1916;
+  --ae-line: #322B26;
+  --ae-ink: #EDE7DE;
+  --ae-mut: #9A9088;
+  --ae-on: #B5746A;
+  min-block-size: 100dvh;
+  background: var(--ae-bg);
+  color: var(--ae-ink);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.ae-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--ae-panel);
+  border-bottom: 1px solid var(--ae-line);
+  padding: 10px 14px;
+  display: grid;
+  gap: 8px;
+}
+.ae-bar-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.ae-brand { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--ae-mut); }
+
+.ae-group { display: flex; gap: 4px; }
+.ae-group--wrap { flex-wrap: wrap; }
+
+.ae-btn {
+  min-block-size: 32px;
+  padding: 6px 12px;
+  border: 1px solid var(--ae-line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ae-ink);
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.ae-btn:hover { border-color: #4A403A; }
+.ae-btn.is-on { background: var(--ae-on); border-color: var(--ae-on); color: #fff; }
+.ae-btn--mini { min-block-size: 26px; padding: 3px 8px; font-size: 11px; }
+
+.ae-open { margin-left: auto; font-size: 12.5px; color: var(--ae-mut); text-decoration: none; }
+.ae-open:hover { color: var(--ae-ink); }
+
+.ae-warn {
+  margin: 0;
+  font-size: 12px;
+  color: #F0C7A8;
+  background: #3A2A20;
+  border: 1px solid #5A4030;
+  border-radius: 6px;
+  padding: 7px 10px;
+}
+
+.ae-body { display: grid; grid-template-columns: 210px minmax(0, 1fr); align-items: start; }
+
+.ae-side {
+  position: sticky;
+  top: 96px;
+  max-block-size: calc(100dvh - 110px);
+  overflow-y: auto;
+  padding: 12px;
+  border-right: 1px solid var(--ae-line);
+}
+.ae-jump { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.ae-jump button {
+  inline-size: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  color: var(--ae-mut);
+  font: inherit;
+  font-size: 12.5px;
+  padding: 6px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.ae-jump button:hover { background: #241E1A; color: var(--ae-ink); }
+
+.ae-custom { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.ae-custom li { display: grid; gap: 4px; font-size: 12px; color: var(--ae-mut); }
+.ae-mini { display: flex; gap: 4px; }
+.ae-hint { font-size: 12px; line-height: 1.5; color: var(--ae-mut); margin: 0; }
+
+.ae-frame-wrap { padding: 16px; display: flex; justify-content: center; }
+.ae-frame-wrap.is-mobile { background: #0E0C0B; }
+.ae-frame {
+  border: 1px solid var(--ae-line);
+  border-radius: 6px;
+  background: #fff;
+  block-size: calc(100dvh - 118px);
+  max-inline-size: 100%;
+}
+
+@media (max-width: 900px) {
+  .ae-body { grid-template-columns: 1fr; }
+  .ae-side { position: static; max-block-size: none; border-right: 0; border-bottom: 1px solid var(--ae-line); }
+}
+
+/* --- Beschriftung im Components-Modus (liegt AUSSERHALB des Wrappers) ---- */
+.ae-stage { background: #14110F; padding: 0 0 40px; }
+.ae-block { border-top: 1px solid #322B26; }
+.ae-block-title {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0;
+  padding: 18px 16px 10px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #EDE7DE;
+  background: #14110F;
+}
+.ae-block-title span {
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #8A7F76;
+}
+.ae-variant { margin: 0 0 22px; }
+.ae-variant-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 16px;
+  background: #1D1916;
+  border-block: 1px solid #322B26;
+}
+.ae-variant-letter {
+  inline-size: 20px;
+  block-size: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 4px;
+  background: #B5746A;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+.ae-variant-meta {
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #9A9088;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+/* Lange Listen: nicht sichtbare Bereiche überspringen das Layout. */
+.ae-block { content-visibility: auto; contain-intrinsic-size: auto 900px; }
