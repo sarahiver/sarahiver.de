@@ -272,16 +272,30 @@
 }
 .sdv4 .sd-ticks svg { color: var(--gold); flex: none; }
 
+/* Hero-Visual sitzt bündig auf der Unterkante des Hero-Bandes.
+   Das Mockup-PNG hat unten 6,0547 % transparenten Rand (gemessen: sichtbare
+   Unterkante bei y 961 von 1024). Ohne Ausgleich schwebt das Gerät über der
+   Sektionsgrenze. Deshalb: negativer Abstand in Höhe des Hero-Paddings, plus
+   ein translateY um genau diesen transparenten Rand. Der Überstand enthält nur
+   transparente Pixel, überdeckt die nächste Sektion also nicht. */
+.sdv4 .sd-hero-visual {
+  align-self: end;
+  padding: 0;
+  margin-bottom: -104px;
+}
 /* Geräte-Mockup ------------------------------------------------------------
    Der Rahmen ist ein PNG mit zwei transparenten Bildschirmen; der Inhalt liegt
    darunter und wird über die Prozentwerte aus DEVICE_FRAME (lib/landing-v4.ts)
    exakt in die Ausschnitte gesetzt. Stapelung: Laptop (1) < Handy (2) < Rahmen (3).
    -------------------------------------------------------------------------- */
+.sdv4 .sd-hero-visual { position: relative; }
 .sdv4 .sd-device {
   position: relative;
   width: 100%;
   max-width: 640px;
   margin-left: auto;
+  /* Gleicht den transparenten Rand unter dem Gerät aus (siehe oben). */
+  transform: translateY(6.0547%);
   /* Container-Query-Basis: alle Schriften im Mockup werden in cqi gesetzt und
      skalieren dadurch exakt mit dem Rahmen — sonst bricht der Inhalt auf dem
      Handy aus den winzigen Bildschirmen aus. */
@@ -904,6 +918,7 @@
       linear-gradient(180deg, rgba(10,9,8,.72) 0%, rgba(10,9,8,.9) 42%, rgba(10,9,8,.92) 100%);
   }
   .sdv4 .sd-device { margin: 0 auto; }
+  .sdv4 .sd-hero-visual { margin-bottom: -80px; }
   .sdv4 .sd-demoentry-in { grid-template-columns: 1fr; gap: 30px; }
   .sdv4 .sd-nav a:not(.sd-btn) { display: none; }
   .sdv4 .sd-steps-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 38px 24px; }
