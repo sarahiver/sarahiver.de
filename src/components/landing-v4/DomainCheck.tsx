@@ -1,50 +1,65 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
 import { DOMAIN } from '@/lib/landing-v4';
+import { IconArrowRight, IconCheck } from './icons';
+
+type Status = 'idle' | 'checking' | 'free' | 'taken' | 'unknown' | 'invalid';
 
 /**
- * Wunschdomain-Eingabe.
+ * Wunschdomain prüfen.
  *
- * MVP: noch keine Registrar-API angebunden. Die Eingabe wird normalisiert und
- * als ?domain= an den Signup weitergereicht — die Verfügbarkeit klärt sich bei
- * der Einrichtung. Sobald eine Registrar-API steht (INWX/Netcup), wird hier
- * nur `handleSubmit` gegen einen echten Check getauscht.
+ * Fragt /api/domain/check (RDAP) und zeigt das Ergebnis direkt hier an —
+ * der Klick landet NICHT mehr blind im Funnel. Weiter geht das Paar erst über
+ * den Button unter dem Ergebnis, dann mit der geprüften Domain im Signup
+ * vorbelegt (?domain=…).
  */
 export default function DomainCheck() {
-  const router = useRouter();
   const [value, setValue] = useState('');
   const [tld, setTld] = useState(DOMAIN.tlds[0]);
-  const [hint, setHint] = useState('');
+  const [status, setStatus] = useState<Status>('idle');
+  const [checked, setChecked] = useState('');
 
   function normalize(raw: string) {
     return raw
       .trim()
       .toLowerCase()
+      .replace(/^https?:\/\//, '')
       .replace(/^www\./, '')
-      .replace(/\.(de|com|hochzeit)$/, '')
+      .replace(/\.[a-z]{2,20}$/, '')
       .replace(/[^a-z0-9äöüß-]/g, '-')
       .replace(/-+/g, '-')
       .replace(/^-|-$/g, '');
   }
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     const name = normalize(value);
 
-    if (!name) {
-      setHint('Gebt einen Wunschnamen ein, z. B. lea-und-ben.');
-      return;
-    }
     if (name.length < 3) {
-      setHint('Der Name braucht mindestens 3 Zeichen.');
+      setStatus('invalid');
+      setChecked('');
       return;
     }
 
-    setHint('');
-    router.push(`${DOMAIN.target}?domain=${encodeURIComponent(name + tld)}`);
+    const domain = `${name}${tld}`;
+    setChecked(domain);
+    setStatus('checking');
+
+    try {
+      const res = await fetch(`/api/domain/check?domain=${encodeURIComponent(domain)}`);
+      const data = (await res.json()) as { ok?: boolean; status?: string };
+      if (data?.ok && (data.status === 'free' || data.status === 'taken')) {
+        setStatus(data.status);
+      } else {
+        setStatus('unknown');
+      }
+    } catch {
+      setStatus('unknown');
+    }
   }
+
+  const r = DOMAIN.results;
 
   return (
     <>
@@ -62,7 +77,7 @@ export default function DomainCheck() {
           value={value}
           onChange={(e) => {
             setValue(e.target.value);
-            if (hint) setHint('');
+            if (status !== 'idle') setStatus('idle');
           }}
           placeholder={DOMAIN.placeholder}
           autoComplete="off"
@@ -76,7 +91,10 @@ export default function DomainCheck() {
           id="sd-domain-tld"
           className="sd-domain-tld"
           value={tld}
-          onChange={(e) => setTld(e.target.value)}
+          onChange={(e) => {
+            setTld(e.target.value);
+            if (status !== 'idle') setStatus('idle');
+          }}
         >
           {DOMAIN.tlds.map((t) => (
             <option key={t} value={t}>
@@ -85,14 +103,49 @@ export default function DomainCheck() {
           ))}
         </select>
 
-        <button type="submit" className="sd-btn sd-btn--gold sd-btn--sm">
-          {DOMAIN.cta}
+        <button
+          type="submit"
+          className="sd-btn sd-btn--gold sd-btn--sm"
+          disabled={status === 'checking'}
+        >
+          {status === 'checking' ? DOMAIN.checking : DOMAIN.cta}
         </button>
       </form>
 
-      <p className="sd-domain-hint" role="status">
-        {hint}
-      </p>
+      <div className="sd-domain-result" role="status" aria-live="polite">
+        {status === 'invalid' && (
+          <p className="sd-domain-msg">Gebt einen Wunschnamen mit mindestens 3 Zeichen ein.</p>
+        )}
+
+        {status === 'free' && (
+          <div className="sd-domain-ok">
+            <p className="sd-domain-msg">
+              <IconCheck size={15} />
+              <b>{checked}</b> {r.free}
+            </p>
+            <a
+              className="sd-btn sd-btn--gold sd-btn--sm"
+              href={`${DOMAIN.target}?domain=${encodeURIComponent(checked)}`}
+            >
+              {r.freeCta}
+              <IconArrowRight size={14} />
+            </a>
+            <span className="sd-domain-fine">{r.priceHint}</span>
+          </div>
+        )}
+
+        {status === 'taken' && (
+          <p className="sd-domain-msg">
+            <b>{checked}</b> {r.taken} {r.takenHint}
+          </p>
+        )}
+
+        {status === 'unknown' && (
+          <p className="sd-domain-msg">
+            <b>{checked}</b> {r.unknown}
+          </p>
+        )}
+      </div>
     </>
   );
 }

@@ -1,5 +1,5 @@
 /**
- * sarahiver.de — Landing v4
+ * sarahiver.de — Landing v4.1
  *
  * Alle Texte, Links und Bilder der Landing an EINER Stelle.
  * Wording oder Bilder ändern = hier ändern, nie im TSX.
@@ -8,26 +8,36 @@
 /* -------------------------------------------------------------------------
    Bilder
    ---------------------------------------------------------------------------
-   PLATZHALTER: aktuell picsum.photos, damit die Seite sofort rendert.
-   Durch echte Cloudinary-URLs ersetzen — Domains stehen bereits in
-   next.config.ts (res.cloudinary.com, *.supabase.co, picsum.photos).
+   Hero und Domain-Band sind noch PLATZHALTER (picsum). Durch Cloudinary-URLs
+   ersetzen — die Domain steht bereits in next.config.ts.
+   Die Demo-Karten holen ihre Bilder aus lib/seed-demos.ts (DEMO_TEMPLATES),
+   damit Karte und verlinkte Demo dasselbe Motiv zeigen.
    ------------------------------------------------------------------------- */
 export const LANDING_IMAGES = {
   /** Hero-Hintergrund, quer, dunkel/warm — Paar nah, Gegenlicht. */
   hero: 'https://picsum.photos/seed/sdv4-hero/1800/1200',
-  /** Bild im Laptop-Mockup (Hero-Bild einer Beispielseite). */
-  heroLaptop: 'https://picsum.photos/seed/sdv4-laptop/1200/750',
-  /** Vier kleine Thumbnails im Telefon-Mockup. */
-  heroPhoneRows: [
-    'https://picsum.photos/seed/sdv4-p1/80/80',
-    'https://picsum.photos/seed/sdv4-p2/80/80',
-    'https://picsum.photos/seed/sdv4-p3/80/80',
-    'https://picsum.photos/seed/sdv4-p4/80/80',
-  ],
   /** Hintergrund Domain-Check — dunkles Grün/Blattwerk. */
   domain: 'https://picsum.photos/seed/sdv4-green/1800/900',
-  /** Hintergrund Schluss-CTA — Händehalten, warm. */
-  final: 'https://picsum.photos/seed/sdv4-final/1800/900',
+  /** Geräte-Rahmen (freigestellt, beide Bildschirme sind transparent). */
+  deviceFrame:
+    'https://res.cloudinary.com/si-weddings/image/upload/v1789465404/device-frame_nxaalw.png',
+};
+
+/**
+ * Bildschirm-Ausschnitte im Geräte-Rahmen, gemessen am PNG (1536 × 1024 px).
+ * Die Bildschirme sind im Bild transparent — der Inhalt liegt darunter und
+ * scheint durch. Werte in Prozent, damit alles mitskaliert.
+ *
+ *   Laptop: x 197–1242, y 135–769   → 1046 × 635 px
+ *   Handy:  x 1171–1452, y 319–933  →  282 × 615 px
+ *
+ * Wird der Rahmen ausgetauscht, müssen diese Werte je Gerät neu gemessen
+ * werden — sonst sitzt der Inhalt daneben.
+ */
+export const DEVICE_FRAME = {
+  aspectRatio: '1536 / 1024',
+  laptop: { left: 12.826, top: 13.184, width: 68.099, height: 62.012 },
+  phone: { left: 76.237, top: 31.152, width: 18.359, height: 60.059 },
 };
 
 /* ------------------------------------------------------------------------- */
@@ -41,6 +51,7 @@ export const SEO = {
 export const NAV = {
   logo: { pre: 'sarah', bold: 'iver', post: '.de' },
   links: [
+    { label: 'Designs', href: '#stile' },
     { label: 'Beispiele', href: '#beispiele' },
     { label: 'So funktioniert’s', href: '#ablauf' },
     { label: 'FAQ', href: '#faq' },
@@ -54,17 +65,18 @@ export const HERO = {
   lede:
     'Mit sarahiver.de erstellt ihr in wenigen Minuten eure persönliche Hochzeitswebsite – stilvoll, individuell und ohne technische Vorkenntnisse.',
   cta: { label: 'Jetzt loslegen – 69 € einmalig', href: '/signup' },
+  ctaSecondary: { label: 'Erst ausprobieren', href: '/testen' },
   ticks: ['Sofort starten', 'Keine Abo-Kosten', 'Mit Liebe gemacht'],
   note: 'So könnte eure Seite aussehen.',
-  /** Inhalt im Laptop-/Telefon-Mockup. */
+  /** Inhalt in den beiden Bildschirmen des Geräte-Mockups. */
   mockup: {
     eyebrow: 'Deine Hochzeitsseite',
     couple: 'Sarah & Iver',
     line: 'Wir heiraten',
-    date: '14. Juli 2025',
+    date: '22. August 2026',
     button: 'Mehr erfahren',
     phoneTitle: 'Unsere Hochzeit',
-    phoneRows: ['Countdown', 'Ablauf', 'Location', 'Hotel'],
+    phoneRows: ['Countdown', 'Ablauf', 'Location', 'RSVP'],
   },
 };
 
@@ -72,50 +84,58 @@ export const FEATURES = {
   eyebrow: 'Alles, was ihr braucht',
   h2: 'Eine Hochzeitswebsite. Viele Möglichkeiten.',
   items: [
-    { icon: 'sparkle', title: 'Stilvolle Designs', text: 'Modern, zeitlos und mit Liebe zum Detail.' },
+    { icon: 'sparkle', title: 'Stilvolle Designs', text: 'Acht Stile, jeder mit eigenen Schriften und Farben.' },
     { icon: 'heart', title: 'Alle wichtigen Inhalte', text: 'Countdown, Ablauf, Location, RSVP, Galerie und mehr.' },
     { icon: 'devices', title: 'Auf allen Geräten', text: 'Sieht auf Smartphone, Tablet und Desktop großartig aus.' },
     { icon: 'pen', title: 'Einfach selbst erstellen', text: 'Ohne Vorkenntnisse. In wenigen Minuten.' },
-    { icon: 'infinity', title: 'Einmal zahlen. Für immer.', text: '69 € einmalig. Keine laufenden Kosten.' },
+    { icon: 'infinity', title: 'Einmal zahlen.', text: '69 € einmalig. Keine laufenden Kosten.' },
   ],
+};
+
+export const STYLES_SECTION = {
+  eyebrow: 'Acht Designs',
+  h2: 'Wählt den Stil, der zu euch passt.',
+  lede:
+    'Jeder Stil bringt eigene Schriften, Farben und Abstände mit. Ihr wählt einen als Ausgangspunkt — und könnt jederzeit wechseln, eure Inhalte bleiben erhalten.',
+  fontLabel: 'Schriften',
+  sampleCouple: 'Anna & Tom',
+  cta: { label: 'Alle Stile im Test-Dashboard ausprobieren', href: '/testen' },
 };
 
 export const DEMOS = {
   eyebrow: 'Live Demos',
   h2: ['Entdeckt', 'die Designs.'],
-  lede: 'Schaut euch unsere Vorlagen an und erlebt, wie eure Hochzeitswebsite aussehen könnte.',
-  cta: { label: 'Zu den Beispielen', href: '/testen' },
+  lede:
+    'Schaut euch unsere Beispielseiten an und erlebt, wie eure Hochzeitswebsite aussehen könnte.',
+  cta: { label: 'Alle Designs ansehen', href: '#stile' },
   /**
-   * href = Slug einer echten Demo-Site (/[slug]).
-   * Aktuell geseedet: sarah-und-iver, mila-und-theo, johanna-und-felix.
+   * Die Karten kommen aus DEMO_TEMPLATES (lib/seed-demos.ts) — Slug, Paar,
+   * Datum und Bild stammen damit aus den Seiten, die auch wirklich existieren.
+   * Hier steht nur noch der Untertitel je Stil.
    */
-  items: [
-    {
-      couple: 'Julia & Marc',
-      date: '12. September 2026',
-      style: 'Botanical',
-      text: 'Natürlich. Romantisch. Zeitlos.',
-      href: '/mila-und-theo',
-      image: 'https://picsum.photos/seed/sdv4-demo1/900/680',
-    },
-    {
-      couple: 'Lea & Ben',
-      note: 'Wir heiraten',
-      date: '20. Juni 2026',
-      style: 'Contemporary',
-      text: 'Modern. Klar. Stilvoll.',
-      href: '/johanna-und-felix',
-      image: 'https://picsum.photos/seed/sdv4-demo2/900/680',
-    },
-    {
-      couple: 'Anna & Tom',
-      date: '14. Juli 2026',
-      style: 'Editorial',
-      text: 'Reduziert. Elegant. Besonders.',
-      href: '/sarah-und-iver',
-      image: 'https://picsum.photos/seed/sdv4-demo3/900/680',
-    },
+  taglines: {
+    editorial: 'Reduziert. Elegant. Besonders.',
+    organic: 'Natürlich. Romantisch. Zeitlos.',
+    opulent: 'Festlich. Warm. Glanzvoll.',
+    brutalist: 'Klar. Mutig. Kompromisslos.',
+    mono: 'Modern. Schlicht. Präzise.',
+    liquefy: 'Weich. Fließend. Verspielt.',
+    kinetic: 'Lebendig. Dynamisch. Frisch.',
+    bauhaus: 'Grafisch. Geordnet. Ikonisch.',
+  } as Record<string, string>,
+};
+
+export const DEMO_ENTRY = {
+  eyebrow: 'Ohne Anmeldung',
+  h2: 'Probiert das Dashboard aus, bevor ihr kauft.',
+  lede:
+    'Ihr bekommt ein fertig gefülltes Beispielprojekt, das nur euch gehört: Stile wechseln, Texte ändern, Bereiche umsortieren — alles wie im echten Dashboard.',
+  points: [
+    'Keine Anmeldung, keine Zahlungsdaten',
+    'Eigene Testseite, die niemand sonst sieht',
+    'Wird nach 24 Stunden automatisch gelöscht',
   ],
+  cta: { label: 'Test-Dashboard öffnen', href: '/testen' },
 };
 
 export const DOMAIN = {
@@ -126,16 +146,25 @@ export const DOMAIN = {
   placeholder: 'z. B. unserhochzeitstag',
   tlds: ['.de', '.com', '.hochzeit'],
   cta: 'Jetzt prüfen',
+  checking: 'Wir schauen nach …',
   note: 'z. B. wirheiraten.de\nleaundben.de\noder euer name',
-  /** Ziel nach dem Absenden — Wunschdomain wird als ?domain= mitgegeben. */
+  /** Ziel, wenn das Paar mit der geprüften Domain weitermacht. */
   target: '/signup',
+  results: {
+    free: 'ist noch frei.',
+    taken: 'ist leider schon vergeben.',
+    unknown: 'konnten wir gerade nicht prüfen — wir schauen bei der Einrichtung für euch nach.',
+    freeCta: 'Mit dieser Domain starten',
+    takenHint: 'Probiert eine andere Schreibweise oder eine andere Endung.',
+    priceHint: 'Einrichtung 39 € einmalig, zusätzlich zur Website.',
+  },
 };
 
 export const PRICING = {
   eyebrow: 'Transparent & fair',
   h2: 'Ein Preis. Alles drin.',
   includes: [
-    'Alle Design-Vorlagen',
+    'Alle acht Design-Vorlagen',
     'Alle Funktionen (RSVP, Galerie, Countdown …)',
     'Eigene Inhalte, Texte und Bilder',
     'Mobil optimiert',
@@ -174,11 +203,11 @@ export const FAQ = {
   eyebrow: 'Häufige Fragen',
   h2: 'Noch Fragen?',
   lede: 'Hier findet ihr die wichtigsten Antworten. Weitere Fragen? Meldet euch gern bei uns.',
-  cta: { label: 'Alle FAQ ansehen', href: '/faq' },
+  cta: { label: 'Schreibt uns', href: '/kontakt' },
   items: [
     {
       q: 'Kann ich das Design später ändern?',
-      a: 'Ja. Ihr könnt jederzeit eine andere Vorlage wählen – eure Inhalte bleiben dabei erhalten.',
+      a: 'Ja. Ihr könnt jederzeit einen anderen Stil wählen – eure Inhalte bleiben dabei erhalten.',
     },
     {
       q: 'Sind meine Daten geschützt?',
@@ -190,7 +219,7 @@ export const FAQ = {
     },
     {
       q: 'Wie lange kann die Seite online bleiben?',
-      a: 'Eure Website bleibt ein Jahr lang online. Save-the-Date- und Archiv-Modus stellt ihr selbst im Dashboard um.',
+      a: 'Eure Website bleibt ein Jahr lang online, mindestens aber bis drei Monate nach eurer Hochzeit. Save-the-Date- und Archiv-Modus stellt ihr selbst im Dashboard um.',
     },
     {
       q: 'Kann ich eine eigene Domain verwenden?',

@@ -239,6 +239,24 @@
 .sdv4 .sd-hero h1 em { font-style: italic; }
 .sdv4 .sd-hero .sd-lede { margin: 26px 0 32px; max-width: 30em; }
 
+.sdv4 .sd-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.sdv4 .sd-hero-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  color: rgba(246, 243, 236, .88);
+  border-bottom: 1px solid rgba(246, 243, 236, .3);
+  padding-bottom: 2px;
+  transition: color .2s ease, border-color .2s ease;
+}
+.sdv4 .sd-hero-link:hover { color: #fff; border-color: #fff; }
+
 .sdv4 .sd-ticks {
   display: flex;
   flex-wrap: wrap;
@@ -254,59 +272,43 @@
 }
 .sdv4 .sd-ticks svg { color: var(--gold); flex: none; }
 
-/* Geräte-Mockup */
-.sdv4 .sd-hero-visual {
+/* Geräte-Mockup ------------------------------------------------------------
+   Der Rahmen ist ein PNG mit zwei transparenten Bildschirmen; der Inhalt liegt
+   darunter und wird über die Prozentwerte aus DEVICE_FRAME (lib/landing-v4.ts)
+   exakt in die Ausschnitte gesetzt. Stapelung: Laptop (1) < Handy (2) < Rahmen (3).
+   -------------------------------------------------------------------------- */
+.sdv4 .sd-device {
   position: relative;
-  padding: 10px 0 30px;
-}
-.sdv4 .sd-laptop {
   width: 100%;
-  max-width: 470px;
+  max-width: 640px;
   margin-left: auto;
-  margin-right: 92px;
+  /* Container-Query-Basis: alle Schriften im Mockup werden in cqi gesetzt und
+     skalieren dadurch exakt mit dem Rahmen — sonst bricht der Inhalt auf dem
+     Handy aus den winzigen Bildschirmen aus. */
+  container-type: inline-size;
 }
-.sdv4 .sd-laptop-lid {
-  border: 9px solid #17161A;
-  border-bottom-width: 12px;
-  border-radius: 14px;
-  background: #17161A;
-  box-shadow: 0 34px 70px rgba(0, 0, 0, .55);
-  overflow: hidden;
-}
-.sdv4 .sd-laptop-base {
-  height: 11px;
-  border-radius: 0 0 12px 12px;
-  background: linear-gradient(180deg, #2A282C 0%, #131215 100%);
-  margin: 0 -18px;
-  position: relative;
-}
-.sdv4 .sd-laptop-base::after {
-  content: '';
+.sdv4 .sd-device-frame {
   position: absolute;
-  left: 50%;
-  top: 0;
-  width: 84px;
-  height: 4px;
-  border-radius: 0 0 4px 4px;
-  background: rgba(255, 255, 255, .13);
-  transform: translateX(-50%);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
+  filter: drop-shadow(0 26px 54px rgba(0, 0, 0, .45));
 }
-.sdv4 .sd-phone {
+.sdv4 .sd-device-screen {
   position: absolute;
-  right: 18px;
-  bottom: 6px;
-  width: 152px;
-  border: 7px solid #17161A;
-  border-radius: 24px;
-  background: #17161A;
-  box-shadow: 0 26px 52px rgba(0, 0, 0, .5);
   overflow: hidden;
+  background: #1B1713;
 }
+.sdv4 .sd-device-screen--laptop { z-index: 1; border-radius: 3px; }
+.sdv4 .sd-device-screen--phone { z-index: 2; border-radius: 9% / 4.2%; }
 
 /* Mini-Rendering: Hochzeitsseite im Laptop */
 .sdv4 .sd-mini {
   position: relative;
-  aspect-ratio: 16 / 10;
+  width: 100%;
+  height: 100%;
   background-color: #2B231C;
   background-size: cover;
   background-position: center;
@@ -324,66 +326,84 @@
 }
 .sdv4 .sd-mini-in { position: relative; padding: 0 16px; }
 .sdv4 .sd-mini-eyebrow {
-  font-size: 7px;
+  font-size: 1.1cqi;
   letter-spacing: .26em;
   text-transform: uppercase;
   color: rgba(255,255,255,.8);
-  margin-bottom: 10px;
+  margin-bottom: 1.6cqi;
 }
 .sdv4 .sd-mini-title {
   font-family: var(--disp);
-  font-size: clamp(20px, 3.4vw, 30px);
+  font-size: 4.7cqi;
   letter-spacing: .1em;
   text-transform: uppercase;
   line-height: 1;
+  white-space: nowrap;
 }
-.sdv4 .sd-mini-sub { font-size: 9px; letter-spacing: .1em; margin-top: 12px; color: rgba(255,255,255,.88); }
-.sdv4 .sd-mini-date { font-size: 10px; letter-spacing: .08em; margin-top: 3px; color: rgba(255,255,255,.88); }
+.sdv4 .sd-mini-sub { font-size: 1.4cqi; letter-spacing: .1em; margin-top: 1.9cqi; color: rgba(255,255,255,.88); }
+.sdv4 .sd-mini-date { font-size: 1.55cqi; letter-spacing: .08em; margin-top: .5cqi; color: rgba(255,255,255,.88); }
 .sdv4 .sd-mini-btn {
   display: inline-block;
-  margin-top: 14px;
-  padding: 6px 14px;
+  margin-top: 2.2cqi;
+  padding: .95cqi 2.2cqi;
   border: 1px solid rgba(255,255,255,.65);
   border-radius: 999px;
-  font-size: 8px;
+  font-size: 1.25cqi;
   letter-spacing: .1em;
   text-transform: uppercase;
 }
 
 /* Mini-Rendering: Telefon */
-.sdv4 .sd-miniphone { background: #fff; color: #1A1714; }
-.sdv4 .sd-miniphone-top {
+.sdv4 .sd-miniphone { background: #fff; color: #1A1714; height: 100%; }
+.sdv4 .sd-miniphone-hero {
+  position: relative;
+  height: 38%;
+  background-color: #2B231C;
+  background-size: cover;
+  background-position: center;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 9px 10px 7px;
-  border-bottom: 1px solid #EEE9DF;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 1.2cqi;
 }
-.sdv4 .sd-miniphone-top span { font-size: 7px; letter-spacing: .12em; text-transform: uppercase; color: #8C8477; }
+.sdv4 .sd-miniphone-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,.2) 0%, rgba(0,0,0,.55) 100%);
+}
+.sdv4 .sd-miniphone-hero span {
+  position: relative;
+  font-family: var(--disp);
+  font-size: 1.55cqi;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+}
 .sdv4 .sd-miniphone-head {
   font-family: var(--disp);
-  font-size: 13px;
-  padding: 12px 10px 10px;
+  font-size: 1.7cqi;
+  padding: 1.4cqi 1.4cqi 1.1cqi;
+  white-space: nowrap;
 }
 .sdv4 .sd-miniphone-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 10px;
+  gap: 1.1cqi;
+  padding: .8cqi 1.4cqi;
   border-top: 1px solid #F1ECE3;
 }
 .sdv4 .sd-miniphone-row i {
-  width: 18px;
-  height: 18px;
+  width: 2.2cqi;
+  height: 2.2cqi;
   border-radius: 50%;
-  background-color: #E4DDD0;
-  background-size: cover;
-  background-position: center;
+  background: #E4DDD0;
   flex: none;
 }
-.sdv4 .sd-miniphone-row b { font-size: 8px; font-weight: 500; color: #4A443B; }
+.sdv4 .sd-miniphone-row b { font-size: 1.2cqi; font-weight: 500; color: #4A443B; white-space: nowrap; }
 
-.sdv4 .sd-note--hero { right: -40px; top: 52px; width: 132px; }
+.sdv4 .sd-note--hero { right: -46px; top: 30px; width: 132px; }
 .sdv4 .sd-note--hero svg { left: -58px; top: 40px; color: var(--gold); transform: scaleY(-1); }
 
 /* -------------------------------------------------------------------------
@@ -579,6 +599,24 @@
 }
 .sdv4 .sd-domain-tld:focus { outline: none; }
 .sdv4 .sd-domain-form .sd-btn { flex: none; }
+.sdv4 .sd-domain-result { margin-top: 18px; min-height: 26px; }
+.sdv4 .sd-domain-msg {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: rgba(246, 243, 236, .9);
+}
+.sdv4 .sd-domain-msg b { color: #fff; font-weight: 600; }
+.sdv4 .sd-domain-msg svg { color: var(--gold); flex: none; }
+.sdv4 .sd-domain-ok {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.sdv4 .sd-domain-fine { font-size: 12px; color: rgba(246, 243, 236, .6); }
+
 .sdv4 .sd-domain-hint {
   margin: 16px auto 0;
   font-size: 12.5px;
@@ -758,6 +796,85 @@
 .sdv4 .sd-social a:hover { color: #fff; }
 
 /* -------------------------------------------------------------------------
+   Stile & Schriften
+   ------------------------------------------------------------------------- */
+.sdv4 .sd-styles { background: var(--cream); padding: 92px 0 96px; }
+.sdv4 .sd-styles-lede { margin: 18px auto 0; max-width: 46em; }
+.sdv4 .sd-style-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+  margin-top: 54px;
+}
+.sdv4 .sd-style-link {
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+.sdv4 .sd-style-link:hover {
+  border-color: #C9C0AE;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(26, 23, 20, .08);
+}
+.sdv4 .sd-style-preview {
+  aspect-ratio: 4 / 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  text-align: center;
+}
+.sdv4 .sd-style-sample {
+  font-size: clamp(19px, 1.9vw, 25px);
+  line-height: 1.1;
+}
+.sdv4 .sd-style-rule { display: block; width: 26px; height: 1px; opacity: .8; }
+.sdv4 .sd-style-body { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
+.sdv4 .sd-style-meta { padding: 14px 16px 0; }
+.sdv4 .sd-style-meta h3 { font-family: var(--body); font-size: 14px; font-weight: 600; }
+.sdv4 .sd-style-meta p { font-size: 12.5px; color: var(--mut); margin-top: 3px; }
+.sdv4 .sd-style-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px 14px;
+}
+.sdv4 .sd-style-swatches { display: flex; gap: 4px; }
+.sdv4 .sd-style-swatches i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, .08);
+}
+.sdv4 .sd-style-fonts { font-size: 10.5px; color: var(--mut); text-align: right; }
+.sdv4 .sd-styles-cta { margin-top: 44px; }
+
+/* -------------------------------------------------------------------------
+   Demo-Dashboard
+   ------------------------------------------------------------------------- */
+.sdv4 .sd-demoentry { background: var(--cream-2); padding: 76px 0 80px; }
+.sdv4 .sd-demoentry-in {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+  gap: 48px;
+  align-items: center;
+}
+.sdv4 .sd-demoentry-in .sd-lede { margin-top: 16px; }
+.sdv4 .sd-demoentry-side {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 14px 34px rgba(26, 23, 20, .06);
+}
+.sdv4 .sd-demoentry-side .sd-checks { margin-top: 0; margin-bottom: 20px; }
+
+/* -------------------------------------------------------------------------
    Responsive
    ------------------------------------------------------------------------- */
 @media (max-width: 1280px) {
@@ -765,6 +882,7 @@
 }
 
 @media (max-width: 1080px) {
+  .sdv4 .sd-style-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .sdv4 .sd-feature-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 24px; }
   .sdv4 .sd-pricing-in { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .sdv4 .sd-pricing-copy { grid-column: 1 / -1; }
@@ -785,8 +903,8 @@
     background:
       linear-gradient(180deg, rgba(10,9,8,.72) 0%, rgba(10,9,8,.9) 42%, rgba(10,9,8,.92) 100%);
   }
-  .sdv4 .sd-laptop { margin: 0 auto; }
-  .sdv4 .sd-phone { right: 0; bottom: -10px; width: 124px; }
+  .sdv4 .sd-device { margin: 0 auto; }
+  .sdv4 .sd-demoentry-in { grid-template-columns: 1fr; gap: 30px; }
   .sdv4 .sd-nav a:not(.sd-btn) { display: none; }
   .sdv4 .sd-steps-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 38px 24px; }
   .sdv4 .sd-step-arrow { display: none; }
@@ -805,8 +923,10 @@
   .sdv4 .sd-faq { padding: 64px 0 68px; }
   .sdv4 .sd-final { padding: 76px 0 80px; }
   .sdv4 .sd-feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 44px; }
-  .sdv4 .sd-phone { display: none; }
-  .sdv4 .sd-laptop { max-width: 100%; }
+  .sdv4 .sd-styles { padding: 64px 0 68px; }
+  .sdv4 .sd-style-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 36px; }
+  .sdv4 .sd-style-fonts { display: none; }
+  .sdv4 .sd-hero-actions { gap: 16px; }
   .sdv4 .sd-pricing-in { grid-template-columns: 1fr; }
   .sdv4 .sd-steps-grid { grid-template-columns: 1fr; }
   .sdv4 .sd-track { grid-auto-columns: 86%; }

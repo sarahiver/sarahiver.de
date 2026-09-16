@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react';
 import {
   DEMOS,
+  DEMO_ENTRY,
   DOMAIN,
   FAQ,
   FEATURES,
@@ -12,9 +13,13 @@ import {
   PRICING,
   STEPS,
 } from '@/lib/landing-v4';
-import DemoCarousel from './DemoCarousel';
+import { DEMO_TEMPLATES } from '@/lib/seed-demos';
+import { formatDateDe } from '@/lib/pricing';
+import DemoCarousel, { type DemoItem } from './DemoCarousel';
+import DeviceMockup from './DeviceMockup';
 import DomainCheck from './DomainCheck';
 import FaqAccordion from './FaqAccordion';
+import StyleShowcase from './StyleShowcase';
 import {
   IconArrowRight,
   IconCheck,
@@ -47,9 +52,28 @@ const STEP_ICONS: Record<string, ComponentType<{ size?: number }>> = {
   rocket: IconRocket,
 };
 
-function Logo({ dark = false }: { dark?: boolean }) {
+/**
+ * Demo-Karten aus den echten Vorlagen bauen.
+ *
+ * Wichtig: Slug, Paar, Datum und Bild kommen aus DEMO_TEMPLATES — denselben
+ * Daten, aus denen die Demo-Seiten geseedet werden. Vorher standen hier
+ * erfundene Paare mit geratenen Slugs, deshalb liefen die Karten ins Leere.
+ */
+function buildDemoItems(): DemoItem[] {
+  return DEMO_TEMPLATES.map((t) => ({
+    couple: `${t.name1} & ${t.name2}`,
+    note: 'Wir heiraten',
+    date: formatDateDe(t.date),
+    style: t.style.charAt(0).toUpperCase() + t.style.slice(1),
+    text: DEMOS.taglines[t.style] ?? t.location,
+    href: `/${t.slug}`,
+    image: t.hero,
+  }));
+}
+
+function Logo() {
   return (
-    <a className={`sd-logo${dark ? ' sd-logo--dark' : ''}`} href="/">
+    <a className="sd-logo" href="/">
       {NAV.logo.pre}
       <b>{NAV.logo.bold}</b>
       {NAV.logo.post}
@@ -58,6 +82,8 @@ function Logo({ dark = false }: { dark?: boolean }) {
 }
 
 export default function LandingV4() {
+  const demoItems = buildDemoItems();
+
   return (
     <div className="sdv4">
       {/* ---------------------------------------------------------------- Header */}
@@ -80,10 +106,7 @@ export default function LandingV4() {
       <main>
         {/* ------------------------------------------------------------- Hero */}
         <section className="sd-hero">
-          <div
-            className="sd-hero-bg"
-            style={{ backgroundImage: `url(${LANDING_IMAGES.hero})` }}
-          />
+          <div className="sd-hero-bg" style={{ backgroundImage: `url(${LANDING_IMAGES.hero})` }} />
           <div className="sd-hero-scrim" />
 
           <div className="sd-wrap sd-hero-in">
@@ -98,10 +121,16 @@ export default function LandingV4() {
               </h1>
               <p className="sd-lede sd-lede--light">{HERO.lede}</p>
 
-              <a className="sd-btn sd-btn--gold sd-btn--lg" href={HERO.cta.href}>
-                {HERO.cta.label}
-                <IconArrowRight />
-              </a>
+              <div className="sd-hero-actions">
+                <a className="sd-btn sd-btn--gold sd-btn--lg" href={HERO.cta.href}>
+                  {HERO.cta.label}
+                  <IconArrowRight />
+                </a>
+                <a className="sd-hero-link" href={HERO.ctaSecondary.href}>
+                  {HERO.ctaSecondary.label}
+                  <IconArrowRight size={14} />
+                </a>
+              </div>
 
               <ul className="sd-ticks">
                 {HERO.ticks.map((t) => (
@@ -113,46 +142,8 @@ export default function LandingV4() {
               </ul>
             </div>
 
-            {/* Geräte-Mockup */}
             <div className="sd-hero-visual">
-              <div className="sd-laptop">
-                <div className="sd-laptop-lid">
-                  <div
-                    className="sd-mini"
-                    style={{ backgroundImage: `url(${LANDING_IMAGES.heroLaptop})` }}
-                  >
-                    <div className="sd-mini-in">
-                      <p className="sd-mini-eyebrow">{HERO.mockup.eyebrow}</p>
-                      <p className="sd-mini-title">{HERO.mockup.couple}</p>
-                      <p className="sd-mini-sub">{HERO.mockup.line}</p>
-                      <p className="sd-mini-date">{HERO.mockup.date}</p>
-                      <span className="sd-mini-btn">{HERO.mockup.button}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="sd-laptop-base" />
-              </div>
-
-              <div className="sd-phone">
-                <div className="sd-miniphone">
-                  <div className="sd-miniphone-top">
-                    <span>sarahiver.de</span>
-                    <span>☰</span>
-                  </div>
-                  <p className="sd-miniphone-head">{HERO.mockup.phoneTitle}</p>
-                  {HERO.mockup.phoneRows.map((row, i) => (
-                    <div className="sd-miniphone-row" key={row}>
-                      <i
-                        style={{
-                          backgroundImage: `url(${LANDING_IMAGES.heroPhoneRows[i]})`,
-                        }}
-                      />
-                      <b>{row}</b>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
+              <DeviceMockup heroImage={LANDING_IMAGES.hero} />
               <p className="sd-note sd-note--hero">
                 {HERO.note}
                 <IconNoteArrow />
@@ -182,6 +173,9 @@ export default function LandingV4() {
           </div>
         </section>
 
+        {/* ------------------------------------------------------------ Stile */}
+        <StyleShowcase />
+
         {/* ------------------------------------------------------------ Demos */}
         <section className="sd-demos" id="beispiele">
           <div className="sd-wrap sd-demos-in">
@@ -199,7 +193,33 @@ export default function LandingV4() {
               </a>
             </div>
 
-            <DemoCarousel items={DEMOS.items} />
+            <DemoCarousel items={demoItems} />
+          </div>
+        </section>
+
+        {/* ----------------------------------------------------- Demo-Dashboard */}
+        <section className="sd-demoentry" id="testen">
+          <div className="sd-wrap sd-demoentry-in">
+            <div>
+              <p className="sd-eyebrow">{DEMO_ENTRY.eyebrow}</p>
+              <h2 className="sd-h2">{DEMO_ENTRY.h2}</h2>
+              <p className="sd-lede">{DEMO_ENTRY.lede}</p>
+            </div>
+
+            <div className="sd-demoentry-side">
+              <ul className="sd-checks">
+                {DEMO_ENTRY.points.map((p) => (
+                  <li key={p}>
+                    <IconCheck size={13} />
+                    {p}
+                  </li>
+                ))}
+              </ul>
+              <a className="sd-btn sd-btn--dark sd-btn--block" href={DEMO_ENTRY.cta.href}>
+                {DEMO_ENTRY.cta.label}
+                <IconArrowRight size={14} />
+              </a>
+            </div>
           </div>
         </section>
 
@@ -250,10 +270,7 @@ export default function LandingV4() {
                 {PRICING.card.price} {PRICING.card.currency}
               </p>
               <p className="sd-price-sub">{PRICING.card.sub}</p>
-              <a
-                className="sd-btn sd-btn--dark sd-btn--block"
-                href={PRICING.card.cta.href}
-              >
+              <a className="sd-btn sd-btn--dark sd-btn--block" href={PRICING.card.cta.href}>
                 {PRICING.card.cta.label}
                 <IconArrowRight size={14} />
               </a>
@@ -322,10 +339,10 @@ export default function LandingV4() {
           </div>
         </section>
 
-        {/* -------------------------------------------------------- Schluss-CTA */}
+        {/* ------------------------------------------------- Schluss mit Hero-Bild */}
         <section
           className="sd-final"
-          style={{ backgroundImage: `url(${LANDING_IMAGES.final})` }}
+          style={{ backgroundImage: `url(${LANDING_IMAGES.hero})` }}
         >
           <div className="sd-wrap">
             <p className="sd-eyebrow sd-eyebrow--gold">{FINAL.eyebrow}</p>

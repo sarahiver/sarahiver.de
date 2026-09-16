@@ -8,7 +8,12 @@ import { createSupabaseAdminClient } from './supabase-admin';
  * Spiegelt provision.ts: eigener Demo-Owner (auth user), Preset-Modus ueber die
  * Style-Defaults, Kaeufe zur Freischaltung. Unterschied: content_published ist
  * mit echten Beispielinhalten gefuellt und subscription_status = null
- * (=> oeffentlich sichtbar, isPublicallyBlocked(null) === false).
+ * (=> oeffentlich sichtbar, keine Zugriffssperre in lib/access.ts).
+ *
+ * WICHTIG: status = 'published'. Mit 'draft' laesst die RLS-Policy auf
+ * wedding_bereiche keine Zeilen durch — die Gaesteseite rendert dann zwar
+ * (Tokens kommen aus der View), aber komplett ohne Inhalt. Genau das war der
+ * Grund fuer die leeren Demo-Seiten.
  *
  * Idempotent ueber den Slug: Bereiche/Kaeufe werden pro Lauf neu gesetzt.
  * Nur mit Service-Role-Client (server-only) aufrufen.
@@ -176,7 +181,7 @@ export async function provisionDemoSite(
     couple_name_1: t.name1, couple_name_2: t.name2,
     wedding_date: t.date, wedding_location: t.location, hero_image_url: t.hero,
     start_style_id: t.style, palette_preset_id: default_palette_id, font_preset_id: default_font_id,
-    nav_variant: 'a', status: 'draft',
+    nav_variant: 'a', status: 'published',
     owner_user_id: ownerId, user_id: ownerId,
     subscription_status: null, subscription_tier: 'p11',
   };

@@ -3,13 +3,13 @@ import LandingV4 from '@/components/landing-v4/LandingV4';
 import { SEO } from '@/lib/landing-v4';
 
 /**
- * sarahiver.de — Landing v4 (Mockup-Umsetzung, Sept. 2026).
+ * sarahiver.de — Landing v4.1.
  *
- * Self-Service-Produkt, Einmalzahlung 69 €. Die alte Landing v3
- * (components/landing/LandingChrome.tsx) bleibt im Repo, wird aber nicht mehr
- * gerendert.
+ * Kein force-static mehr: die Stil-Sektion liest Paletten und Schriften aus
+ * den Preset-Tabellen. Die Seite wird stündlich neu generiert (ISR), bleibt
+ * also für Besucher statisch schnell.
  */
-export const dynamic = 'force-static';
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: SEO.title,
