@@ -1,0 +1,279 @@
+/* =========================================================================
+   Launch Gate — Modal über der Landing + Bestätigungsseite.
+   Eigene Datei, damit sich am Launch-Tag nichts aus der Landing lösen muss:
+   PRE_LAUNCH_MODE = false, fertig.
+
+   Farben und Schriften folgen bewusst der Landing (.sdv4), damit das Gate wie
+   Teil der Seite wirkt und nicht wie ein Cookie-Banner.
+   ========================================================================= */
+
+.sdlg,
+.sdlg-page {
+  --ink: #0E0D0B;
+  --cream: #F7F4ED;
+  --tx: #1A1714;
+  --tx-soft: #463F37;
+  --mut: #6E665B;
+  --gold: #E0BC5C;
+  --gold-deep: #C9A44A;
+  --gold-ink: #1A1206;
+  --gold-on-light: #A98C44;
+  --line: #DFD9CC;
+  --disp: 'Cormorant Garamond', 'Times New Roman', Georgia, serif;
+  --body: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.sdlg *,
+.sdlg *::before,
+.sdlg *::after,
+.sdlg-page * { box-sizing: border-box; }
+
+/* ---------------------------------------------------------------- Overlay */
+.sdlg {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  font-family: var(--body);
+}
+
+.sdlg-backdrop {
+  position: absolute;
+  inset: 0;
+  /* Bewusst nur leicht abgedunkelt: die Seite darunter bleibt lesbar. */
+  background: rgba(14, 13, 11, .55);
+  backdrop-filter: blur(2px);
+  animation: sdlg-fade .35s ease both;
+}
+
+.sdlg-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+  background: var(--cream);
+  color: var(--tx);
+  border-radius: 10px;
+  padding: 40px 40px 32px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .45);
+  animation: sdlg-rise .4s cubic-bezier(.22, .8, .3, 1) both;
+}
+
+@keyframes sdlg-fade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes sdlg-rise {
+  from { opacity: 0; transform: translateY(14px) }
+  to   { opacity: 1; transform: none }
+}
+
+.sdlg-x {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--mut);
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease;
+}
+.sdlg-x:hover { background: rgba(26, 23, 20, .06); color: var(--tx); }
+
+/* ------------------------------------------------------------------ Text */
+.sdlg-eyebrow {
+  margin: 0 0 14px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--gold-on-light);
+}
+.sdlg-title {
+  margin: 0;
+  font-family: var(--disp);
+  font-weight: 400;
+  font-size: clamp(27px, 4.4vw, 36px);
+  line-height: 1.12;
+}
+.sdlg-title em { font-style: italic; white-space: nowrap; }
+.sdlg-text {
+  margin: 16px 0 26px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--mut);
+}
+
+/* ------------------------------------------------------------------ Form */
+.sdlg-form { display: block; }
+.sdlg-label {
+  display: block;
+  font-size: 12px;
+  color: var(--tx-soft);
+  margin-bottom: 7px;
+}
+.sdlg-row { display: flex; gap: 8px; }
+.sdlg-row input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  font-family: var(--body);
+  font-size: 14px;
+  color: var(--tx);
+}
+.sdlg-row input::placeholder { color: #A39B8E; }
+.sdlg-row input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.sdlg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 46px;
+  padding: 0 22px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-family: var(--body);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .2s ease, border-color .2s ease, color .2s ease;
+}
+.sdlg-btn--gold { background: var(--gold); color: var(--gold-ink); }
+.sdlg-btn--gold:hover { background: var(--gold-deep); }
+.sdlg-btn--gold:disabled { opacity: .55; cursor: not-allowed; }
+.sdlg-btn--ghost { background: transparent; color: var(--tx); border-color: var(--line); }
+.sdlg-btn--ghost:hover { background: rgba(26, 23, 20, .05); }
+.sdlg :focus-visible,
+.sdlg-page :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 3px; }
+
+.sdlg-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 16px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--mut);
+  cursor: pointer;
+}
+.sdlg-consent input {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+  accent-color: var(--gold-deep);
+}
+.sdlg-consent a { color: var(--tx); text-decoration: underline; text-underline-offset: 2px; }
+
+.sdlg-error {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #FBE9E5;
+  border: 1px solid #F0C5BC;
+  color: #A8301B;
+  font-size: 13px;
+}
+
+/* -------------------------------------------------------- Bestätigt-State */
+.sdlg-done {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  padding: 22px;
+}
+.sdlg-done h3 {
+  margin: 0 0 8px;
+  font-family: var(--disp);
+  font-weight: 400;
+  font-size: 23px;
+}
+.sdlg-done p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--mut); }
+.sdlg-fine { margin-top: 10px !important; font-size: 12.5px !important; color: #948B7E !important; }
+
+/* --------------------------------------------------------------- Explore */
+.sdlg-explore { margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line); }
+.sdlg-explore-lead { margin: 0 0 12px; font-size: 13px; color: var(--mut); }
+.sdlg-explore-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.sdlg-close-link {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 4px;
+  border: 0;
+  background: none;
+  font-family: var(--body);
+  font-size: 12.5px;
+  color: var(--mut);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.sdlg-close-link:hover { color: var(--tx); }
+
+/* ------------------------------------------------------ Bestätigungsseite */
+.sdlg-page {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 40px 24px;
+  background: var(--ink);
+  font-family: var(--body);
+}
+.sdlg-page-in {
+  width: 100%;
+  max-width: 520px;
+  background: var(--cream);
+  color: var(--tx);
+  border-radius: 10px;
+  padding: 44px 40px 36px;
+  text-align: center;
+}
+.sdlg-page .sdlg-text { margin-bottom: 28px; }
+.sdlg-page-actions { justify-content: center; }
+
+/* ------------------------------------------------------------- Responsive */
+@media (max-width: 560px) {
+  /* Mobil als Bottom Sheet: große Flächen, nichts Winziges zum Treffen. */
+  .sdlg { align-items: flex-end; padding: 0; }
+  .sdlg-dialog {
+    max-width: none;
+    max-height: 92dvh;
+    border-radius: 16px 16px 0 0;
+    padding: 34px 22px 26px;
+    animation: sdlg-sheet .4s cubic-bezier(.22, .8, .3, 1) both;
+  }
+  .sdlg-row { flex-direction: column; }
+  .sdlg-row input,
+  .sdlg-btn { width: 100%; height: 48px; }
+  .sdlg-explore-actions { flex-direction: column; }
+  .sdlg-title em { white-space: normal; }
+  .sdlg-page-in { padding: 34px 22px 28px; }
+}
+
+@keyframes sdlg-sheet {
+  from { transform: translateY(100%) }
+  to   { transform: none }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sdlg-backdrop,
+  .sdlg-dialog { animation: none; }
+  .sdlg * { transition: none !important; }
+}

@@ -4,6 +4,7 @@ import './design-system-v2.css';
 import './landing.css';
 import './landing-v3.css';
 import './landing-v4.css';
+import './launch-gate.css';
 import { SITE_CONFIG } from '@/lib/content';
 
 export const metadata: Metadata = {
