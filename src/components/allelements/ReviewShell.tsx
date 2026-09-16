@@ -9,6 +9,17 @@ import {
   type ComponentVariant,
 } from '@/lib/wedding-config';
 import type { ContentLoad } from '@/lib/allelements-data';
+import {
+  buildSnapshot,
+  captureNode,
+  composeContactSheet,
+  configSuffix,
+  downloadDataUrl,
+  downloadJson,
+  fileBase,
+  freezeAnimations,
+  type SheetTile,
+} from '@/lib/allelements-export';
 
 /**
  * Steuerung der Review-Umgebung.
@@ -47,6 +58,9 @@ export default function ReviewShell(props: Props) {
   // Höhe der Vergleichsspalten. Wird im Effekt gemessen — beim Serverrendern
   // gibt es kein window.
   const [portH, setPortH] = useState(760);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [status, setStatus] = useState<string | null>(null);
+  const mainFrame = useRef<HTMLIFrameElement | null>(null);
   const [style, setStyle] = useState<StyleId>(props.style);
   const [viewport, setViewport] = useState(props.viewport);
   const [load, setLoad] = useState<ContentLoad>(props.load);
@@ -136,6 +150,171 @@ export default function ReviewShell(props: Props) {
     [syncScroll],
   );
 
+  /* ----------------------------------------------------------------- Export
+     Aufgenommen wird der DOM im iframe — also exakt das, was oben sichtbar
+     ist. Die Review-Beschriftungen filtert captureNode heraus, die
+     Steuerleiste liegt ohnehin außerhalb des iframes. */
+
+  const viewportPx = viewport === 'mobile' ? 390 : 1440;
+  const viewportLabel = viewport === 'mobile' ? 'Mobile 390px' : 'Desktop 1440px';
+
+  const frameDoc = useCallback((): Document | null => {
+    const doc = mainFrame.current?.contentDocument ?? null;
+    if (!doc) setStatus('Vorschau noch nicht geladen.');
+    return doc;
+  }, []);
+
+  const report = useCallback(
+    (msg: string, failed: string[] = [], fontsEmbedded = true) => {
+      const notes: string[] = [];
+      if (failed.length) {
+        console.warn('[allelements] Bilder nicht geladen:', failed);
+        notes.push(`${failed.length} Bild(er) fehlten`);
+      }
+      if (!fontsEmbedded) notes.push('Schriften nicht eingebettet');
+      setStatus(notes.length ? `${msg} — ${notes.join(', ')}, siehe Konsole.` : msg);
+    },
+    [],
+  );
+
+  const exportFullPage = useCallback(async () => {
+    const doc = frameDoc();
+    if (!doc) return;
+    setBusy('Seite wird aufgenommen …');
+    const unfreeze = await freezeAnimations(doc);
+    try {
+      const node = doc.querySelector('.wedding-site-wrapper') as HTMLElement | null;
+      if (!node) throw new Error('Kein Seiten-Wrapper gefunden');
+
+      const shot = await captureNode(node, { pixelRatio: 2 });
+      const suffix = configSuffix(variants, customOpen ? null : preset);
+      const base = fileBase([style, viewport, 'full-page', suffix]);
+
+      downloadDataUrl(shot.dataUrl, `${base}.png`);
+      downloadJson(
+        buildSnapshot({
+          style,
+          viewportPx,
+          mode: 'full-page',
+          variants,
+          url: `${window.location.origin}${src}`,
+        }),
+        `${base}.json`,
+      );
+      report(
+        `Export erstellt — ${shot.width}×${shot.height} px bei ${shot.pixelRatio}×.`,
+        shot.failedImages,
+        shot.fontsEmbedded,
+      );
+    } catch (err) {
+      console.error('[allelements] Full-Page-Export:', err);
+      setStatus(`Export fehlgeschlagen: ${(err as Error)?.message ?? String(err)}`);
+    } finally {
+      unfreeze();
+      setBusy(null);
+    }
+  }, [frameDoc, report, style, variants, customOpen, preset, viewport, viewportPx, src]);
+
+  const exportSingle = useCallback(
+    async (key: BereichKey, variant: ComponentVariant) => {
+      const doc = frameDoc();
+      if (!doc) return;
+      setBusy(`${bereichLabel(key)} ${variant.toUpperCase()} wird aufgenommen …`);
+      const unfreeze = await freezeAnimations(doc);
+      try {
+        const node = doc.querySelector(
+          `#c-${key}-${variant} .wedding-site-wrapper`,
+        ) as HTMLElement | null;
+        if (!node) throw new Error(`Vorschau ${key} ${variant} nicht gefunden`);
+
+        const shot = await captureNode(node, { pixelRatio: 2 });
+        const base = fileBase([style, key, variant, viewport]);
+        downloadDataUrl(shot.dataUrl, `${base}.png`);
+        downloadJson(
+          buildSnapshot({
+            style,
+            viewportPx,
+            mode: 'component',
+            variants,
+            component: key,
+            variant,
+            url: `${window.location.origin}${src}`,
+          }),
+          `${base}.json`,
+        );
+        report(
+          `${bereichLabel(key)} ${variant.toUpperCase()} exportiert.`,
+          shot.failedImages,
+          shot.fontsEmbedded,
+        );
+      } catch (err) {
+        console.error('[allelements] Component-Export:', err);
+        setStatus(`Export fehlgeschlagen: ${(err as Error)?.message ?? String(err)}`);
+      } finally {
+        unfreeze();
+        setBusy(null);
+      }
+    },
+    [frameDoc, report, style, variants, viewport, viewportPx, src],
+  );
+
+  const exportContactSheet = useCallback(async () => {
+    const doc = frameDoc();
+    if (!doc) return;
+    const unfreeze = await freezeAnimations(doc);
+    const tiles: SheetTile[] = [];
+    const allFailed: string[] = [];
+    let fontsOk = true;
+    try {
+      let done = 0;
+      for (const key of props.order) {
+        for (const variant of ['a', 'b', 'c'] as ComponentVariant[]) {
+          done += 1;
+          setBusy(`Aufnahme ${done} von ${props.order.length * 3}: ${bereichLabel(key)} ${variant.toUpperCase()}`);
+          const node = doc.querySelector(
+            `#c-${key}-${variant} .wedding-site-wrapper`,
+          ) as HTMLElement | null;
+          if (!node) continue;
+          // Einfache Auflösung genügt: der Bogen ist zum Vergleichen da,
+          // nicht zum Prüfen einzelner Haarlinien.
+          const shot = await captureNode(node, { pixelRatio: 1 });
+          allFailed.push(...shot.failedImages);
+          if (!shot.fontsEmbedded) fontsOk = false;
+          tiles.push({ key, variant, dataUrl: shot.dataUrl, width: shot.width, height: shot.height });
+        }
+      }
+
+      setBusy('Bogen wird gesetzt …');
+      const sheet = await composeContactSheet(tiles, { style, viewportLabel });
+      const base = fileBase([style, viewport, 'components']);
+      downloadDataUrl(sheet, `${base}.png`);
+      downloadJson(
+        buildSnapshot({ style, viewportPx, mode: 'components', variants, url: `${window.location.origin}${src}` }),
+        `${base}.json`,
+      );
+      report(`Contact Sheet erstellt — ${tiles.length} Aufnahmen.`, [...new Set(allFailed)], fontsOk);
+    } catch (err) {
+      console.error('[allelements] Contact Sheet:', err);
+      setStatus(`Export fehlgeschlagen: ${(err as Error)?.message ?? String(err)}`);
+    } finally {
+      unfreeze();
+      setBusy(null);
+    }
+  }, [frameDoc, report, props.order, style, viewport, viewportLabel, viewportPx, variants, src]);
+
+  /** Klicks auf die Export-Knöpfe in den Variantenleisten abfangen. */
+  const attachSingleExport = useCallback(() => {
+    const doc = mainFrame.current?.contentDocument;
+    if (!doc) return;
+    doc.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement)?.closest?.('.ae-export-one') as HTMLElement | null;
+      if (!btn) return;
+      const key = btn.dataset.exportKey as BereichKey | undefined;
+      const variant = btn.dataset.exportVariant as ComponentVariant | undefined;
+      if (key && variant) void exportSingle(key, variant);
+    });
+  }, [exportSingle]);
+
   return (
     <div className="ae">
       <header className="ae-bar">
@@ -180,6 +359,29 @@ export default function ReviewShell(props: Props) {
                 {l}
               </button>
             ))}
+          </div>
+
+          <div className="ae-group ae-group--export">
+            {view === 'components' && (
+              <button
+                type="button"
+                className="ae-btn ae-btn--export"
+                onClick={exportContactSheet}
+                disabled={busy !== null}
+              >
+                Export Contact Sheet
+              </button>
+            )}
+            {view === 'full' && (
+              <button
+                type="button"
+                className="ae-btn ae-btn--export"
+                onClick={exportFullPage}
+                disabled={busy !== null}
+              >
+                Export Full Page
+              </button>
+            )}
           </div>
 
           <a className="ae-open" href={src} target="_blank" rel="noreferrer">
@@ -227,6 +429,11 @@ export default function ReviewShell(props: Props) {
           )}
         </div>
 
+        {(busy || status) && (
+          <p className={`ae-status${busy ? ' is-busy' : ''}`} role="status">
+            {busy ?? `✓ ${status}`}
+          </p>
+        )}
         {!props.presetsLoaded && (
           <p className="ae-warn">
             Presets nicht geladen — Farben und Schriften sind Platzhalter. Struktur und Layout
@@ -348,9 +555,11 @@ export default function ReviewShell(props: Props) {
             <iframe
               id="ae-frame"
               key={src}
+              ref={mainFrame}
               className="ae-frame"
               src={src}
               title="Vorschau"
+              onLoad={attachSingleExport}
               style={{ width: frameWidth }}
             />
           </div>

@@ -204,3 +204,36 @@
   cursor: pointer;
 }
 .ae-hint-fine { margin-top: 10px; font-size: 11px; line-height: 1.5; color: #7E756D; }
+
+/* --- Export -------------------------------------------------------------- */
+.ae-group--export { margin-left: auto; }
+.ae-btn--export { border-color: #4A403A; }
+.ae-btn--export:disabled { opacity: .5; cursor: progress; }
+.ae-open { margin-left: 0; }
+
+.ae-status {
+  margin: 0;
+  font-size: 12px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  background: #1E2A20;
+  border: 1px solid #33472F;
+  color: #CFE3C6;
+}
+.ae-status.is-busy { background: #2A241E; border-color: #453B32; color: #E3D6C6; }
+
+/* Export-Knopf in der Variantenleiste (wird bei der Aufnahme gefiltert). */
+.ae-export-one {
+  margin-left: auto;
+  border: 1px solid #4A403A;
+  border-radius: 5px;
+  background: transparent;
+  color: #EDE7DE;
+  font: inherit;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px;
+  padding: 4px 10px;
+  min-block-size: 26px;
+  cursor: pointer;
+}
+.ae-export-one:hover { background: #2A241F; }

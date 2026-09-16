@@ -97,6 +97,17 @@ export default function PreviewStage({ view, style, palette, variants, load }: P
                   <span className="ae-variant-meta">
                     {style} · {key} · Variante {variant.toUpperCase()}
                   </span>
+                  {/* Der Klick wird von der Review-Oberfläche abgefangen
+                      (gleiche Herkunft). Der Button selbst wird bei der
+                      Aufnahme herausgefiltert. */}
+                  <button
+                    type="button"
+                    className="ae-export-one"
+                    data-export-key={key}
+                    data-export-variant={variant}
+                  >
+                    Export
+                  </button>
                 </div>
                 <div
                   style={cssVars}
