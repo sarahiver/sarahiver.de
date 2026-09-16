@@ -1,0 +1,849 @@
+/* =========================================================================
+   DESIGN 01 — EDITORIAL
+   -------------------------------------------------------------------------
+   Charakter: hochwertiges internationales Wedding-Magazin.
+   Nicht Template, nicht Hochzeitsshop, nicht SaaS.
+
+   GRAMMAR
+     Achse      Jede Komposition hat eine erkennbare Satzachse. Inhalte
+                richten sich daran aus, statt beliebig zentriert zu stehen.
+     Raster     12 Spalten, bewusst asymmetrisch belegt (7/5, 5/7, 8/4).
+     Weißraum   Großzügig und ungleich verteilt — Weißraum ist gesetzt,
+                nicht übrig geblieben.
+     Formen     Hairlines statt Rahmen, Radius 0, keine Schatten.
+     Bilder     Kontrollierte Crops in festen Formaten: 4:5 / 3:2 / 16:9,
+                für Statement-Flächen 21:9. Keine Rotation, keine Collage.
+     Typo       Ruhige große Display-Zeilen (--fs-7/8), kleine Metadaten in
+                Versalien mit maßvoller Laufweite. Fließtext auf ~65 Zeichen.
+     Motion     Nur Opazität und kleine Verschiebungen, 200 ms. Keine Show.
+
+   VARIANTEN — das Prüfkriterium ist Struktur, nicht Farbe:
+     A BALANCED   eine Achse, symmetrische Spaltenpaare, ruhige Wiederholung
+     B EDITORIAL  zwei Achsen, alternierende Asymmetrie, Marginalien
+     C STATEMENT  volle Breite, überlappende Ebenen, Rhythmus aus Bändern
+
+   Farben und Schriften kommen aus der Palette der Seite und werden hier
+   NICHT gesetzt. Hairlines über color-mix mit currentColor — dadurch trägt
+   jede Palette ihre eigene Linie, ohne dass dieses Blatt Farbwerte kennt.
+   ========================================================================= */
+
+[data-style-ls='editorial'],
+[data-style-tl='editorial'],
+[data-style-gallery='editorial'],
+[data-style-faq='editorial'] {
+  --ed-rule: color-mix(in srgb, currentColor 16%, transparent);
+  --ed-rule-strong: color-mix(in srgb, currentColor 42%, transparent);
+  --ed-fill: color-mix(in srgb, currentColor 5%, transparent);
+  --ed-meta-ls: 0.16em;
+  --ed-col: minmax(0, 1fr);
+  --ed-gap: var(--sp-5);
+  --ed-gap-lg: var(--sp-7);
+  --ed-measure: 65ch;
+}
+
+/* Gemeinsame Kopfzone der vier Bereiche: linksbündig auf der Achse,
+   Ornamente ersetzt durch eine Hairline. Zentrierte Überschriften sind
+   Template-Sprache, nicht Magazin. */
+[data-style-ls='editorial'] .ls-eyebrow,
+[data-style-gallery='editorial'] .gal-eyebrow {
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  text-align: left;
+  margin-bottom: var(--sp-3);
+}
+[data-style-ls='editorial'] .ls-title,
+[data-style-gallery='editorial'] .gal-title {
+  margin-inline: 0 auto;
+  font-size: var(--fs-7);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.015em;
+  text-align: left;
+  max-inline-size: 18ch;
+}
+[data-style-ls='editorial'] .ls-intro,
+[data-style-gallery='editorial'] .gal-intro {
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  text-align: left;
+  max-inline-size: var(--ed-measure);
+  /* Die Basis zentriert den Block über margin-inline:auto — für eine
+     Satzachse muss der Block links stehen bleiben, nicht nur der Text. */
+  margin: var(--sp-4) auto 0 0;
+}
+[data-style-ls='editorial'] .ls-head-ornament,
+[data-style-gallery='editorial'] .gal-head-ornament {
+  inline-size: 100%;
+  block-size: 1px;
+  background: var(--ed-rule);
+  margin: var(--sp-6) 0 var(--sp-7);
+  border: 0;
+  transform: none;
+}
+
+/* =========================================================================
+   LOVESTORY
+   ========================================================================= */
+
+[data-style-ls='editorial'] {
+  padding-inline: var(--gutter);
+}
+
+/* --- A · BALANCED --------------------------------------------------------
+   Ein Moment, ruhig gesetzt: drei Bilder als exakt ausgerichteter Stapel in
+   der linken Spalte, Text rechts auf einer Achse. Die gedrehten, überlappenden
+   Bilder der Basis sind hier bewusst aufgehoben — Schnappschuss-Rotation ist
+   Scrapbook-Sprache und widerspricht dem kontrollierten Crop.
+   ------------------------------------------------------------------------ */
+[data-style-ls='editorial'].lsA {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+}
+[data-style-ls='editorial'] .lsA-single {
+  display: grid;
+  grid-template-columns: var(--ed-col) var(--ed-col);
+  gap: var(--ed-gap-lg);
+  align-items: start;
+}
+[data-style-ls='editorial'] .lsA-images {
+  position: static;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-3);
+  block-size: auto;
+  aspect-ratio: auto;
+}
+[data-style-ls='editorial'] .lsA-img,
+[data-style-ls='editorial'] .lsA-single:hover .lsA-img {
+  position: static;
+  inline-size: 100%;
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+}
+[data-style-ls='editorial'] .lsA-img--1 { aspect-ratio: var(--ar-classic); }
+[data-style-ls='editorial'] .lsA-img--2 { aspect-ratio: var(--ar-portrait); }
+[data-style-ls='editorial'] .lsA-img--3 { aspect-ratio: var(--ar-classic); }
+[data-style-ls='editorial'] .lsA-img img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  border-radius: 0;
+}
+[data-style-ls='editorial'] .lsA-text {
+  border-top: 1px solid var(--ed-rule-strong);
+  padding-top: var(--sp-4);
+}
+[data-style-ls='editorial'] .lsA-eyebrow {
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+}
+[data-style-ls='editorial'] .lsA-moment-title {
+  font-size: var(--fs-6);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.01em;
+  margin-top: var(--sp-3);
+}
+[data-style-ls='editorial'] .lsA-desc {
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  max-inline-size: var(--ed-measure);
+  margin-top: var(--sp-4);
+}
+[data-style-ls='editorial'] .lsA-sig { margin-top: var(--sp-5); }
+
+/* --- B · EDITORIAL -------------------------------------------------------
+   Zwei Achsen: Bild und Text wechseln von Zeile zu Zeile die Seite. Die
+   Nummer sitzt als Marginalie außerhalb der Textspalte — Magazin-Randziffer,
+   nicht Badge. Ungleiche Spalten (7/5), damit keine Zeile symmetrisch wirkt.
+   ------------------------------------------------------------------------ */
+[data-style-ls='editorial'].lsB {
+  max-inline-size: var(--wrap-wide);
+  margin-inline: auto;
+}
+[data-style-ls='editorial'] .lsB-list {
+  display: grid;
+  gap: var(--sp-9);
+}
+[data-style-ls='editorial'] .lsB-item {
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  gap: var(--ed-gap-lg);
+  align-items: center;
+}
+[data-style-ls='editorial'] .lsB-item:nth-child(even) {
+  grid-template-columns: 5fr 7fr;
+}
+[data-style-ls='editorial'] .lsB-item:nth-child(even) .lsB-img-wrap { order: 2; }
+[data-style-ls='editorial'] .lsB-item:nth-child(even) .lsB-text { order: 1; }
+[data-style-ls='editorial'] .lsB-img-wrap {
+  aspect-ratio: var(--ar-classic);
+  overflow: hidden;
+  border-radius: 0;
+}
+[data-style-ls='editorial'] .lsB-img-wrap img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  transition: transform .4s ease;
+}
+[data-style-ls='editorial'] .lsB-item:hover .lsB-img-wrap img { transform: scale(1.02); }
+[data-style-ls='editorial'] .lsB-text { position: relative; }
+[data-style-ls='editorial'] .lsB-num {
+  position: absolute;
+  top: -0.35em;
+  left: -0.62em;
+  font-size: var(--fs-8);
+  line-height: 1;
+  color: var(--ed-rule);
+  pointer-events: none;
+  z-index: 0;
+}
+[data-style-ls='editorial'] .lsB-date,
+[data-style-ls='editorial'] .lsB-title,
+[data-style-ls='editorial'] .lsB-desc { position: relative; z-index: 1; }
+[data-style-ls='editorial'] .lsB-date {
+  display: inline-block;
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  padding: 0 0 var(--sp-1);
+  inset: auto;
+  position: relative;
+}
+[data-style-ls='editorial'] .lsB-title {
+  font-size: var(--fs-6);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.01em;
+  margin-top: var(--sp-4);
+}
+[data-style-ls='editorial'] .lsB-desc {
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  max-inline-size: 46ch;
+  margin-top: var(--sp-3);
+}
+
+/* --- C · STATEMENT -------------------------------------------------------
+   Bänder über die volle Breite, Textkarte überlappt das Bild nach oben und
+   wechselt die Seite. Die Timeline-Linie entfällt: der Rhythmus entsteht aus
+   den Bändern selbst, eine zusätzliche Führungslinie wäre doppelt.
+   ------------------------------------------------------------------------ */
+[data-style-ls='editorial'].lsC { max-inline-size: none; }
+[data-style-ls='editorial'] .lsC-wrap {
+  max-inline-size: none;
+  display: grid;
+  gap: var(--sp-10);
+  padding-inline: 0;
+}
+[data-style-ls='editorial'] .lsC-line { display: none; }
+[data-style-ls='editorial'] .lsC-item {
+  display: block;
+  position: relative;
+  padding: 0;
+  margin: 0;
+}
+[data-style-ls='editorial'] .lsC-img {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: var(--ar-band);
+  object-fit: cover;
+  border-radius: 0;
+  margin: 0;
+}
+[data-style-ls='editorial'] .lsC-card {
+  position: relative;
+  z-index: 1;
+  inline-size: min(560px, 82%);
+  margin-block-start: calc(var(--sp-8) * -1);
+  margin-inline-start: var(--gutter);
+  padding: var(--sp-6);
+  background: var(--ed-fill);
+  backdrop-filter: blur(6px);
+  border: 0;
+  border-top: 2px solid var(--ed-rule-strong);
+  border-radius: 0;
+  box-shadow: none;
+}
+[data-style-ls='editorial'] .lsC-item:nth-child(even) .lsC-card {
+  margin-inline-start: auto;
+  margin-inline-end: var(--gutter);
+}
+[data-style-ls='editorial'] .lsC-eyebrow {
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+}
+[data-style-ls='editorial'] .lsC-title {
+  font-size: var(--fs-7);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.02em;
+  margin-top: var(--sp-2);
+}
+[data-style-ls='editorial'] .lsC-desc {
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  max-inline-size: 46ch;
+  margin-top: var(--sp-4);
+}
+
+/* =========================================================================
+   TIMELINE
+   ========================================================================= */
+
+/* --- A · BALANCED — gleichwertige Karten an einer waagerechten Achse ----- */
+[data-style-tl='editorial'] .tlA-wrap {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+[data-style-tl='editorial'] .tlA-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0;
+}
+[data-style-tl='editorial'] .tlA-card {
+  border: 0;
+  border-left: 1px solid var(--ed-rule);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: var(--sp-5);
+}
+[data-style-tl='editorial'] .tlA-card:first-child { border-left: 0; }
+[data-style-tl='editorial'] .tlA-card.is-active { background: var(--ed-fill); }
+[data-style-tl='editorial'] .tlA-card-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+}
+[data-style-tl='editorial'] .tlA-time-badge {
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+[data-style-tl='editorial'] .tlA-emoji-badge { display: none; }
+[data-style-tl='editorial'] .tlA-title {
+  /* Versalien in einer 210px-Spalte erzeugen Treppen aus Einzelwörtern. */
+  text-transform: none;
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  margin-top: var(--sp-3);
+}
+[data-style-tl='editorial'] .tlA-desc {
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  margin-top: var(--sp-2);
+}
+[data-style-tl='editorial'] .tlA-rail-line { background: var(--ed-rule); block-size: 1px; }
+[data-style-tl='editorial'] .tlA-hint {
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+}
+
+/* --- B · EDITORIAL — Zeitangabe als Marginalie an fester Achse ----------- */
+[data-style-tl='editorial'] .tlB-wrap {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  position: relative;
+}
+[data-style-tl='editorial'] .tlB-line {
+  left: 148px;
+  inline-size: 1px;
+  background: var(--ed-rule);
+}
+[data-style-tl='editorial'] .tlB-event {
+  display: grid;
+  grid-template-columns: 120px 28px minmax(0, 1fr);
+  align-items: start;
+  gap: 0;
+  padding-block: var(--sp-6);
+}
+/* Der Knoten ist in der Basis absolut positioniert und fällt damit aus dem
+   Grid-Fluss — ohne feste Spaltenzuweisung landet die Inhaltsspalte in Spalte 2
+   und kollabiert auf Wortbreite. Deshalb alle drei Zellen explizit setzen. */
+[data-style-tl='editorial'] .tlB-event-time { grid-column: 1; }
+[data-style-tl='editorial'] .tlB-knode { position: relative; inset: auto; grid-column: 2; }
+[data-style-tl='editorial'] .tlB-event-content { grid-column: 3; min-inline-size: 0; }
+[data-style-tl='editorial'] .tlB-event-time {
+  text-align: right;
+  padding-right: var(--sp-4);
+}
+[data-style-tl='editorial'] .tlB-event-time .t {
+  font-size: var(--fs-6);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+[data-style-tl='editorial'] .tlB-event-time .u {
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  margin-top: var(--sp-1);
+}
+[data-style-tl='editorial'] .tlB-knode { display: flex; justify-content: center; padding-top: 10px; }
+[data-style-tl='editorial'] .tlB-knode .dot {
+  inline-size: 7px;
+  block-size: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: none;
+}
+[data-style-tl='editorial'] .tlB-event.is-current .tlB-knode .dot {
+  inline-size: 11px;
+  block-size: 11px;
+}
+[data-style-tl='editorial'] .tlB-event-content { padding-left: var(--sp-5); }
+[data-style-tl='editorial'] .tlB-event-content .ttl {
+  font-size: var(--fs-6);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.01em;
+}
+[data-style-tl='editorial'] .tlB-event-content .dsc {
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  max-inline-size: 52ch;
+  margin-top: var(--sp-3);
+}
+
+/* --- C · STATEMENT — Bildband neben gesetztem Titel ----------------------
+   Bild und Inhalt sind in der Basis absolut positioniert (Overlay-Prinzip).
+   Text auf dem Bild ist hier der falsche Weg: die Lesbarkeit hinge davon ab,
+   wie hell das Foto des Paares ist, und das wissen wir nicht. Beide Kinder
+   werden deshalb in den Fluss zurückgeholt und als Band gesetzt — großes
+   Bild, daneben der Titel, zeilenweise wechselnde Seite.
+   ------------------------------------------------------------------------ */
+[data-style-tl='editorial'] .tlC-wrap {
+  max-inline-size: var(--wrap-wide);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+[data-style-tl='editorial'] .tlC-row {
+  display: grid;
+  gap: var(--sp-8);
+}
+[data-style-tl='editorial'] .tlC-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 8fr 4fr;
+  gap: var(--ed-gap-lg);
+  align-items: end;
+  aspect-ratio: auto;
+  border: 0;
+  border-top: 1px solid var(--ed-rule);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: var(--sp-5) 0 0;
+  overflow: visible;
+}
+[data-style-tl='editorial'] .tlC-card:nth-child(even) { grid-template-columns: 4fr 8fr; }
+[data-style-tl='editorial'] .tlC-img {
+  position: static;
+  grid-column: 1;
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: var(--ar-wide);
+  object-fit: cover;
+  border-radius: 0;
+  margin: 0;
+}
+[data-style-tl='editorial'] .tlC-card:nth-child(even) .tlC-img { grid-column: 2; }
+/* Die Basis legt einen dunklen Verlauf über die Karte und setzt den Text auf
+   Weiß — beides gehört zum Overlay. Sobald der Text neben dem Bild steht,
+   muss beides zurückgenommen werden, sonst steht Weiß auf Papier. */
+[data-style-tl='editorial'] .tlC-card::after { display: none; }
+[data-style-tl='editorial'] .tlC-content,
+[data-style-tl='editorial'] .tlC-bigtitle,
+[data-style-tl='editorial'] .tlC-time,
+[data-style-tl='editorial'] .tlC-uhr,
+[data-style-tl='editorial'] .tlC-descpill { color: inherit; text-shadow: none; }
+
+[data-style-tl='editorial'] .tlC-content {
+  position: static;
+  grid-column: 2;
+  inset: auto;
+  inline-size: auto;
+  padding: 0;
+  background: none;
+  border: 0;
+  backdrop-filter: none;
+}
+[data-style-tl='editorial'] .tlC-card:nth-child(even) .tlC-content { grid-column: 1; grid-row: 1; }
+/* Die Basis blendet Titel und Text aller nicht aktiven Karten aus — das
+   gehört zum interaktiven Karussell. Als gesetzte Bandfolge muss jede Station
+   ihren Titel tragen, sonst liest sich der Ablauf als Reihe leerer Bilder. */
+[data-style-tl='editorial'] .tlC-bigtitle,
+[data-style-tl='editorial'] .tlC-descpill { display: block; }
+
+[data-style-tl='editorial'] .tlC-bigtitle {
+  font-size: var(--fs-6);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+[data-style-tl='editorial'] .tlC-titlelab { display: none; }
+[data-style-tl='editorial'] .tlC-time {
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  margin-bottom: var(--sp-2);
+}
+[data-style-tl='editorial'] .tlC-descpill {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  max-inline-size: 42ch;
+  margin-top: var(--sp-2);
+}
+
+/* =========================================================================
+   GALLERY
+   ========================================================================= */
+
+[data-style-gallery='editorial'] {
+  padding-inline: var(--gutter);
+}
+
+/* --- A · BALANCED — gleichmäßiges Raster, ein Format --------------------- */
+[data-style-gallery='editorial'].galA-wrap {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+}
+[data-style-gallery='editorial'] .galA {
+  display: grid;
+  grid-template-columns: repeat(3, var(--ed-col));
+  gap: var(--ed-gap);
+}
+[data-style-gallery='editorial'] .galA-tile {
+  aspect-ratio: var(--ar-portrait);
+  overflow: hidden;
+  border-radius: 0;
+  margin: 0;
+}
+[data-style-gallery='editorial'] .galA-tile img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  transition: opacity .25s ease;
+}
+[data-style-gallery='editorial'] .galA-tile:hover img { opacity: .88; }
+[data-style-gallery='editorial'] .galA-cap {
+  font-size: var(--fs-2);
+  letter-spacing: 0.04em;
+  margin-top: var(--sp-2);
+}
+
+/* --- B · EDITORIAL — Gruppen mit ungleichen Formaten --------------------- */
+[data-style-gallery='editorial'].galB-wrap {
+  max-inline-size: var(--wrap-wide);
+  margin-inline: auto;
+}
+[data-style-gallery='editorial'] .galB { display: grid; gap: var(--sp-8); }
+[data-style-gallery='editorial'] .galB-grid {
+  display: grid;
+  grid-template-columns: repeat(12, var(--ed-col));
+  gap: var(--ed-gap);
+  align-items: start;
+}
+[data-style-gallery='editorial'] .galB-item { grid-column: span 6; margin: 0; }
+/* Erste Kachel einer Gruppe größer, dann versetzt — die Ungleichheit ist das
+   Prinzip, nicht die Dekoration. */
+[data-style-gallery='editorial'] .galB-item:nth-child(3n + 1) { grid-column: span 7; }
+[data-style-gallery='editorial'] .galB-item:nth-child(3n + 2) { grid-column: span 5; margin-top: var(--sp-7); }
+[data-style-gallery='editorial'] .galB-item:nth-child(3n + 3) { grid-column: span 12; }
+[data-style-gallery='editorial'] .galB-imgwrap {
+  overflow: hidden;
+  border-radius: 0;
+  aspect-ratio: var(--ar-classic);
+}
+[data-style-gallery='editorial'] .galB-item:nth-child(3n + 2) .galB-imgwrap { aspect-ratio: var(--ar-portrait); }
+[data-style-gallery='editorial'] .galB-item:nth-child(3n + 3) .galB-imgwrap { aspect-ratio: var(--ar-band); }
+[data-style-gallery='editorial'] .galB-imgwrap img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+[data-style-gallery='editorial'] .galB-cap {
+  font-size: var(--fs-2);
+  letter-spacing: 0.04em;
+  margin-top: var(--sp-2);
+  border-top: 1px solid var(--ed-rule);
+  padding-top: var(--sp-2);
+}
+
+/* --- C · STATEMENT — Bildwand ohne Abstände ------------------------------ */
+[data-style-gallery='editorial'].galC-wrap { max-inline-size: none; }
+[data-style-gallery='editorial'] .galC {
+  display: grid;
+  grid-template-columns: repeat(6, var(--ed-col));
+  gap: 1px;
+}
+[data-style-gallery='editorial'] .galC-tile {
+  grid-column: span 2;
+  aspect-ratio: var(--ar-square);
+  overflow: hidden;
+  border-radius: 0;
+  margin: 0;
+}
+[data-style-gallery='editorial'] .galC-tile:nth-child(7n + 1) {
+  grid-column: span 4;
+  aspect-ratio: var(--ar-classic);
+}
+[data-style-gallery='editorial'] .galC-tile:nth-child(7n + 5) {
+  grid-column: span 6;
+  aspect-ratio: var(--ar-band);
+}
+[data-style-gallery='editorial'] .galC-tile img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+/* =========================================================================
+   FAQ
+   ========================================================================= */
+
+/* --- A · BALANCED — eine Spalte, Hairlines, ruhig lesbar ----------------- */
+[data-style-faq='editorial'] .faqA-wrap {
+  max-inline-size: var(--wrap-narrow);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+[data-style-faq='editorial'] .faqA-list { border-top: 1px solid var(--ed-rule); }
+[data-style-faq='editorial'] .faqA-item {
+  border-bottom: 1px solid var(--ed-rule);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+[data-style-faq='editorial'] .faqA-q-btn {
+  min-block-size: var(--touch);
+  padding-block: var(--sp-4);
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  text-align: left;
+}
+[data-style-faq='editorial'] .faqA-answer {
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  max-inline-size: var(--ed-measure);
+  padding-bottom: var(--sp-5);
+}
+
+/* --- B · EDITORIAL — zweispaltig, alles offen, Randziffern -------------- */
+[data-style-faq='editorial'] .faqB-wrap {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+[data-style-faq='editorial'] .faqB-grid {
+  display: grid;
+  grid-template-columns: repeat(2, var(--ed-col));
+  gap: var(--sp-7) var(--sp-8);
+}
+[data-style-faq='editorial'] .faqB-card {
+  position: relative;
+  border: 0;
+  border-top: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: var(--sp-4) 0 0;
+}
+[data-style-faq='editorial'] .faqB-num {
+  position: absolute;
+  top: var(--sp-4);
+  right: 0;
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  color: var(--ed-rule-strong);
+  background: none;
+  border: 0;
+  padding: 0;
+}
+[data-style-faq='editorial'] .faqB-q {
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  max-inline-size: 28ch;
+}
+[data-style-faq='editorial'] .faqB-a {
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  max-inline-size: 46ch;
+  margin-top: var(--sp-3);
+}
+
+/* --- C · STATEMENT — Frage und Antwort als zwei Satzspalten -------------- */
+[data-style-faq='editorial'] .faqC-wrap {
+  max-inline-size: var(--wrap-wide);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+[data-style-faq='editorial'] .faqC-list { display: grid; }
+[data-style-faq='editorial'] .faqC-item {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: var(--ed-gap-lg);
+  align-items: start;
+  border-top: 2px solid var(--ed-rule-strong);
+  padding-block: var(--sp-6);
+}
+[data-style-faq='editorial'] .faqC-num {
+  display: block;
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  margin-bottom: var(--sp-2);
+}
+[data-style-faq='editorial'] .faqC-q {
+  font-size: var(--fs-6);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.015em;
+}
+[data-style-faq='editorial'] .faqC-a {
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  max-inline-size: var(--ed-measure);
+}
+
+/* =========================================================================
+   MOBILE — eigene Komposition, keine verkleinerte Desktop-Version
+   -------------------------------------------------------------------------
+   Grundsatz für Editorial auf kleinen Geräten: die Asymmetrie tritt zurück,
+   die Achse bleibt. Alles wird einspaltig und linksbündig, Hairlines und
+   Metadaten tragen die Struktur weiter.
+   ========================================================================= */
+@media (max-width: 900px) {
+  [data-style-ls='editorial'] .lsB-item,
+  [data-style-ls='editorial'] .lsB-item:nth-child(even) {
+    grid-template-columns: var(--ed-col);
+    gap: var(--sp-5);
+  }
+  [data-style-ls='editorial'] .lsB-item:nth-child(even) .lsB-img-wrap { order: 0; }
+  [data-style-ls='editorial'] .lsB-item:nth-child(even) .lsB-text { order: 0; }
+  [data-style-ls='editorial'] .lsB-list { gap: var(--sp-8); }
+
+  /* Einspaltig: Bild zuerst, Titel darunter — das Band bleibt als Rhythmus
+     erhalten, die Seitenwechsel entfallen. */
+  [data-style-tl='editorial'] .tlC-card,
+  [data-style-tl='editorial'] .tlC-card:nth-child(even) {
+    grid-template-columns: var(--ed-col);
+    gap: var(--sp-4);
+  }
+  [data-style-tl='editorial'] .tlC-img,
+  [data-style-tl='editorial'] .tlC-card:nth-child(even) .tlC-img { grid-column: 1; grid-row: 1; }
+  [data-style-tl='editorial'] .tlC-content,
+  [data-style-tl='editorial'] .tlC-card:nth-child(even) .tlC-content { grid-column: 1; grid-row: 2; }
+
+  [data-style-faq='editorial'] .faqB-grid { grid-template-columns: var(--ed-col); gap: var(--sp-6); }
+  [data-style-faq='editorial'] .faqC-item { grid-template-columns: var(--ed-col); gap: var(--sp-3); }
+
+  [data-style-gallery='editorial'] .galB-item,
+  [data-style-gallery='editorial'] .galB-item:nth-child(3n + 1),
+  [data-style-gallery='editorial'] .galB-item:nth-child(3n + 2),
+  [data-style-gallery='editorial'] .galB-item:nth-child(3n + 3) {
+    grid-column: span 12;
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  [data-style-ls='editorial'] .lsA-single {
+    grid-template-columns: var(--ed-col);
+    gap: var(--sp-5);
+  }
+  /* Auf dem Telefon führt der Text, die Bilder folgen — die Geschichte ist
+     wichtiger als das Bildcluster, sobald nur eine Spalte bleibt. */
+  [data-style-ls='editorial'] .lsA-text { order: 0; border-top: 0; padding-top: 0; }
+  [data-style-ls='editorial'] .lsA-images { order: 1; grid-template-columns: repeat(2, 1fr); }
+  [data-style-ls='editorial'] .lsA-img--1 { grid-column: span 2; }
+
+  /* Statement-Bänder: die Karte rutscht unter das Bild statt darüber —
+     überlappende Ebenen brauchen Fläche, die hier nicht da ist. */
+  [data-style-ls='editorial'] .lsC-card,
+  [data-style-ls='editorial'] .lsC-item:nth-child(even) .lsC-card {
+    inline-size: auto;
+    margin: 0;
+    margin-inline: var(--gutter);
+    margin-block-start: calc(var(--sp-5) * -1);
+    padding: var(--sp-5);
+  }
+  [data-style-ls='editorial'] .lsC-img { aspect-ratio: var(--ar-portrait); }
+  [data-style-ls='editorial'] .lsC-wrap { gap: var(--sp-8); }
+
+  [data-style-tl='editorial'] .tlA-cards {
+    grid-auto-flow: column;
+    grid-auto-columns: 78%;
+    grid-template-columns: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  [data-style-tl='editorial'] .tlA-card { scroll-snap-align: start; }
+
+  /* Zeitspalte schrumpft, Achse rückt nach links — die Marginalie bleibt
+     erhalten, statt über der Zeile zu landen. */
+  [data-style-tl='editorial'] .tlB-event {
+    display: grid;
+    grid-template-columns: 64px 20px minmax(0, 1fr);
+  }
+  [data-style-tl='editorial'] .tlB-event-time,
+  [data-style-tl='editorial'] .tlB-event-content { min-inline-size: 0; }
+  /* Schmale Inhaltsspalte: lange Einzelwörter ("Sektempfang", Ortsnamen)
+     sind der häufigste Overflow-Grund auf 320px. Titel eine Stufe kleiner
+     und umbruchfähig. */
+  [data-style-tl='editorial'] .tlB-event-content .ttl {
+    font-size: var(--fs-5);
+    overflow-wrap: anywhere;
+    hyphens: auto;
+  }
+  [data-style-tl='editorial'] .tlB-event-content .dsc { overflow-wrap: anywhere; }
+  [data-style-tl='editorial'] .tlB-line { left: 84px; }
+  [data-style-tl='editorial'] .tlB-event-time .t { font-size: var(--fs-4); }
+  [data-style-tl='editorial'] .tlB-event-content { padding-left: var(--sp-3); }
+
+  [data-style-gallery='editorial'] .galA { grid-template-columns: repeat(2, var(--ed-col)); gap: var(--sp-3); }
+  [data-style-gallery='editorial'] .galC { grid-template-columns: repeat(2, var(--ed-col)); }
+  [data-style-gallery='editorial'] .galC-tile,
+  [data-style-gallery='editorial'] .galC-tile:nth-child(7n + 1) { grid-column: span 1; aspect-ratio: var(--ar-square); }
+  [data-style-gallery='editorial'] .galC-tile:nth-child(7n + 5) { grid-column: span 2; aspect-ratio: var(--ar-wide); }
+
+  [data-style-ls='editorial'] .ls-title,
+  [data-style-gallery='editorial'] .gal-title { max-inline-size: 14ch; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-style-ls='editorial'] .lsB-img-wrap img,
+  [data-style-gallery='editorial'] .galA-tile img { transition: none; }
+  [data-style-ls='editorial'] .lsB-item:hover .lsB-img-wrap img { transform: none; }
+}
+
+/* -------------------------------------------------------------------------
+   Touch Targets — für Editorial aktiviert
+   -------------------------------------------------------------------------
+   Die globale 44px-Regel greift hier zuerst. Sie wird Design für Design
+   ausgerollt, damit die Wirkung je Design überprüfbar bleibt.
+   ------------------------------------------------------------------------- */
+[data-style-ls='editorial'] button,
+[data-style-tl='editorial'] button,
+[data-style-gallery='editorial'] button,
+[data-style-faq='editorial'] button,
+[data-style-gallery='editorial'] .galA-tile,
+[data-style-gallery='editorial'] .galB-item,
+[data-style-gallery='editorial'] .galC-tile {
+  min-block-size: var(--touch);
+}

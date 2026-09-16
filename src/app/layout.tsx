@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
 import './globals.css';
-// Wedding Styles der Kundenseiten — eigenständige Ebene, bleibt unberührt.
+// Ebene 1 — gemeinsame Maßsysteme aller acht Wedding Designs (keine Ästhetik).
+import './foundation.css';
+// Wedding Styles der Kundenseiten — eigenständige Ebene.
 import './design-system-v2.css';
+// Ebene 2 — Design 01: Editorial. Muss nach design-system-v2.css stehen.
+import './editorial.css';
 // Sarahiver Brand: Landing + Launch Gate.
 import './landing-v4.css';
 import './launch-gate.css';

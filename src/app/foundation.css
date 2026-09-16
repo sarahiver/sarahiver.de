@@ -1,0 +1,135 @@
+/* =========================================================================
+   GLOBAL FOUNDATION — Ebene 1
+   -------------------------------------------------------------------------
+   Gemeinsame technische Grundlage für alle acht Wedding Designs.
+   Definiert KEINE Ästhetik: keine Farben, keine Schriftfamilien, keine
+   Dekoration. Nur Maßsysteme, die jedes Design anders belegen darf.
+
+   Bewusst additiv: dieses Blatt überschreibt keine bestehenden Werte.
+   Die Migration passiert Design für Design — beim Editorial-Pass sind die
+   Tokens erstmals im Einsatz (editorial.css). Ein Big-Bang-Rewrite über
+   11.500 Zeilen Stil-CSS wäre nicht überprüfbar.
+
+   Import-Reihenfolge in layout.tsx: NACH globals.css, VOR den Design-Layern.
+   ========================================================================= */
+
+:root {
+  /* ---------------------------------------------------------------------
+     BREAKPOINTS (dokumentarisch — CSS kann Custom Properties nicht in
+     @media auflösen; die Werte stehen hier als verbindliche Referenz)
+
+       600px   Mobile  → Tablet
+       900px   Tablet  → Desktop
+      1280px   Desktop → Wide
+
+     Bestehende Breakpoints werden NICHT pauschal gelöscht. Erzeugt ein
+     vorhandener Wert einen echten eigenen Layoutzustand, bleibt er.
+     --------------------------------------------------------------------- */
+  --bp-mobile: 600px;
+  --bp-tablet: 900px;
+  --bp-wide: 1280px;
+
+  /* --- Spacing-Skala --------------------------------------------------- */
+  /* Für Makro-Layout und wiederkehrende Abstände. Mikrodetails (1px-Border,
+     2px-Icon-Offset, stilspezifische Schatten-Offsets) dürfen eigene Werte
+     behalten — die sind Teil der jeweiligen Design Grammar. */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+  --sp-9: 96px;
+  --sp-10: 128px;
+
+  /* --- Container ------------------------------------------------------- */
+  /* Ein Design darf diese Werte innerhalb seiner Grammar überschreiben:
+     Editorial greift häufiger zu --wrap-wide, ein minimalistisches Design
+     bewusst zu --wrap-narrow. */
+  --wrap-narrow: 680px;
+  --wrap: 1080px;
+  --wrap-wide: 1320px;
+
+  --gutter: 20px;
+
+  /* --- Typografie-Skala ------------------------------------------------- */
+  /* Semantische Stufen, fluid. Die acht Designs belegen sie unterschiedlich:
+     Editorial-Hero auf --fs-8, Mono-Hero auf --fs-7. Aber keine Komponente
+     erfindet ihre Größen neu. */
+  --fs-1: clamp(11px, 0.68rem + 0.1vw, 12px);      /* Metadaten, Labels    */
+  --fs-2: clamp(12px, 0.74rem + 0.12vw, 13px);     /* Kleintext, Captions  */
+  --fs-3: clamp(14px, 0.86rem + 0.14vw, 15px);     /* UI, Formulare        */
+  --fs-4: clamp(15px, 0.92rem + 0.2vw, 17px);      /* Fließtext            */
+  --fs-5: clamp(18px, 1rem + 0.6vw, 22px);         /* Lead, große Absätze  */
+  --fs-6: clamp(22px, 1.2rem + 1.2vw, 30px);       /* H3 / Karten-Titel    */
+  --fs-7: clamp(28px, 1.4rem + 2.4vw, 46px);       /* H2 / Sektionstitel   */
+  --fs-8: clamp(36px, 1.6rem + 5vw, 84px);         /* Hero / Statement     */
+
+  /* --- Zeilenhöhen ----------------------------------------------------- */
+  --lh-tight: 1.05;   /* große Display-Zeilen */
+  --lh-snug: 1.25;    /* Titel               */
+  --lh-normal: 1.6;   /* Fließtext           */
+
+  /* --- Touch Targets ---------------------------------------------------- */
+  /* Globale UX-Regel, kein Designparameter. */
+  --touch: 44px;
+
+  /* --- Bild-Seitenverhältnisse ------------------------------------------ */
+  /* Die Foundation legt das technische Verhalten fest, die Design Grammar
+     entscheidet, welches Format wo zum Einsatz kommt. */
+  --ar-portrait: 4 / 5;
+  --ar-classic: 3 / 2;
+  --ar-wide: 16 / 9;
+  --ar-square: 1 / 1;
+  --ar-band: 21 / 9;
+}
+
+@media (min-width: 600px) {
+  :root { --gutter: 24px; }
+}
+
+@media (min-width: 900px) {
+  :root { --gutter: 32px; }
+}
+
+/* -------------------------------------------------------------------------
+   Bildverhalten
+   -------------------------------------------------------------------------
+   Gilt für Bilder in den Hochzeitsbereichen, deren Slot ein
+   aspect-ratio vorgibt. Verhindert verzerrte Bilder unabhängig davon,
+   was das Paar hochlädt.
+   ------------------------------------------------------------------------- */
+.fd-img-slot {
+  display: block;
+  overflow: hidden;
+  background: color-mix(in srgb, currentColor 6%, transparent);
+}
+.fd-img-slot > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* -------------------------------------------------------------------------
+   Touch Targets
+   -------------------------------------------------------------------------
+   Wird pro Design aktiviert, sobald dessen Pass durchlaufen ist — so lässt
+   sich die Wirkung je Design prüfen, statt sie in acht Designs gleichzeitig
+   blind zu erzwingen. Editorial ist aktiviert (siehe editorial.css).
+   ------------------------------------------------------------------------- */
+.fd-touch button,
+.fd-touch [role='button'],
+.fd-touch input:not([type='checkbox']):not([type='radio']),
+.fd-touch select,
+.fd-touch textarea,
+.fd-touch a.fd-btn {
+  min-block-size: var(--touch);
+}
+.fd-touch input[type='checkbox'],
+.fd-touch input[type='radio'] {
+  min-inline-size: 20px;
+  min-block-size: 20px;
+}
