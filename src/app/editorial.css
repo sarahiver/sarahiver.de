@@ -674,23 +674,74 @@
 
 [data-style-gallery='editorial'] {
   padding-inline: var(--gutter);
+  /* Die Galerie war eine der längsten Sektionen der Seite. Weniger Polsterung
+     ist Teil der Kompaktheit, nicht nur die Kachelgröße. */
+  padding-block: clamp(56px, 6.5vw, 88px);
 }
 
-/* --- A · BALANCED — gleichmäßiges Raster, ein Format --------------------- */
+/* =========================================================================
+   GALLERY — Neufassung
+   -------------------------------------------------------------------------
+   Grundsatz dieser Runde: die Galerie im Seitenfluss ist ein TEASER, kein
+   Bilderteppich. Kleine kuratierte Vorschau, die große Fotografie erlebt man
+   in der Lightbox. Vorher war sie eine der längsten Sektionen der Seite.
+
+   Die Basis blendet ab der 6. Kachel aus (.gal-client-wrap:not(.is-expanded))
+   und zeigt den Knopf „Mehr Bilder zeigen" auch auf dem Desktop. Diese
+   Mechanik wird hier NICHT ersetzt, nur die Schwelle je Variante verschoben —
+   mit Selektoren gleicher Spezifität, sonst greift die Basisregel weiter.
+
+     A  Kontaktabzug     gleichmäßiges Raster kleiner Kacheln
+     B  Collage          ein dominantes Bild, kleinere Begleiter
+     C  Bildstreifen     waagerechte Strecke, seitlich scrollbar
+
+   Mobil sind es bewusst drei andere Erlebnisse: dichtes Raster, gestaffelte
+   Komposition, Wischstrecke.
+   ========================================================================= */
+
+[data-style-gallery='editorial'] {
+  padding-inline: var(--gutter);
+  /* Die Galerie war eine der längsten Sektionen der Seite. Weniger Polsterung
+     ist Teil der Kompaktheit, nicht nur die Kachelgröße. */
+  padding-block: clamp(56px, 6.5vw, 88px);
+}
+[data-style-gallery='editorial'] .gal-intro { margin-bottom: var(--sp-6); }
+
+/* Bildunterschriften bleiben der Lightbox vorbehalten — unter Daumennagel-
+   Kacheln erzeugen sie nur Unruhe. */
+[data-style-gallery='editorial'] .galA-cap { display: none; }
+/* Nur die Schlüsselaufnahme trägt eine Bildunterschrift. Unter jeder kleinen
+   Kachel wird daraus sonst eine Kette dreizeiliger Versalienblöcke. */
+[data-style-gallery='editorial'] .galB-cap { display: none; }
+[data-style-gallery='editorial'] .galB-group:nth-child(1) .galB-cap {
+  display: block;
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: var(--sp-2);
+  border-top: 1px solid var(--ed-rule);
+  padding-top: var(--sp-2);
+}
+
+/* --- A · Kontaktabzug ---------------------------------------------------- */
 [data-style-gallery='editorial'].galA-wrap {
   max-inline-size: var(--wrap);
   margin-inline: auto;
 }
 [data-style-gallery='editorial'] .galA {
   display: grid;
-  grid-template-columns: repeat(3, var(--ed-col));
-  gap: var(--ed-gap);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  inline-size: min(100%, 860px);
+  margin-inline: auto;
 }
 [data-style-gallery='editorial'] .galA-tile {
-  aspect-ratio: var(--ar-portrait);
+  aspect-ratio: var(--ar-square);
   overflow: hidden;
   border-radius: 0;
   margin: 0;
+  cursor: pointer;
 }
 [data-style-gallery='editorial'] .galA-tile img {
   inline-size: 100%;
@@ -698,78 +749,168 @@
   object-fit: cover;
   transition: opacity .25s ease;
 }
-[data-style-gallery='editorial'] .galA-tile:hover img { opacity: .88; }
-[data-style-gallery='editorial'] .galA-cap {
-  font-size: var(--fs-2);
-  letter-spacing: 0.04em;
-  margin-top: var(--sp-2);
-}
+[data-style-gallery='editorial'] .galA-tile:hover img { opacity: .82; }
+/* Zwölf Kacheln als Vorschau — drei Reihen, danach übernimmt die Lightbox. */
+[data-style-gallery='editorial'] .gal-client-wrap:not(.is-expanded) .galA-tile:nth-child(n + 6) { display: block; }
+[data-style-gallery='editorial'] .gal-client-wrap:not(.is-expanded) .galA-tile:nth-child(n + 13) { display: none; }
 
-/* --- B · EDITORIAL — Gruppen mit ungleichen Formaten --------------------- */
+/* --- B · Collage ---------------------------------------------------------
+   Die Komponente liefert die Bilder NICHT flach, sondern in Gruppen mit dem
+   Muster full → pair → triple (data-layout). Meine erste Fassung setzte
+   Einzelbilder über nth-child — die Regeln liefen ins Leere, weil nth-child
+   innerhalb der Gruppe zählt. Die Collage wird deshalb aus den GRUPPEN
+   gebaut: ein Schlüsselbild, daneben ein ungleiches Paar, darunter eine
+   Dreierzeile. Drei Gruppen sind die Vorschau, der Rest liegt in der Lightbox.
+   ------------------------------------------------------------------------ */
 [data-style-gallery='editorial'].galB-wrap {
-  max-inline-size: var(--wrap-wide);
+  max-inline-size: var(--wrap);
   margin-inline: auto;
 }
-[data-style-gallery='editorial'] .galB { display: grid; gap: var(--sp-8); }
-[data-style-gallery='editorial'] .galB-grid {
+[data-style-gallery='editorial'] .galB {
   display: grid;
-  grid-template-columns: repeat(12, var(--ed-col));
-  gap: var(--ed-gap);
-  align-items: start;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: clamp(70px, 7.4vw, 108px);
+  gap: 6px;
 }
-[data-style-gallery='editorial'] .galB-item { grid-column: span 6; margin: 0; }
-/* Erste Kachel einer Gruppe größer, dann versetzt — die Ungleichheit ist das
-   Prinzip, nicht die Dekoration. */
-[data-style-gallery='editorial'] .galB-item:nth-child(3n + 1) { grid-column: span 7; }
-[data-style-gallery='editorial'] .galB-item:nth-child(3n + 2) { grid-column: span 5; margin-top: var(--sp-7); }
-[data-style-gallery='editorial'] .galB-item:nth-child(3n + 3) { grid-column: span 12; }
+[data-style-gallery='editorial'] .galB-group { display: grid; gap: 6px; min-inline-size: 0; }
+[data-style-gallery='editorial'] .galB-group:nth-child(1) { grid-column: span 7; grid-row: span 3; }
+[data-style-gallery='editorial'] .galB-group:nth-child(2) { grid-column: span 5; grid-row: span 3; }
+[data-style-gallery='editorial'] .galB-group:nth-child(3) { grid-column: span 12; grid-row: span 2; }
+[data-style-gallery='editorial'] .galB-group .galB-grid {
+  display: grid;
+  gap: 6px;
+  block-size: 100%;
+  grid-template-columns: minmax(0, 1fr);
+}
+/* Ungleiche Teilung im Paar und in der Dreierzeile — gleich große Kacheln
+   wären wieder ein Raster. */
+[data-style-gallery='editorial'] .galB-group:nth-child(2) .galB-grid { grid-template-rows: 1.25fr 1fr; }
+[data-style-gallery='editorial'] .galB-group:nth-child(3) .galB-grid {
+  grid-template-columns: 4fr 3fr 5fr;
+  grid-auto-flow: column;
+}
+[data-style-gallery='editorial'] .galB-item {
+  margin: 0;
+  min-inline-size: 0;
+  min-block-size: 0;
+  cursor: pointer;
+}
 [data-style-gallery='editorial'] .galB-imgwrap {
   overflow: hidden;
   border-radius: 0;
-  aspect-ratio: var(--ar-classic);
+  aspect-ratio: auto;
+  block-size: 100%;
 }
-[data-style-gallery='editorial'] .galB-item:nth-child(3n + 2) .galB-imgwrap { aspect-ratio: var(--ar-portrait); }
-[data-style-gallery='editorial'] .galB-item:nth-child(3n + 3) .galB-imgwrap { aspect-ratio: var(--ar-band); }
 [data-style-gallery='editorial'] .galB-imgwrap img {
   inline-size: 100%;
   block-size: 100%;
   object-fit: cover;
 }
-[data-style-gallery='editorial'] .galB-cap {
-  font-size: var(--fs-2);
-  letter-spacing: 0.04em;
-  margin-top: var(--sp-2);
-  border-top: 1px solid var(--ed-rule);
-  padding-top: var(--sp-2);
-}
+/* Drei Gruppen als Komposition — mehr würde die Collage zum Teppich machen. */
+[data-style-gallery='editorial'] .gal-client-wrap:not(.is-expanded) .galB-group:nth-child(n + 4) { display: none; }
 
-/* --- C · STATEMENT — Bildwand ohne Abstände ------------------------------ */
+/* --- C · Bildstreifen ----------------------------------------------------
+   Waagerechte Strecke mit Scroll-Snap: das nächste Bild schaut immer ins
+   Bild, dadurch ist ohne Beschriftung klar, dass es weitergeht. Kostet
+   keinen senkrechten Platz, egal wie viele Bilder es sind.
+   ------------------------------------------------------------------------ */
 [data-style-gallery='editorial'].galC-wrap { max-inline-size: none; }
 [data-style-gallery='editorial'] .galC {
   display: grid;
-  grid-template-columns: repeat(6, var(--ed-col));
-  gap: 1px;
+  /* Die Basis setzt vier feste Spalten. Ohne dieses Zurücknehmen legt
+     grid-auto-flow die Bilder erst in diese vier Spalten und erzeugt daneben
+     implizite — die Kacheln schrumpfen dann auf wenige Pixel. */
+  grid-template-columns: none;
+  max-inline-size: none;
+  margin: clamp(24px, 3vw, 36px) 0 0;
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(180px, 19vw, 280px);
+  gap: 6px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--gutter);
+  padding-bottom: var(--sp-4);
+  scrollbar-width: thin;
 }
 [data-style-gallery='editorial'] .galC-tile {
-  grid-column: span 2;
-  aspect-ratio: var(--ar-square);
+  scroll-snap-align: start;
+  aspect-ratio: var(--ar-portrait);
   overflow: hidden;
   border-radius: 0;
   margin: 0;
+  cursor: pointer;
 }
-[data-style-gallery='editorial'] .galC-tile:nth-child(7n + 1) {
-  grid-column: span 4;
-  aspect-ratio: var(--ar-classic);
-}
-[data-style-gallery='editorial'] .galC-tile:nth-child(7n + 5) {
-  grid-column: span 6;
-  aspect-ratio: var(--ar-band);
-}
+/* Ein Bild trägt die Strecke, die übrigen begleiten. */
+[data-style-gallery='editorial'] .galC-tile:nth-child(3n + 2) { aspect-ratio: var(--ar-classic); }
+[data-style-gallery='editorial'] .galC-tile:nth-child(5n + 3) { aspect-ratio: var(--ar-square); }
 [data-style-gallery='editorial'] .galC-tile img {
   inline-size: 100%;
   block-size: 100%;
   object-fit: cover;
 }
+/* Im Streifen bleiben alle Bilder — waagerecht kostet das keinen Platz. */
+[data-style-gallery='editorial'] .gal-client-wrap:not(.is-expanded) .galC-tile:nth-child(n + 6) { display: block; }
+/* Der Knopf entfällt dort: es ist bereits alles erreichbar, und die Lightbox
+   öffnet jedes Bild groß. */
+[data-style-gallery='editorial'].galC-wrap .gal-showmore-row { display: none; }
+
+/* --- CTA ----------------------------------------------------------------- */
+[data-style-gallery='editorial'] .gal-showmore-row {
+  text-align: left;
+  inline-size: min(100%, 860px);
+  margin-inline: auto;
+  margin-block-start: var(--sp-5);
+}
+[data-style-gallery='editorial'] .gal-showmore {
+  border-radius: 0;
+  border: 0;
+  border-bottom: 1px solid var(--ed-rule-strong);
+  padding: 0 0 var(--sp-2);
+  background: none;
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  min-block-size: var(--touch);
+  transition: color .2s ease, border-color .2s ease;
+}
+[data-style-gallery='editorial'] .gal-showmore:hover {
+  background: none;
+  color: var(--terra-on-light, var(--muted));
+  border-color: currentColor;
+  transform: none;
+}
+/* Die Zahl im Knopf zählt die AB der 6. Kachel verborgenen Bilder — das
+   passt nicht mehr zu einer Vorschau von zwölf. Bis die Komponente die
+   Gesamtzahl übergibt, bleibt sie aus. */
+[data-style-gallery='editorial'] .gal-more-count { display: none; }
+
+/* --- Lightbox ------------------------------------------------------------ */
+[data-style-gallery='editorial'] ~ .gal-lightbox,
+.wedding-site-wrapper[data-style='editorial'] .gal-lightbox {
+  background: rgba(24, 18, 14, 0.94);
+}
+.wedding-site-wrapper[data-style='editorial'] .gal-lb-img {
+  max-block-size: 82vh;
+  box-shadow: none;
+  background: transparent;
+}
+.wedding-site-wrapper[data-style='editorial'] .gal-lb-cap {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  gap: var(--sp-4);
+}
+.wedding-site-wrapper[data-style='editorial'] .gal-lb-nav,
+.wedding-site-wrapper[data-style='editorial'] .gal-lb-close {
+  border-radius: 0;
+  border: 1px solid rgba(244, 237, 226, 0.4);
+  background: transparent;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+}
+.wedding-site-wrapper[data-style='editorial'] .gal-lb-close:hover { transform: none; }
 
 /* =========================================================================
    FAQ
@@ -899,13 +1040,6 @@
   [data-style-faq='editorial'] .faqB-grid { grid-template-columns: var(--ed-col); gap: var(--sp-6); }
   [data-style-faq='editorial'] .faqC-item { grid-template-columns: var(--ed-col); gap: var(--sp-3); }
 
-  [data-style-gallery='editorial'] .galB-item,
-  [data-style-gallery='editorial'] .galB-item:nth-child(3n + 1),
-  [data-style-gallery='editorial'] .galB-item:nth-child(3n + 2),
-  [data-style-gallery='editorial'] .galB-item:nth-child(3n + 3) {
-    grid-column: span 12;
-    margin-top: 0;
-  }
 }
 
 @media (max-width: 600px) {
@@ -1032,6 +1166,86 @@
   [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 5) { inline-size: 76%; }
   [data-style-ls='editorial'] .lsC-card > * { max-inline-size: none; }
 
+  /* ======================================================================
+     GALLERY MOBIL — drei eigene Erlebnisse
+     ----------------------------------------------------------------------
+     Alle Rücksetzungen tragen dieselben nth-Selektoren wie die Desktop-
+     Setzungen. Media Queries erhöhen die Spezifität nicht; bei der Love Story
+     hatte genau das die Mobilansicht ausgehebelt.
+     ====================================================================== */
+
+  /* A · dichter Fotoindex: drei Spalten, kleine Kacheln, neun als Vorschau. */
+  [data-style-gallery='editorial'] .galA {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+    inline-size: 100%;
+  }
+  [data-style-gallery='editorial'] .gal-client-wrap:not(.is-expanded) .galA-tile:nth-child(n + 10) { display: none; }
+  [data-style-gallery='editorial'] .gal-client-wrap:not(.is-expanded) .galA-tile:nth-child(n + 13) { display: none; }
+
+  /* B · gestaffelte Komposition statt Raster: das Schlüsselbild über die
+     volle Breite, darunter das ungleiche Paar nebeneinander, dann die
+     Dreierzeile eingerückt. Die Gruppenlogik der Komponente trägt hier die
+     Staffelung. */
+  [data-style-gallery='editorial'] .galB {
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: auto;
+    gap: var(--sp-3);
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(1),
+  [data-style-gallery='editorial'] .galB-group:nth-child(2),
+  [data-style-gallery='editorial'] .galB-group:nth-child(3) {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(1) .galB-imgwrap { aspect-ratio: var(--ar-wide); block-size: auto; }
+  [data-style-gallery='editorial'] .galB-group:nth-child(2) {
+    inline-size: 88%;
+    margin-inline-start: auto;
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(2) .galB-grid {
+    grid-template-rows: none;
+    grid-template-columns: 3fr 2fr;
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(2) .galB-imgwrap { aspect-ratio: var(--ar-square); block-size: auto; }
+  [data-style-gallery='editorial'] .galB-group:nth-child(3) { inline-size: 76%; }
+  [data-style-gallery='editorial'] .galB-group:nth-child(3) .galB-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(3) .galB-imgwrap { aspect-ratio: var(--ar-square); block-size: auto; }
+
+  /* C · Wischstrecke: ein Bild führt, das nächste schaut ins Bild. Scroll-
+     Snap übernimmt die Gestensteuerung, ohne dass die Komponente JavaScript
+     braucht. */
+  [data-style-gallery='editorial'] .galC {
+    grid-auto-columns: 78%;
+    gap: 8px;
+    scroll-snap-type: x mandatory;
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter);
+  }
+  [data-style-gallery='editorial'] .galC-tile,
+  [data-style-gallery='editorial'] .galC-tile:nth-child(3n + 2),
+  [data-style-gallery='editorial'] .galC-tile:nth-child(5n + 3) {
+    aspect-ratio: var(--ar-portrait);
+  }
+
+  /* Lightbox mobil: fast bildschirmfüllend, Bedienelemente groß und unten
+     erreichbar statt seitlich am Bildrand. */
+  .wedding-site-wrapper[data-style='editorial'] .gal-lightbox { padding: 12px; }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-img { max-block-size: 72vh; }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-nav {
+    inset-block-start: auto;
+    inset-block-end: 4px;
+    transform: none;
+  }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-prev { inset-inline-start: 8px; }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-next { inset-inline-end: 8px; }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-close {
+    inset-block-start: 4px;
+    inset-inline-end: 4px;
+  }
+
   [data-style-tl='editorial'] .tlA-cards {
     grid-auto-flow: column;
     grid-auto-columns: 78%;
@@ -1063,11 +1277,6 @@
   [data-style-tl='editorial'] .tlB-event-time .t { font-size: var(--fs-4); }
   [data-style-tl='editorial'] .tlB-event-content { padding-left: var(--sp-3); }
 
-  [data-style-gallery='editorial'] .galA { grid-template-columns: repeat(2, var(--ed-col)); gap: var(--sp-3); }
-  [data-style-gallery='editorial'] .galC { grid-template-columns: repeat(2, var(--ed-col)); }
-  [data-style-gallery='editorial'] .galC-tile,
-  [data-style-gallery='editorial'] .galC-tile:nth-child(7n + 1) { grid-column: span 1; aspect-ratio: var(--ar-square); }
-  [data-style-gallery='editorial'] .galC-tile:nth-child(7n + 5) { grid-column: span 2; aspect-ratio: var(--ar-wide); }
 
   [data-style-ls='editorial'] .ls-title,
   [data-style-gallery='editorial'] .gal-title { max-inline-size: 14ch; }
