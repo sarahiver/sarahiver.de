@@ -886,27 +886,6 @@
    Metadaten tragen die Struktur weiter.
    ========================================================================= */
 @media (max-width: 900px) {
-  /* B einspaltig, aber nicht gleichförmig: die Bildformate der fünf
-     Setzungen bleiben erhalten und die Stationen rücken abwechselnd vom
-     Rand ein — das Raster wird zur Spalte, der Rhythmus bleibt. */
-  [data-style-ls='editorial'] .lsB-list {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: var(--sp-8);
-  }
-  [data-style-ls='editorial'] .lsB-item {
-    grid-template-columns: minmax(0, 1fr);
-    grid-column: 1;
-    gap: var(--sp-4);
-  }
-  [data-style-ls='editorial'] .lsB-item .lsB-img-wrap,
-  [data-style-ls='editorial'] .lsB-item .lsB-text { grid-column: 1; padding-top: 0; }
-  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 2) { padding-inline-start: var(--sp-6); }
-  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 3) { padding-inline: var(--sp-7) var(--sp-2); }
-  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 5) { padding-inline-end: var(--sp-6); }
-  [data-style-ls='editorial'] .lsB-num { position: static; display: block; margin-bottom: var(--sp-2); }
-
-  /* Einspaltig: Bild zuerst, Titel darunter — das Band bleibt als Rhythmus
-     erhalten, die Seitenwechsel entfallen. */
   [data-style-tl='editorial'] .tlC-card,
   [data-style-tl='editorial'] .tlC-card:nth-child(even) {
     grid-template-columns: var(--ed-col);
@@ -930,29 +909,127 @@
 }
 
 @media (max-width: 600px) {
-  [data-style-ls='editorial'] .lsA-single {
-    grid-template-columns: var(--ed-col);
-    gap: var(--sp-5);
-  }
-  /* Auf dem Telefon führt der Text, die Bilder folgen — die Geschichte ist
-     wichtiger als das Bildcluster, sobald nur eine Spalte bleibt. */
-  [data-style-ls='editorial'] .lsA-text { order: 0; border-top: 0; padding-top: 0; }
-  [data-style-ls='editorial'] .lsA-images { order: 1; grid-template-columns: repeat(2, 1fr); }
-  [data-style-ls='editorial'] .lsA-img--1 { grid-column: span 2; }
+  /* ======================================================================
+     LOVE STORY MOBIL
+     ----------------------------------------------------------------------
+     URSACHE des kaputten Zustands: Spezifität. Die Desktop-Setzungen hängen
+     an :nth-child / :nth-of-type (0,4,0), die früheren Mobile-Rücksetzungen
+     an einfachen Klassen (0,2,0). Media Queries erhöhen die Spezifität
+     nicht — also galten am Telefon weiter die Zwölfspalter-Platzierungen.
+     Gemessen: ein Bild mit `grid-column: 1 / span 7` in einem einspaltigen
+     Raster war 96px breit statt 350, Station 3 saß bei left 249 außerhalb.
 
-  /* C wird zum senkrechten Filmstreifen: die Bildfolge bleibt die Erzählung,
-     nur die Achse dreht sich. Formate wechseln weiter, und jede zweite
-     Aufnahme rückt ein — gleich breite Bilder untereinander wären wieder
-     eine gewöhnliche Bildliste. */
+     Deshalb stehen unten dieselben nth-Selektoren wie auf dem Desktop —
+     nicht als Reparatur, sondern als eigene mobile Setzung je Station.
+     ====================================================================== */
+
+  /* --- A · mobil: Bild, Geschichte, Bild, Bild -------------------------
+     display:contents löst die Bildspalte auf, damit der Erzähltext ZWISCHEN
+     die Aufnahmen rücken kann — sonst stünden erst drei Bilder und dann der
+     Text. Die Schiene entfällt dabei (sie war die Box der Bildspalte), die
+     Plattennummern bleiben und setzen sich über die Bilder. */
+  [data-style-ls='editorial'] .lsA-single {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-6);
+  }
+  [data-style-ls='editorial'] .lsA-images {
+    display: contents;
+    padding-left: 0;
+  }
+  [data-style-ls='editorial'] .lsA-images::before { content: none; }
+  [data-style-ls='editorial'] .lsA-img,
+  [data-style-ls='editorial'] .lsA-single:hover .lsA-img {
+    margin: 0;
+    padding: 0;
+  }
+  [data-style-ls='editorial'] .lsA-img::before {
+    top: -1.7em;
+    left: 0;
+    inline-size: auto;
+  }
+  [data-style-ls='editorial'] .lsA-img--1 { order: 1; inline-size: 100%; aspect-ratio: var(--ar-classic); }
+  [data-style-ls='editorial'] .lsA-text   { order: 2; }
+  /* Die beiden Folgeaufnahmen stehen bewusst nicht randbündig — sonst wird
+     die Seite eine Kette gleich breiter Bilder. */
+  [data-style-ls='editorial'] .lsA-img--2 {
+    order: 3;
+    inline-size: 78%;
+    margin-inline-start: auto;
+    aspect-ratio: var(--ar-portrait);
+  }
+  [data-style-ls='editorial'] .lsA-img--3 { order: 4; inline-size: 62%; aspect-ratio: var(--ar-square); }
+
+  /* --- B · mobil: eine Spalte, aber komponiert -------------------------
+     Jede Station behält ihr eigenes Gewicht: unterschiedliche Bildbreiten,
+     wechselnde Ränder, wechselnde Einzüge. Aus dem Raster wird eine Spalte,
+     aus der Asymmetrie nicht Gleichförmigkeit. */
+  [data-style-ls='editorial'] .lsB-list {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--sp-8);
+  }
+  [data-style-ls='editorial'] .lsB-item {
+    grid-template-columns: minmax(0, 1fr);
+    grid-column: 1;
+    gap: var(--sp-4);
+  }
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 1) .lsB-img-wrap,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 2) .lsB-img-wrap,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 3) .lsB-img-wrap,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 4) .lsB-img-wrap,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 5) .lsB-img-wrap,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 1) .lsB-text,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 2) .lsB-text,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 3) .lsB-text,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 4) .lsB-text,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 5) .lsB-text {
+    grid-column: 1;
+    padding-top: 0;
+  }
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 2) .lsB-img-wrap { inline-size: 76%; margin-inline-start: auto; }
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 3) .lsB-img-wrap { inline-size: 58%; }
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 4) .lsB-img-wrap { inline-size: 88%; margin-inline-start: auto; }
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 5) .lsB-img-wrap { inline-size: 70%; }
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 2) .lsB-text { padding-inline-start: var(--sp-6); }
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 3) .lsB-text { padding-inline-start: var(--sp-7); }
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 5) .lsB-text { padding-inline-end: var(--sp-6); }
+  /* Hängende Randziffern brauchen einen Rand, den es hier nicht gibt. */
+  [data-style-ls='editorial'] .lsB-num,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 4) .lsB-num {
+    position: static;
+    display: block;
+    margin-bottom: var(--sp-2);
+  }
+
+  /* --- C · mobil: ein Schlüsselbild, dann kleinere Momente -------------
+     Die Öffnungsplatte läuft über die Seitenränder hinaus und dominiert;
+     danach wechseln kleine und große Aufnahmen. Drei Bilder in voller
+     Breite untereinander wären eine Galerie, keine Dramaturgie. */
   [data-style-ls='editorial'] .lsC-wrap {
     grid-template-columns: minmax(0, 1fr);
     row-gap: var(--sp-7);
   }
-  [data-style-ls='editorial'] .lsC-item { grid-column: 1; padding-top: 0; }
-  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 2) { padding-inline-end: var(--sp-8); }
-  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 3) { padding-inline-start: var(--sp-9); }
-  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 5) { padding-inline-end: var(--sp-6); }
-  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 1) .lsC-img { aspect-ratio: var(--ar-classic); }
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 1),
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 2),
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 3),
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 4),
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 5) {
+    grid-column: 1;
+    padding-top: 0;
+  }
+  /* Schlüsselbild randlos über die volle Gerätebreite. */
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 1) {
+    margin-inline: calc(-1 * var(--gutter));
+  }
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 1) .lsC-img { aspect-ratio: var(--ar-portrait); }
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 1) .lsC-card { padding-inline: var(--gutter); }
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 2) { inline-size: 64%; }
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 3) {
+    inline-size: 48%;
+    margin-inline-start: auto;
+    margin-block-start: calc(-1 * var(--sp-5));
+  }
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 4) .lsC-img { aspect-ratio: var(--ar-wide); }
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 5) { inline-size: 76%; }
   [data-style-ls='editorial'] .lsC-card > * { max-inline-size: none; }
 
   [data-style-tl='editorial'] .tlA-cards {
