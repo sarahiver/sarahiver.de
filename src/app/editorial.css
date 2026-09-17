@@ -1401,6 +1401,333 @@
 .wedding-site-wrapper[data-style='editorial'] .gal-lb-close:hover { transform: none; }
 
 /* =========================================================================
+   ÜBERNACHTUNG (ACCOMMODATIONS)
+   -------------------------------------------------------------------------
+   Drei Arten, dieselben Unterkünfte zu konsumieren:
+
+     A  COMPARE      drei Spalten, gleiche Zeilen — Name, Meta, Text und
+                     Buchung stehen spaltenübergreifend auf einer Linie,
+                     damit man wirklich vergleichen kann.
+     B  GUIDE        die erste Empfehlung groß, die weiteren als knappe
+                     redaktionelle Einträge. Kuratiert statt Datenbank.
+     C  DESTINATION  Karte mit nummerierten Punkten links, Liste rechts;
+                     die Entfernung ist die führende Information.
+
+   Nach Ablauf und Anfahrt braucht diese Sektion eine eigene Handschrift —
+   deshalb in A kein Kartenrahmen, in B kein Raster, in C keine Textspalte
+   wie in der Anfahrt.
+   ========================================================================= */
+
+.acc[data-style-acc='editorial'] {
+  --acc-rule: color-mix(in srgb, currentColor 16%, transparent);
+  --acc-rule-strong: color-mix(in srgb, currentColor 40%, transparent);
+  padding-block: clamp(56px, 6.5vw, 88px);
+  padding-inline: var(--gutter);
+}
+
+/* Kopf auf der linken Achse wie in den übrigen Editorial-Bereichen. */
+[data-style-acc='editorial'] .acc-eyebrow,
+[data-style-acc='editorial'] .acc-title,
+[data-style-acc='editorial'] .acc-desc {
+  text-align: left;
+  margin-inline: 0 auto;
+}
+[data-style-acc='editorial'] .acc-title { font-size: var(--fs-7); line-height: var(--lh-snug); }
+[data-style-acc='editorial'] .acc-desc { max-inline-size: var(--ed-measure); font-size: var(--fs-4); }
+[data-style-acc='editorial'] .acc-head-ornament { display: none; }
+[data-style-acc='editorial'] .acc-head {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+  padding-inline: 0;
+  text-align: left;
+}
+
+/* Gemeinsame Bausteine ---------------------------------------------------- */
+[data-style-acc='editorial'] .acc-photo-img,
+[data-style-acc='editorial'] .acc-photo-empty {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  border-radius: 0;
+}
+[data-style-acc='editorial'] .acc-photo-empty {
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, currentColor 6%, transparent);
+  color: var(--muted);
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+}
+/* Entfernung und Preis als gesetzte Metazeile, nicht als Chips. */
+[data-style-acc='editorial'] .acc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-2) var(--sp-4);
+  margin-top: var(--sp-2);
+}
+[data-style-acc='editorial'] .acc-meta .meta-item {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  font-family: var(--body);
+  font-size: var(--fs-2);
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+[data-style-acc='editorial'] .acc-meta .meta-item svg { opacity: 0.5; }
+/* Buchungslink: Versalzeile mit Unterstrich statt Flächenbutton. */
+[data-style-acc='editorial'] .acc-btn,
+[data-style-acc='editorial'] .accC-booklink {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--touch);
+  padding: 0 0 var(--sp-2);
+  border: 0;
+  border-bottom: 1px solid var(--acc-rule-strong);
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  box-shadow: none;
+  transition: color .2s ease, border-color .2s ease;
+}
+[data-style-acc='editorial'] .acc-btn:hover,
+[data-style-acc='editorial'] .accC-booklink:hover {
+  background: none;
+  color: var(--terra-on-light, var(--ink));
+  border-color: currentColor;
+  transform: none;
+}
+[data-style-acc='editorial'] .acc-name,
+[data-style-acc='editorial'] .accA-name,
+[data-style-acc='editorial'] .accB-name,
+[data-style-acc='editorial'] .accC-name {
+  font-family: var(--body);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  overflow-wrap: break-word;
+}
+[data-style-acc='editorial'] .accA-desc,
+[data-style-acc='editorial'] .accB-desc {
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  color: var(--muted);
+}
+
+/* --- A · COMPARE ---------------------------------------------------------
+   Der Vergleich lebt davon, dass gleiche Informationen auf gleicher Höhe
+   stehen. Mit subgrid erben die Karten die Zeilen des äußeren Rasters —
+   Name, Meta, Text und Buchung liegen dadurch spaltenübergreifend auf einer
+   Linie, egal wie lang die Texte sind.
+   ------------------------------------------------------------------------ */
+[data-style-acc='editorial'] .accA-wrap {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+}
+[data-style-acc='editorial'] .accA-grid,
+[data-style-acc='editorial'] .accA-grid.is-one,
+[data-style-acc='editorial'] .accA-grid.is-two {
+  display: grid;
+  /* Feste Dreierteilung statt auto-fit: bei einer einzelnen Unterkunft
+     bliebe sonst eine bildschirmbreite Karte stehen. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: auto auto auto 1fr auto;
+  gap: var(--sp-3) var(--ed-gap);
+}
+[data-style-acc='editorial'] .accA-card {
+  display: grid;
+  grid-row: span 5;
+  grid-template-rows: subgrid;
+  gap: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  overflow: visible;
+}
+@supports not (grid-template-rows: subgrid) {
+  [data-style-acc='editorial'] .accA-card {
+    grid-row: auto;
+    grid-template-rows: auto auto auto 1fr auto;
+  }
+}
+[data-style-acc='editorial'] .accA-photo {
+  aspect-ratio: var(--ar-classic);
+  overflow: hidden;
+  border-radius: 0;
+  margin: 0;
+}
+[data-style-acc='editorial'] .accA-body {
+  display: contents;
+}
+[data-style-acc='editorial'] .accA-name {
+  font-size: var(--fs-4);
+  line-height: var(--lh-snug);
+  margin: var(--sp-3) 0 0;
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--acc-rule);
+}
+[data-style-acc='editorial'] .accA-desc {
+  margin: var(--sp-2) 0 0;
+  max-inline-size: 34ch;
+}
+[data-style-acc='editorial'] .accA-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-top: var(--sp-3);
+  border: 0;
+  padding: 0;
+}
+
+/* --- B · GUIDE -----------------------------------------------------------
+   Die erste Unterkunft ist die Empfehlung und bekommt die Fläche; die
+   weiteren folgen als knappe Einträge mit kleinem Bild. Keine Nummerierung —
+   die Gewichtung macht die Reihenfolge lesbar.
+   ------------------------------------------------------------------------ */
+[data-style-acc='editorial'] .accB-wrap {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+}
+[data-style-acc='editorial'] .accB-list { display: grid; gap: 0; }
+[data-style-acc='editorial'] .accB-item {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 7fr);
+  column-gap: var(--ed-gap-lg);
+  align-items: start;
+  border: 0;
+  border-top: 1px solid var(--acc-rule);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: var(--sp-5) 0;
+  overflow: visible;
+}
+/* Die Basis gibt dem Bild feste 120 × 120 px. Im Editorial füllt es seine
+   Rasterspalte und trägt das Seitenverhältnis. */
+[data-style-acc='editorial'] .accB-photo {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: var(--ar-classic);
+  overflow: hidden;
+  border-radius: 0;
+  margin: 0;
+  min-inline-size: 0;
+}
+[data-style-acc='editorial'] .accB-item.no-photo { grid-template-columns: minmax(0, 1fr); }
+[data-style-acc='editorial'] .accB-body { min-inline-size: 0; }
+[data-style-acc='editorial'] .accB-name { font-size: var(--fs-4); line-height: var(--lh-snug); }
+[data-style-acc='editorial'] .accB-desc {
+  margin-top: var(--sp-2);
+  max-inline-size: 58ch;
+  /* Die Basis beschneidet die Empfehlung auf zwei Zeilen — im Guide darf sie
+     ausreden. */
+  display: block;
+  -webkit-line-clamp: none;
+  overflow: visible;
+}
+[data-style-acc='editorial'] .accB-cta { margin-top: var(--sp-3); }
+/* Die Empfehlung: größere Fläche, größerer Name, mehr Luft. */
+[data-style-acc='editorial'] .accB-item:first-child {
+  grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+  border-top: 1px solid var(--acc-rule-strong);
+  padding-block: var(--sp-6) var(--sp-7);
+}
+[data-style-acc='editorial'] .accB-item:first-child .accB-photo { aspect-ratio: var(--ar-classic); }
+[data-style-acc='editorial'] .accB-item:first-child .accB-name {
+  font-family: var(--disp);
+  font-weight: 300;
+  font-size: var(--fs-6);
+  letter-spacing: -0.015em;
+}
+[data-style-acc='editorial'] .accB-item:first-child .accB-desc { font-size: var(--fs-4); }
+[data-style-acc='editorial'] .accB-list > :last-child { border-bottom: 1px solid var(--acc-rule-strong); }
+
+/* --- C · DESTINATION -----------------------------------------------------
+   Karte mit nummerierten Punkten trägt die Variante, die Liste daneben ist
+   die Legende dazu. Anders als in der Anfahrt steht hier nicht eine Adresse
+   im Zentrum, sondern die Lage mehrerer Orte zueinander.
+   ------------------------------------------------------------------------ */
+[data-style-acc='editorial'] .accC-wrap {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+}
+[data-style-acc='editorial'] .accC-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  column-gap: clamp(28px, 3.4vw, 48px);
+  align-items: stretch;
+}
+[data-style-acc='editorial'] .accC-mapwrap {
+  border: 1px solid var(--acc-rule);
+  border-radius: 0;
+  box-shadow: none;
+  min-block-size: clamp(280px, 30vw, 440px);
+  min-inline-size: 0;
+}
+[data-style-acc='editorial'] .accC-maplegend {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+[data-style-acc='editorial'] .accC-pin-bubble {
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid var(--acc-rule-strong);
+}
+[data-style-acc='editorial'] .accC-list { display: grid; gap: 0; align-content: start; }
+[data-style-acc='editorial'] .accC-row {
+  display: grid;
+  grid-template-columns: clamp(26px, 2.6vw, 36px) minmax(0, 1fr);
+  gap: var(--sp-3);
+  align-items: baseline;
+  border: 0;
+  border-top: 1px solid var(--acc-rule);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: var(--sp-4) 0;
+}
+[data-style-acc='editorial'] .accC-row:first-child { border-top: 1px solid var(--acc-rule-strong); }
+[data-style-acc='editorial'] .accC-row:last-child { border-bottom: 1px solid var(--acc-rule-strong); }
+[data-style-acc='editorial'] .accC-row.is-hover { background: color-mix(in srgb, currentColor 4%, transparent); }
+[data-style-acc='editorial'] .accC-num {
+  inline-size: auto;
+  block-size: auto;
+  border-radius: 0;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: 0.2em;
+  line-height: 1.7;
+}
+[data-style-acc='editorial'] .accC-name { font-size: var(--fs-4); line-height: var(--lh-snug); }
+/* In dieser Variante führt die Entfernung — sie steht größer als der Rest
+   der Metazeile. */
+[data-style-acc='editorial'] .accC-row .acc-meta .meta-item:first-child {
+  font-size: var(--fs-3);
+  color: var(--ink-soft);
+}
+[data-style-acc='editorial'] .accC-bookline { margin-top: var(--sp-3); }
+
+/* =========================================================================
    FAQ
    ========================================================================= */
 
@@ -1653,6 +1980,60 @@
   [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 4) .lsC-img { aspect-ratio: var(--ar-wide); }
   [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 5) { inline-size: 76%; }
   [data-style-ls='editorial'] .lsC-card > * { max-inline-size: none; }
+
+  /* ======================================================================
+     ÜBERNACHTUNG MOBIL — drei eigene Zustände.
+     Selektorstufen gleich wie auf dem Desktop (auch :first-child), damit
+     keine Desktop-Regel die Mobilsetzung überstimmt.
+     ====================================================================== */
+
+  /* A · Vergleich bleibt Vergleich: zwei Spalten kompakter Einträge statt
+     drei Riesenkarten untereinander. Name, Entfernung und Preis stehen
+     dadurch weiterhin nebeneinander lesbar. */
+  [data-style-acc='editorial'] .accA-grid,
+  [data-style-acc='editorial'] .accA-grid.is-one,
+  [data-style-acc='editorial'] .accA-grid.is-two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    gap: var(--sp-5) var(--sp-3);
+  }
+  [data-style-acc='editorial'] .accA-card {
+    grid-row: auto;
+    grid-template-rows: auto auto auto 1fr auto;
+  }
+  [data-style-acc='editorial'] .accA-photo { aspect-ratio: var(--ar-square); }
+  [data-style-acc='editorial'] .accA-name { font-size: var(--fs-3); }
+  [data-style-acc='editorial'] .accA-desc { font-size: var(--fs-2); max-inline-size: none; }
+
+  /* B · Guide: die Empfehlung führt mit großem Bild über die volle Breite,
+     die weiteren Einträge behalten ihr kleines Bild links — daraus bleibt
+     die Gewichtung auch einspaltig lesbar. */
+  [data-style-acc='editorial'] .accB-item {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    column-gap: var(--sp-4);
+    padding: var(--sp-4) 0;
+  }
+  [data-style-acc='editorial'] .accB-item:first-child {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--sp-4);
+    padding-block: var(--sp-5) var(--sp-6);
+  }
+  [data-style-acc='editorial'] .accB-item:first-child .accB-photo { aspect-ratio: var(--ar-classic); }
+  [data-style-acc='editorial'] .accB-photo { aspect-ratio: var(--ar-square); }
+  [data-style-acc='editorial'] .accB-desc { font-size: var(--fs-2); }
+  [data-style-acc='editorial'] .accB-item:first-child .accB-desc { font-size: var(--fs-3); }
+
+  /* C · Destination: die Karte bleibt der Anker, wird aber zum Band über der
+     Liste. Die Entfernung steht weiter vorn in der Zeile. */
+  [data-style-acc='editorial'] .accC-grid {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--sp-5);
+  }
+  [data-style-acc='editorial'] .accC-mapwrap {
+    min-block-size: 0;
+    aspect-ratio: var(--ar-wide);
+  }
+  [data-style-acc='editorial'] .accC-row { padding: var(--sp-3) 0; }
 
   /* ======================================================================
      ANFAHRT MOBIL — drei eigene Zustände.
