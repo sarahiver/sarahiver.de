@@ -32,6 +32,8 @@
 [data-style-gallery='editorial'],
 [data-style-dir='editorial'],
 [data-style-acc='editorial'],
+[data-style-wit='editorial'],
+[data-style-abc='editorial'],
 [data-style-faq='editorial'] {
   --ed-rule: color-mix(in srgb, currentColor 16%, transparent);
   --ed-rule-strong: color-mix(in srgb, currentColor 42%, transparent);
@@ -1735,8 +1737,406 @@
 [data-style-acc='editorial'] .accC-bookline { margin-top: var(--sp-3); }
 
 /* =========================================================================
+   TRAUZEUGEN (WITNESSES)
+   -------------------------------------------------------------------------
+     A  PORTRAITS   Porträtreihe, Rolle über dem Namen, Zeilen bündig.
+     B  DIRECTORY   gesetzte Kontaktzeilen mit kleinem Bild — wer hilft wobei.
+     C  SPREAD      große Porträts, Seiten wechseln, Text als Begleitspalte.
+   ========================================================================= */
+
+.wit[data-style-wit='editorial'] {
+  --wit-rule: color-mix(in srgb, currentColor 16%, transparent);
+  --wit-rule-strong: color-mix(in srgb, currentColor 40%, transparent);
+  padding-block: clamp(56px, 6.5vw, 88px);
+  padding-inline: var(--gutter);
+}
+[data-style-wit='editorial'] .wit-eyebrow,
+[data-style-wit='editorial'] .wit-title,
+[data-style-wit='editorial'] .wit-desc { text-align: left; margin-inline: 0 auto; }
+[data-style-wit='editorial'] .wit-title { font-size: var(--fs-7); line-height: var(--lh-snug); }
+[data-style-wit='editorial'] .wit-desc { max-inline-size: var(--ed-measure); font-size: var(--fs-4); }
+[data-style-wit='editorial'] .wit-head-ornament { display: none; }
+[data-style-wit='editorial'] .wit-head {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+  padding-inline: 0;
+  text-align: left;
+}
+[data-style-wit='editorial'] .wit-photo {
+  border-radius: 0;
+  overflow: hidden;
+  background: color-mix(in srgb, currentColor 6%, transparent);
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: var(--ar-portrait);
+}
+[data-style-wit='editorial'] .wit-photo img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  border-radius: 0;
+}
+[data-style-wit='editorial'] .wit-photo-initials {
+  display: grid;
+  place-items: center;
+  block-size: 100%;
+  font-family: var(--disp);
+  font-weight: 300;
+  font-size: var(--fs-6);
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  background: none;
+}
+/* Kontaktwege als Versalzeilen statt als Knopfleiste. */
+[data-style-wit='editorial'] .wit-contacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-5);
+  margin-top: var(--sp-3);
+}
+[data-style-wit='editorial'] .wit-btn {
+  min-block-size: var(--touch);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 0 0 var(--sp-1);
+  border: 0;
+  border-bottom: 1px solid var(--wit-rule-strong);
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  box-shadow: none;
+  transition: color .2s ease, border-color .2s ease;
+}
+[data-style-wit='editorial'] .wit-btn:hover {
+  background: none;
+  color: var(--terra-on-light, var(--ink));
+  border-color: currentColor;
+  transform: none;
+}
+[data-style-wit='editorial'] .witA-role,
+[data-style-wit='editorial'] .witB-role,
+[data-style-wit='editorial'] .witC-role {
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--terra-on-light, var(--muted));
+  background: none;
+  border: 0;
+  padding: 0;
+}
+[data-style-wit='editorial'] .witA-name,
+[data-style-wit='editorial'] .witB-name {
+  font-family: var(--body);
+  font-weight: 600;
+  font-size: var(--fs-4);
+  line-height: var(--lh-snug);
+  letter-spacing: 0;
+  margin: var(--sp-2) 0 0;
+}
+
+/* --- A · PORTRAITS ------------------------------------------------------- */
+[data-style-wit='editorial'] .witA-wrap { max-inline-size: var(--wrap); margin-inline: auto; }
+[data-style-wit='editorial'] .witA-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: auto auto 1fr;
+  gap: var(--sp-3) clamp(20px, 2.4vw, 32px);
+}
+[data-style-wit='editorial'] .witA-card {
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  gap: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  text-align: left;
+}
+@supports not (grid-template-rows: subgrid) {
+  [data-style-wit='editorial'] .witA-card { grid-row: auto; grid-template-rows: auto auto 1fr; }
+}
+[data-style-wit='editorial'] .witA-headings {
+  margin-top: var(--sp-3);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--wit-rule);
+}
+
+/* --- B · DIRECTORY ------------------------------------------------------- */
+[data-style-wit='editorial'] .witB-wrap { max-inline-size: var(--wrap); margin-inline: auto; }
+/* Die Basis fasst die Zeilen in eine gerahmte Fläche — im Editorial tragen
+   die Haarlinien allein. */
+[data-style-wit='editorial'] .witB-list {
+  display: grid;
+  gap: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+}
+[data-style-wit='editorial'] .witB-row {
+  display: grid;
+  grid-template-columns: clamp(64px, 7vw, 96px) minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: clamp(20px, 2.4vw, 32px);
+  border: 0;
+  border-top: 1px solid var(--wit-rule);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: var(--sp-4) 0;
+}
+[data-style-wit='editorial'] .witB-row:first-child { border-top: 1px solid var(--wit-rule-strong); }
+[data-style-wit='editorial'] .witB-list > :last-child { border-bottom: 1px solid var(--wit-rule-strong); }
+[data-style-wit='editorial'] .witB-photo { aspect-ratio: var(--ar-square); inline-size: 100%; }
+[data-style-wit='editorial'] .witB-body { min-inline-size: 0; }
+[data-style-wit='editorial'] .witB-name { margin: 0; }
+[data-style-wit='editorial'] .witB-role { display: block; margin-top: var(--sp-1); }
+[data-style-wit='editorial'] .witB-actions { margin: 0; }
+[data-style-wit='editorial'] .witB-actions .wit-contacts { margin-top: 0; justify-content: flex-end; }
+
+/* --- C · SPREAD ---------------------------------------------------------- */
+[data-style-wit='editorial'] .witC-wrap {
+  display: grid;
+  gap: var(--sp-9);
+  max-inline-size: var(--wrap-wide);
+  margin-inline: auto;
+}
+[data-style-wit='editorial'] .witC-block {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(28px, 3.4vw, 48px);
+  align-items: end;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+}
+[data-style-wit='editorial'] .witC-photo-wrap { grid-column: 1 / span 5; min-inline-size: 0; }
+[data-style-wit='editorial'] .witC-photo {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: var(--ar-portrait);
+  border-radius: 0;
+  overflow: hidden;
+}
+[data-style-wit='editorial'] .witC-photo img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+[data-style-wit='editorial'] .witC-body { grid-column: 7 / span 5; min-inline-size: 0; }
+[data-style-wit='editorial'] .witC-name {
+  font-family: var(--disp);
+  font-weight: 300;
+  font-size: var(--fs-6);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.015em;
+  margin: var(--sp-2) 0 0;
+}
+[data-style-wit='editorial'] .witC-intro {
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  color: var(--muted);
+  max-inline-size: 44ch;
+  margin-top: var(--sp-3);
+}
+/* Jede zweite Person wechselt die Seite. */
+[data-style-wit='editorial'] .witC-block:nth-child(even) .witC-photo-wrap { grid-column: 8 / -1; grid-row: 1; }
+[data-style-wit='editorial'] .witC-block:nth-child(even) .witC-body { grid-column: 1 / span 5; grid-row: 1; }
+
+/* =========================================================================
+   HOCHZEITS-ABC
+   -------------------------------------------------------------------------
+     A  GLOSSAR     Buchstabe als Marginalie, Begriff und Text in der Spalte.
+     B  RASTER      dreispaltige Stichwortkarten ohne Kartenoptik.
+     C  REGISTER    Alphabetleiste plus Gruppen mit großen Gruppenbuchstaben.
+   ========================================================================= */
+
+.abc[data-style-abc='editorial'] {
+  --abc-rule: color-mix(in srgb, currentColor 16%, transparent);
+  --abc-rule-strong: color-mix(in srgb, currentColor 40%, transparent);
+  padding-block: clamp(56px, 6.5vw, 88px);
+  padding-inline: var(--gutter);
+}
+[data-style-abc='editorial'] .abc-eyebrow,
+[data-style-abc='editorial'] .abc-title,
+[data-style-abc='editorial'] .abc-desc { text-align: left; margin-inline: 0 auto; }
+[data-style-abc='editorial'] .abc-title { font-size: var(--fs-7); line-height: var(--lh-snug); }
+[data-style-abc='editorial'] .abc-desc { max-inline-size: var(--ed-measure); font-size: var(--fs-4); }
+[data-style-abc='editorial'] .abc-head-ornament { display: none; }
+[data-style-abc='editorial'] .abc-head {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+  padding-inline: 0;
+  text-align: left;
+}
+[data-style-abc='editorial'] .abcA-term,
+[data-style-abc='editorial'] .abcB-term,
+[data-style-abc='editorial'] .abcC-term {
+  font-family: var(--body);
+  font-weight: 600;
+  font-size: var(--fs-4);
+  line-height: var(--lh-snug);
+  letter-spacing: 0;
+  text-transform: none;
+}
+[data-style-abc='editorial'] .abcA-text,
+[data-style-abc='editorial'] .abcB-text,
+[data-style-abc='editorial'] .abcC-text {
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  color: var(--muted);
+  margin-top: var(--sp-2);
+}
+
+/* --- A · GLOSSAR --------------------------------------------------------- */
+[data-style-abc='editorial'] .abcA-wrap { max-inline-size: min(100%, 860px); margin-inline: auto; }
+[data-style-abc='editorial'] .abcA-list { display: grid; gap: 0; }
+[data-style-abc='editorial'] .abcA-item {
+  display: grid;
+  grid-template-columns: clamp(52px, 6vw, 84px) minmax(0, 1fr);
+  column-gap: clamp(16px, 2vw, 28px);
+  align-items: baseline;
+  border: 0;
+  border-top: 1px solid var(--abc-rule);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: var(--sp-4) 0;
+}
+[data-style-abc='editorial'] .abcA-item:first-child { border-top: 1px solid var(--abc-rule-strong); }
+[data-style-abc='editorial'] .abcA-list > :last-child { border-bottom: 1px solid var(--abc-rule-strong); }
+/* Der Buchstabe steht als Marginalie, nicht als Kreis oder Kachel. */
+[data-style-abc='editorial'] .abcA-letter {
+  inline-size: auto;
+  block-size: auto;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  font-family: var(--disp);
+  font-weight: 300;
+  font-size: var(--fs-6);
+  line-height: 1;
+  color: var(--abc-rule-strong);
+}
+[data-style-abc='editorial'] .abcA-text { max-inline-size: 62ch; }
+
+/* --- B · RASTER ---------------------------------------------------------- */
+[data-style-abc='editorial'] .abcB-wrap { max-inline-size: var(--wrap); margin-inline: auto; }
+[data-style-abc='editorial'] .abcB-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-6) clamp(20px, 2.4vw, 32px);
+}
+[data-style-abc='editorial'] .abcB-card {
+  border: 0;
+  border-top: 1px solid var(--abc-rule-strong);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: var(--sp-3) 0 0;
+  min-inline-size: 0;
+}
+[data-style-abc='editorial'] .abcB-badge {
+  display: block;
+  inline-size: auto;
+  block-size: auto;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+  margin-bottom: var(--sp-2);
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+[data-style-abc='editorial'] .abcB-text { max-inline-size: 38ch; }
+
+/* --- C · REGISTER -------------------------------------------------------- */
+[data-style-abc='editorial'] .abcC-wrap { max-inline-size: var(--wrap); margin-inline: auto; }
+[data-style-abc='editorial'] .abcC-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-3);
+  padding: var(--sp-3) 0;
+  border-block: 1px solid var(--abc-rule);
+  margin-bottom: var(--sp-7);
+}
+[data-style-abc='editorial'] .abcC-idx-btn {
+  min-inline-size: 24px;
+  min-block-size: var(--touch);
+  border: 0;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+  font-family: var(--body);
+  font-size: var(--fs-2);
+  letter-spacing: 0.12em;
+  color: color-mix(in srgb, currentColor 30%, transparent);
+}
+[data-style-abc='editorial'] .abcC-idx-btn.has { color: var(--ink); }
+[data-style-abc='editorial'] .abcC-idx-btn.has:hover { color: var(--terra-on-light, var(--ink)); }
+[data-style-abc='editorial'] .abcC-groups { display: grid; gap: var(--sp-7); }
+[data-style-abc='editorial'] .abcC-group {
+  display: grid;
+  grid-template-columns: clamp(76px, 9vw, 130px) minmax(0, 1fr);
+  column-gap: clamp(20px, 2.6vw, 36px);
+  align-items: start;
+  border: 0;
+  border-top: 1px solid var(--abc-rule);
+  border-radius: 0;
+  background: none;
+  padding-top: var(--sp-4);
+}
+/* Der Gruppenbuchstabe trägt die Variante. */
+[data-style-abc='editorial'] .abcC-group-letter {
+  font-family: var(--disp);
+  font-weight: 300;
+  font-size: clamp(44px, 5.4vw, 86px);
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  margin: 0;
+}
+[data-style-abc='editorial'] .abcC-entries { display: grid; gap: var(--sp-4); }
+[data-style-abc='editorial'] .abcC-entry {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+}
+[data-style-abc='editorial'] .abcC-text { max-inline-size: 58ch; }
+
+/* =========================================================================
    FAQ
    ========================================================================= */
+
+/* Kopf auf der linken Achse — die FAQ stammt aus dem Foundation-Pass, als
+   die Sektionsköpfe noch zentriert standen. */
+[data-style-faq='editorial'] .faq-eyebrow,
+[data-style-faq='editorial'] .faq-title,
+[data-style-faq='editorial'] .faq-desc { text-align: left; margin-inline: 0 auto; }
+[data-style-faq='editorial'] .faq-title { font-size: var(--fs-7); line-height: var(--lh-snug); }
+[data-style-faq='editorial'] .faq-desc { max-inline-size: var(--ed-measure); font-size: var(--fs-4); }
+[data-style-faq='editorial'] .faq-head-ornament { display: none; }
+[data-style-faq='editorial'] .faq-head {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+  padding-inline: 0;
+  text-align: left;
+}
+[data-style-faq='editorial'].faqA-section .faq-head { max-inline-size: var(--wrap-narrow); }
+[data-style-faq='editorial'].faqC-section .faq-head { max-inline-size: var(--wrap-wide); }
 
 /* --- A · BALANCED — eine Spalte, Hairlines, ruhig lesbar ----------------- */
 [data-style-faq='editorial'] .faqA-wrap {
@@ -1987,6 +2387,72 @@
   [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 4) .lsC-img { aspect-ratio: var(--ar-wide); }
   [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 5) { inline-size: 76%; }
   [data-style-ls='editorial'] .lsC-card > * { max-inline-size: none; }
+
+  /* ======================================================================
+     TRAUZEUGEN + HOCHZEITS-ABC MOBIL
+     Selektorstufen gleich wie auf dem Desktop (auch :nth-child(even)).
+     ====================================================================== */
+
+  /* Trauzeugen A · Porträts zu zweit — einspaltig wären es drei sehr hohe
+     Bilder hintereinander. */
+  [data-style-wit='editorial'] .witA-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    gap: var(--sp-5) var(--sp-3);
+  }
+  [data-style-wit='editorial'] .witA-card { grid-row: auto; grid-template-rows: auto auto 1fr; }
+  [data-style-wit='editorial'] .witA-name { font-size: var(--fs-3); }
+
+  /* Trauzeugen B · Verzeichnis: Kontaktwege rutschen unter den Namen,
+     nebeneinander bliebe für beides zu wenig Platz. */
+  [data-style-wit='editorial'] .witB-row {
+    grid-template-columns: 64px minmax(0, 1fr);
+    align-items: start;
+    row-gap: var(--sp-3);
+    padding: var(--sp-3) 0;
+  }
+  [data-style-wit='editorial'] .witB-actions { grid-column: 2; }
+  [data-style-wit='editorial'] .witB-actions .wit-contacts { justify-content: flex-start; }
+
+  /* Trauzeugen C · Spread: Porträt bleibt groß, Text darunter; der
+     Seitenwechsel entfällt, stattdessen rückt jede zweite Person ein. */
+  [data-style-wit='editorial'] .witC-wrap { gap: var(--sp-7); }
+  [data-style-wit='editorial'] .witC-block,
+  [data-style-wit='editorial'] .witC-block:nth-child(even) {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--sp-4);
+  }
+  [data-style-wit='editorial'] .witC-photo-wrap,
+  [data-style-wit='editorial'] .witC-block:nth-child(even) .witC-photo-wrap { grid-column: 1; grid-row: 1; }
+  [data-style-wit='editorial'] .witC-body,
+  [data-style-wit='editorial'] .witC-block:nth-child(even) .witC-body { grid-column: 1; grid-row: 2; }
+  [data-style-wit='editorial'] .witC-block:nth-child(even) { padding-inline-start: var(--sp-6); }
+  [data-style-wit='editorial'] .witC-photo { aspect-ratio: var(--ar-classic); }
+
+  /* ABC A · Glossar: Buchstabe bleibt Marginalie, nur schmaler. */
+  [data-style-abc='editorial'] .abcA-item {
+    grid-template-columns: 40px minmax(0, 1fr);
+    column-gap: var(--sp-3);
+    padding: var(--sp-3) 0;
+  }
+  [data-style-abc='editorial'] .abcA-letter { font-size: var(--fs-5); }
+
+  /* ABC B · Raster: zwei Spalten statt drei, damit die Begriffe nicht
+     silbenweise umbrechen. */
+  [data-style-abc='editorial'] .abcB-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--sp-5) var(--sp-3);
+  }
+  [data-style-abc='editorial'] .abcB-text { font-size: var(--fs-2); }
+
+  /* ABC C · Register: der Gruppenbuchstabe setzt sich über die Einträge,
+     eine eigene Spalte dafür kostet auf 320px zu viel Breite. */
+  [data-style-abc='editorial'] .abcC-group {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--sp-3);
+  }
+  [data-style-abc='editorial'] .abcC-group-letter { font-size: clamp(38px, 11vw, 56px); }
+  [data-style-abc='editorial'] .abcC-index { margin-bottom: var(--sp-5); }
 
   /* ======================================================================
      ÜBERNACHTUNG MOBIL — drei eigene Zustände.
