@@ -1,0 +1,2815 @@
+/* =========================================================================
+   DESIGN 01 — EDITORIAL
+   -------------------------------------------------------------------------
+   Charakter: hochwertiges internationales Wedding-Magazin.
+   Nicht Template, nicht Hochzeitsshop, nicht SaaS.
+
+   GRAMMAR
+     Achse      Jede Komposition hat eine erkennbare Satzachse. Inhalte
+                richten sich daran aus, statt beliebig zentriert zu stehen.
+     Raster     12 Spalten, bewusst asymmetrisch belegt (7/5, 5/7, 8/4).
+     Weißraum   Großzügig und ungleich verteilt — Weißraum ist gesetzt,
+                nicht übrig geblieben.
+     Formen     Hairlines statt Rahmen, Radius 0, keine Schatten.
+     Bilder     Kontrollierte Crops in festen Formaten: 4:5 / 3:2 / 16:9,
+                für Statement-Flächen 21:9. Keine Rotation, keine Collage.
+     Typo       Ruhige große Display-Zeilen (--fs-7/8), kleine Metadaten in
+                Versalien mit maßvoller Laufweite. Fließtext auf ~65 Zeichen.
+     Motion     Nur Opazität und kleine Verschiebungen, 200 ms. Keine Show.
+
+   VARIANTEN — das Prüfkriterium ist Struktur, nicht Farbe:
+     A BALANCED   eine Achse, symmetrische Spaltenpaare, ruhige Wiederholung
+     B EDITORIAL  zwei Achsen, alternierende Asymmetrie, Marginalien
+     C STATEMENT  volle Breite, überlappende Ebenen, Rhythmus aus Bändern
+
+   Farben und Schriften kommen aus der Palette der Seite und werden hier
+   NICHT gesetzt. Hairlines über color-mix mit currentColor — dadurch trägt
+   jede Palette ihre eigene Linie, ohne dass dieses Blatt Farbwerte kennt.
+   ========================================================================= */
+
+[data-style-ls='editorial'],
+[data-style-tl='editorial'],
+[data-style-gallery='editorial'],
+[data-style-dir='editorial'],
+[data-style-faq='editorial'] {
+  --ed-rule: color-mix(in srgb, currentColor 16%, transparent);
+  --ed-rule-strong: color-mix(in srgb, currentColor 42%, transparent);
+  --ed-fill: color-mix(in srgb, currentColor 5%, transparent);
+  --ed-meta-ls: 0.16em;
+  --ed-col: minmax(0, 1fr);
+  --ed-gap: var(--sp-5);
+  --ed-gap-lg: var(--sp-7);
+  --ed-measure: 65ch;
+}
+
+/* Gemeinsame Kopfzone der vier Bereiche: linksbündig auf der Achse,
+   Ornamente ersetzt durch eine Hairline. Zentrierte Überschriften sind
+   Template-Sprache, nicht Magazin. */
+[data-style-ls='editorial'] .ls-eyebrow,
+[data-style-gallery='editorial'] .gal-eyebrow {
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  text-align: left;
+  margin-bottom: var(--sp-3);
+}
+[data-style-ls='editorial'] .ls-title,
+[data-style-gallery='editorial'] .gal-title {
+  margin-inline: 0 auto;
+  font-size: var(--fs-7);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.015em;
+  text-align: left;
+  max-inline-size: 18ch;
+}
+[data-style-ls='editorial'] .ls-intro,
+[data-style-gallery='editorial'] .gal-intro {
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  text-align: left;
+  max-inline-size: var(--ed-measure);
+  /* Die Basis zentriert den Block über margin-inline:auto — für eine
+     Satzachse muss der Block links stehen bleiben, nicht nur der Text. */
+  margin: var(--sp-4) auto 0 0;
+}
+[data-style-ls='editorial'] .ls-head-ornament,
+[data-style-gallery='editorial'] .gal-head-ornament {
+  inline-size: 100%;
+  block-size: 1px;
+  background: var(--ed-rule);
+  margin: var(--sp-6) 0 var(--sp-7);
+  border: 0;
+  transform: none;
+}
+
+/* =========================================================================
+   LOVESTORY
+   ========================================================================= */
+
+[data-style-ls='editorial'] {
+  padding-inline: var(--gutter);
+}
+
+/* --- A · BALANCED --------------------------------------------------------
+   Ein Moment, ruhig gesetzt: drei Bilder als exakt ausgerichteter Stapel in
+   der linken Spalte, Text rechts auf einer Achse. Die gedrehten, überlappenden
+   Bilder der Basis sind hier bewusst aufgehoben — Schnappschuss-Rotation ist
+   Scrapbook-Sprache und widerspricht dem kontrollierten Crop.
+   ------------------------------------------------------------------------ */
+[data-style-ls='editorial'].lsA {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+}
+[data-style-ls='editorial'] .lsA-single {
+  display: grid;
+  grid-template-columns: var(--ed-col) var(--ed-col);
+  gap: var(--ed-gap-lg);
+  align-items: start;
+}
+[data-style-ls='editorial'] .lsA-images {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  /* Ungleiche Abstände: nach der Auftaktaufnahme etwas mehr Luft, danach
+     enger — die drei Bilder lesen sich dadurch als Folge, nicht als Liste. */
+  gap: var(--sp-5);
+  block-size: auto;
+  aspect-ratio: auto;
+  /* Platz für die Zählschiene links. */
+  padding-left: clamp(30px, 3.4vw, 52px);
+  counter-reset: lsplate;
+}
+/* Die Schiene verbindet die Aufnahmen sichtbar zu einer Sequenz. */
+[data-style-ls='editorial'] .lsA-images::before {
+  content: '';
+  position: absolute;
+  inset-block: 0.4em 1.2em;
+  inset-inline-start: clamp(10px, 1.2vw, 18px);
+  inline-size: 1px;
+  background: var(--ed-rule);
+}
+[data-style-ls='editorial'] .lsA-img,
+[data-style-ls='editorial'] .lsA-single:hover .lsA-img {
+  /* relative statt static, weil die Plattennummer daran hängt — dann müssen
+     aber die Versatzwerte der Basis (left/right/top/bottom für das gedrehte
+     Foto-Cluster) ausdrücklich zurückgenommen werden, sonst verschieben sie
+     die Aufnahmen gegeneinander. */
+  position: relative;
+  inset: auto;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  left: auto;
+  inline-size: 100%;
+  /* Die Basis kappt den Überstand — die Plattennummer sitzt aber außerhalb
+     des Bildrahmens auf der Schiene. */
+  overflow: visible;
+  border-radius: 0;
+  /* Die Basis rahmt die Aufnahmen weiß ein — im Magazin steht ein Bild
+     ohne Passepartout. */
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  transform: none;
+  counter-increment: lsplate;
+}
+/* Plattennummer als Marginalie auf der Schiene. */
+[data-style-ls='editorial'] .lsA-img::before {
+  content: counter(lsplate, decimal-leading-zero);
+  position: absolute;
+  top: 0.15em;
+  left: calc(-1 * clamp(30px, 3.4vw, 52px));
+  inline-size: clamp(30px, 3.4vw, 52px);
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  line-height: 1;
+}
+[data-style-ls='editorial'] .lsA-img--2 { margin-block: var(--sp-2); }
+[data-style-ls='editorial'] .lsA-img--1 { aspect-ratio: var(--ar-classic); }
+[data-style-ls='editorial'] .lsA-img--2 { aspect-ratio: var(--ar-portrait); }
+[data-style-ls='editorial'] .lsA-img--3 { aspect-ratio: var(--ar-classic); }
+[data-style-ls='editorial'] .lsA-img img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  border-radius: 0;
+}
+[data-style-ls='editorial'] .lsA-text {
+  border-top: 1px solid var(--ed-rule-strong);
+  padding-top: var(--sp-4);
+  /* Die Basis zentriert den Erzähltext. Auf einer Magazinseite hängt er an
+     derselben linken Achse wie die Überschrift darüber. */
+  text-align: left;
+}
+[data-style-ls='editorial'] .lsA-text > * { text-align: left; }
+[data-style-ls='editorial'] .lsA-eyebrow {
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+}
+[data-style-ls='editorial'] .lsA-moment-title {
+  font-size: var(--fs-6);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.01em;
+  margin-top: var(--sp-3);
+}
+[data-style-ls='editorial'] .lsA-desc {
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  max-inline-size: var(--ed-measure);
+  margin-top: var(--sp-4);
+}
+[data-style-ls='editorial'] .lsA-sig { margin-top: var(--sp-5); text-align: left; }
+
+/* --- B · EDITORIAL — gesetztes Magazinraster -----------------------------
+   Zweite Runde. Vorher wechselten Bild und Text zeilenweise die Seite (7/5,
+   dann 5/7). Das ist ein Zickzack, kein Raster: die Struktur wiederholt sich
+   und liest sich vorhersehbar — und sie war damit zu nah an C.
+
+   Jetzt ein 12-Spalten-Raster, in dem jede Station eine eigene Setzung
+   bekommt: unterschiedliche Spaltenbreiten, unterschiedliche Bildhöhen,
+   unterschiedliche Einstiegshöhen, dazu die Randziffer als Marginalie. Der
+   Textsatz bleibt auf Lesegröße — B erzählt über das LAYOUT, nicht über die
+   Bildgröße. Das Muster wiederholt sich alle fünf Stationen, damit es auch
+   mit 3 oder 12 Einträgen trägt.
+   ------------------------------------------------------------------------ */
+[data-style-ls='editorial'].lsB {
+  max-inline-size: var(--wrap-wide);
+  margin-inline: auto;
+}
+[data-style-ls='editorial'] .lsB-list {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--ed-gap);
+  row-gap: var(--sp-9);
+}
+[data-style-ls='editorial'] .lsB-item {
+  display: grid;
+  grid-template-columns: subgrid;
+  gap: var(--ed-gap);
+  align-items: start;
+  grid-column: 1 / -1;
+}
+@supports not (grid-template-columns: subgrid) {
+  /* Ohne subgrid fällt jede Station auf ein eigenes 12er-Raster zurück —
+     die Setzungen bleiben, nur die Spalten richten sich nicht global aus. */
+  [data-style-ls='editorial'] .lsB-item {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+/* Station 1 — Bild links breit, Text rechts schmal, beide oben angesetzt. */
+[data-style-ls='editorial'] .lsB-item:nth-child(5n + 1) .lsB-img-wrap { grid-column: 1 / span 7; aspect-ratio: var(--ar-classic); }
+[data-style-ls='editorial'] .lsB-item:nth-child(5n + 1) .lsB-text { grid-column: 9 / span 4; }
+
+/* Station 2 — schmales Hochformat rechts, Text links, tief eingestiegen. */
+[data-style-ls='editorial'] .lsB-item:nth-child(5n + 2) .lsB-img-wrap { grid-column: 8 / span 5; aspect-ratio: var(--ar-portrait); }
+[data-style-ls='editorial'] .lsB-item:nth-child(5n + 2) .lsB-text { grid-column: 2 / span 5; padding-top: var(--sp-9); }
+
+/* Station 3 — kleines Bild in der Mitte, Text rechts auf Außenachse. */
+[data-style-ls='editorial'] .lsB-item:nth-child(5n + 3) .lsB-img-wrap { grid-column: 3 / span 4; aspect-ratio: var(--ar-square); }
+[data-style-ls='editorial'] .lsB-item:nth-child(5n + 3) .lsB-text { grid-column: 8 / span 5; padding-top: var(--sp-6); }
+
+/* Station 4 — breites Bild rechts über die Außenkante, Text links oben. */
+[data-style-ls='editorial'] .lsB-item:nth-child(5n + 4) .lsB-img-wrap { grid-column: 6 / span 7; aspect-ratio: var(--ar-wide); }
+[data-style-ls='editorial'] .lsB-item:nth-child(5n + 4) .lsB-text { grid-column: 1 / span 4; }
+
+/* Station 5 — Bild links schmal, Text mittig, viel Luft rechts. */
+[data-style-ls='editorial'] .lsB-item:nth-child(5n + 5) .lsB-img-wrap { grid-column: 1 / span 4; aspect-ratio: var(--ar-portrait); }
+[data-style-ls='editorial'] .lsB-item:nth-child(5n + 5) .lsB-text { grid-column: 6 / span 5; padding-top: var(--sp-7); }
+
+[data-style-ls='editorial'] .lsB-img-wrap {
+  overflow: hidden;
+  border-radius: 0;
+}
+[data-style-ls='editorial'] .lsB-img-wrap img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  transition: transform .4s ease;
+}
+[data-style-ls='editorial'] .lsB-item:hover .lsB-img-wrap img { transform: scale(1.02); }
+[data-style-ls='editorial'] .lsB-text { position: relative; }
+/* Station 4 setzt ihren Text in Spalte 1 — dort hätte die hängende Ziffer
+   keinen Rand mehr und liefe aus der Seite. Nur dort steht sie im Fluss. */
+[data-style-ls='editorial'] .lsB-item:nth-child(5n + 4) .lsB-num {
+  position: static;
+  display: block;
+  margin-bottom: var(--sp-2);
+}
+[data-style-ls='editorial'] .lsB-num {
+  position: absolute;
+  top: -0.2em;
+  left: -1.4em;
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  line-height: 1;
+}
+/* Das Datum sitzt in der Basis als Pille AUF dem Bild — im Markup liegt es
+   in .lsB-img-wrap. Als Marginalie über dem Bild statt als Badge darauf:
+   in den Fluss zurückgeholt und über den Bildrand gehoben. */
+[data-style-ls='editorial'] .lsB-img-wrap { position: relative; }
+[data-style-ls='editorial'] .lsB-date {
+  position: absolute;
+  top: auto;
+  bottom: calc(100% + var(--sp-2));
+  left: 0;
+  display: inline-block;
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+[data-style-ls='editorial'] .lsB-img-wrap { overflow: visible; }
+[data-style-ls='editorial'] .lsB-img-wrap img { display: block; }
+[data-style-ls='editorial'] .lsB-title {
+  font-size: var(--fs-6);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.01em;
+  margin-top: var(--sp-4);
+}
+[data-style-ls='editorial'] .lsB-desc {
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  margin-top: var(--sp-3);
+}
+
+/* --- C · STATEMENT — Bildfolge, Text auf Bildunterschrift-Ebene ----------
+   Zweite Runde und der eigentliche Punkt dieser Überarbeitung. Vorher waren
+   es Bänder mit überlappender Textkarte — also wieder Bild plus Textblock,
+   nur anders positioniert. Damit war C eine Variante von B.
+
+   Jetzt eine Bildstrecke: die Größenfolge der Bilder erzählt, nicht das
+   Layout. Öffnungsplatte über die volle Breite, dann ein Wechsel aus Hoch-,
+   Quadrat- und Querformaten in stark unterschiedlichen Größen mit versetzten
+   Einstiegen. Der Text sinkt auf Bildunterschrift-Ebene: schmale Spalte,
+   kleinerer Grad, unter seinem Bild — er begleitet, er trägt nicht.
+
+   Zwei Eigenheiten der Komponente, die das Layout bestimmen: das Bild liegt
+   INNERHALB der Karte und im Markup NACH dem Text (deshalb order: -1), und
+   das erste Kind von .lsC-wrap ist die Zeitleiste, nicht eine Station —
+   deshalb nth-of-type statt nth-child.
+   ------------------------------------------------------------------------ */
+[data-style-ls='editorial'].lsC { max-inline-size: var(--wrap-wide); margin-inline: auto; }
+[data-style-ls='editorial'] .lsC-line { display: none; }
+[data-style-ls='editorial'] .lsC-wrap {
+  max-inline-size: none;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--ed-gap);
+  row-gap: var(--sp-8);
+  padding-inline: 0;
+  align-items: start;
+}
+[data-style-ls='editorial'] .lsC-item {
+  display: block;
+  position: relative;
+  padding: 0;
+  margin: 0;
+}
+[data-style-ls='editorial'] .lsC-item + .lsC-item { padding-top: 0; }
+/* Der Punktmarker gehört zur Zeitleiste, die hier entfällt. */
+[data-style-ls='editorial'] .lsC-item::before { display: none; }
+
+[data-style-ls='editorial'] .lsC-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  position: static;
+  inline-size: auto;
+  margin: 0;
+  padding: 0;
+  background: none;
+  backdrop-filter: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+}
+[data-style-ls='editorial'] .lsC-card:hover { transform: none; box-shadow: none; }
+/* Bild zuerst — im Markup steht es zuletzt. */
+[data-style-ls='editorial'] .lsC-img {
+  order: -1;
+  inline-size: 100%;
+  margin: 0;
+  border-radius: 0;
+  overflow: hidden;
+}
+[data-style-ls='editorial'] .lsC-img img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  border-radius: 0;
+  display: block;
+}
+[data-style-ls='editorial'] .lsC-eyebrow {
+  align-self: stretch;
+  max-inline-size: 34ch;
+  margin-top: var(--sp-4);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--ed-rule);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+}
+[data-style-ls='editorial'] .lsC-title {
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.01em;
+  margin-top: var(--sp-2);
+  max-inline-size: 34ch;
+  text-align: left;
+}
+[data-style-ls='editorial'] .lsC-desc {
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  margin-top: var(--sp-3);
+  max-inline-size: 34ch;
+  text-align: left;
+}
+
+/* Die Bildfolge. Fünf Setzungen, danach wiederholt sich der Rhythmus. */
+/* 1 — Öffnungsplatte über die volle Breite. */
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 1) { grid-column: 1 / -1; }
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 1) .lsC-img { aspect-ratio: var(--ar-band); }
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 1) .lsC-eyebrow,
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 1) .lsC-title,
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 1) .lsC-desc { max-inline-size: 48ch; }
+/* 2 — schmales Hochformat links. */
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 2) { grid-column: 1 / span 4; }
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 2) .lsC-img { aspect-ratio: var(--ar-portrait); }
+/* 3 — Detailaufnahme: kleines Quadrat rechts, tief eingestiegen.
+   Der Punkt aus der Review war, ob dieses Modul wie eine versehentlich
+   verkleinerte Section wirkt. Es bleibt — aber als klar gekennzeichnetes
+   Motiv: schmalere Satzbreite, Beschriftung eine Stufe kleiner, Titel auf
+   Bildunterschrift-Ebene. Damit liest es sich als Detail im Bildbogen und
+   nicht als Miniatur einer eigenen Komponente. */
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 3) { grid-column: 7 / span 3; padding-top: var(--sp-9); }
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 3) .lsC-img { aspect-ratio: var(--ar-square); }
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 3) .lsC-eyebrow,
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 3) .lsC-title,
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 3) .lsC-desc { max-inline-size: 26ch; }
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 3) .lsC-title { font-size: var(--fs-4); }
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 3) .lsC-desc { font-size: var(--fs-2); }
+/* 4 — großes Querformat über acht Spalten an der rechten Kante. */
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 4) { grid-column: 5 / -1; }
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 4) .lsC-img { aspect-ratio: var(--ar-classic); }
+/* 5 — Hochformat links, halb so breit wie die Platte. */
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 5) { grid-column: 2 / span 5; padding-top: var(--sp-7); }
+[data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 5) .lsC-img { aspect-ratio: var(--ar-portrait); }
+
+/* =========================================================================
+   ABLAUF (TIMELINE) — Neufassung
+   -------------------------------------------------------------------------
+   Drei Arten, denselben Tag zu vermitteln:
+
+     A  SCHEDULE    gesetzter Tagesplan: Uhrzeitspalte, Programmspalte,
+                    Haarlinie je Zeile. Keine Karten, kein Icon, kein Punkt.
+     B  PROGRAMME   Treppe statt Liste: jede Station rückt eine Spalte weiter
+                    ein, jede vierte ist ein Kapitel mit großer Uhrzeit.
+     C  DAY STORY   die Uhrzeit wird zur Schautypografie, Bilder nur an
+                    Schlüsselmomenten (jede dritte Station).
+
+   Funktion vor Wirkung: in allen drei Varianten steht die Uhrzeit zuerst und
+   ist die größte oder erste Information der Zeile.
+   ========================================================================= */
+
+/* Der Sektionskopf steht wie in allen Editorial-Bereichen links auf der
+   Achse — die Basis zentriert ihn. */
+[data-style-tl='editorial'] .tl-eyebrow,
+[data-style-tl='editorial'] .tl-title,
+[data-style-tl='editorial'] .tl-desc {
+  text-align: left;
+  margin-inline: 0 auto;
+}
+[data-style-tl='editorial'] .tl-title { font-size: var(--fs-7); line-height: var(--lh-snug); }
+[data-style-tl='editorial'] .tl-desc { max-inline-size: var(--ed-measure); font-size: var(--fs-4); }
+[data-style-tl='editorial'] .tl-head-ornament,
+[data-style-tl='editorial'] .tl-ornament { display: none; }
+
+.tl[data-style-tl='editorial'] {
+  --tl-rule: color-mix(in srgb, currentColor 16%, transparent);
+  --tl-rule-strong: color-mix(in srgb, currentColor 40%, transparent);
+  padding-block: clamp(56px, 6.5vw, 90px);
+}
+
+/* --- A · SCHEDULE -------------------------------------------------------- */
+[data-style-tl='editorial'] .tlA-wrap {
+  max-inline-size: min(100%, 820px);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+[data-style-tl='editorial'] .tlA-cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-flow: row;
+  gap: 0;
+  overflow: visible;
+}
+[data-style-tl='editorial'] .tlA-card {
+  display: grid;
+  grid-template-columns: clamp(76px, 8vw, 104px) minmax(0, 1fr);
+  column-gap: var(--sp-5);
+  row-gap: var(--sp-1);
+  align-items: baseline;
+  padding: var(--sp-4) 0;
+  border: 0;
+  border-top: 1px solid var(--tl-rule);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  scroll-snap-align: none;
+}
+/* Die Basis zeichnet je Karte eine Hilfslinie über ::after — im gesetzten
+   Tagesplan übernimmt die Zeilen-Haarlinie diese Aufgabe. */
+[data-style-tl='editorial'] .tlA-card::after,
+[data-style-tl='editorial'] .tlA-card::before { display: none; content: none; }
+[data-style-tl='editorial'] .tlA-card:first-child { border-top: 1px solid var(--tl-rule-strong); }
+[data-style-tl='editorial'] .tlA-card:last-child { border-bottom: 1px solid var(--tl-rule-strong); }
+[data-style-tl='editorial'] .tlA-card.is-active { background: color-mix(in srgb, currentColor 4%, transparent); }
+[data-style-tl='editorial'] .tlA-card-head {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  display: block;
+}
+[data-style-tl='editorial'] .tlA-time-badge {
+  display: block;
+  font-family: var(--disp);
+  font-size: var(--fs-5);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums lining-nums;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  color: inherit;
+}
+/* Ein Ablauf braucht keine Sinnbilder — die Uhrzeit ist das Ordnungsmerkmal. */
+[data-style-tl='editorial'] .tlA-emoji-badge { display: none; }
+[data-style-tl='editorial'] .tlA-title {
+  grid-column: 2;
+  grid-row: 1;
+  font-family: var(--body);
+  font-size: var(--fs-4);
+  font-weight: 600;
+  line-height: var(--lh-snug);
+  text-transform: none;
+  letter-spacing: 0;
+  margin: 0;
+}
+[data-style-tl='editorial'] .tlA-card .tl-loc,
+[data-style-tl='editorial'] .tlA-card .tl-loc-inline {
+  grid-column: 2;
+  grid-row: 2;
+  font-size: var(--fs-2);
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  padding: 0;
+}
+[data-style-tl='editorial'] .tlA-desc {
+  grid-column: 2;
+  grid-row: 3;
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  color: var(--muted);
+  max-inline-size: 58ch;
+  margin: var(--sp-1) 0 0;
+}
+[data-style-tl='editorial'] .tlA-rail { display: none; }
+[data-style-tl='editorial'] .tlA-hint {
+  margin-top: var(--sp-4);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+}
+
+/* --- B · PROGRAMME ------------------------------------------------------- */
+[data-style-tl='editorial'] .tlB-wrap {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  position: relative;
+}
+/* Die Führungslinie entfällt: die Treppe selbst ist die Achse. */
+[data-style-tl='editorial'] .tlB-line { display: none; }
+[data-style-tl='editorial'] .tlB-knode { display: none; }
+[data-style-tl='editorial'] .tlB-event {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--ed-gap);
+  row-gap: var(--sp-2);
+  align-items: baseline;
+  padding-block: var(--sp-5);
+  border-top: 1px solid var(--tl-rule);
+}
+[data-style-tl='editorial'] .tlB-event:first-of-type { border-top: 0; }
+[data-style-tl='editorial'] .tlB-event-time {
+  grid-column: 1 / span 2;
+  text-align: right;
+  padding: 0;
+}
+[data-style-tl='editorial'] .tlB-event-time .t {
+  font-family: var(--disp);
+  font-size: var(--fs-5);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+[data-style-tl='editorial'] .tlB-event-time .u {
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: var(--sp-1);
+}
+[data-style-tl='editorial'] .tlB-event-content { grid-column: 3 / span 7; padding: 0; }
+[data-style-tl='editorial'] .tlB-event-content .ttl {
+  font-family: var(--body);
+  font-size: var(--fs-4);
+  font-weight: 600;
+  line-height: var(--lh-snug);
+  letter-spacing: 0;
+}
+[data-style-tl='editorial'] .tlB-event-content .dsc {
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  color: var(--muted);
+  max-inline-size: 52ch;
+  margin-top: var(--sp-2);
+}
+[data-style-tl='editorial'] .tlB-event .pills {
+  margin-top: var(--sp-2);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+}
+/* Die Treppe: jede Station rückt eine Spalte weiter, nach vier Stationen
+   beginnt der Rhythmus von vorn. */
+[data-style-tl='editorial'] .tlB-event:nth-child(4n + 3) .tlB-event-time { grid-column: 2 / span 2; }
+[data-style-tl='editorial'] .tlB-event:nth-child(4n + 3) .tlB-event-content { grid-column: 4 / span 7; }
+[data-style-tl='editorial'] .tlB-event:nth-child(4n + 4) .tlB-event-time { grid-column: 3 / span 2; }
+[data-style-tl='editorial'] .tlB-event:nth-child(4n + 4) .tlB-event-content { grid-column: 5 / span 7; }
+[data-style-tl='editorial'] .tlB-event:nth-child(4n + 1) .tlB-event-time { grid-column: 4 / span 2; }
+[data-style-tl='editorial'] .tlB-event:nth-child(4n + 1) .tlB-event-content { grid-column: 6 / span 6; }
+/* Jede vierte Station ist ein Kapitel: größere Uhrzeit, größerer Titel, mehr
+   Luft. So bekommt der Tag eine Hierarchie statt einer gleichförmigen Liste. */
+[data-style-tl='editorial'] .tlB-event:nth-child(4n + 2) {
+  padding-block: var(--sp-7);
+  border-top-color: var(--tl-rule-strong);
+}
+[data-style-tl='editorial'] .tlB-event:nth-child(4n + 2) .tlB-event-time .t { font-size: var(--fs-7); }
+[data-style-tl='editorial'] .tlB-event:nth-child(4n + 2) .tlB-event-content .ttl {
+  font-family: var(--disp);
+  font-size: var(--fs-6);
+  font-weight: 300;
+  letter-spacing: -0.015em;
+}
+
+/* --- C · DAY STORY ------------------------------------------------------- */
+[data-style-tl='editorial'] .tlC-wrap {
+  max-inline-size: var(--wrap-wide);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+[data-style-tl='editorial'] .tlC-row { display: grid; gap: var(--sp-7); }
+[data-style-tl='editorial'] .tlC-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--ed-gap);
+  align-items: start;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  overflow: visible;
+}
+/* Die Basis legt einen dunklen Verlauf über die Karte und setzt den Text auf
+   Weiß — das gehört zum Bildoverlay, das hier entfällt. */
+[data-style-tl='editorial'] .tlC-card::after { display: none; }
+[data-style-tl='editorial'] .tlC-content,
+[data-style-tl='editorial'] .tlC-bigtitle,
+[data-style-tl='editorial'] .tlC-time,
+[data-style-tl='editorial'] .tlC-uhr,
+[data-style-tl='editorial'] .tlC-descpill { color: inherit; text-shadow: none; }
+[data-style-tl='editorial'] .tlC-bigtitle,
+[data-style-tl='editorial'] .tlC-descpill { display: block; }
+/* Bilder nur an Schlüsselmomenten — sonst wird aus dem Ablauf eine zweite
+   Galerie und die Sektion endlos. */
+[data-style-tl='editorial'] .tlC-img { display: none; }
+[data-style-tl='editorial'] .tlC-card:nth-child(3n + 1) .tlC-img {
+  display: block;
+  position: static;
+  grid-column: 9 / -1;
+  grid-row: 1;
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: var(--ar-classic);
+  object-fit: cover;
+  border-radius: 0;
+  margin: 0;
+}
+[data-style-tl='editorial'] .tlC-content {
+  text-align: left;
+  position: static;
+  inset: auto;
+  grid-column: 1 / span 7;
+  grid-row: 1;
+  inline-size: auto;
+  padding: 0;
+  background: none;
+  border: 0;
+  backdrop-filter: none;
+}
+/* Wechselnde Einzüge: der Tag läuft beim Scrollen nach rechts und zurück. */
+[data-style-tl='editorial'] .tlC-card:nth-child(3n + 2) .tlC-content { grid-column: 3 / span 7; }
+[data-style-tl='editorial'] .tlC-card:nth-child(3n + 3) .tlC-content { grid-column: 2 / span 7; }
+[data-style-tl='editorial'] .tlC-time {
+  display: block;
+  font-family: var(--disp);
+  font-size: clamp(44px, 6vw, 92px);
+  font-weight: 300;
+  line-height: 0.86;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums lining-nums;
+  margin-bottom: var(--sp-3);
+}
+[data-style-tl='editorial'] .tlC-uhr {
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--muted);
+  vertical-align: super;
+  margin-left: var(--sp-2);
+}
+[data-style-tl='editorial'] .tlC-titlelab { display: none; }
+[data-style-tl='editorial'] .tlC-bigtitle {
+  font-family: var(--body);
+  font-size: var(--fs-5);
+  font-weight: 600;
+  line-height: var(--lh-snug);
+  letter-spacing: 0;
+  text-transform: none;
+}
+[data-style-tl='editorial'] .tlC-descpill {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  color: var(--muted);
+  max-inline-size: 46ch;
+  margin-top: var(--sp-3);
+}
+[data-style-tl='editorial'] .tlC-loc {
+  background: none;
+  border: 0;
+  padding: 0;
+  margin-top: var(--sp-2);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--muted);
+  backdrop-filter: none;
+}
+[data-style-tl='editorial'] .tlC-now-row { display: none; }
+
+/* Ortsangaben erscheinen in der Basis als Glas-Pille. Im Editorial sind sie
+   gesetzte Metazeile, kein Bedienelement. */
+[data-style-tl='editorial'] .tl-loc,
+[data-style-tl='editorial'] .tl-loc-inline,
+[data-style-tl='editorial'] .tlC-loc,
+[data-style-tl='editorial'] .tlB-event .pills > * {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  backdrop-filter: none;
+  box-shadow: none;
+  color: var(--muted);
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+}
+
+/* =========================================================================
+   ANFAHRT (DIRECTIONS)
+   -------------------------------------------------------------------------
+   Eine funktionale Sektion. Die Qualität liegt in der Informationsklarheit,
+   nicht im Effekt — nach Galerie und Ablauf soll die Seite hier ruhiger
+   werden.
+
+     A  PRACTICAL    Karte links, Angaben rechts als gesetzte Zeilen.
+     B  EDITORIAL    nummerierte Liste gegen eine versetzte Kartenfläche.
+     C  DESTINATION  großer Ortsname, Adresse als Metazeile, Karte als Band.
+
+   In allen drei Varianten steht die Reihenfolge fest: Ort → Adresse →
+   Lage → Hinweise → Route.
+   ========================================================================= */
+
+.dir[data-style-dir='editorial'] {
+  --dir-rule: color-mix(in srgb, currentColor 16%, transparent);
+  --dir-rule-strong: color-mix(in srgb, currentColor 40%, transparent);
+  padding-block: clamp(56px, 6.5vw, 88px);
+  padding-inline: var(--gutter);
+  /* Abstand Karte ↔ Text, je Variante bewusst verschieden gesetzt:
+     A trennt sauber, B nutzt die Luft als Kompositionsmittel, C bleibt
+     enger gekoppelt, weil Name, Adresse und Karte eine Einheit bilden. */
+  --dir-gap-a: clamp(24px, 2.8vw, 40px);
+  --dir-gap-b: clamp(32px, 3.8vw, 56px);
+  --dir-gap-c: clamp(20px, 2.2vw, 32px);
+  --dir-gap-mobile: 28px;
+}
+
+/* Kopf wie in den übrigen Editorial-Bereichen: linke Achse, keine Ornamente. */
+[data-style-dir='editorial'] .dir-eyebrow,
+[data-style-dir='editorial'] .dir-title,
+[data-style-dir='editorial'] .dir-desc {
+  text-align: left;
+  margin-inline: 0 auto;
+}
+[data-style-dir='editorial'] .dir-title { font-size: var(--fs-7); line-height: var(--lh-snug); }
+[data-style-dir='editorial'] .dir-desc { max-inline-size: var(--ed-measure); font-size: var(--fs-4); }
+[data-style-dir='editorial'] .dir-head-ornament { display: none; }
+/* Der Kopf steht auf derselben Achse wie der Inhalt darunter — sonst
+   beginnt die Überschrift woanders als die Karte. */
+[data-style-dir='editorial'] .dir-head {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+  padding-inline: 0;
+  text-align: left;
+}
+[data-style-dir='editorial'].dirC-section .dir-head { max-inline-size: var(--wrap-wide); }
+
+/* Gemeinsame Bausteine ---------------------------------------------------- */
+[data-style-dir='editorial'] .dir-mapframe {
+  border: 1px solid var(--dir-rule);
+  border-radius: 0;
+  box-shadow: none;
+  overflow: hidden;
+  background: color-mix(in srgb, currentColor 4%, transparent);
+}
+[data-style-dir='editorial'] .dir-map-missing {
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+[data-style-dir='editorial'] .dir-name {
+  font-family: var(--body);
+  font-size: var(--fs-4);
+  font-weight: 600;
+  line-height: var(--lh-snug);
+  letter-spacing: 0;
+  text-transform: none;
+}
+[data-style-dir='editorial'] .dir-address {
+  font-size: var(--fs-3);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin-top: var(--sp-2);
+  white-space: pre-line;
+}
+[data-style-dir='editorial'] .dir-description {
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  color: var(--muted);
+  max-inline-size: 52ch;
+  margin-top: var(--sp-3);
+}
+/* Die Hinweiszeilen (Parken, Shuttle, ÖPNV) sind gesetzte Metazeilen, keine
+   Chips — die Sinnbilder der Basis bleiben, aber klein und einfarbig. */
+[data-style-dir='editorial'] .dir-transit {
+  display: grid;
+  gap: var(--sp-2);
+  margin-top: var(--sp-3);
+}
+[data-style-dir='editorial'] .dir-transit-item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  font-family: var(--body);
+  font-size: var(--fs-2);
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+[data-style-dir='editorial'] .dir-transit-item .icon { opacity: 0.55; font-size: 0.9em; }
+[data-style-dir='editorial'] .dir-label-chip {
+  display: inline-block;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--terra-on-light, var(--muted));
+  margin-bottom: var(--sp-2);
+}
+/* Route-Knopf: zurückhaltend, aber nicht zu übersehen. */
+[data-style-dir='editorial'] .dir-btn {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--touch);
+  padding: 0 0 var(--sp-2);
+  border: 0;
+  border-bottom: 1px solid var(--dir-rule-strong);
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  transition: border-color .2s ease, color .2s ease;
+}
+[data-style-dir='editorial'] .dir-btn:hover {
+  background: none;
+  color: var(--terra-on-light, var(--ink));
+  border-color: currentColor;
+  transform: none;
+}
+
+/* --- A · PRACTICAL ------------------------------------------------------- */
+[data-style-dir='editorial'] .dirA-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  column-gap: var(--dir-gap-a);
+  align-items: start;
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+}
+[data-style-dir='editorial'] .dirA-map {
+  aspect-ratio: var(--ar-classic);
+  block-size: auto;
+  inline-size: 100%;
+}
+[data-style-dir='editorial'] .dirA-grid,
+[data-style-dir='editorial'] .dirA-grid.is-one {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+/* Keine Karten, sondern gesetzte Zeilen mit Haarlinie. */
+[data-style-dir='editorial'] .dirA-card {
+  border: 0;
+  border-top: 1px solid var(--dir-rule);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: var(--sp-4) 0;
+}
+[data-style-dir='editorial'] .dirA-card:first-child {
+  border-top: 1px solid var(--dir-rule-strong);
+  padding-top: var(--sp-3);
+}
+[data-style-dir='editorial'] .dirA-card:last-child { border-bottom: 1px solid var(--dir-rule-strong); }
+
+/* --- B · EDITORIAL ------------------------------------------------------- */
+[data-style-dir='editorial'] .dirB-wrap {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+}
+[data-style-dir='editorial'] .dirB-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  column-gap: var(--dir-gap-b);
+  align-items: start;
+}
+[data-style-dir='editorial'] .dirB-list { display: grid; gap: 0; }
+[data-style-dir='editorial'] .dirB-row {
+  display: grid;
+  grid-template-columns: clamp(28px, 3vw, 44px) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--sp-3);
+  border: 0;
+  border-top: 1px solid var(--dir-rule);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: var(--sp-4) 0;
+  text-align: left;
+}
+[data-style-dir='editorial'] .dirB-row:first-child { border-top: 1px solid var(--dir-rule-strong); }
+[data-style-dir='editorial'] .dirB-row.is-active { background: color-mix(in srgb, currentColor 4%, transparent); }
+[data-style-dir='editorial'] .dirB-num {
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  inline-size: auto;
+  block-size: auto;
+  padding: 0;
+  line-height: 1.6;
+}
+[data-style-dir='editorial'] .dirB-name {
+  font-family: var(--body);
+  font-size: var(--fs-4);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+[data-style-dir='editorial'] .dirB-short-addr {
+  display: block;
+  font-size: var(--fs-2);
+  color: var(--muted);
+  margin-top: var(--sp-1);
+}
+/* Die Kartenfläche sitzt tiefer als die Liste — daraus entsteht die
+   Komposition, nicht aus einer anderen Kartenposition. */
+[data-style-dir='editorial'] .dirB-mapwrap {
+  margin-block-start: var(--sp-8);
+  aspect-ratio: var(--ar-portrait);
+  block-size: auto;
+  inline-size: 100%;
+}
+
+/* --- C · DESTINATION ----------------------------------------------------- */
+[data-style-dir='editorial'] .dirC-wrap {
+  display: grid;
+  gap: var(--sp-9);
+  max-inline-size: var(--wrap-wide);
+  margin-inline: auto;
+}
+[data-style-dir='editorial'] .dirC-block {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--dir-gap-c);
+  row-gap: var(--sp-5);
+  align-items: end;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+}
+[data-style-dir='editorial'] .dirC-text { grid-column: 1 / span 6; }
+/* Der Ortsname trägt die Variante — die Adresse bleibt trotzdem die zweite,
+   gut lesbare Information und rutscht nicht in die Dekoration. */
+[data-style-dir='editorial'] .dirC-text .dir-name {
+  font-family: var(--disp);
+  font-weight: 300;
+  font-size: var(--fs-7);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.025em;
+}
+[data-style-dir='editorial'] .dirC-text .dir-address {
+  font-size: var(--fs-4);
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  margin-top: var(--sp-4);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--dir-rule);
+  max-inline-size: 32ch;
+}
+[data-style-dir='editorial'] .dirC-mapwrap {
+  grid-column: 7 / -1;
+  aspect-ratio: var(--ar-band);
+  block-size: auto;
+  inline-size: 100%;
+}
+/* Zweiter Ort spiegelt die Achse. */
+[data-style-dir='editorial'] .dirC-block:nth-child(even) .dirC-text { grid-column: 7 / -1; }
+[data-style-dir='editorial'] .dirC-block:nth-child(even) .dirC-mapwrap { grid-column: 1 / span 6; grid-row: 1; }
+
+/* =========================================================================
+   GALLERY
+   ========================================================================= */
+
+[data-style-gallery='editorial'] {
+  /* Bezugsrahmen für die Dekorationsebene.
+     StyledBereichBg rendert .styled-bg-editorial mit position:absolute;inset:0.
+     Ohne positionierten Vorfahren hängt sie sich an den nächsten gefundenen —
+     in /allelements war das der QA-Block, der A, B UND C enthält. Die Ebene
+     war dadurch 3678px hoch statt 933 und malte Haarlinie und "Ed. 01" quer
+     über alle drei Varianten. Genau das sah wie B-Reste in C aus.
+     Im Produktivpfad ist der Effekt derselbe, nur größer: dort ist der
+     nächste positionierte Vorfahre der Seiten-Wrapper. */
+  position: relative;
+  padding-inline: var(--gutter);
+  /* Die Galerie war eine der längsten Sektionen der Seite. Weniger Polsterung
+     ist Teil der Kompaktheit, nicht nur die Kachelgröße. */
+  padding-block: clamp(56px, 6.5vw, 88px);
+}
+
+/* =========================================================================
+   GALLERY — Neufassung
+   -------------------------------------------------------------------------
+   Grundsatz dieser Runde: die Galerie im Seitenfluss ist ein TEASER, kein
+   Bilderteppich. Kleine kuratierte Vorschau, die große Fotografie erlebt man
+   in der Lightbox. Vorher war sie eine der längsten Sektionen der Seite.
+
+   Die Basis blendet ab der 6. Kachel aus (.gal-client-wrap:not(.is-expanded))
+   und zeigt den Knopf „Mehr Bilder zeigen" auch auf dem Desktop. Diese
+   Mechanik wird hier NICHT ersetzt, nur die Schwelle je Variante verschoben —
+   mit Selektoren gleicher Spezifität, sonst greift die Basisregel weiter.
+
+     A  Kontaktabzug     gleichmäßiges Raster kleiner Kacheln
+     B  Collage          ein dominantes Bild, kleinere Begleiter
+     C  Bildstreifen     waagerechte Strecke, seitlich scrollbar
+
+   Mobil sind es bewusst drei andere Erlebnisse: dichtes Raster, gestaffelte
+   Komposition, Wischstrecke.
+   ========================================================================= */
+
+[data-style-gallery='editorial'] {
+  /* Bezugsrahmen für die Dekorationsebene.
+     StyledBereichBg rendert .styled-bg-editorial mit position:absolute;inset:0.
+     Ohne positionierten Vorfahren hängt sie sich an den nächsten gefundenen —
+     in /allelements war das der QA-Block, der A, B UND C enthält. Die Ebene
+     war dadurch 3678px hoch statt 933 und malte Haarlinie und "Ed. 01" quer
+     über alle drei Varianten. Genau das sah wie B-Reste in C aus.
+     Im Produktivpfad ist der Effekt derselbe, nur größer: dort ist der
+     nächste positionierte Vorfahre der Seiten-Wrapper. */
+  position: relative;
+  padding-inline: var(--gutter);
+  /* Die Galerie war eine der längsten Sektionen der Seite. Weniger Polsterung
+     ist Teil der Kompaktheit, nicht nur die Kachelgröße. */
+  padding-block: clamp(56px, 6.5vw, 88px);
+}
+[data-style-gallery='editorial'] .gal-intro { margin-bottom: var(--sp-6); }
+
+/* Bildunterschriften bleiben der Lightbox vorbehalten — unter Daumennagel-
+   Kacheln erzeugen sie nur Unruhe. */
+[data-style-gallery='editorial'] .galA-cap { display: none; }
+/* Nur die Schlüsselaufnahme trägt eine Bildunterschrift. Unter jeder kleinen
+   Kachel wird daraus sonst eine Kette dreizeiliger Versalienblöcke. */
+[data-style-gallery='editorial'] .galB-cap { display: none; }
+[data-style-gallery='editorial'] .galB-group:nth-child(1) .galB-cap {
+  display: block;
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: var(--sp-2);
+  border-top: 1px solid var(--ed-rule);
+  padding-top: var(--sp-2);
+}
+
+/* --- A · Kontaktabzug ---------------------------------------------------- */
+[data-style-gallery='editorial'].galA-wrap {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+}
+[data-style-gallery='editorial'] .galA {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  inline-size: min(100%, 860px);
+  margin-inline: auto;
+}
+[data-style-gallery='editorial'] .galA-tile {
+  aspect-ratio: var(--ar-square);
+  overflow: hidden;
+  border-radius: 0;
+  margin: 0;
+  cursor: pointer;
+}
+[data-style-gallery='editorial'] .galA-tile img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  transition: opacity .25s ease;
+}
+[data-style-gallery='editorial'] .galA-tile:hover img { opacity: .82; }
+/* Zwölf Kacheln als Vorschau — drei Reihen, danach übernimmt die Lightbox. */
+[data-style-gallery='editorial'] .gal-client-wrap:not(.is-expanded) .galA-tile:nth-child(n + 6) { display: block; }
+[data-style-gallery='editorial'] .gal-client-wrap:not(.is-expanded) .galA-tile:nth-child(n + 13) { display: none; }
+
+/* --- B · Collage ---------------------------------------------------------
+   Die Komponente liefert die Bilder NICHT flach, sondern in Gruppen mit dem
+   Muster full → pair → triple (data-layout). Meine erste Fassung setzte
+   Einzelbilder über nth-child — die Regeln liefen ins Leere, weil nth-child
+   innerhalb der Gruppe zählt. Die Collage wird deshalb aus den GRUPPEN
+   gebaut: ein Schlüsselbild, daneben ein ungleiches Paar, darunter eine
+   Dreierzeile. Drei Gruppen sind die Vorschau, der Rest liegt in der Lightbox.
+   ------------------------------------------------------------------------ */
+[data-style-gallery='editorial'].galB-wrap {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+}
+[data-style-gallery='editorial'] .galB {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: clamp(70px, 7.4vw, 108px);
+  gap: 6px;
+}
+[data-style-gallery='editorial'] .galB-group { display: grid; gap: 6px; min-inline-size: 0; }
+[data-style-gallery='editorial'] .galB-group:nth-child(1) { grid-column: span 7; grid-row: span 3; }
+[data-style-gallery='editorial'] .galB-group:nth-child(2) { grid-column: span 5; grid-row: span 3; }
+[data-style-gallery='editorial'] .galB-group:nth-child(3) { grid-column: span 12; grid-row: span 2; }
+[data-style-gallery='editorial'] .galB-group .galB-grid {
+  display: grid;
+  gap: 6px;
+  block-size: 100%;
+  grid-template-columns: minmax(0, 1fr);
+}
+/* Ungleiche Teilung im Paar und in der Dreierzeile — gleich große Kacheln
+   wären wieder ein Raster. */
+[data-style-gallery='editorial'] .galB-group:nth-child(2) .galB-grid { grid-template-rows: 1.25fr 1fr; }
+[data-style-gallery='editorial'] .galB-group:nth-child(3) .galB-grid {
+  grid-template-columns: 4fr 3fr 5fr;
+  grid-auto-flow: column;
+}
+[data-style-gallery='editorial'] .galB-item {
+  margin: 0;
+  min-inline-size: 0;
+  min-block-size: 0;
+  cursor: pointer;
+}
+[data-style-gallery='editorial'] .galB-imgwrap {
+  overflow: hidden;
+  border-radius: 0;
+  aspect-ratio: auto;
+  block-size: 100%;
+}
+[data-style-gallery='editorial'] .galB-imgwrap img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+/* Drei Gruppen als Komposition — mehr würde die Collage zum Teppich machen. */
+[data-style-gallery='editorial'] .gal-client-wrap:not(.is-expanded) .galB-group:nth-child(n + 4) { display: none; }
+
+/* --- C · Bildstreifen ----------------------------------------------------
+   Waagerechte Strecke mit Scroll-Snap: das nächste Bild schaut immer ins
+   Bild, dadurch ist ohne Beschriftung klar, dass es weitergeht. Kostet
+   keinen senkrechten Platz, egal wie viele Bilder es sind.
+   ------------------------------------------------------------------------ */
+[data-style-gallery='editorial'].galC-wrap { max-inline-size: none; }
+/* Die Sequenz braucht ein Zentrum: die erste Aufnahme führt, die folgenden
+   begleiten. Vorher waren alle Kacheln gleich breit — das las sich als Reihe,
+   nicht als Strecke. */
+[data-style-gallery='editorial'] .galC {
+  display: grid;
+  /* Die Basis setzt vier feste Spalten. Ohne dieses Zurücknehmen legt
+     grid-auto-flow die Bilder erst in diese vier Spalten und erzeugt daneben
+     implizite — die Kacheln schrumpfen dann auf wenige Pixel. */
+  /* Erste Spalte explizit: die führende Aufnahme bekommt ihre Breite über das
+     Raster, nicht über inline-size — sonst ragt sie aus ihrer Spur. */
+  grid-template-columns: clamp(300px, 32vw, 460px);
+  max-inline-size: none;
+  margin: clamp(24px, 3vw, 36px) 0 0;
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(140px, 14.5vw, 210px);
+  gap: 6px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--gutter);
+  padding-bottom: var(--sp-4);
+  scrollbar-width: thin;
+}
+[data-style-gallery='editorial'] .galC-tile:first-child {
+  aspect-ratio: var(--ar-portrait);
+}
+/* Die Folgeaufnahmen stehen auf einer gemeinsamen Höhe — ungleiche Höhen
+   machen aus der Strecke eine ausgefranste Reihe. */
+[data-style-gallery='editorial'] .galC-tile:not(:first-child) {
+  aspect-ratio: auto;
+  block-size: clamp(190px, 20vw, 290px);
+  align-self: start;
+}
+[data-style-gallery='editorial'] .galC-tile {
+  scroll-snap-align: start;
+  aspect-ratio: var(--ar-portrait);
+  overflow: hidden;
+  border-radius: 0;
+  margin: 0;
+  cursor: pointer;
+}
+[data-style-gallery='editorial'] .galC-tile img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+/* Die waagerechte Achse unter dem Streifen: ein Strich, der über die volle
+   Breite läuft und im Standbild zeigt, dass die Bilder auf einer Linie
+   weiterlaufen. Zusammen mit dem angeschnittenen nächsten Bild sind das die
+   beiden Mittel — mehr wäre Carousel-UI. */
+[data-style-gallery='editorial'].galC-wrap .gal-client-wrap {
+  position: relative;
+  padding-bottom: var(--sp-4);
+}
+[data-style-gallery='editorial'].galC-wrap .gal-client-wrap::after {
+  content: '';
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  block-size: 1px;
+  background: linear-gradient(
+    90deg,
+    var(--ed-rule-strong) 0,
+    var(--ed-rule-strong) 22%,
+    var(--ed-rule) 22%,
+    var(--ed-rule) 100%
+  );
+}
+
+/* Im Streifen bleiben alle Bilder — waagerecht kostet das keinen Platz. */
+[data-style-gallery='editorial'] .gal-client-wrap:not(.is-expanded) .galC-tile:nth-child(n + 6) { display: block; }
+/* Der Knopf entfällt dort: es ist bereits alles erreichbar, und die Lightbox
+   öffnet jedes Bild groß. */
+[data-style-gallery='editorial'].galC-wrap .gal-showmore-row { display: none; }
+
+/* --- CTA ----------------------------------------------------------------- */
+[data-style-gallery='editorial'] .gal-showmore-row {
+  text-align: left;
+  inline-size: min(100%, 860px);
+  margin-inline: auto;
+  margin-block-start: var(--sp-5);
+}
+[data-style-gallery='editorial'] .gal-showmore {
+  border-radius: 0;
+  border: 0;
+  border-bottom: 1px solid var(--ed-rule-strong);
+  padding: 0 0 var(--sp-2);
+  background: none;
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  min-block-size: var(--touch);
+  transition: color .2s ease, border-color .2s ease;
+}
+[data-style-gallery='editorial'] .gal-showmore:hover {
+  background: none;
+  color: var(--terra-on-light, var(--muted));
+  border-color: currentColor;
+  transform: none;
+}
+/* Die Zahl im Knopf zählt die AB der 6. Kachel verborgenen Bilder — das
+   passt nicht mehr zu einer Vorschau von zwölf. Bis die Komponente die
+   Gesamtzahl übergibt, bleibt sie aus. */
+[data-style-gallery='editorial'] .gal-more-count { display: none; }
+
+/* --- Lightbox ------------------------------------------------------------ */
+[data-style-gallery='editorial'] ~ .gal-lightbox,
+.wedding-site-wrapper[data-style='editorial'] .gal-lightbox {
+  background: rgba(24, 18, 14, 0.94);
+}
+.wedding-site-wrapper[data-style='editorial'] .gal-lb-img {
+  max-block-size: 82vh;
+  box-shadow: none;
+  background: transparent;
+}
+.wedding-site-wrapper[data-style='editorial'] .gal-lb-cap {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  gap: var(--sp-4);
+}
+.wedding-site-wrapper[data-style='editorial'] .gal-lb-nav,
+.wedding-site-wrapper[data-style='editorial'] .gal-lb-close {
+  border-radius: 0;
+  border: 1px solid rgba(244, 237, 226, 0.4);
+  background: transparent;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+}
+.wedding-site-wrapper[data-style='editorial'] .gal-lb-close:hover { transform: none; }
+
+/* =========================================================================
+   FAQ
+   ========================================================================= */
+
+/* --- A · BALANCED — eine Spalte, Hairlines, ruhig lesbar ----------------- */
+[data-style-faq='editorial'] .faqA-wrap {
+  max-inline-size: var(--wrap-narrow);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+[data-style-faq='editorial'] .faqA-list { border-top: 1px solid var(--ed-rule); }
+[data-style-faq='editorial'] .faqA-item {
+  border-bottom: 1px solid var(--ed-rule);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+[data-style-faq='editorial'] .faqA-q-btn {
+  min-block-size: var(--touch);
+  padding-block: var(--sp-4);
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  text-align: left;
+}
+[data-style-faq='editorial'] .faqA-answer {
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  max-inline-size: var(--ed-measure);
+  padding-bottom: var(--sp-5);
+}
+
+/* --- B · EDITORIAL — zweispaltig, alles offen, Randziffern -------------- */
+[data-style-faq='editorial'] .faqB-wrap {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+[data-style-faq='editorial'] .faqB-grid {
+  display: grid;
+  grid-template-columns: repeat(2, var(--ed-col));
+  gap: var(--sp-7) var(--sp-8);
+}
+[data-style-faq='editorial'] .faqB-card {
+  position: relative;
+  border: 0;
+  border-top: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: var(--sp-4) 0 0;
+}
+[data-style-faq='editorial'] .faqB-num {
+  position: absolute;
+  top: var(--sp-4);
+  right: 0;
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  color: var(--ed-rule-strong);
+  background: none;
+  border: 0;
+  padding: 0;
+}
+[data-style-faq='editorial'] .faqB-q {
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  max-inline-size: 28ch;
+}
+[data-style-faq='editorial'] .faqB-a {
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  max-inline-size: 46ch;
+  margin-top: var(--sp-3);
+}
+
+/* --- C · STATEMENT — Frage und Antwort als zwei Satzspalten -------------- */
+[data-style-faq='editorial'] .faqC-wrap {
+  max-inline-size: var(--wrap-wide);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+[data-style-faq='editorial'] .faqC-list { display: grid; }
+[data-style-faq='editorial'] .faqC-item {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: var(--ed-gap-lg);
+  align-items: start;
+  border-top: 2px solid var(--ed-rule-strong);
+  padding-block: var(--sp-6);
+}
+[data-style-faq='editorial'] .faqC-num {
+  display: block;
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  margin-bottom: var(--sp-2);
+}
+[data-style-faq='editorial'] .faqC-q {
+  font-size: var(--fs-6);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.015em;
+}
+[data-style-faq='editorial'] .faqC-a {
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  max-inline-size: var(--ed-measure);
+}
+
+/* =========================================================================
+   MOBILE — eigene Komposition, keine verkleinerte Desktop-Version
+   -------------------------------------------------------------------------
+   Grundsatz für Editorial auf kleinen Geräten: die Asymmetrie tritt zurück,
+   die Achse bleibt. Alles wird einspaltig und linksbündig, Hairlines und
+   Metadaten tragen die Struktur weiter.
+   ========================================================================= */
+@media (max-width: 900px) {
+  [data-style-tl='editorial'] .tlC-card,
+  [data-style-tl='editorial'] .tlC-card:nth-child(even) {
+    grid-template-columns: var(--ed-col);
+    gap: var(--sp-4);
+  }
+  [data-style-tl='editorial'] .tlC-img,
+  [data-style-tl='editorial'] .tlC-card:nth-child(even) .tlC-img { grid-column: 1; grid-row: 1; }
+  [data-style-tl='editorial'] .tlC-content,
+  [data-style-tl='editorial'] .tlC-card:nth-child(even) .tlC-content { grid-column: 1; grid-row: 2; }
+
+  [data-style-faq='editorial'] .faqB-grid { grid-template-columns: var(--ed-col); gap: var(--sp-6); }
+  [data-style-faq='editorial'] .faqC-item { grid-template-columns: var(--ed-col); gap: var(--sp-3); }
+
+}
+
+@media (max-width: 600px) {
+  /* ======================================================================
+     LOVE STORY MOBIL
+     ----------------------------------------------------------------------
+     URSACHE des kaputten Zustands: Spezifität. Die Desktop-Setzungen hängen
+     an :nth-child / :nth-of-type (0,4,0), die früheren Mobile-Rücksetzungen
+     an einfachen Klassen (0,2,0). Media Queries erhöhen die Spezifität
+     nicht — also galten am Telefon weiter die Zwölfspalter-Platzierungen.
+     Gemessen: ein Bild mit `grid-column: 1 / span 7` in einem einspaltigen
+     Raster war 96px breit statt 350, Station 3 saß bei left 249 außerhalb.
+
+     Deshalb stehen unten dieselben nth-Selektoren wie auf dem Desktop —
+     nicht als Reparatur, sondern als eigene mobile Setzung je Station.
+     ====================================================================== */
+
+  /* --- A · mobil: Bild, Geschichte, Bild, Bild -------------------------
+     display:contents löst die Bildspalte auf, damit der Erzähltext ZWISCHEN
+     die Aufnahmen rücken kann — sonst stünden erst drei Bilder und dann der
+     Text. Die Schiene entfällt dabei (sie war die Box der Bildspalte), die
+     Plattennummern bleiben und setzen sich über die Bilder. */
+  [data-style-ls='editorial'] .lsA-single {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-6);
+  }
+  [data-style-ls='editorial'] .lsA-images {
+    display: contents;
+    padding-left: 0;
+  }
+  [data-style-ls='editorial'] .lsA-images::before { content: none; }
+  [data-style-ls='editorial'] .lsA-img,
+  [data-style-ls='editorial'] .lsA-single:hover .lsA-img {
+    margin: 0;
+    padding: 0;
+  }
+  [data-style-ls='editorial'] .lsA-img::before {
+    top: -1.7em;
+    left: 0;
+    inline-size: auto;
+  }
+  [data-style-ls='editorial'] .lsA-img--1 { order: 1; inline-size: 100%; aspect-ratio: var(--ar-classic); }
+  [data-style-ls='editorial'] .lsA-text   { order: 2; }
+  /* Die beiden Folgeaufnahmen stehen bewusst nicht randbündig — sonst wird
+     die Seite eine Kette gleich breiter Bilder. */
+  [data-style-ls='editorial'] .lsA-img--2 {
+    order: 3;
+    inline-size: 78%;
+    margin-inline-start: auto;
+    aspect-ratio: var(--ar-portrait);
+  }
+  [data-style-ls='editorial'] .lsA-img--3 { order: 4; inline-size: 62%; aspect-ratio: var(--ar-square); }
+
+  /* --- B · mobil: eine Spalte, aber komponiert -------------------------
+     Jede Station behält ihr eigenes Gewicht: unterschiedliche Bildbreiten,
+     wechselnde Ränder, wechselnde Einzüge. Aus dem Raster wird eine Spalte,
+     aus der Asymmetrie nicht Gleichförmigkeit. */
+  [data-style-ls='editorial'] .lsB-list {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--sp-8);
+  }
+  [data-style-ls='editorial'] .lsB-item {
+    grid-template-columns: minmax(0, 1fr);
+    grid-column: 1;
+    gap: var(--sp-4);
+  }
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 1) .lsB-img-wrap,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 2) .lsB-img-wrap,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 3) .lsB-img-wrap,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 4) .lsB-img-wrap,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 5) .lsB-img-wrap,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 1) .lsB-text,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 2) .lsB-text,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 3) .lsB-text,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 4) .lsB-text,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 5) .lsB-text {
+    grid-column: 1;
+    padding-top: 0;
+  }
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 2) .lsB-img-wrap { inline-size: 76%; margin-inline-start: auto; }
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 3) .lsB-img-wrap { inline-size: 58%; }
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 4) .lsB-img-wrap { inline-size: 88%; margin-inline-start: auto; }
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 5) .lsB-img-wrap { inline-size: 70%; }
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 2) .lsB-text { padding-inline-start: var(--sp-6); }
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 3) .lsB-text { padding-inline-start: var(--sp-7); }
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 5) .lsB-text { padding-inline-end: var(--sp-6); }
+  /* Hängende Randziffern brauchen einen Rand, den es hier nicht gibt. */
+  [data-style-ls='editorial'] .lsB-num,
+  [data-style-ls='editorial'] .lsB-item:nth-child(5n + 4) .lsB-num {
+    position: static;
+    display: block;
+    margin-bottom: var(--sp-2);
+  }
+
+  /* --- C · mobil: ein Schlüsselbild, dann kleinere Momente -------------
+     Die Öffnungsplatte läuft über die Seitenränder hinaus und dominiert;
+     danach wechseln kleine und große Aufnahmen. Drei Bilder in voller
+     Breite untereinander wären eine Galerie, keine Dramaturgie. */
+  [data-style-ls='editorial'] .lsC-wrap {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--sp-7);
+  }
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 1),
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 2),
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 3),
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 4),
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 5) {
+    grid-column: 1;
+    padding-top: 0;
+  }
+  /* Schlüsselbild randlos über die volle Gerätebreite. */
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 1) {
+    margin-inline: calc(-1 * var(--gutter));
+  }
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 1) .lsC-img { aspect-ratio: var(--ar-portrait); }
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 1) .lsC-card { padding-inline: var(--gutter); }
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 2) { inline-size: 64%; }
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 3) {
+    inline-size: 48%;
+    margin-inline-start: auto;
+    margin-block-start: calc(-1 * var(--sp-5));
+  }
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 4) .lsC-img { aspect-ratio: var(--ar-wide); }
+  [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 5) { inline-size: 76%; }
+  [data-style-ls='editorial'] .lsC-card > * { max-inline-size: none; }
+
+  /* ======================================================================
+     ANFAHRT MOBIL — drei eigene Zustände.
+     Alle Rücksetzungen tragen dieselben Selektorstufen wie der Desktop.
+     ====================================================================== */
+
+  /* A · praktisch: Karte zuerst, darunter die Angaben als gesetzte Zeilen.
+     Wer auf dem Telefon die Anfahrt öffnet, will zuerst die Lage sehen. */
+  [data-style-dir='editorial'] .dirA-wrap {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--dir-gap-mobile);
+  }
+  [data-style-dir='editorial'] .dirA-map { aspect-ratio: var(--ar-wide); }
+  /* Die Basis gibt dem Kartenblock mobil einen eigenen Außenabstand — zusammen
+     mit der Zeilenlücke wären das 52px statt der gewollten 28. */
+  [data-style-dir='editorial'] .dirA-grid { margin-block: 0; }
+  [data-style-dir='editorial'] .dirA-map { margin-block-end: 0; }
+  [data-style-dir='editorial'] .dirA-card { padding: var(--sp-3) 0; }
+
+  /* B · komponiert: die nummerierte Liste bleibt die Struktur, die Karte
+     rutscht darunter und läuft rechts aus dem Satzspiegel — der Versatz des
+     Desktops wird zum Anschnitt statt zum Abstand. */
+  [data-style-dir='editorial'] .dirB-grid {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--dir-gap-mobile);
+  }
+  /* Im Markup steht die Karte vor der Liste. Einspaltig führt in B aber die
+     nummerierte Liste — sonst beginnt B wie A mit einer Karte. */
+  [data-style-dir='editorial'] .dirB-list { order: 0; }
+  [data-style-dir='editorial'] .dirB-mapwrap { order: 1; }
+  [data-style-dir='editorial'] .dirB-mapwrap {
+    margin-block-start: 0;
+    margin-inline-end: calc(-1 * var(--gutter));
+    aspect-ratio: var(--ar-classic);
+  }
+  [data-style-dir='editorial'] .dirB-row { padding: var(--sp-3) 0; }
+
+  /* C · Zielort: der Name führt, die Karte wird zum randlosen Band darunter. */
+  [data-style-dir='editorial'] .dirC-wrap { gap: var(--sp-7); }
+  [data-style-dir='editorial'] .dirC-block,
+  [data-style-dir='editorial'] .dirC-block:nth-child(even) {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--dir-gap-mobile);
+  }
+  [data-style-dir='editorial'] .dirC-text,
+  [data-style-dir='editorial'] .dirC-block:nth-child(even) .dirC-text {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  [data-style-dir='editorial'] .dirC-mapwrap,
+  [data-style-dir='editorial'] .dirC-block:nth-child(even) .dirC-mapwrap {
+    grid-column: 1;
+    grid-row: 2;
+    aspect-ratio: var(--ar-wide);
+    margin-inline: calc(-1 * var(--gutter));
+    inline-size: auto;
+  }
+  [data-style-dir='editorial'] .dirC-text .dir-name { font-size: var(--fs-6); }
+
+  /* ======================================================================
+     GALLERY MOBIL — drei eigene Erlebnisse
+     ----------------------------------------------------------------------
+     Alle Rücksetzungen tragen dieselben nth-Selektoren wie die Desktop-
+     Setzungen. Media Queries erhöhen die Spezifität nicht; bei der Love Story
+     hatte genau das die Mobilansicht ausgehebelt.
+     ====================================================================== */
+
+  /* A · dichter Fotoindex: drei Spalten, kleine Kacheln, neun als Vorschau. */
+  [data-style-gallery='editorial'] .galA {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+    inline-size: 100%;
+  }
+  [data-style-gallery='editorial'] .gal-client-wrap:not(.is-expanded) .galA-tile:nth-child(n + 10) { display: none; }
+  [data-style-gallery='editorial'] .gal-client-wrap:not(.is-expanded) .galA-tile:nth-child(n + 13) { display: none; }
+
+  /* B · gestaffelte Komposition statt Raster: das Schlüsselbild über die
+     volle Breite, darunter das ungleiche Paar nebeneinander, dann die
+     Dreierzeile eingerückt. Die Gruppenlogik der Komponente trägt hier die
+     Staffelung. */
+  [data-style-gallery='editorial'] .galB {
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: auto;
+    gap: var(--sp-3);
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(1),
+  [data-style-gallery='editorial'] .galB-group:nth-child(2),
+  [data-style-gallery='editorial'] .galB-group:nth-child(3) {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(1) .galB-imgwrap { aspect-ratio: var(--ar-wide); block-size: auto; }
+  [data-style-gallery='editorial'] .galB-group:nth-child(2) {
+    inline-size: 88%;
+    margin-inline-start: auto;
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(2) .galB-grid {
+    grid-template-rows: none;
+    grid-template-columns: 3fr 2fr;
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(2) .galB-imgwrap { aspect-ratio: var(--ar-square); block-size: auto; }
+  [data-style-gallery='editorial'] .galB-group:nth-child(3) { inline-size: 76%; }
+  [data-style-gallery='editorial'] .galB-group:nth-child(3) .galB-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(3) .galB-imgwrap { aspect-ratio: var(--ar-square); block-size: auto; }
+
+  /* C · Wischstrecke: ein Bild führt, das nächste schaut ins Bild. Scroll-
+     Snap übernimmt die Gestensteuerung, ohne dass die Komponente JavaScript
+     braucht. */
+  [data-style-gallery='editorial'] .galC {
+    grid-template-columns: 88%;
+    /* Die führende Aufnahme nimmt fast die Breite, die nächste schaut ins
+       Bild — daraus liest sich die Wischgeste ohne Bedienelemente. */
+    grid-auto-columns: 62%;
+    gap: 8px;
+    scroll-snap-type: x mandatory;
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter);
+  }
+  [data-style-gallery='editorial'] .galC-tile:first-child {
+    grid-column: 1;
+    inline-size: auto;
+    aspect-ratio: var(--ar-portrait);
+  }
+  [data-style-gallery='editorial'] .galC-tile:not(:first-child) {
+    aspect-ratio: var(--ar-portrait);
+    block-size: auto;
+  }
+
+  /* Lightbox mobil: fast bildschirmfüllend, Bedienelemente groß und unten
+     erreichbar statt seitlich am Bildrand. */
+  .wedding-site-wrapper[data-style='editorial'] .gal-lightbox { padding: 12px; }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-img { max-block-size: 72vh; }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-nav {
+    inset-block-start: auto;
+    inset-block-end: 4px;
+    transform: none;
+  }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-prev { inset-inline-start: 8px; }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-next { inset-inline-end: 8px; }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-close {
+    inset-block-start: 4px;
+    inset-inline-end: 4px;
+  }
+
+  /* ======================================================================
+     ABLAUF MOBIL — drei eigene Zustände, nicht drei gestapelte Listen.
+     Alle Rücksetzungen tragen dieselben nth-Selektoren wie der Desktop,
+     sonst überstimmen dessen Platzierungen die Mobilregeln.
+     ====================================================================== */
+
+  /* A · kompakter Tagesplan: schmale Zeitspalte, Programm rechts daneben.
+     Zwei Spalten bleiben auch auf 320px lesbar und sparen eine Zeile je
+     Station gegenüber „Zeit über Titel". */
+  [data-style-tl='editorial'] .tlA-cards {
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    overflow: visible;
+  }
+  [data-style-tl='editorial'] .tlA-card {
+    grid-template-columns: 58px minmax(0, 1fr);
+    column-gap: var(--sp-4);
+    padding: var(--sp-3) 0;
+    scroll-snap-align: none;
+  }
+  [data-style-tl='editorial'] .tlA-time-badge { font-size: var(--fs-4); }
+  [data-style-tl='editorial'] .tlA-desc { font-size: var(--fs-2); }
+
+  /* B · die Treppe bleibt, nur in Einzügen statt in Rasterspalten. Uhrzeit
+     steht über dem Programmpunkt, damit die schmale Spalte wegfällt. */
+  [data-style-tl='editorial'] .tlB-event,
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 1),
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 3),
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 4) {
+    grid-template-columns: minmax(0, 1fr);
+    padding-block: var(--sp-3);
+  }
+  /* Auf dem Telefon zählt die Zeile, nicht der Luftraum — sonst wird der
+     Ablauf mit zwölf Stationen zur Endlosseite. */
+  [data-style-tl='editorial'] .tlB-event-content .dsc { font-size: var(--fs-2); }
+  [data-style-tl='editorial'] .tlB-event-time .t { font-size: var(--fs-4); }
+  [data-style-tl='editorial'] .tlB-event .tlB-event-time,
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 1) .tlB-event-time,
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 3) .tlB-event-time,
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 4) .tlB-event-time {
+    grid-column: 1;
+    text-align: left;
+  }
+  [data-style-tl='editorial'] .tlB-event .tlB-event-content,
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 1) .tlB-event-content,
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 3) .tlB-event-content,
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 4) .tlB-event-content {
+    grid-column: 1;
+  }
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 3) { padding-inline-start: var(--sp-5); }
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 4) { padding-inline-start: var(--sp-7); }
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 1) { padding-inline-start: var(--sp-6); }
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 2) {
+    padding-inline-start: 0;
+    padding-block: var(--sp-5);
+  }
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 2) .tlB-event-time .t { font-size: var(--fs-6); }
+
+  /* C · Tageserzählung: die Uhrzeiten bleiben groß und tragen die Seite, die
+     Einzüge wechseln, Bilder nur an Schlüsselmomenten und nicht über die
+     volle Breite. */
+  [data-style-tl='editorial'] .tlC-card,
+  [data-style-tl='editorial'] .tlC-card:nth-child(3n + 1) {
+    grid-template-columns: minmax(0, 1fr);
+    aspect-ratio: auto;
+  }
+  [data-style-tl='editorial'] .tlC-content,
+  [data-style-tl='editorial'] .tlC-card:nth-child(3n + 2) .tlC-content,
+  [data-style-tl='editorial'] .tlC-card:nth-child(3n + 3) .tlC-content {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  [data-style-tl='editorial'] .tlC-card:nth-child(3n + 2) { padding-inline-start: var(--sp-6); }
+  [data-style-tl='editorial'] .tlC-card:nth-child(3n + 3) { padding-inline-start: var(--sp-3); }
+  [data-style-tl='editorial'] .tlC-card:nth-child(3n + 1) .tlC-img {
+    grid-column: 1;
+    grid-row: auto;
+    inline-size: 72%;
+    margin-inline-start: auto;
+    margin-block-start: var(--sp-4);
+    aspect-ratio: var(--ar-classic);
+  }
+  /* Die Basis verkleinert die Uhrzeit aller nicht aktiven Karten auf Mobil.
+     In der Tageserzählung trägt aber jede Uhrzeit die Seite. */
+  [data-style-tl='editorial'] .tlC-time,
+  [data-style-tl='editorial'] .tlC-card:not(.is-active) .tlC-time {
+    font-size: clamp(40px, 13vw, 66px);
+  }
+  [data-style-tl='editorial'] .tlC-row { gap: var(--sp-6); }
+
+  [data-style-gallery='editorial'] .galA {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+    inline-size: 100%;
+  }
+  [data-style-gallery='editorial'] .gal-client-wrap:not(.is-expanded) .galA-tile:nth-child(n + 10) { display: none; }
+  [data-style-gallery='editorial'] .gal-client-wrap:not(.is-expanded) .galA-tile:nth-child(n + 13) { display: none; }
+
+  /* B · gestaffelte Komposition statt Raster: das Schlüsselbild über die
+     volle Breite, darunter das ungleiche Paar nebeneinander, dann die
+     Dreierzeile eingerückt. Die Gruppenlogik der Komponente trägt hier die
+     Staffelung. */
+  [data-style-gallery='editorial'] .galB {
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: auto;
+    gap: var(--sp-3);
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(1),
+  [data-style-gallery='editorial'] .galB-group:nth-child(2),
+  [data-style-gallery='editorial'] .galB-group:nth-child(3) {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(1) .galB-imgwrap { aspect-ratio: var(--ar-wide); block-size: auto; }
+  [data-style-gallery='editorial'] .galB-group:nth-child(2) {
+    inline-size: 88%;
+    margin-inline-start: auto;
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(2) .galB-grid {
+    grid-template-rows: none;
+    grid-template-columns: 3fr 2fr;
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(2) .galB-imgwrap { aspect-ratio: var(--ar-square); block-size: auto; }
+  [data-style-gallery='editorial'] .galB-group:nth-child(3) { inline-size: 76%; }
+  [data-style-gallery='editorial'] .galB-group:nth-child(3) .galB-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(3) .galB-imgwrap { aspect-ratio: var(--ar-square); block-size: auto; }
+
+  /* C · Wischstrecke: ein Bild führt, das nächste schaut ins Bild. Scroll-
+     Snap übernimmt die Gestensteuerung, ohne dass die Komponente JavaScript
+     braucht. */
+  [data-style-gallery='editorial'] .galC {
+    grid-template-columns: 88%;
+    /* Die führende Aufnahme nimmt fast die Breite, die nächste schaut ins
+       Bild — daraus liest sich die Wischgeste ohne Bedienelemente. */
+    grid-auto-columns: 62%;
+    gap: 8px;
+    scroll-snap-type: x mandatory;
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter);
+  }
+  [data-style-gallery='editorial'] .galC-tile:first-child {
+    grid-column: 1;
+    inline-size: auto;
+    aspect-ratio: var(--ar-portrait);
+  }
+  [data-style-gallery='editorial'] .galC-tile:not(:first-child) {
+    aspect-ratio: var(--ar-portrait);
+    block-size: auto;
+  }
+
+  /* Lightbox mobil: fast bildschirmfüllend, Bedienelemente groß und unten
+     erreichbar statt seitlich am Bildrand. */
+  .wedding-site-wrapper[data-style='editorial'] .gal-lightbox { padding: 12px; }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-img { max-block-size: 72vh; }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-nav {
+    inset-block-start: auto;
+    inset-block-end: 4px;
+    transform: none;
+  }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-prev { inset-inline-start: 8px; }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-next { inset-inline-end: 8px; }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-close {
+    inset-block-start: 4px;
+    inset-inline-end: 4px;
+  }
+
+  /* Der frühere Ablauf-Block stand hier noch aus der Zeit, als A ein
+     waagerechtes Kartenkarussell und B eine Marginalien-Achse war. Beide
+     Konzepte gibt es nicht mehr; die Regeln haben die neue Mobilsetzung
+     überstimmt (gleiche Spezifität, aber später im Blatt) und die erste
+     Station auf eine 64px-Zeitspalte gezwungen. Ersatzlos entfernt. */
+
+  [data-style-ls='editorial'] .ls-title,
+  [data-style-gallery='editorial'] .gal-title { max-inline-size: 14ch; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-style-ls='editorial'] .lsB-img-wrap img,
+  [data-style-gallery='editorial'] .galA-tile img { transition: none; }
+  [data-style-ls='editorial'] .lsB-item:hover .lsB-img-wrap img { transform: none; }
+}
+
+/* -------------------------------------------------------------------------
+   Touch Targets — für Editorial aktiviert
+   -------------------------------------------------------------------------
+   Die globale 44px-Regel greift hier zuerst. Sie wird Design für Design
+   ausgerollt, damit die Wirkung je Design überprüfbar bleibt.
+   ------------------------------------------------------------------------- */
+[data-style-ls='editorial'] button,
+[data-style-tl='editorial'] button,
+[data-style-gallery='editorial'] button,
+[data-style-faq='editorial'] button,
+[data-style-gallery='editorial'] .galA-tile,
+[data-style-gallery='editorial'] .galB-item,
+[data-style-gallery='editorial'] .galC-tile {
+  min-block-size: var(--touch);
+}
+
+/* =========================================================================
+   EDITORIAL HERO — Revision
+   -------------------------------------------------------------------------
+   Ausgangslage: A und B waren gespiegelte Hälften desselben Prinzips (Bild
+   links/Text rechts bzw. umgekehrt), C war das klassische Full-Bleed-Hero
+   mit mittig gesetzten Namen. Drei Abwandlungen einer Idee, keine drei
+   Prinzipien.
+
+   Jetzt drei verschiedene Magazin-Kompositionen. Der Prüfstein: ohne Farbe
+   und Schrift, nur als graue Flächen, muss man sie auseinanderhalten können.
+
+     A  COVER      Foto über die volle Fläche. Kopfzeile oben wie ein
+                   Masthead, Namen tief im unteren Drittel, Coverlines in
+                   der Fußzeile. Erkennungsbild: EINE Fläche.
+     B  SPREAD     Zwei ungleiche Seiten mit sichtbarem Bundsteg (56/44).
+                   Das Bild hängt oben an und lässt unten Luft, der Text
+                   sitzt unten links. Erkennungsbild: ZWEI Flächen,
+                   diagonal gewichtet.
+     C  STATEMENT  Papier statt Foto. Die Namen tragen die Fläche, das Bild
+                   ist ein angeschnittenes Hochformat rechts unten, das der
+                   Satz überlagert. Erkennungsbild: viel Leere, ein kleiner
+                   Bildblock.
+
+   Nur Editorial. Alle Regeln hängen an [data-style-hero="editorial"], die
+   sieben anderen Stile bleiben unberührt.
+   ========================================================================= */
+
+/* --- A · COVER ----------------------------------------------------------- */
+.hero-a[data-style-hero='editorial'] {
+  position: relative;
+  min-height: min(92vh, 900px);
+  padding: 0;
+  background: #241C17;
+  overflow: hidden;
+  isolation: isolate;
+}
+.hero-a[data-style-hero='editorial'] .hero-a-image {
+  position: absolute;
+  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: var(--img-base);
+  background-position: center 34%;
+  filter: contrast(1.04) saturate(0.9);
+}
+/* Verlauf oben und unten: oben trägt er den Masthead, unten die Namen.
+   In der Mitte bleibt das Foto unangetastet. */
+.hero-a[data-style-hero='editorial']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(28, 22, 18, 0.46) 0%,
+    rgba(28, 22, 18, 0) 24%,
+    rgba(28, 22, 18, 0) 46%,
+    rgba(28, 22, 18, 0.74) 100%
+  );
+}
+.hero-a[data-style-hero='editorial'] .hero-a-content {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  width: 100%;
+  max-width: none;
+  min-height: min(92vh, 900px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto 1fr auto auto;
+  padding: clamp(20px, 3.2vw, 44px);
+  text-align: left;
+  color: #F7F2E9;
+}
+.hero-a[data-style-hero='editorial'] .hero-a-eyebrow {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  justify-self: stretch;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: clamp(9px, 0.78vw, 11px);
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: rgba(247, 242, 233, 0.82);
+  padding-bottom: clamp(10px, 1.4vw, 16px);
+  border-bottom: 1px solid rgba(247, 242, 233, 0.34);
+  margin: 0;
+}
+.hero-a[data-style-hero='editorial'] .hero-a-title {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  align-self: end;
+  color: #FFFFFF;
+  font-size: clamp(38px, 7.2vw, 122px);
+  line-height: 0.9;
+  letter-spacing: -0.035em;
+  max-inline-size: 15ch;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  margin: 0 0 clamp(18px, 2.6vw, 34px);
+}
+.hero-a[data-style-hero='editorial'] .hero-a-title .amp {
+  color: var(--accent);
+  animation: none;
+}
+.hero-a[data-style-hero='editorial'] .hero-a-date,
+.hero-a[data-style-hero='editorial'] .hero-a-location {
+  grid-row: 4;
+  align-self: end;
+  font-family: var(--font-body);
+  font-size: clamp(10px, 0.82vw, 12px);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(247, 242, 233, 0.86);
+  margin: 0;
+  padding-top: clamp(10px, 1.4vw, 16px);
+  border-top: 1px solid rgba(247, 242, 233, 0.28);
+}
+.hero-a[data-style-hero='editorial'] .hero-a-date { grid-column: 1; }
+.hero-a[data-style-hero='editorial'] .hero-a-location {
+  grid-column: 2;
+  justify-self: end;
+  text-align: right;
+}
+
+/* --- B · SPREAD ---------------------------------------------------------- */
+.hero-b[data-style-hero='editorial'] {
+  position: relative;
+  display: grid;
+  grid-template-columns: 56% 44%;
+  align-items: stretch;
+  min-height: min(90vh, 880px);
+  background: var(--bg);
+  overflow: hidden;
+}
+/* Der Bundsteg. Eine Haarlinie, keine Dekoration — sie erklärt die
+   Zweiteilung der Seite. */
+.hero-b[data-style-hero='editorial']::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 56%;
+  width: 1px;
+  background: color-mix(in srgb, var(--ink) 16%, transparent);
+  z-index: 3;
+}
+.hero-b[data-style-hero='editorial'] .hero-b-text {
+  align-self: end;
+  color: var(--ink);
+  padding: 0 clamp(24px, 4vw, 72px) clamp(52px, 9vh, 104px) clamp(24px, 5.4vw, 96px);
+  /* Bewusst in px, nicht in ch: ch bezieht sich auf die Schriftgröße DIESES
+     Elements (16px), nicht auf die der Namen — 32ch hätten die Spalte auf
+     rund 250px eingeschnürt und die Namen mitten im Wort gebrochen. */
+  max-inline-size: min(100%, 560px);
+}
+.hero-b[data-style-hero='editorial'] .hero-b-eyebrow {
+  font-family: var(--font-body);
+  font-size: clamp(9px, 0.74vw, 11px);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.hero-b[data-style-hero='editorial'] .hero-b-title {
+  font-size: clamp(32px, 5.2vw, 78px);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  /* Nur an Trennstellen umbrechen — kein Bruch mitten im Namen. */
+  hyphens: auto;
+  margin-top: clamp(14px, 2vw, 24px);
+}
+.hero-b[data-style-hero='editorial'] .hero-b-rule {
+  inline-size: clamp(48px, 7vw, 96px);
+  block-size: 1px;
+  background: color-mix(in srgb, var(--ink) 34%, transparent);
+  margin: clamp(20px, 3vw, 34px) 0 clamp(14px, 2vw, 20px);
+}
+.hero-b[data-style-hero='editorial'] .hero-b-meta > *,
+.hero-b[data-style-hero='editorial'] .hero-b-intro {
+  font-family: var(--font-body);
+  font-size: clamp(11px, 0.86vw, 13px);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.hero-b[data-style-hero='editorial'] .hero-b-intro {
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: clamp(13px, 1vw, 15px);
+  line-height: 1.6;
+  margin-top: clamp(14px, 2vw, 22px);
+  max-inline-size: 34ch;
+}
+.hero-b[data-style-hero='editorial'] .hero-b-image-col {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+}
+/* Das Bild hängt oben an und lässt unten Luft — dadurch steht es dem tief
+   gesetzten Text diagonal gegenüber statt ihn zu spiegeln. */
+.hero-b[data-style-hero='editorial'] .hero-b-image {
+  position: absolute;
+  inset: -4% 0 24% 0;
+  background-image: var(--img-tall);
+  background-position: center 40%;
+  filter: contrast(1.03) saturate(0.9);
+}
+
+/* --- C · STATEMENT ------------------------------------------------------- */
+.hero-c[data-style-hero='editorial'] {
+  position: relative;
+  min-height: min(96vh, 940px);
+  background: var(--bg);
+  color: var(--ink);
+  overflow: hidden;
+}
+/* Kein Vollbild mehr: das Foto wird ein angeschnittenes Hochformat, das der
+   Satz überlagern darf. */
+.hero-c[data-style-hero='editorial'] .hero-c-image {
+  inset: auto clamp(-40px, -3vw, -16px) clamp(40px, 8vh, 96px) auto;
+  inline-size: clamp(190px, 27vw, 380px);
+  block-size: clamp(260px, 48vh, 540px);
+  background-image: var(--img-tall);
+  background-position: center;
+  filter: contrast(1.04) saturate(0.9);
+  z-index: 1;
+}
+.hero-c[data-style-hero='editorial'] .hero-c-vignette { display: none; }
+.hero-c[data-style-hero='editorial'] .hero-c-content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: min(96vh, 940px);
+  padding: clamp(20px, 3.2vw, 44px);
+  color: var(--ink);
+}
+.hero-c[data-style-hero='editorial'] .hero-c-eyebrow,
+.hero-c[data-style-hero='editorial'] .hero-c-volume {
+  font-family: var(--font-body);
+  font-size: clamp(9px, 0.74vw, 11px);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.hero-c[data-style-hero='editorial'] .hero-c-mid {
+  align-self: center;
+  text-align: left;
+}
+.hero-c[data-style-hero='editorial'] .hero-c-title {
+  color: var(--ink);
+  mix-blend-mode: normal;
+  font-size: clamp(40px, 11vw, 176px);
+  line-height: 0.84;
+  letter-spacing: -0.045em;
+  max-inline-size: 13ch;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+.hero-c[data-style-hero='editorial'] .hero-c-title .amp {
+  color: var(--accent);
+  font-style: italic;
+}
+.hero-c[data-style-hero='editorial'] .hero-c-bot {
+  border-top: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+  color: var(--ink-soft);
+}
+.hero-c[data-style-hero='editorial'] .hero-c-bot * {
+  font-family: var(--font-body);
+  font-size: clamp(10px, 0.82vw, 12px);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* --- Mobil: eigene Kompositionen, keine verkleinerten Desktops ----------- */
+@media (max-width: 900px) {
+  /* A bleibt Cover — nur die Fußzeile stapelt, damit die Coverlines nicht
+     zu zweispaltigen Schnipseln werden. */
+  .hero-a[data-style-hero='editorial'],
+  .hero-a[data-style-hero='editorial'] .hero-a-content {
+    min-height: min(88vh, 760px);
+  }
+  .hero-a[data-style-hero='editorial'] .hero-a-content {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto auto auto;
+    padding: 20px;
+  }
+  .hero-a[data-style-hero='editorial'] .hero-a-title {
+    grid-column: 1;
+    font-size: clamp(34px, 11vw, 60px);
+    max-inline-size: 12ch;
+  }
+  .hero-a[data-style-hero='editorial'] .hero-a-date { grid-column: 1; grid-row: 4; }
+  .hero-a[data-style-hero='editorial'] .hero-a-location {
+    grid-column: 1;
+    grid-row: 5;
+    justify-self: start;
+    text-align: left;
+    border-top: 0;
+    padding-top: 6px;
+  }
+
+  /* B wird zur gestapelten Doppelseite: Bild oben angeschnitten, Bundsteg
+     dreht sich in die Waagerechte. */
+  .hero-b[data-style-hero='editorial'] {
+    grid-template-columns: 1fr;
+    grid-template-rows: 46vh auto;
+    min-height: 0;
+  }
+  .hero-b[data-style-hero='editorial']::before {
+    top: 46vh;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    inline-size: auto;
+    block-size: 1px;
+  }
+  .hero-b[data-style-hero='editorial'] .hero-b-image-col { grid-row: 1; }
+  .hero-b[data-style-hero='editorial'] .hero-b-image { inset: 0 -12% 0 0; }
+  .hero-b[data-style-hero='editorial'] .hero-b-text {
+    grid-row: 2;
+    padding: 30px 20px 52px;
+    max-inline-size: none;
+  }
+  .hero-b[data-style-hero='editorial'] .hero-b-title {
+    font-size: clamp(30px, 9vw, 46px);
+  }
+  /* Die Tafelbeschriftung sitzt auf dem Desktop in der Lücke unter dem Bild.
+     Einspaltig gibt es diese Lücke nicht — dort wird sie zum weißen Balken
+     quer über dem Foto. Auf dem Telefon trägt sie nichts bei. */
+  .hero-b[data-style-hero='editorial'] .hero-b-image-caption { display: none; }
+
+  /* C bleibt typografisch: der Satz führt, das Bild wird zum Band, das rechts
+     aus der Fläche läuft. */
+  .hero-c[data-style-hero='editorial'],
+  .hero-c[data-style-hero='editorial'] .hero-c-content {
+    min-height: min(92vh, 780px);
+  }
+  .hero-c[data-style-hero='editorial'] .hero-c-content { padding: 20px; }
+  .hero-c[data-style-hero='editorial'] .hero-c-title {
+    font-size: clamp(38px, 13vw, 68px);
+    max-inline-size: 11ch;
+  }
+  .hero-c[data-style-hero='editorial'] .hero-c-image {
+    inset: auto -14% 88px auto;
+    inline-size: 72%;
+    block-size: 30vh;
+  }
+  .hero-c[data-style-hero='editorial'] .hero-c-mid {
+    align-self: start;
+    padding-top: clamp(16px, 5vh, 40px);
+  }
+}
+
+/* =========================================================================
+   EDITORIAL COUNTDOWN — Revision
+   -------------------------------------------------------------------------
+   Die Variantenrolle steckt bereits im Skelett der Produktionskomponenten und
+   wird hier nur editorial ausgelegt — deshalb bleibt sie auf die anderen
+   sieben Stile übertragbar:
+
+     A  vier gleichwertige Einheiten   → Balanced
+     B  Einheiten mit eigener Fläche   → Composed / Editorial
+     C  Einheiten als Verlaufszeilen   → Statement / Immersive
+
+   Editorial interpretiert das als: A gesetzte Tabellenzeile mit Haarlinien,
+   B Magazin-Infografik mit einer dominanten und drei nachgeordneten Einheiten,
+   C ein einziges übergroßes Zahlenstatement mit nachgeordneter Leiste.
+   ========================================================================= */
+
+.cd[data-style-countdown='editorial'] {
+  --cd-rule: color-mix(in srgb, var(--ink) 16%, transparent);
+  --cd-rule-strong: color-mix(in srgb, var(--ink) 38%, transparent);
+  --cd-section-pad: clamp(72px, 9vw, 120px) clamp(20px, 5vw, 60px);
+  --cd-label-font: var(--font-body);
+  --cd-label-tracking: 0.22em;
+  --cd-label-transform: uppercase;
+  --cd-eyebrow-font: var(--font-body);
+}
+.cd[data-style-countdown='editorial'] .cd-eyebrow {
+  font-size: clamp(9px, 0.74vw, 11px);
+  letter-spacing: 0.3em;
+}
+.cd[data-style-countdown='editorial'] .cd-num {
+  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
+}
+.cd[data-style-countdown='editorial'] .cd-footer {
+  font-family: var(--font-body);
+  font-size: clamp(11px, 0.86vw, 13px);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* --- A · BALANCED — redaktioneller Informationsblock ---------------------
+   Zweite Runde. Vorher: fünf zentrierte Zahlen zwischen Haarlinien — richtige
+   Richtung, aber die Symmetrie plus die zentrierten Labels ließen es wie ein
+   Countdown-Widget aussehen.
+
+   Jetzt eine gesetzte Tabelle: Kopfzeile mit Haarlinie, darunter fünf Spalten,
+   in denen Label OBEN und Zahl darunter auf einer gemeinsamen linken Achse
+   sitzen. Gleiche Gewichte, gleicher Rhythmus — A bleibt die ruhige Variante —
+   aber die linke Achse und die Labelstellung machen daraus Informationsdesign
+   statt Widget. Bewusst OHNE Randziffern: die gehören zu B.
+   ------------------------------------------------------------------------ */
+.cdA-wrap[data-style-countdown='editorial'] { text-align: left; }
+.cdA-wrap[data-style-countdown='editorial'] .cd-eyebrow,
+.cdA-wrap[data-style-countdown='editorial'] .cd-footer {
+  inline-size: min(100%, 1040px);
+  margin-inline: auto;
+}
+/* Kopfzeile: Eyebrow links, die Linie läuft bis zum rechten Rand durch. */
+.cdA-wrap[data-style-countdown='editorial'] .cd-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2vw, 22px);
+  margin-bottom: clamp(18px, 2.4vw, 26px);
+}
+.cdA-wrap[data-style-countdown='editorial'] .cd-eyebrow::after {
+  content: '';
+  flex: 1 1 auto;
+  block-size: 1px;
+  background: var(--cd-rule);
+}
+.cdA-wrap[data-style-countdown='editorial'] .cdA-grid {
+  display: grid;
+  /* Die Komponente liefert fünf Einheiten (Monate bis Sekunden), nicht vier.
+     auto-flow column hält die Zeile unabhängig von der Anzahl zusammen. */
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 0;
+  inline-size: min(100%, 1040px);
+  margin-inline: auto;
+  padding: 0;
+  border-block: 1px solid var(--cd-rule-strong);
+  background: none;
+  border-radius: 0;
+  animation: none;
+}
+.cdA-wrap[data-style-countdown='editorial'] .cdA-unit {
+  min-inline-size: 0;
+  /* Label oben, Zahl darunter — die Reihenfolge im DOM ist umgekehrt. */
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  align-items: flex-start;
+  text-align: left;
+  padding: clamp(12px, 1.6vw, 18px) clamp(10px, 1.8vw, 26px) clamp(20px, 2.6vw, 30px);
+  border-left: 1px solid var(--cd-rule);
+}
+.cdA-wrap[data-style-countdown='editorial'] .cdA-unit:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
+.cdA-wrap[data-style-countdown='editorial'] .cd-num {
+  font-size: clamp(38px, 6vw, 88px);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.cdA-wrap[data-style-countdown='editorial'] .cd-label {
+  margin: 0 0 clamp(14px, 2vw, 22px);
+  font-size: clamp(9px, 0.7vw, 10.5px);
+  letter-spacing: 0.26em;
+  color: var(--muted);
+}
+.cdA-wrap[data-style-countdown='editorial'] .cd-footer {
+  margin-top: clamp(18px, 2.4vw, 26px);
+  text-align: left;
+}
+
+/* --- B · EDITORIAL — zwei Achsen, drei Gewichte -------------------------
+   Zweite Runde. Vorher: eine große Einheit links, vier gleich behandelte
+   rechts — die Fläche wirkte eher leer als gesetzt.
+
+   Jetzt eine Diagonale mit drei klaren Gewichtsstufen:
+     Monate   dominant, tief links auf der Hauptachse
+     Tage     sekundär, hoch rechts — die beiden spannen die Diagonale auf
+     Rest     tertiär, als knappe Registerzeilen unter Tage
+   Links läuft der Datumsstempel vertikal als Marginalie mit. Die Idee ist
+   die Beziehung der drei Stufen zueinander, nicht die Menge der Elemente.
+   ------------------------------------------------------------------------ */
+.cdB-wrap[data-style-countdown='editorial'] {
+  --fc-w: clamp(30px, 3.4vw, 46px);
+  --fc-h: clamp(42px, 5vw, 64px);
+  text-align: left;
+  counter-reset: cdunit;
+}
+.cdB-wrap[data-style-countdown='editorial'] .cd-eyebrow,
+.cdB-wrap[data-style-countdown='editorial'] .cd-footer {
+  inline-size: min(100%, 1040px);
+  margin-inline: auto;
+}
+.cdB-wrap[data-style-countdown='editorial'] .cd-eyebrow {
+  margin-bottom: clamp(20px, 3vw, 34px);
+}
+.cdB-wrap[data-style-countdown='editorial'] .cdB-row {
+  display: grid;
+  grid-template-columns: clamp(26px, 3vw, 44px) minmax(0, 1.05fr) minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
+  column-gap: clamp(24px, 4vw, 64px);
+  row-gap: 0;
+  align-items: start;
+  inline-size: min(100%, 1040px);
+  margin-inline: auto;
+  flex-wrap: nowrap;
+}
+/* Der Datumsstempel läuft vertikal in der Marginalspalte mit. */
+.cdB-wrap[data-style-countdown='editorial'] .cd-date-stamp-wrap {
+  grid-column: 1;
+  grid-row: 1 / -1;
+  margin: 0;
+  display: block;
+  align-self: stretch;
+}
+.cdB-wrap[data-style-countdown='editorial'] .cd-date-stamp {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  background: none;
+  border: 0;
+  border-right: 1px solid var(--cd-rule);
+  border-radius: 0;
+  padding: 0 clamp(8px, 1.2vw, 14px) 0 0;
+  block-size: 100%;
+  font-family: var(--font-body);
+  font-size: clamp(9px, 0.72vw, 11px);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit {
+  counter-increment: cdunit;
+  align-items: flex-start;
+  gap: clamp(8px, 1.2vw, 14px);
+  min-inline-size: 0;
+}
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit::before {
+  content: counter(cdunit, decimal-leading-zero);
+  font-family: var(--font-body);
+  font-size: clamp(9px, 0.7vw, 10px);
+  letter-spacing: 0.2em;
+  color: var(--muted);
+}
+/* 01 Monate — das dominante Gewicht, tief gesetzt. */
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(1) {
+  --fc-w: clamp(62px, 9.4vw, 132px);
+  --fc-h: clamp(94px, 14vw, 190px);
+  grid-column: 2;
+  /* Über die volle Höhe der rechten Spalte, unten verankert: dadurch entsteht
+     die Diagonale von Tage (oben rechts) zu Monate (unten links), ohne dass
+     links eine ganze leere Zeile stehen bleibt. */
+  grid-row: 1 / -1;
+  align-self: end;
+}
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(1) .cd-label {
+  font-size: clamp(11px, 0.92vw, 14px);
+  letter-spacing: 0.28em;
+  color: var(--ink);
+}
+/* 02 Tage — das zweite Gewicht, hoch rechts. Zusammen mit 01 entsteht die
+   Diagonale, die die Komposition trägt. */
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(2) {
+  --fc-w: clamp(40px, 5.4vw, 74px);
+  --fc-h: clamp(58px, 8vw, 106px);
+  grid-column: 3;
+  grid-row: 1;
+  align-items: flex-end;
+  text-align: right;
+  justify-self: end;
+  padding-bottom: clamp(12px, 1.8vw, 26px);
+}
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(2) .cd-label {
+  letter-spacing: 0.24em;
+  color: var(--ink-soft);
+}
+/* 03–05 — Registerzeilen. */
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(n + 3) {
+  grid-column: 3;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(10px, 1.6vw, 18px);
+  padding-block: clamp(9px, 1.2vw, 13px);
+  border-top: 1px solid var(--cd-rule);
+}
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(3) { grid-row: 2; }
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(4) { grid-row: 3; }
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(5) {
+  grid-row: 4;
+  border-bottom: 1px solid var(--cd-rule);
+}
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(n + 3) .cd-label {
+  order: 2;
+  margin-top: 0;
+  font-size: clamp(9px, 0.72vw, 11px);
+  color: var(--muted);
+}
+.cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(n + 3) .cdB-cards { order: 3; }
+.cdB-wrap[data-style-countdown='editorial'] .cd-footer {
+  margin-top: clamp(26px, 4vw, 48px);
+  text-align: left;
+}
+
+/* Flip-Karten als flache Tafeln.
+   Die Geometrie und die Flip-Mechanik bleiben unangetastet — ohne sie zeigt
+   die untere Hälfte beim Wechsel kurz die alte Ziffer, das sah man im ersten
+   Versuch als doppelte Zahlen. Verändert werden nur Fläche, Rundung,
+   Verläufe und Schatten: aus Plastikkärtchen wird bedrucktes Papier mit
+   feiner Falzlinie. */
+.cdB-wrap[data-style-countdown='editorial'] .flip-card {
+  inline-size: var(--fc-w);
+  block-size: var(--fc-h);
+  font-family: var(--font-display);
+  font-size: calc(var(--fc-h) * 0.62);
+  font-weight: 350;
+  letter-spacing: -0.03em;
+  box-shadow: none;
+  border-radius: 0;
+}
+.cdB-wrap[data-style-countdown='editorial'] .flip-digit { block-size: var(--fc-h); }
+.cdB-wrap[data-style-countdown='editorial'] .flip-top,
+.cdB-wrap[data-style-countdown='editorial'] .flip-bottom {
+  background: color-mix(in srgb, var(--ink) 4%, var(--bg));
+  box-shadow: none;
+  border-radius: 0;
+}
+.cdB-wrap[data-style-countdown='editorial'] .flip-top::after,
+.cdB-wrap[data-style-countdown='editorial'] .flip-bottom::after { display: none; }
+.cdB-wrap[data-style-countdown='editorial'] .flip-anim-top,
+.cdB-wrap[data-style-countdown='editorial'] .flip-anim-bot { box-shadow: none; }
+.cdB-wrap[data-style-countdown='editorial'] .flip-mid {
+  background: color-mix(in srgb, var(--ink) 12%, transparent);
+  box-shadow: none;
+}
+.cdB-wrap[data-style-countdown='editorial'] .cdB-cards { gap: 2px; }
+
+/* --- C · STATEMENT — ein übergroßes Zahlenstatement ----------------------
+   Die Tage tragen die Fläche: Zahl in Schaugröße, darunter eine Haarlinie
+   als Verlaufsbalken. Stunden/Minuten/Sekunden folgen als schmale Zeilen.
+   Starke horizontale Bewegung, viel Leerfläche.
+   ------------------------------------------------------------------------ */
+.cdC-wrap[data-style-countdown='editorial'] {
+  text-align: left;
+  --cdC-bar-height: 2px;
+  --cdC-bar-radius: 0;
+}
+.cdC-wrap[data-style-countdown='editorial'] .cd-eyebrow,
+.cdC-wrap[data-style-countdown='editorial'] .cd-footer,
+.cdC-wrap[data-style-countdown='editorial'] .cdC-bars {
+  inline-size: min(100%, 1120px);
+  margin-inline: auto;
+}
+.cdC-wrap[data-style-countdown='editorial'] .cd-date-stamp-wrap {
+  inline-size: min(100%, 1120px);
+  margin-inline: auto;
+  justify-content: flex-start;
+}
+.cdC-wrap[data-style-countdown='editorial'] .cd-date-stamp {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: clamp(10px, 0.8vw, 12px);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.cdC-wrap[data-style-countdown='editorial'] .cdC-bars {
+  gap: 0;
+  max-inline-size: none;
+}
+/* Die Tage-Zeile wird zum Statement. */
+.cdC-wrap[data-style-countdown='editorial'] .cdC-bar-row:first-child {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'num'
+    'label'
+    'track';
+  gap: 0;
+  padding-bottom: clamp(20px, 3vw, 36px);
+}
+.cdC-wrap[data-style-countdown='editorial'] .cdC-bar-row:first-child .cdC-bar-num {
+  grid-area: num;
+  text-align: left;
+  font-size: clamp(88px, 17vw, 260px);
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
+  font-weight: 350;
+}
+.cdC-wrap[data-style-countdown='editorial'] .cdC-bar-row:first-child .cdC-bar-num-max {
+  font-family: var(--font-body);
+  font-size: clamp(11px, 0.9vw, 14px);
+  letter-spacing: 0.16em;
+  color: var(--muted);
+  vertical-align: super;
+}
+.cdC-wrap[data-style-countdown='editorial'] .cdC-bar-row:first-child .cdC-bar-label {
+  grid-area: label;
+  font-size: clamp(11px, 0.92vw, 14px);
+  letter-spacing: 0.3em;
+  margin: clamp(14px, 2vw, 22px) 0 clamp(14px, 2vw, 20px);
+  color: var(--ink);
+}
+.cdC-wrap[data-style-countdown='editorial'] .cdC-bar-row:first-child .cdC-bar-track {
+  grid-area: track;
+  block-size: 2px;
+}
+/* Die übrigen Einheiten: schmale Zeilen unter dem Statement. */
+.cdC-wrap[data-style-countdown='editorial'] .cdC-bar-row:not(:first-child) {
+  grid-template-columns: clamp(70px, 9vw, 120px) minmax(0, 1fr) clamp(60px, 7vw, 92px);
+  gap: clamp(12px, 2vw, 24px);
+  padding-block: clamp(11px, 1.6vw, 16px);
+  border-top: 1px solid var(--cd-rule);
+}
+.cdC-wrap[data-style-countdown='editorial'] .cdC-bar-row:not(:first-child) .cdC-bar-label {
+  font-size: clamp(9px, 0.72vw, 11px);
+  color: var(--muted);
+}
+.cdC-wrap[data-style-countdown='editorial'] .cdC-bar-row:not(:first-child) .cdC-bar-track {
+  block-size: 1px;
+}
+.cdC-wrap[data-style-countdown='editorial'] .cdC-bar-row:not(:first-child) .cdC-bar-num {
+  font-size: clamp(14px, 1.2vw, 19px);
+  letter-spacing: -0.01em;
+}
+.cdC-wrap[data-style-countdown='editorial'] .cdC-bar-fill {
+  background: var(--accent);
+  border-radius: 0;
+}
+
+/* --- Mobil --------------------------------------------------------------- */
+@media (max-width: 900px) {
+  /* A bleibt eine Tabelle, nur zweispaltig. Fünf Zahlen nebeneinander sind
+     auf 390px Ziffernbrei. */
+  .cdA-wrap[data-style-countdown='editorial'] .cdA-grid {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cdA-wrap[data-style-countdown='editorial'] .cdA-unit {
+    padding: 14px 0 18px;
+    border-left: 0;
+  }
+  .cdA-wrap[data-style-countdown='editorial'] .cdA-unit:nth-child(even) {
+    border-left: 1px solid var(--cd-rule);
+    padding-left: 18px;
+  }
+  .cdA-wrap[data-style-countdown='editorial'] .cdA-unit:nth-child(n + 3) {
+    border-top: 1px solid var(--cd-rule);
+  }
+  /* Fünf Einheiten auf zwei Spalten: die letzte nimmt die volle Breite. */
+  .cdA-wrap[data-style-countdown='editorial'] .cdA-unit:last-child {
+    grid-column: 1 / -1;
+  }
+  .cdA-wrap[data-style-countdown='editorial'] .cd-num { font-size: clamp(38px, 12vw, 60px); }
+
+  /* B behält die Idee — zwei Gewichte in der Diagonale, drei Registerzeilen
+     darunter —, dreht sie aber in eine Spalte: Monate links, Tage rechts
+     daneben und tiefer gesetzt, dann die Register. Der Datumsstempel legt
+     sich waagerecht, vertikale Marginalien brauchen Höhe. */
+  .cdB-wrap[data-style-countdown='editorial'] .cdB-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 16px;
+  }
+  .cdB-wrap[data-style-countdown='editorial'] .cd-date-stamp-wrap {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    margin-bottom: 22px;
+  }
+  .cdB-wrap[data-style-countdown='editorial'] .cd-date-stamp {
+    writing-mode: horizontal-tb;
+    transform: none;
+    border-right: 0;
+    border-bottom: 1px solid var(--cd-rule);
+    padding: 0 0 6px;
+    block-size: auto;
+  }
+  .cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(1) {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: start;
+    --fc-w: clamp(50px, 15vw, 76px);
+    --fc-h: clamp(76px, 23vw, 116px);
+  }
+  .cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(2) {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: end;
+    padding-bottom: 0;
+    --fc-w: clamp(34px, 10vw, 50px);
+    --fc-h: clamp(50px, 15vw, 74px);
+  }
+  .cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(n + 3) {
+    grid-column: 1 / -1;
+    --fc-w: clamp(26px, 7.5vw, 36px);
+    --fc-h: clamp(38px, 11vw, 50px);
+  }
+  .cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(3) {
+    grid-row: 3;
+    margin-top: clamp(22px, 5vw, 32px);
+  }
+  .cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(4) { grid-row: 4; }
+  .cdB-wrap[data-style-countdown='editorial'] .cdB-unit:nth-child(5) { grid-row: 5; }
+
+  /* C: das Statement bleibt das Statement, nur kleiner gesetzt. */
+  .cdC-wrap[data-style-countdown='editorial'] .cdC-bar-row:first-child .cdC-bar-num {
+    font-size: clamp(84px, 30vw, 150px);
+  }
+  .cdC-wrap[data-style-countdown='editorial'] .cdC-bar-row:not(:first-child) {
+    grid-template-columns: 58px minmax(0, 1fr) 54px;
+    gap: 12px;
+  }
+  /* Nur die schmalen Zeilen kürzen — die Statement-Zeile behält ihr Wort,
+     sonst steht dort ein einsames "M" unter der großen Zahl. */
+  .cdC-wrap[data-style-countdown='editorial']
+    .cdC-bar-row:not(:first-child) .cdC-bar-label-full { display: none; }
+  .cdC-wrap[data-style-countdown='editorial'] .cdC-bar-row:not(:first-child) .cdC-bar-label-short {
+    display: inline;
+  }
+  /* Die Basis tauscht auf schmalen Geräten generell auf die Kurzlabels. Unter
+     der Statement-Zahl stand dadurch ein einsames "M" — dort bleibt das Wort. */
+  .cdC-wrap[data-style-countdown='editorial'] .cdC-bar-row:first-child .cdC-bar-label-full {
+    display: inline;
+  }
+  .cdC-wrap[data-style-countdown='editorial'] .cdC-bar-row:first-child .cdC-bar-label-short {
+    display: none;
+  }
+}
