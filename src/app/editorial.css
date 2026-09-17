@@ -833,16 +833,21 @@
    keinen senkrechten Platz, egal wie viele Bilder es sind.
    ------------------------------------------------------------------------ */
 [data-style-gallery='editorial'].galC-wrap { max-inline-size: none; }
+/* Die Sequenz braucht ein Zentrum: die erste Aufnahme führt, die folgenden
+   begleiten. Vorher waren alle Kacheln gleich breit — das las sich als Reihe,
+   nicht als Strecke. */
 [data-style-gallery='editorial'] .galC {
   display: grid;
   /* Die Basis setzt vier feste Spalten. Ohne dieses Zurücknehmen legt
      grid-auto-flow die Bilder erst in diese vier Spalten und erzeugt daneben
      implizite — die Kacheln schrumpfen dann auf wenige Pixel. */
-  grid-template-columns: none;
+  /* Erste Spalte explizit: die führende Aufnahme bekommt ihre Breite über das
+     Raster, nicht über inline-size — sonst ragt sie aus ihrer Spur. */
+  grid-template-columns: clamp(300px, 32vw, 460px);
   max-inline-size: none;
   margin: clamp(24px, 3vw, 36px) 0 0;
   grid-auto-flow: column;
-  grid-auto-columns: clamp(180px, 19vw, 280px);
+  grid-auto-columns: clamp(140px, 14.5vw, 210px);
   gap: 6px;
   overflow-x: auto;
   overscroll-behavior-x: contain;
@@ -850,6 +855,16 @@
   scroll-padding-inline: var(--gutter);
   padding-bottom: var(--sp-4);
   scrollbar-width: thin;
+}
+[data-style-gallery='editorial'] .galC-tile:first-child {
+  aspect-ratio: var(--ar-portrait);
+}
+/* Die Folgeaufnahmen stehen auf einer gemeinsamen Höhe — ungleiche Höhen
+   machen aus der Strecke eine ausgefranste Reihe. */
+[data-style-gallery='editorial'] .galC-tile:not(:first-child) {
+  aspect-ratio: auto;
+  block-size: clamp(190px, 20vw, 290px);
+  align-self: start;
 }
 [data-style-gallery='editorial'] .galC-tile {
   scroll-snap-align: start;
@@ -859,14 +874,34 @@
   margin: 0;
   cursor: pointer;
 }
-/* Ein Bild trägt die Strecke, die übrigen begleiten. */
-[data-style-gallery='editorial'] .galC-tile:nth-child(3n + 2) { aspect-ratio: var(--ar-classic); }
-[data-style-gallery='editorial'] .galC-tile:nth-child(5n + 3) { aspect-ratio: var(--ar-square); }
 [data-style-gallery='editorial'] .galC-tile img {
   inline-size: 100%;
   block-size: 100%;
   object-fit: cover;
 }
+/* Die waagerechte Achse unter dem Streifen: ein Strich, der über die volle
+   Breite läuft und im Standbild zeigt, dass die Bilder auf einer Linie
+   weiterlaufen. Zusammen mit dem angeschnittenen nächsten Bild sind das die
+   beiden Mittel — mehr wäre Carousel-UI. */
+[data-style-gallery='editorial'].galC-wrap .gal-client-wrap {
+  position: relative;
+  padding-bottom: var(--sp-4);
+}
+[data-style-gallery='editorial'].galC-wrap .gal-client-wrap::after {
+  content: '';
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  block-size: 1px;
+  background: linear-gradient(
+    90deg,
+    var(--ed-rule-strong) 0,
+    var(--ed-rule-strong) 22%,
+    var(--ed-rule) 22%,
+    var(--ed-rule) 100%
+  );
+}
+
 /* Im Streifen bleiben alle Bilder — waagerecht kostet das keinen Platz. */
 [data-style-gallery='editorial'] .gal-client-wrap:not(.is-expanded) .galC-tile:nth-child(n + 6) { display: block; }
 /* Der Knopf entfällt dort: es ist bereits alles erreichbar, und die Lightbox
@@ -1236,16 +1271,23 @@
      Snap übernimmt die Gestensteuerung, ohne dass die Komponente JavaScript
      braucht. */
   [data-style-gallery='editorial'] .galC {
-    grid-auto-columns: 78%;
+    grid-template-columns: 88%;
+    /* Die führende Aufnahme nimmt fast die Breite, die nächste schaut ins
+       Bild — daraus liest sich die Wischgeste ohne Bedienelemente. */
+    grid-auto-columns: 62%;
     gap: 8px;
     scroll-snap-type: x mandatory;
     margin-inline: calc(-1 * var(--gutter));
     padding-inline: var(--gutter);
   }
-  [data-style-gallery='editorial'] .galC-tile,
-  [data-style-gallery='editorial'] .galC-tile:nth-child(3n + 2),
-  [data-style-gallery='editorial'] .galC-tile:nth-child(5n + 3) {
+  [data-style-gallery='editorial'] .galC-tile:first-child {
+    grid-column: 1;
+    inline-size: auto;
     aspect-ratio: var(--ar-portrait);
+  }
+  [data-style-gallery='editorial'] .galC-tile:not(:first-child) {
+    aspect-ratio: var(--ar-portrait);
+    block-size: auto;
   }
 
   /* Lightbox mobil: fast bildschirmfüllend, Bedienelemente groß und unten
