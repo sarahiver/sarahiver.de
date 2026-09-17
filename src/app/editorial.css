@@ -451,211 +451,306 @@
 [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 5) .lsC-img { aspect-ratio: var(--ar-portrait); }
 
 /* =========================================================================
-   TIMELINE
+   ABLAUF (TIMELINE) — Neufassung
+   -------------------------------------------------------------------------
+   Drei Arten, denselben Tag zu vermitteln:
+
+     A  SCHEDULE    gesetzter Tagesplan: Uhrzeitspalte, Programmspalte,
+                    Haarlinie je Zeile. Keine Karten, kein Icon, kein Punkt.
+     B  PROGRAMME   Treppe statt Liste: jede Station rückt eine Spalte weiter
+                    ein, jede vierte ist ein Kapitel mit großer Uhrzeit.
+     C  DAY STORY   die Uhrzeit wird zur Schautypografie, Bilder nur an
+                    Schlüsselmomenten (jede dritte Station).
+
+   Funktion vor Wirkung: in allen drei Varianten steht die Uhrzeit zuerst und
+   ist die größte oder erste Information der Zeile.
    ========================================================================= */
 
-/* --- A · BALANCED — gleichwertige Karten an einer waagerechten Achse ----- */
+/* Der Sektionskopf steht wie in allen Editorial-Bereichen links auf der
+   Achse — die Basis zentriert ihn. */
+[data-style-tl='editorial'] .tl-eyebrow,
+[data-style-tl='editorial'] .tl-title,
+[data-style-tl='editorial'] .tl-desc {
+  text-align: left;
+  margin-inline: 0 auto;
+}
+[data-style-tl='editorial'] .tl-title { font-size: var(--fs-7); line-height: var(--lh-snug); }
+[data-style-tl='editorial'] .tl-desc { max-inline-size: var(--ed-measure); font-size: var(--fs-4); }
+[data-style-tl='editorial'] .tl-head-ornament,
+[data-style-tl='editorial'] .tl-ornament { display: none; }
+
+.tl[data-style-tl='editorial'] {
+  --tl-rule: color-mix(in srgb, currentColor 16%, transparent);
+  --tl-rule-strong: color-mix(in srgb, currentColor 40%, transparent);
+  padding-block: clamp(56px, 6.5vw, 90px);
+}
+
+/* --- A · SCHEDULE -------------------------------------------------------- */
 [data-style-tl='editorial'] .tlA-wrap {
-  max-inline-size: var(--wrap);
+  max-inline-size: min(100%, 820px);
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
 [data-style-tl='editorial'] .tlA-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-flow: row;
   gap: 0;
+  overflow: visible;
 }
 [data-style-tl='editorial'] .tlA-card {
+  display: grid;
+  grid-template-columns: clamp(76px, 8vw, 104px) minmax(0, 1fr);
+  column-gap: var(--sp-5);
+  row-gap: var(--sp-1);
+  align-items: baseline;
+  padding: var(--sp-4) 0;
   border: 0;
-  border-left: 1px solid var(--ed-rule);
+  border-top: 1px solid var(--tl-rule);
   border-radius: 0;
   background: none;
   box-shadow: none;
-  padding: var(--sp-5);
+  scroll-snap-align: none;
 }
-[data-style-tl='editorial'] .tlA-card:first-child { border-left: 0; }
-[data-style-tl='editorial'] .tlA-card.is-active { background: var(--ed-fill); }
+/* Die Basis zeichnet je Karte eine Hilfslinie über ::after — im gesetzten
+   Tagesplan übernimmt die Zeilen-Haarlinie diese Aufgabe. */
+[data-style-tl='editorial'] .tlA-card::after,
+[data-style-tl='editorial'] .tlA-card::before { display: none; content: none; }
+[data-style-tl='editorial'] .tlA-card:first-child { border-top: 1px solid var(--tl-rule-strong); }
+[data-style-tl='editorial'] .tlA-card:last-child { border-bottom: 1px solid var(--tl-rule-strong); }
+[data-style-tl='editorial'] .tlA-card.is-active { background: color-mix(in srgb, currentColor 4%, transparent); }
 [data-style-tl='editorial'] .tlA-card-head {
-  display: flex;
-  align-items: baseline;
-  gap: var(--sp-2);
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  display: block;
 }
 [data-style-tl='editorial'] .tlA-time-badge {
-  font-size: var(--fs-1);
-  letter-spacing: var(--ed-meta-ls);
-  text-transform: uppercase;
+  display: block;
+  font-family: var(--disp);
+  font-size: var(--fs-5);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums lining-nums;
   background: none;
   border: 0;
   border-radius: 0;
   padding: 0;
+  color: inherit;
 }
+/* Ein Ablauf braucht keine Sinnbilder — die Uhrzeit ist das Ordnungsmerkmal. */
 [data-style-tl='editorial'] .tlA-emoji-badge { display: none; }
 [data-style-tl='editorial'] .tlA-title {
-  /* Versalien in einer 210px-Spalte erzeugen Treppen aus Einzelwörtern. */
-  text-transform: none;
-  font-size: var(--fs-5);
+  grid-column: 2;
+  grid-row: 1;
+  font-family: var(--body);
+  font-size: var(--fs-4);
+  font-weight: 600;
   line-height: var(--lh-snug);
-  margin-top: var(--sp-3);
+  text-transform: none;
+  letter-spacing: 0;
+  margin: 0;
+}
+[data-style-tl='editorial'] .tlA-card .tl-loc,
+[data-style-tl='editorial'] .tlA-card .tl-loc-inline {
+  grid-column: 2;
+  grid-row: 2;
+  font-size: var(--fs-2);
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  padding: 0;
 }
 [data-style-tl='editorial'] .tlA-desc {
+  grid-column: 2;
+  grid-row: 3;
   font-size: var(--fs-3);
   line-height: var(--lh-normal);
-  margin-top: var(--sp-2);
+  color: var(--muted);
+  max-inline-size: 58ch;
+  margin: var(--sp-1) 0 0;
 }
-[data-style-tl='editorial'] .tlA-rail-line { background: var(--ed-rule); block-size: 1px; }
+[data-style-tl='editorial'] .tlA-rail { display: none; }
 [data-style-tl='editorial'] .tlA-hint {
+  margin-top: var(--sp-4);
   font-size: var(--fs-1);
   letter-spacing: var(--ed-meta-ls);
   text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
 }
 
-/* --- B · EDITORIAL — Zeitangabe als Marginalie an fester Achse ----------- */
+/* --- B · PROGRAMME ------------------------------------------------------- */
 [data-style-tl='editorial'] .tlB-wrap {
   max-inline-size: var(--wrap);
   margin-inline: auto;
   padding-inline: var(--gutter);
   position: relative;
 }
-[data-style-tl='editorial'] .tlB-line {
-  left: 148px;
-  inline-size: 1px;
-  background: var(--ed-rule);
-}
+/* Die Führungslinie entfällt: die Treppe selbst ist die Achse. */
+[data-style-tl='editorial'] .tlB-line { display: none; }
+[data-style-tl='editorial'] .tlB-knode { display: none; }
 [data-style-tl='editorial'] .tlB-event {
   display: grid;
-  grid-template-columns: 120px 28px minmax(0, 1fr);
-  align-items: start;
-  gap: 0;
-  padding-block: var(--sp-6);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--ed-gap);
+  row-gap: var(--sp-2);
+  align-items: baseline;
+  padding-block: var(--sp-5);
+  border-top: 1px solid var(--tl-rule);
 }
-/* Der Knoten ist in der Basis absolut positioniert und fällt damit aus dem
-   Grid-Fluss — ohne feste Spaltenzuweisung landet die Inhaltsspalte in Spalte 2
-   und kollabiert auf Wortbreite. Deshalb alle drei Zellen explizit setzen. */
-[data-style-tl='editorial'] .tlB-event-time { grid-column: 1; }
-[data-style-tl='editorial'] .tlB-knode { position: relative; inset: auto; grid-column: 2; }
-[data-style-tl='editorial'] .tlB-event-content { grid-column: 3; min-inline-size: 0; }
+[data-style-tl='editorial'] .tlB-event:first-of-type { border-top: 0; }
 [data-style-tl='editorial'] .tlB-event-time {
+  grid-column: 1 / span 2;
   text-align: right;
-  padding-right: var(--sp-4);
+  padding: 0;
 }
 [data-style-tl='editorial'] .tlB-event-time .t {
-  font-size: var(--fs-6);
+  font-family: var(--disp);
+  font-size: var(--fs-5);
+  font-weight: 300;
   line-height: 1;
   letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums lining-nums;
 }
 [data-style-tl='editorial'] .tlB-event-time .u {
   font-size: var(--fs-1);
   letter-spacing: var(--ed-meta-ls);
   text-transform: uppercase;
+  color: var(--muted);
   margin-top: var(--sp-1);
 }
-[data-style-tl='editorial'] .tlB-knode { display: flex; justify-content: center; padding-top: 10px; }
-[data-style-tl='editorial'] .tlB-knode .dot {
-  inline-size: 7px;
-  block-size: 7px;
-  border-radius: 50%;
-  background: currentColor;
-  box-shadow: none;
-}
-[data-style-tl='editorial'] .tlB-event.is-current .tlB-knode .dot {
-  inline-size: 11px;
-  block-size: 11px;
-}
-[data-style-tl='editorial'] .tlB-event-content { padding-left: var(--sp-5); }
+[data-style-tl='editorial'] .tlB-event-content { grid-column: 3 / span 7; padding: 0; }
 [data-style-tl='editorial'] .tlB-event-content .ttl {
-  font-size: var(--fs-6);
+  font-family: var(--body);
+  font-size: var(--fs-4);
+  font-weight: 600;
   line-height: var(--lh-snug);
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 [data-style-tl='editorial'] .tlB-event-content .dsc {
-  font-size: var(--fs-4);
+  font-size: var(--fs-3);
   line-height: var(--lh-normal);
+  color: var(--muted);
   max-inline-size: 52ch;
-  margin-top: var(--sp-3);
+  margin-top: var(--sp-2);
+}
+[data-style-tl='editorial'] .tlB-event .pills {
+  margin-top: var(--sp-2);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+}
+/* Die Treppe: jede Station rückt eine Spalte weiter, nach vier Stationen
+   beginnt der Rhythmus von vorn. */
+[data-style-tl='editorial'] .tlB-event:nth-child(4n + 3) .tlB-event-time { grid-column: 2 / span 2; }
+[data-style-tl='editorial'] .tlB-event:nth-child(4n + 3) .tlB-event-content { grid-column: 4 / span 7; }
+[data-style-tl='editorial'] .tlB-event:nth-child(4n + 4) .tlB-event-time { grid-column: 3 / span 2; }
+[data-style-tl='editorial'] .tlB-event:nth-child(4n + 4) .tlB-event-content { grid-column: 5 / span 7; }
+[data-style-tl='editorial'] .tlB-event:nth-child(4n + 1) .tlB-event-time { grid-column: 4 / span 2; }
+[data-style-tl='editorial'] .tlB-event:nth-child(4n + 1) .tlB-event-content { grid-column: 6 / span 6; }
+/* Jede vierte Station ist ein Kapitel: größere Uhrzeit, größerer Titel, mehr
+   Luft. So bekommt der Tag eine Hierarchie statt einer gleichförmigen Liste. */
+[data-style-tl='editorial'] .tlB-event:nth-child(4n + 2) {
+  padding-block: var(--sp-7);
+  border-top-color: var(--tl-rule-strong);
+}
+[data-style-tl='editorial'] .tlB-event:nth-child(4n + 2) .tlB-event-time .t { font-size: var(--fs-7); }
+[data-style-tl='editorial'] .tlB-event:nth-child(4n + 2) .tlB-event-content .ttl {
+  font-family: var(--disp);
+  font-size: var(--fs-6);
+  font-weight: 300;
+  letter-spacing: -0.015em;
 }
 
-/* --- C · STATEMENT — Bildband neben gesetztem Titel ----------------------
-   Bild und Inhalt sind in der Basis absolut positioniert (Overlay-Prinzip).
-   Text auf dem Bild ist hier der falsche Weg: die Lesbarkeit hinge davon ab,
-   wie hell das Foto des Paares ist, und das wissen wir nicht. Beide Kinder
-   werden deshalb in den Fluss zurückgeholt und als Band gesetzt — großes
-   Bild, daneben der Titel, zeilenweise wechselnde Seite.
-   ------------------------------------------------------------------------ */
+/* --- C · DAY STORY ------------------------------------------------------- */
 [data-style-tl='editorial'] .tlC-wrap {
   max-inline-size: var(--wrap-wide);
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
-[data-style-tl='editorial'] .tlC-row {
-  display: grid;
-  gap: var(--sp-8);
-}
+[data-style-tl='editorial'] .tlC-row { display: grid; gap: var(--sp-7); }
 [data-style-tl='editorial'] .tlC-card {
   position: relative;
   display: grid;
-  grid-template-columns: 8fr 4fr;
-  gap: var(--ed-gap-lg);
-  align-items: end;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--ed-gap);
+  align-items: start;
   aspect-ratio: auto;
   border: 0;
-  border-top: 1px solid var(--ed-rule);
   border-radius: 0;
   background: none;
   box-shadow: none;
-  padding: var(--sp-5) 0 0;
+  padding: 0;
   overflow: visible;
 }
-[data-style-tl='editorial'] .tlC-card:nth-child(even) { grid-template-columns: 4fr 8fr; }
-[data-style-tl='editorial'] .tlC-img {
-  position: static;
-  grid-column: 1;
-  inline-size: 100%;
-  block-size: auto;
-  aspect-ratio: var(--ar-wide);
-  object-fit: cover;
-  border-radius: 0;
-  margin: 0;
-}
-[data-style-tl='editorial'] .tlC-card:nth-child(even) .tlC-img { grid-column: 2; }
 /* Die Basis legt einen dunklen Verlauf über die Karte und setzt den Text auf
-   Weiß — beides gehört zum Overlay. Sobald der Text neben dem Bild steht,
-   muss beides zurückgenommen werden, sonst steht Weiß auf Papier. */
+   Weiß — das gehört zum Bildoverlay, das hier entfällt. */
 [data-style-tl='editorial'] .tlC-card::after { display: none; }
 [data-style-tl='editorial'] .tlC-content,
 [data-style-tl='editorial'] .tlC-bigtitle,
 [data-style-tl='editorial'] .tlC-time,
 [data-style-tl='editorial'] .tlC-uhr,
 [data-style-tl='editorial'] .tlC-descpill { color: inherit; text-shadow: none; }
-
-[data-style-tl='editorial'] .tlC-content {
+[data-style-tl='editorial'] .tlC-bigtitle,
+[data-style-tl='editorial'] .tlC-descpill { display: block; }
+/* Bilder nur an Schlüsselmomenten — sonst wird aus dem Ablauf eine zweite
+   Galerie und die Sektion endlos. */
+[data-style-tl='editorial'] .tlC-img { display: none; }
+[data-style-tl='editorial'] .tlC-card:nth-child(3n + 1) .tlC-img {
+  display: block;
   position: static;
-  grid-column: 2;
+  grid-column: 9 / -1;
+  grid-row: 1;
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: var(--ar-classic);
+  object-fit: cover;
+  border-radius: 0;
+  margin: 0;
+}
+[data-style-tl='editorial'] .tlC-content {
+  text-align: left;
+  position: static;
   inset: auto;
+  grid-column: 1 / span 7;
+  grid-row: 1;
   inline-size: auto;
   padding: 0;
   background: none;
   border: 0;
   backdrop-filter: none;
 }
-[data-style-tl='editorial'] .tlC-card:nth-child(even) .tlC-content { grid-column: 1; grid-row: 1; }
-/* Die Basis blendet Titel und Text aller nicht aktiven Karten aus — das
-   gehört zum interaktiven Karussell. Als gesetzte Bandfolge muss jede Station
-   ihren Titel tragen, sonst liest sich der Ablauf als Reihe leerer Bilder. */
-[data-style-tl='editorial'] .tlC-bigtitle,
-[data-style-tl='editorial'] .tlC-descpill { display: block; }
-
-[data-style-tl='editorial'] .tlC-bigtitle {
-  font-size: var(--fs-6);
-  line-height: var(--lh-tight);
-  letter-spacing: -0.02em;
-  text-transform: none;
-}
-[data-style-tl='editorial'] .tlC-titlelab { display: none; }
+/* Wechselnde Einzüge: der Tag läuft beim Scrollen nach rechts und zurück. */
+[data-style-tl='editorial'] .tlC-card:nth-child(3n + 2) .tlC-content { grid-column: 3 / span 7; }
+[data-style-tl='editorial'] .tlC-card:nth-child(3n + 3) .tlC-content { grid-column: 2 / span 7; }
 [data-style-tl='editorial'] .tlC-time {
+  display: block;
+  font-family: var(--disp);
+  font-size: clamp(44px, 6vw, 92px);
+  font-weight: 300;
+  line-height: 0.86;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums lining-nums;
+  margin-bottom: var(--sp-3);
+}
+[data-style-tl='editorial'] .tlC-uhr {
+  font-family: var(--body);
   font-size: var(--fs-1);
   letter-spacing: var(--ed-meta-ls);
   text-transform: uppercase;
-  margin-bottom: var(--sp-2);
+  color: var(--muted);
+  vertical-align: super;
+  margin-left: var(--sp-2);
+}
+[data-style-tl='editorial'] .tlC-titlelab { display: none; }
+[data-style-tl='editorial'] .tlC-bigtitle {
+  font-family: var(--body);
+  font-size: var(--fs-5);
+  font-weight: 600;
+  line-height: var(--lh-snug);
+  letter-spacing: 0;
+  text-transform: none;
 }
 [data-style-tl='editorial'] .tlC-descpill {
   background: none;
@@ -664,8 +759,40 @@
   padding: 0;
   font-size: var(--fs-3);
   line-height: var(--lh-normal);
-  max-inline-size: 42ch;
+  color: var(--muted);
+  max-inline-size: 46ch;
+  margin-top: var(--sp-3);
+}
+[data-style-tl='editorial'] .tlC-loc {
+  background: none;
+  border: 0;
+  padding: 0;
   margin-top: var(--sp-2);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--muted);
+  backdrop-filter: none;
+}
+[data-style-tl='editorial'] .tlC-now-row { display: none; }
+
+/* Ortsangaben erscheinen in der Basis als Glas-Pille. Im Editorial sind sie
+   gesetzte Metazeile, kein Bedienelement. */
+[data-style-tl='editorial'] .tl-loc,
+[data-style-tl='editorial'] .tl-loc-inline,
+[data-style-tl='editorial'] .tlC-loc,
+[data-style-tl='editorial'] .tlB-event .pills > * {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  backdrop-filter: none;
+  box-shadow: none;
+  color: var(--muted);
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
 }
 
 /* =========================================================================
@@ -1306,37 +1433,180 @@
     inset-inline-end: 4px;
   }
 
+  /* ======================================================================
+     ABLAUF MOBIL — drei eigene Zustände, nicht drei gestapelte Listen.
+     Alle Rücksetzungen tragen dieselben nth-Selektoren wie der Desktop,
+     sonst überstimmen dessen Platzierungen die Mobilregeln.
+     ====================================================================== */
+
+  /* A · kompakter Tagesplan: schmale Zeitspalte, Programm rechts daneben.
+     Zwei Spalten bleiben auch auf 320px lesbar und sparen eine Zeile je
+     Station gegenüber „Zeit über Titel". */
   [data-style-tl='editorial'] .tlA-cards {
-    grid-auto-flow: column;
-    grid-auto-columns: 78%;
-    grid-template-columns: none;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    overflow: visible;
   }
-  [data-style-tl='editorial'] .tlA-card { scroll-snap-align: start; }
+  [data-style-tl='editorial'] .tlA-card {
+    grid-template-columns: 58px minmax(0, 1fr);
+    column-gap: var(--sp-4);
+    padding: var(--sp-3) 0;
+    scroll-snap-align: none;
+  }
+  [data-style-tl='editorial'] .tlA-time-badge { font-size: var(--fs-4); }
+  [data-style-tl='editorial'] .tlA-desc { font-size: var(--fs-2); }
 
-  /* Zeitspalte schrumpft, Achse rückt nach links — die Marginalie bleibt
-     erhalten, statt über der Zeile zu landen. */
-  [data-style-tl='editorial'] .tlB-event {
-    display: grid;
-    grid-template-columns: 64px 20px minmax(0, 1fr);
+  /* B · die Treppe bleibt, nur in Einzügen statt in Rasterspalten. Uhrzeit
+     steht über dem Programmpunkt, damit die schmale Spalte wegfällt. */
+  [data-style-tl='editorial'] .tlB-event,
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 1),
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 3),
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 4) {
+    grid-template-columns: minmax(0, 1fr);
+    padding-block: var(--sp-3);
   }
-  [data-style-tl='editorial'] .tlB-event-time,
-  [data-style-tl='editorial'] .tlB-event-content { min-inline-size: 0; }
-  /* Schmale Inhaltsspalte: lange Einzelwörter ("Sektempfang", Ortsnamen)
-     sind der häufigste Overflow-Grund auf 320px. Titel eine Stufe kleiner
-     und umbruchfähig. */
-  [data-style-tl='editorial'] .tlB-event-content .ttl {
-    font-size: var(--fs-5);
-    overflow-wrap: anywhere;
-    hyphens: auto;
-  }
-  [data-style-tl='editorial'] .tlB-event-content .dsc { overflow-wrap: anywhere; }
-  [data-style-tl='editorial'] .tlB-line { left: 84px; }
+  /* Auf dem Telefon zählt die Zeile, nicht der Luftraum — sonst wird der
+     Ablauf mit zwölf Stationen zur Endlosseite. */
+  [data-style-tl='editorial'] .tlB-event-content .dsc { font-size: var(--fs-2); }
   [data-style-tl='editorial'] .tlB-event-time .t { font-size: var(--fs-4); }
-  [data-style-tl='editorial'] .tlB-event-content { padding-left: var(--sp-3); }
+  [data-style-tl='editorial'] .tlB-event .tlB-event-time,
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 1) .tlB-event-time,
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 3) .tlB-event-time,
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 4) .tlB-event-time {
+    grid-column: 1;
+    text-align: left;
+  }
+  [data-style-tl='editorial'] .tlB-event .tlB-event-content,
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 1) .tlB-event-content,
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 3) .tlB-event-content,
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 4) .tlB-event-content {
+    grid-column: 1;
+  }
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 3) { padding-inline-start: var(--sp-5); }
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 4) { padding-inline-start: var(--sp-7); }
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 1) { padding-inline-start: var(--sp-6); }
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 2) {
+    padding-inline-start: 0;
+    padding-block: var(--sp-5);
+  }
+  [data-style-tl='editorial'] .tlB-event:nth-child(4n + 2) .tlB-event-time .t { font-size: var(--fs-6); }
 
+  /* C · Tageserzählung: die Uhrzeiten bleiben groß und tragen die Seite, die
+     Einzüge wechseln, Bilder nur an Schlüsselmomenten und nicht über die
+     volle Breite. */
+  [data-style-tl='editorial'] .tlC-card,
+  [data-style-tl='editorial'] .tlC-card:nth-child(3n + 1) {
+    grid-template-columns: minmax(0, 1fr);
+    aspect-ratio: auto;
+  }
+  [data-style-tl='editorial'] .tlC-content,
+  [data-style-tl='editorial'] .tlC-card:nth-child(3n + 2) .tlC-content,
+  [data-style-tl='editorial'] .tlC-card:nth-child(3n + 3) .tlC-content {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  [data-style-tl='editorial'] .tlC-card:nth-child(3n + 2) { padding-inline-start: var(--sp-6); }
+  [data-style-tl='editorial'] .tlC-card:nth-child(3n + 3) { padding-inline-start: var(--sp-3); }
+  [data-style-tl='editorial'] .tlC-card:nth-child(3n + 1) .tlC-img {
+    grid-column: 1;
+    grid-row: auto;
+    inline-size: 72%;
+    margin-inline-start: auto;
+    margin-block-start: var(--sp-4);
+    aspect-ratio: var(--ar-classic);
+  }
+  /* Die Basis verkleinert die Uhrzeit aller nicht aktiven Karten auf Mobil.
+     In der Tageserzählung trägt aber jede Uhrzeit die Seite. */
+  [data-style-tl='editorial'] .tlC-time,
+  [data-style-tl='editorial'] .tlC-card:not(.is-active) .tlC-time {
+    font-size: clamp(40px, 13vw, 66px);
+  }
+  [data-style-tl='editorial'] .tlC-row { gap: var(--sp-6); }
+
+  [data-style-gallery='editorial'] .galA {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+    inline-size: 100%;
+  }
+  [data-style-gallery='editorial'] .gal-client-wrap:not(.is-expanded) .galA-tile:nth-child(n + 10) { display: none; }
+  [data-style-gallery='editorial'] .gal-client-wrap:not(.is-expanded) .galA-tile:nth-child(n + 13) { display: none; }
+
+  /* B · gestaffelte Komposition statt Raster: das Schlüsselbild über die
+     volle Breite, darunter das ungleiche Paar nebeneinander, dann die
+     Dreierzeile eingerückt. Die Gruppenlogik der Komponente trägt hier die
+     Staffelung. */
+  [data-style-gallery='editorial'] .galB {
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: auto;
+    gap: var(--sp-3);
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(1),
+  [data-style-gallery='editorial'] .galB-group:nth-child(2),
+  [data-style-gallery='editorial'] .galB-group:nth-child(3) {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(1) .galB-imgwrap { aspect-ratio: var(--ar-wide); block-size: auto; }
+  [data-style-gallery='editorial'] .galB-group:nth-child(2) {
+    inline-size: 88%;
+    margin-inline-start: auto;
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(2) .galB-grid {
+    grid-template-rows: none;
+    grid-template-columns: 3fr 2fr;
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(2) .galB-imgwrap { aspect-ratio: var(--ar-square); block-size: auto; }
+  [data-style-gallery='editorial'] .galB-group:nth-child(3) { inline-size: 76%; }
+  [data-style-gallery='editorial'] .galB-group:nth-child(3) .galB-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  [data-style-gallery='editorial'] .galB-group:nth-child(3) .galB-imgwrap { aspect-ratio: var(--ar-square); block-size: auto; }
+
+  /* C · Wischstrecke: ein Bild führt, das nächste schaut ins Bild. Scroll-
+     Snap übernimmt die Gestensteuerung, ohne dass die Komponente JavaScript
+     braucht. */
+  [data-style-gallery='editorial'] .galC {
+    grid-template-columns: 88%;
+    /* Die führende Aufnahme nimmt fast die Breite, die nächste schaut ins
+       Bild — daraus liest sich die Wischgeste ohne Bedienelemente. */
+    grid-auto-columns: 62%;
+    gap: 8px;
+    scroll-snap-type: x mandatory;
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter);
+  }
+  [data-style-gallery='editorial'] .galC-tile:first-child {
+    grid-column: 1;
+    inline-size: auto;
+    aspect-ratio: var(--ar-portrait);
+  }
+  [data-style-gallery='editorial'] .galC-tile:not(:first-child) {
+    aspect-ratio: var(--ar-portrait);
+    block-size: auto;
+  }
+
+  /* Lightbox mobil: fast bildschirmfüllend, Bedienelemente groß und unten
+     erreichbar statt seitlich am Bildrand. */
+  .wedding-site-wrapper[data-style='editorial'] .gal-lightbox { padding: 12px; }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-img { max-block-size: 72vh; }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-nav {
+    inset-block-start: auto;
+    inset-block-end: 4px;
+    transform: none;
+  }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-prev { inset-inline-start: 8px; }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-next { inset-inline-end: 8px; }
+  .wedding-site-wrapper[data-style='editorial'] .gal-lb-close {
+    inset-block-start: 4px;
+    inset-inline-end: 4px;
+  }
+
+  /* Der frühere Ablauf-Block stand hier noch aus der Zeit, als A ein
+     waagerechtes Kartenkarussell und B eine Marginalien-Achse war. Beide
+     Konzepte gibt es nicht mehr; die Regeln haben die neue Mobilsetzung
+     überstimmt (gleiche Spezifität, aber später im Blatt) und die erste
+     Station auf eine 64px-Zeitspalte gezwungen. Ersatzlos entfernt. */
 
   [data-style-ls='editorial'] .ls-title,
   [data-style-gallery='editorial'] .gal-title { max-inline-size: 14ch; }
