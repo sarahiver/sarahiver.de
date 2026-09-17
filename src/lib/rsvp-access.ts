@@ -38,12 +38,36 @@ export function accessCookieName(siteId: string): string {
   return `si_rsvp_${siteId.replace(/[^a-zA-Z0-9]/g, '').slice(0, 24)}`;
 }
 
+/**
+ * In Production MUSS ein eigenes RSVP_ACCESS_SECRET gesetzt sein. Der
+ * Rückfall auf den Service-Role-Key ist eine Entwicklungsbequemlichkeit und
+ * darf sich nicht unbemerkt in den Betrieb schleichen: sonst hängen
+ * Datenbankzugriff und Token-Signatur an demselben Schlüssel, und ein
+ * Schlüsselwechsel entwertet beides zugleich.
+ *
+ * Fehlt das Secret in Production, ist das System fail-closed — es wird kein
+ * Token ausgestellt und keines akzeptiert (siehe hasAccessSecret()).
+ */
+export function hasAccessSecret(): boolean {
+  if (process.env.RSVP_ACCESS_SECRET) return true;
+  if (process.env.NODE_ENV === 'production') {
+    console.error(
+      '[rsvp-access] RSVP_ACCESS_SECRET fehlt in Production. ' +
+        'Der RSVP-Schutz bleibt geschlossen, bis das Secret gesetzt ist.',
+    );
+    return false;
+  }
+  return Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
+}
+
 function secret(): string {
-  // Eigenes Secret bevorzugt; sonst der Service-Role-Key, der serverseitig
-  // ohnehin vorhanden ist und den Client nie erreicht.
-  const s = process.env.RSVP_ACCESS_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-  if (!s) console.error('[rsvp-access] Kein Secret (RSVP_ACCESS_SECRET / SUPABASE_SERVICE_ROLE_KEY)');
-  return s;
+  const own = process.env.RSVP_ACCESS_SECRET;
+  if (own) return own;
+  // Nur ausserhalb von Production.
+  if (process.env.NODE_ENV !== 'production') {
+    return process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+  }
+  return '';
 }
 
 function sign(payload: string): string {
@@ -51,6 +75,7 @@ function sign(payload: string): string {
 }
 
 export function createAccessToken(siteId: string, version: number, now = Date.now()): string {
+  if (!hasAccessSecret()) throw new Error('RSVP access secret missing');
   const claims: AccessClaims = { sid: siteId, ver: version, exp: now + ACCESS_TTL_MS };
   const payload = Buffer.from(JSON.stringify(claims)).toString('base64url');
   return `${payload}.${sign(payload)}`;
@@ -66,6 +91,7 @@ export function verifyAccessToken(
   expected: { siteId: string; version: number },
   now = Date.now(),
 ): boolean {
+  if (!hasAccessSecret()) return false;
   if (!token || !token.includes('.')) return false;
 
   const [payload, signature] = token.split('.');

@@ -4,6 +4,7 @@ import {
   accessCookieOptions,
   clientFingerprint,
   createAccessToken,
+  hasAccessSecret,
 } from '@/lib/rsvp-access';
 import {
   checkRsvpCode,
@@ -46,6 +47,15 @@ export async function POST(request: Request) {
   // Länge vorab begrenzen, damit bcrypt nicht mit Megabyte gefüttert wird.
   if (typeof code !== 'string' || code.length > 200) {
     return NextResponse.json({ ok: false, error: GENERIC_WRONG }, { status: 400 });
+  }
+
+  // Fehlt in Production das eigene Secret, wird nicht heimlich auf den
+  // Service-Role-Key ausgewichen — dann bleibt der Schutz geschlossen.
+  if (!hasAccessSecret()) {
+    return NextResponse.json(
+      { ok: false, error: 'Die Rückmeldung ist gerade nicht möglich. Bitte versucht es später erneut.' },
+      { status: 503 },
+    );
   }
 
   const ctx = await loadRsvpSiteContext(slug);

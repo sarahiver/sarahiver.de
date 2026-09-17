@@ -7120,3 +7120,125 @@ html, body {
 }
 .dash-diff-before { text-decoration: line-through; opacity: 0.7; }
 .dash-diff-arrow { color: var(--dash-muted); font-weight: 700; }
+
+/* ============================================================
+   DASHBOARD — RSVP-Schutz (Einladungscode)
+   Ergänzt den bestehenden RSVP-Bereich. Nutzt die vorhandenen
+   dash-Bausteine (dash-input, dash-btn, dash-form-*) und fügt nur
+   den Rahmen dieses Abschnitts hinzu.
+   ============================================================ */
+.dash-rsvpcode {
+  border: 1px solid var(--border-soft, #E2D6C1);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  background: var(--bg, #fff);
+  display: grid;
+  gap: 16px;
+}
+.dash-rsvpcode-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.dash-rsvpcode-title { margin: 0; font-size: 16px; font-weight: 600; }
+.dash-rsvpcode-desc { margin: 6px 0 0; font-size: 13.5px; line-height: 1.5; color: #6E665B; max-width: 62ch; }
+.dash-rsvpcode-meta { margin: 0; font-size: 12px; color: #8A7F73; }
+
+.dash-rsvpcode-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.dash-rsvpcode-dot {
+  inline-size: 9px;
+  block-size: 9px;
+  border-radius: 50%;
+  background: #B0A698;
+  flex: none;
+}
+.dash-rsvpcode-status.is-on .dash-rsvpcode-dot { background: #5E6E50; }
+.dash-rsvpcode-status.is-off .dash-rsvpcode-dot { background: #D4A574; }
+
+.dash-rsvpcode-form { display: grid; gap: 12px; }
+.dash-rsvpcode-stored { margin: 0; font-size: 13.5px; line-height: 1.5; color: #5A4F46; max-width: 62ch; }
+.dash-rsvpcode-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+/* Trefferflächen: die Basis-Buttons des Dashboards sind 33px hoch, der
+   Link-Button 17px. Für diesen Bereich auf 44px angehoben — er wird oft am
+   Telefon bedient, und ein 17px-Ziel trifft niemand zuverlässig. */
+.dash-rsvpcode-actions .dash-btn,
+.dash-rsvpcode-actions .dash-btn-out,
+.dash-rsvpcode-actions .dash-btn-link,
+.dash-rsvpcode-reveal-actions .dash-btn-out {
+  min-block-size: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.dash-rsvpcode .dash-input { min-block-size: 44px; }
+
+.dash-rsvpcode-reveal {
+  border: 1px solid #D4A574;
+  background: #FBF3E7;
+  border-radius: 10px;
+  padding: 16px;
+  display: grid;
+  gap: 10px;
+}
+.dash-rsvpcode-reveal-label {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8E6B3A;
+}
+.dash-rsvpcode-reveal-code {
+  margin: 0;
+  font-size: clamp(20px, 4vw, 26px);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  word-break: break-all;
+}
+.dash-rsvpcode-reveal-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.dash-rsvpcode-copied { font-size: 12.5px; color: #5E6E50; }
+.dash-rsvpcode-warn { margin: 0; font-size: 12.5px; line-height: 1.5; color: #7A5A28; }
+
+.dash-rsvpcode-toggle { display: grid; gap: 8px; }
+.dash-rsvpcode-switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  min-block-size: 44px;
+  cursor: pointer;
+}
+.dash-rsvpcode-switch input {
+  inline-size: 22px;
+  block-size: 22px;
+  flex: none;
+  cursor: pointer;
+}
+.dash-rsvpcode-switch input:disabled { cursor: not-allowed; opacity: .5; }
+
+.dash-rsvpcode-ok,
+.dash-rsvpcode-error {
+  margin: 0;
+  font-size: 13px;
+  padding: 9px 12px;
+  border-radius: 8px;
+}
+.dash-rsvpcode-ok { background: #EEF1EA; border: 1px solid #C8D2BC; color: #3F4A33; }
+.dash-rsvpcode-error { background: #F6E4E0; border: 1px solid #E8C9C0; color: #8E574E; }
+
+@media (max-width: 560px) {
+  .dash-rsvpcode { padding: 16px; }
+  .dash-rsvpcode-head { flex-direction: column; gap: 10px; }
+  .dash-rsvpcode-actions .dash-btn,
+  .dash-rsvpcode-actions .dash-btn-out { flex: 1 1 auto; }
+}

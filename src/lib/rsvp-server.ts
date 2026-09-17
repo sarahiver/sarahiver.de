@@ -69,6 +69,38 @@ export async function checkRsvpCode(siteId: string, input: string): Promise<bool
   return verifyCode(input, (data as { code_hash: string }).code_hash);
 }
 
+/**
+ * Status für das Dashboard. Gibt bewusst NUR zurück, was die Oberfläche
+ * braucht — kein code_hash, auch nicht gekürzt oder maskiert. Damit kann der
+ * Hash gar nicht erst in Props, JSON oder React-Baum landen.
+ */
+export interface RsvpCodeStatus {
+  hasCode: boolean;
+  enabled: boolean;
+  updatedAt: string | null;
+}
+
+export async function loadRsvpCodeStatus(siteId: string): Promise<RsvpCodeStatus> {
+  const admin = createSupabaseAdminClient();
+  if (!admin) return { hasCode: false, enabled: false, updatedAt: null };
+
+  const [{ data: site }, { data: code }] = await Promise.all([
+    admin.from('wedding_sites').select('rsvp_code_enabled').eq('id', siteId).maybeSingle(),
+    admin
+      .from('wedding_rsvp_codes')
+      .select('updated_at')
+      .eq('wedding_site_id', siteId)
+      .maybeSingle(),
+  ]);
+
+  const updatedAt = (code as { updated_at?: string } | null)?.updated_at ?? null;
+  return {
+    hasCode: Boolean(updatedAt),
+    enabled: (site as { rsvp_code_enabled?: boolean } | null)?.rsvp_code_enabled === true,
+    updatedAt,
+  };
+}
+
 /* ------------------------------------------------------------------ Rate Limit */
 
 /** Höchstens so viele FEHLversuche je Site und Client im Zeitfenster. */
