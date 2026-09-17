@@ -796,6 +796,287 @@
 }
 
 /* =========================================================================
+   ANFAHRT (DIRECTIONS)
+   -------------------------------------------------------------------------
+   Eine funktionale Sektion. Die Qualität liegt in der Informationsklarheit,
+   nicht im Effekt — nach Galerie und Ablauf soll die Seite hier ruhiger
+   werden.
+
+     A  PRACTICAL    Karte links, Angaben rechts als gesetzte Zeilen.
+     B  EDITORIAL    nummerierte Liste gegen eine versetzte Kartenfläche.
+     C  DESTINATION  großer Ortsname, Adresse als Metazeile, Karte als Band.
+
+   In allen drei Varianten steht die Reihenfolge fest: Ort → Adresse →
+   Lage → Hinweise → Route.
+   ========================================================================= */
+
+.dir[data-style-dir='editorial'] {
+  --dir-rule: color-mix(in srgb, currentColor 16%, transparent);
+  --dir-rule-strong: color-mix(in srgb, currentColor 40%, transparent);
+  padding-block: clamp(56px, 6.5vw, 88px);
+  padding-inline: var(--gutter);
+}
+
+/* Kopf wie in den übrigen Editorial-Bereichen: linke Achse, keine Ornamente. */
+[data-style-dir='editorial'] .dir-eyebrow,
+[data-style-dir='editorial'] .dir-title,
+[data-style-dir='editorial'] .dir-desc {
+  text-align: left;
+  margin-inline: 0 auto;
+}
+[data-style-dir='editorial'] .dir-title { font-size: var(--fs-7); line-height: var(--lh-snug); }
+[data-style-dir='editorial'] .dir-desc { max-inline-size: var(--ed-measure); font-size: var(--fs-4); }
+[data-style-dir='editorial'] .dir-head-ornament { display: none; }
+/* Der Kopf steht auf derselben Achse wie der Inhalt darunter — sonst
+   beginnt die Überschrift woanders als die Karte. */
+[data-style-dir='editorial'] .dir-head {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+  padding-inline: 0;
+  text-align: left;
+}
+[data-style-dir='editorial'].dirC-section .dir-head { max-inline-size: var(--wrap-wide); }
+
+/* Gemeinsame Bausteine ---------------------------------------------------- */
+[data-style-dir='editorial'] .dir-mapframe {
+  border: 1px solid var(--dir-rule);
+  border-radius: 0;
+  box-shadow: none;
+  overflow: hidden;
+  background: color-mix(in srgb, currentColor 4%, transparent);
+}
+[data-style-dir='editorial'] .dir-map-missing {
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+[data-style-dir='editorial'] .dir-name {
+  font-family: var(--body);
+  font-size: var(--fs-4);
+  font-weight: 600;
+  line-height: var(--lh-snug);
+  letter-spacing: 0;
+  text-transform: none;
+}
+[data-style-dir='editorial'] .dir-address {
+  font-size: var(--fs-3);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin-top: var(--sp-2);
+  white-space: pre-line;
+}
+[data-style-dir='editorial'] .dir-description {
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  color: var(--muted);
+  max-inline-size: 52ch;
+  margin-top: var(--sp-3);
+}
+/* Die Hinweiszeilen (Parken, Shuttle, ÖPNV) sind gesetzte Metazeilen, keine
+   Chips — die Sinnbilder der Basis bleiben, aber klein und einfarbig. */
+[data-style-dir='editorial'] .dir-transit {
+  display: grid;
+  gap: var(--sp-2);
+  margin-top: var(--sp-3);
+}
+[data-style-dir='editorial'] .dir-transit-item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  font-family: var(--body);
+  font-size: var(--fs-2);
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+[data-style-dir='editorial'] .dir-transit-item .icon { opacity: 0.55; font-size: 0.9em; }
+[data-style-dir='editorial'] .dir-label-chip {
+  display: inline-block;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--terra-on-light, var(--muted));
+  margin-bottom: var(--sp-2);
+}
+/* Route-Knopf: zurückhaltend, aber nicht zu übersehen. */
+[data-style-dir='editorial'] .dir-btn {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--touch);
+  padding: 0 0 var(--sp-2);
+  border: 0;
+  border-bottom: 1px solid var(--dir-rule-strong);
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  transition: border-color .2s ease, color .2s ease;
+}
+[data-style-dir='editorial'] .dir-btn:hover {
+  background: none;
+  color: var(--terra-on-light, var(--ink));
+  border-color: currentColor;
+  transform: none;
+}
+
+/* --- A · PRACTICAL ------------------------------------------------------- */
+[data-style-dir='editorial'] .dirA-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  column-gap: var(--ed-gap-lg);
+  align-items: start;
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+}
+[data-style-dir='editorial'] .dirA-map {
+  aspect-ratio: var(--ar-classic);
+  block-size: auto;
+  inline-size: 100%;
+}
+[data-style-dir='editorial'] .dirA-grid,
+[data-style-dir='editorial'] .dirA-grid.is-one {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+/* Keine Karten, sondern gesetzte Zeilen mit Haarlinie. */
+[data-style-dir='editorial'] .dirA-card {
+  border: 0;
+  border-top: 1px solid var(--dir-rule);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: var(--sp-4) 0;
+}
+[data-style-dir='editorial'] .dirA-card:first-child {
+  border-top: 1px solid var(--dir-rule-strong);
+  padding-top: var(--sp-3);
+}
+[data-style-dir='editorial'] .dirA-card:last-child { border-bottom: 1px solid var(--dir-rule-strong); }
+
+/* --- B · EDITORIAL ------------------------------------------------------- */
+[data-style-dir='editorial'] .dirB-wrap {
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+}
+[data-style-dir='editorial'] .dirB-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  column-gap: var(--ed-gap-lg);
+  align-items: start;
+}
+[data-style-dir='editorial'] .dirB-list { display: grid; gap: 0; }
+[data-style-dir='editorial'] .dirB-row {
+  display: grid;
+  grid-template-columns: clamp(28px, 3vw, 44px) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--sp-3);
+  border: 0;
+  border-top: 1px solid var(--dir-rule);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: var(--sp-4) 0;
+  text-align: left;
+}
+[data-style-dir='editorial'] .dirB-row:first-child { border-top: 1px solid var(--dir-rule-strong); }
+[data-style-dir='editorial'] .dirB-row.is-active { background: color-mix(in srgb, currentColor 4%, transparent); }
+[data-style-dir='editorial'] .dirB-num {
+  font-family: var(--body);
+  font-size: var(--fs-1);
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  inline-size: auto;
+  block-size: auto;
+  padding: 0;
+  line-height: 1.6;
+}
+[data-style-dir='editorial'] .dirB-name {
+  font-family: var(--body);
+  font-size: var(--fs-4);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+[data-style-dir='editorial'] .dirB-short-addr {
+  display: block;
+  font-size: var(--fs-2);
+  color: var(--muted);
+  margin-top: var(--sp-1);
+}
+/* Die Kartenfläche sitzt tiefer als die Liste — daraus entsteht die
+   Komposition, nicht aus einer anderen Kartenposition. */
+[data-style-dir='editorial'] .dirB-mapwrap {
+  margin-block-start: var(--sp-8);
+  aspect-ratio: var(--ar-portrait);
+  block-size: auto;
+  inline-size: 100%;
+}
+
+/* --- C · DESTINATION ----------------------------------------------------- */
+[data-style-dir='editorial'] .dirC-wrap {
+  display: grid;
+  gap: var(--sp-9);
+  max-inline-size: var(--wrap-wide);
+  margin-inline: auto;
+}
+[data-style-dir='editorial'] .dirC-block {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--ed-gap);
+  row-gap: var(--sp-5);
+  align-items: end;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+}
+[data-style-dir='editorial'] .dirC-text { grid-column: 1 / span 6; }
+/* Der Ortsname trägt die Variante — die Adresse bleibt trotzdem die zweite,
+   gut lesbare Information und rutscht nicht in die Dekoration. */
+[data-style-dir='editorial'] .dirC-text .dir-name {
+  font-family: var(--disp);
+  font-weight: 300;
+  font-size: var(--fs-7);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.025em;
+}
+[data-style-dir='editorial'] .dirC-text .dir-address {
+  font-size: var(--fs-4);
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  margin-top: var(--sp-4);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--dir-rule);
+  max-inline-size: 32ch;
+}
+[data-style-dir='editorial'] .dirC-mapwrap {
+  grid-column: 7 / -1;
+  aspect-ratio: var(--ar-band);
+  block-size: auto;
+  inline-size: 100%;
+}
+/* Zweiter Ort spiegelt die Achse. */
+[data-style-dir='editorial'] .dirC-block:nth-child(even) .dirC-text { grid-column: 7 / -1; }
+[data-style-dir='editorial'] .dirC-block:nth-child(even) .dirC-mapwrap { grid-column: 1 / span 6; grid-row: 1; }
+
+/* =========================================================================
    GALLERY
    ========================================================================= */
 
@@ -1345,6 +1626,60 @@
   [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 4) .lsC-img { aspect-ratio: var(--ar-wide); }
   [data-style-ls='editorial'] .lsC-item:nth-of-type(5n + 5) { inline-size: 76%; }
   [data-style-ls='editorial'] .lsC-card > * { max-inline-size: none; }
+
+  /* ======================================================================
+     ANFAHRT MOBIL — drei eigene Zustände.
+     Alle Rücksetzungen tragen dieselben Selektorstufen wie der Desktop.
+     ====================================================================== */
+
+  /* A · praktisch: Karte zuerst, darunter die Angaben als gesetzte Zeilen.
+     Wer auf dem Telefon die Anfahrt öffnet, will zuerst die Lage sehen. */
+  [data-style-dir='editorial'] .dirA-wrap {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--sp-5);
+  }
+  [data-style-dir='editorial'] .dirA-map { aspect-ratio: var(--ar-wide); }
+  [data-style-dir='editorial'] .dirA-card { padding: var(--sp-3) 0; }
+
+  /* B · komponiert: die nummerierte Liste bleibt die Struktur, die Karte
+     rutscht darunter und läuft rechts aus dem Satzspiegel — der Versatz des
+     Desktops wird zum Anschnitt statt zum Abstand. */
+  [data-style-dir='editorial'] .dirB-grid {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--sp-5);
+  }
+  /* Im Markup steht die Karte vor der Liste. Einspaltig führt in B aber die
+     nummerierte Liste — sonst beginnt B wie A mit einer Karte. */
+  [data-style-dir='editorial'] .dirB-list { order: 0; }
+  [data-style-dir='editorial'] .dirB-mapwrap { order: 1; }
+  [data-style-dir='editorial'] .dirB-mapwrap {
+    margin-block-start: var(--sp-4);
+    margin-inline-end: calc(-1 * var(--gutter));
+    aspect-ratio: var(--ar-classic);
+  }
+  [data-style-dir='editorial'] .dirB-row { padding: var(--sp-3) 0; }
+
+  /* C · Zielort: der Name führt, die Karte wird zum randlosen Band darunter. */
+  [data-style-dir='editorial'] .dirC-wrap { gap: var(--sp-7); }
+  [data-style-dir='editorial'] .dirC-block,
+  [data-style-dir='editorial'] .dirC-block:nth-child(even) {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--sp-4);
+  }
+  [data-style-dir='editorial'] .dirC-text,
+  [data-style-dir='editorial'] .dirC-block:nth-child(even) .dirC-text {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  [data-style-dir='editorial'] .dirC-mapwrap,
+  [data-style-dir='editorial'] .dirC-block:nth-child(even) .dirC-mapwrap {
+    grid-column: 1;
+    grid-row: 2;
+    aspect-ratio: var(--ar-wide);
+    margin-inline: calc(-1 * var(--gutter));
+    inline-size: auto;
+  }
+  [data-style-dir='editorial'] .dirC-text .dir-name { font-size: var(--fs-6); }
 
   /* ======================================================================
      GALLERY MOBIL — drei eigene Erlebnisse
