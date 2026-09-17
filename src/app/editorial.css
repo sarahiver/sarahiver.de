@@ -31,6 +31,7 @@
 [data-style-tl='editorial'],
 [data-style-gallery='editorial'],
 [data-style-dir='editorial'],
+[data-style-acc='editorial'],
 [data-style-faq='editorial'] {
   --ed-rule: color-mix(in srgb, currentColor 16%, transparent);
   --ed-rule-strong: color-mix(in srgb, currentColor 42%, transparent);
@@ -1423,6 +1424,11 @@
   --acc-rule-strong: color-mix(in srgb, currentColor 40%, transparent);
   padding-block: clamp(56px, 6.5vw, 88px);
   padding-inline: var(--gutter);
+  /* Abstand Bild ↔ Text. Die Empfehlung bekommt mehr Luft als die knappen
+     Folgeeinträge — der Unterschied ist Teil der Gewichtung. */
+  --acc-gap-lead: clamp(28px, 3.4vw, 48px);
+  --acc-gap-row: clamp(20px, 2.4vw, 32px);
+  --acc-gap-mobile: 16px;
 }
 
 /* Kopf auf der linken Achse wie in den übrigen Editorial-Bereichen. */
@@ -1540,7 +1546,7 @@
      bliebe sonst eine bildschirmbreite Karte stehen. */
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-template-rows: auto auto auto 1fr auto;
-  gap: var(--sp-3) var(--ed-gap);
+  gap: var(--sp-3) var(--acc-gap-row);
 }
 [data-style-acc='editorial'] .accA-card {
   display: grid;
@@ -1603,7 +1609,7 @@
 [data-style-acc='editorial'] .accB-item {
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(0, 7fr);
-  column-gap: var(--ed-gap-lg);
+  column-gap: var(--acc-gap-row);
   align-items: start;
   border: 0;
   border-top: 1px solid var(--acc-rule);
@@ -1640,6 +1646,7 @@
 /* Die Empfehlung: größere Fläche, größerer Name, mehr Luft. */
 [data-style-acc='editorial'] .accB-item:first-child {
   grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+  column-gap: var(--acc-gap-lead);
   border-top: 1px solid var(--acc-rule-strong);
   padding-block: var(--sp-6) var(--sp-7);
 }
@@ -2010,7 +2017,7 @@
      die Gewichtung auch einspaltig lesbar. */
   [data-style-acc='editorial'] .accB-item {
     grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-    column-gap: var(--sp-4);
+    column-gap: var(--acc-gap-mobile);
     padding: var(--sp-4) 0;
   }
   [data-style-acc='editorial'] .accB-item:first-child {
