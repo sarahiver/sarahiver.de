@@ -30,6 +30,7 @@
 [data-style-ls='editorial'],
 [data-style-tl='editorial'],
 [data-style-gallery='editorial'],
+[data-style-dir='editorial'],
 [data-style-faq='editorial'] {
   --ed-rule: color-mix(in srgb, currentColor 16%, transparent);
   --ed-rule-strong: color-mix(in srgb, currentColor 42%, transparent);
@@ -815,6 +816,13 @@
   --dir-rule-strong: color-mix(in srgb, currentColor 40%, transparent);
   padding-block: clamp(56px, 6.5vw, 88px);
   padding-inline: var(--gutter);
+  /* Abstand Karte ↔ Text, je Variante bewusst verschieden gesetzt:
+     A trennt sauber, B nutzt die Luft als Kompositionsmittel, C bleibt
+     enger gekoppelt, weil Name, Adresse und Karte eine Einheit bilden. */
+  --dir-gap-a: clamp(24px, 2.8vw, 40px);
+  --dir-gap-b: clamp(32px, 3.8vw, 56px);
+  --dir-gap-c: clamp(20px, 2.2vw, 32px);
+  --dir-gap-mobile: 28px;
 }
 
 /* Kopf wie in den übrigen Editorial-Bereichen: linke Achse, keine Ornamente. */
@@ -936,15 +944,23 @@
 [data-style-dir='editorial'] .dirA-wrap {
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  column-gap: var(--ed-gap-lg);
+  column-gap: var(--dir-gap-a);
   align-items: start;
   max-inline-size: var(--wrap);
   margin-inline: auto;
 }
+/* Die Karte lief vorher im festen 3:2 aus und ließ unter sich ein Loch,
+   während die Angaben rechts weiterliefen. Jetzt trägt sie die Zeile mit:
+   beide Spalten enden auf derselben Linie. Die Mindesthöhe greift, wenn nur
+   ein Ort eingetragen ist. */
+[data-style-dir='editorial'] .dirA-wrap { align-items: stretch; }
 [data-style-dir='editorial'] .dirA-map {
-  aspect-ratio: var(--ar-classic);
-  block-size: auto;
+  aspect-ratio: auto;
+  align-self: stretch;
+  block-size: 100%;
+  min-block-size: clamp(260px, 26vw, 380px);
   inline-size: 100%;
+  min-inline-size: 0;
 }
 [data-style-dir='editorial'] .dirA-grid,
 [data-style-dir='editorial'] .dirA-grid.is-one {
@@ -975,7 +991,7 @@
 [data-style-dir='editorial'] .dirB-grid {
   display: grid;
   grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  column-gap: var(--ed-gap-lg);
+  column-gap: var(--dir-gap-b);
   align-items: start;
 }
 [data-style-dir='editorial'] .dirB-list { display: grid; gap: 0; }
@@ -1038,7 +1054,7 @@
 [data-style-dir='editorial'] .dirC-block {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--ed-gap);
+  column-gap: var(--dir-gap-c);
   row-gap: var(--sp-5);
   align-items: end;
   border: 0;
@@ -1047,7 +1063,13 @@
   box-shadow: none;
   padding: 0;
 }
-[data-style-dir='editorial'] .dirC-text { grid-column: 1 / span 6; }
+[data-style-dir='editorial'] .dirC-text {
+  grid-column: 1 / span 6;
+  /* Ohne min-inline-size:0 wächst ein Grid-Item über seine Spur hinaus,
+     sobald der Inhalt nicht umbrechen kann — genau das hat den langen
+     Ortsnamen aus der Seite laufen lassen. */
+  min-inline-size: 0;
+}
 /* Der Ortsname trägt die Variante — die Adresse bleibt trotzdem die zweite,
    gut lesbare Information und rutscht nicht in die Dekoration. */
 [data-style-dir='editorial'] .dirC-text .dir-name {
@@ -1056,6 +1078,9 @@
   font-size: var(--fs-7);
   line-height: var(--lh-tight);
   letter-spacing: -0.025em;
+  max-inline-size: 100%;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 [data-style-dir='editorial'] .dirC-text .dir-address {
   font-size: var(--fs-4);
@@ -1071,6 +1096,8 @@
   aspect-ratio: var(--ar-band);
   block-size: auto;
   inline-size: 100%;
+  min-inline-size: 0;
+  max-inline-size: 100%;
 }
 /* Zweiter Ort spiegelt die Achse. */
 [data-style-dir='editorial'] .dirC-block:nth-child(even) .dirC-text { grid-column: 7 / -1; }
@@ -1636,9 +1663,13 @@
      Wer auf dem Telefon die Anfahrt öffnet, will zuerst die Lage sehen. */
   [data-style-dir='editorial'] .dirA-wrap {
     grid-template-columns: minmax(0, 1fr);
-    row-gap: var(--sp-5);
+    row-gap: var(--dir-gap-mobile);
   }
   [data-style-dir='editorial'] .dirA-map { aspect-ratio: var(--ar-wide); }
+  /* Die Basis gibt dem Kartenblock mobil einen eigenen Außenabstand — zusammen
+     mit der Zeilenlücke wären das 52px statt der gewollten 28. */
+  [data-style-dir='editorial'] .dirA-grid { margin-block: 0; }
+  [data-style-dir='editorial'] .dirA-map { margin-block-end: 0; }
   [data-style-dir='editorial'] .dirA-card { padding: var(--sp-3) 0; }
 
   /* B · komponiert: die nummerierte Liste bleibt die Struktur, die Karte
@@ -1646,14 +1677,14 @@
      Desktops wird zum Anschnitt statt zum Abstand. */
   [data-style-dir='editorial'] .dirB-grid {
     grid-template-columns: minmax(0, 1fr);
-    row-gap: var(--sp-5);
+    row-gap: var(--dir-gap-mobile);
   }
   /* Im Markup steht die Karte vor der Liste. Einspaltig führt in B aber die
      nummerierte Liste — sonst beginnt B wie A mit einer Karte. */
   [data-style-dir='editorial'] .dirB-list { order: 0; }
   [data-style-dir='editorial'] .dirB-mapwrap { order: 1; }
   [data-style-dir='editorial'] .dirB-mapwrap {
-    margin-block-start: var(--sp-4);
+    margin-block-start: 0;
     margin-inline-end: calc(-1 * var(--gutter));
     aspect-ratio: var(--ar-classic);
   }
@@ -1664,7 +1695,7 @@
   [data-style-dir='editorial'] .dirC-block,
   [data-style-dir='editorial'] .dirC-block:nth-child(even) {
     grid-template-columns: minmax(0, 1fr);
-    row-gap: var(--sp-4);
+    row-gap: var(--dir-gap-mobile);
   }
   [data-style-dir='editorial'] .dirC-text,
   [data-style-dir='editorial'] .dirC-block:nth-child(even) .dirC-text {
