@@ -204,7 +204,9 @@
    Bildcrop rechts, dazwischen eine sichtbare Kante. */
 .hero-a[data-style-hero='brutalist'] {
   display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  /* Die Satzspur bekommt etwas mehr Breite als zuvor (7:5 → 8:5), damit
+     lange Namen in einer Zeile stehen können. */
+  grid-template-columns: minmax(0, 8fr) minmax(0, 5fr);
   align-items: stretch;
   min-height: 0;
   padding: 0;
@@ -227,8 +229,19 @@
   max-width: none;
   text-align: left;
 }
-/* Der Namensblock füllt die Zone, Datum und Ort schließen als Bänder ab. */
-.hero-a[data-style-hero='brutalist'] .hero-a-title { flex: 1 1 auto; display: flex; align-items: center; }
+/* Der Namensblock füllt die Zone, Datum und Ort schließen als Bänder ab.
+   Flex macht aus „Vorname", Ampersand und „Vorname" drei Einheiten: der Satz
+   bricht zwischen ihnen um, nie in einem Namen. */
+.hero-a[data-style-hero='brutalist'] .hero-a-title {
+  flex: 1 1 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  align-content: center;
+  column-gap: 0.16em;
+  row-gap: 0;
+}
+.hero-a[data-style-hero='brutalist'] .hero-a-title .amp { white-space: nowrap; }
 .hero-a[data-style-hero='brutalist'] .hero-a-content::before { display: none; }
 .hero-a[data-style-hero='brutalist'] .hero-a-eyebrow {
   padding: 14px var(--br-pad-inline);
@@ -243,13 +256,22 @@
   font-weight: 800;
   /* Die Namen sind lang; die Schaugröße richtet sich nach der Spur, nicht
      nach dem Fenster, damit nichts über die Kante läuft. */
-  font-size: clamp(40px, 6.4vw, 104px);
+  font-size: clamp(34px, 5.4vw, 92px);
   line-height: 0.84;
   letter-spacing: -0.04em;
   text-transform: uppercase;
   color: var(--br-ink);
-  overflow-wrap: anywhere;
+  /* Namen brechen nie im Wort. `anywhere` trennte „CHARLO | TTE" und sah aus
+     wie ein Layoutfehler; hier bricht der Satz nur zwischen den Namen, und
+     die Schaugröße wird notfalls kleiner. */
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+  text-wrap: balance;
 }
+/* Der lange Vorname bestimmt die Größe. Fällt er länger aus als die Spur,
+   greift die untere Grenze der clamp() — nicht der Umbruch. */
+.hero-a[data-style-hero='brutalist'] .hero-a-title > * { overflow-wrap: normal; }
 .hero-a[data-style-hero='brutalist'] .hero-a-title .amp {
   color: var(--br-signal);
   animation: none;
@@ -1061,13 +1083,18 @@
    ========================================================================= */
 
 @media (max-width: 900px) {
-  .hero-a[data-style-hero='brutalist'] .hero-a-content {
+  /* Das Raster liegt auf der Sektion, nicht auf dem Satzblock — hier wird es
+     einspaltig, das Bild rückt unter die Zonen. */
+  .hero-a[data-style-hero='brutalist'] {
     grid-template-columns: minmax(0, 1fr);
   }
-  .hero-a[data-style-hero='brutalist'] .hero-a-title { grid-column: 1; }
+  .hero-a[data-style-hero='brutalist'] .hero-a-content {
+    grid-column: 1;
+    grid-row: 1;
+  }
   .hero-a[data-style-hero='brutalist'] .hero-a-image {
     grid-column: 1;
-    grid-row: auto;
+    grid-row: 2;
     border-inline-start: 0;
     border-block-start: var(--br-border);
     min-block-size: clamp(240px, 56vw, 420px);
@@ -1143,7 +1170,7 @@
 }
 
 @media (max-width: 600px) {
-  .hero-a[data-style-hero='brutalist'] .hero-a-title { font-size: clamp(44px, 13vw, 72px); }
+  .hero-a[data-style-hero='brutalist'] .hero-a-title { font-size: clamp(28px, 10.5vw, 60px); }
   .hero-b[data-style-hero='brutalist'] .hero-b-title { font-size: clamp(38px, 11vw, 60px); }
   .hero-c[data-style-hero='brutalist'] .hero-c-title { font-size: clamp(42px, 13vw, 76px); }
   .cd.cdC-wrap[data-style-countdown='brutalist'] .cdC-bar-row:first-child .cdC-bar-num-value {

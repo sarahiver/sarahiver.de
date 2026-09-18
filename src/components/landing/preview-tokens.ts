@@ -81,11 +81,17 @@ export const FALLBACK_PALETTES: PalettePreset[] = [
   { id: 'midnight', name: 'Mitternacht', color_bg: '#14161C', color_bg_soft: '#1d212a', color_accent: '#C9A24B', color_accent_deep: '#a5822f', color_ink: '#EDEAF2', display_order: 2 },
   { id: 'sand', name: 'Sand', color_bg: '#FAF4E9', color_bg_soft: '#efe3cf', color_accent: '#C2764A', color_accent_deep: '#9c5b34', color_ink: '#3a2f22', display_order: 3 },
   { id: 'bordeaux', name: 'Bordeaux', color_bg: '#F5EEEF', color_bg_soft: '#e7d7da', color_accent: '#8E2C43', color_accent_deep: '#6a1f31', color_ink: '#2a1418', display_order: 4 },
+  // Signal — Standardpalette für Brutalist: fast Schwarz, warmes Off-White,
+  // Signal-Orange. Bewusst ohne Gold/Neon: Brutalist soll grafisch wirken,
+  // nicht nach Acid-Design.
+  { id: 'signal', name: 'Signal', color_bg: '#F2EFE6', color_bg_soft: '#DEDAD0', color_accent: '#FF4A17', color_accent_deep: '#D6350A', color_ink: '#111111', display_order: 5 },
 ];
 
 export const FALLBACK_FONTS: FontPreset[] = [
   { id: 'classic', name: 'Klassisch', font_display: "'Cormorant Garamond', serif", font_body: "'Karla', sans-serif", font_script: "'Caveat', cursive", display_weight: 500, display_style: 'normal', display_order: 0 },
   { id: 'modern', name: 'Modern', font_display: "'Space Grotesk', sans-serif", font_body: "'Manrope', sans-serif", font_script: null, display_weight: 500, display_style: 'normal', display_order: 1 },
+  // Brutal — fette Grotesk für Brutalist. Syne 800 ist bereits geladen.
+  { id: 'brutal', name: 'Brutal', font_display: "'Syne', 'Arial Black', sans-serif", font_body: "'Space Grotesk', sans-serif", font_script: null, display_weight: 800, display_style: 'normal', display_order: 3 },
   { id: 'romantic', name: 'Romantisch', font_display: "'Fraunces', serif", font_body: "'Crimson Pro', serif", font_script: "'Caveat', cursive", display_weight: 400, display_style: 'italic', display_order: 2 },
 ];
 
@@ -96,7 +102,7 @@ export const FALLBACK_STYLES: StartStylePreset[] = [
   { id: 'mono', name: 'Mono', meta: 'Reduziert, klar', default_palette_id: 'sand', default_font_id: 'modern', dna_align: 'left', dna_spacing: 'regular', dna_decor: 'hairline', dna_contrast: 'clean', display_order: 3 },
   { id: 'liquefy', name: 'Liquefy', meta: 'Fließend, verträumt', default_palette_id: 'rose', default_font_id: 'romantic', dna_align: 'center', dna_spacing: 'airy', dna_decor: 'none', dna_contrast: 'soft', display_order: 4 },
   { id: 'kinetic', name: 'Kinetic', meta: 'Dynamisch, modern', default_palette_id: 'midnight', default_font_id: 'modern', dna_align: 'left', dna_spacing: 'regular', dna_decor: 'none', dna_contrast: 'high', display_order: 5 },
-  { id: 'brutalist', name: 'Brutalist', meta: 'Roh, kontrastreich', default_palette_id: 'midnight', default_font_id: 'modern', dna_align: 'left', dna_spacing: 'tight', dna_decor: 'none', dna_contrast: 'high', display_order: 6 },
+  { id: 'brutalist', name: 'Brutalist', meta: 'Roh, kontrastreich', default_palette_id: 'signal', default_font_id: 'brutal', dna_align: 'left', dna_spacing: 'tight', dna_decor: 'none', dna_contrast: 'high', display_order: 6 },
   { id: 'bauhaus', name: 'Bauhaus', meta: 'Geometrisch, grafisch', default_palette_id: 'sand', default_font_id: 'modern', dna_align: 'left', dna_spacing: 'regular', dna_decor: 'none', dna_contrast: 'clean', display_order: 7 },
 ];
 
