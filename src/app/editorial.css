@@ -38,7 +38,8 @@
 [data-style-rsvp='editorial'],
 [data-style-gift='editorial'],
 [data-style-guest='editorial'],
-[data-style-music='editorial'] {
+[data-style-music='editorial'],
+[data-style-upload='editorial'] {
   --ed-rule: color-mix(in srgb, currentColor 16%, transparent);
   --ed-rule-strong: color-mix(in srgb, currentColor 42%, transparent);
   --ed-fill: color-mix(in srgb, currentColor 5%, transparent);
@@ -6395,5 +6396,726 @@
     flex-direction: column;
     align-items: flex-start;
     gap: var(--sp-2);
+  }
+}
+
+/* =========================================================================
+   FOTO-UPLOAD
+   -------------------------------------------------------------------------
+   Utility mit Anteilnahme: Gäste geben vor der Hochzeit private Bilder ab.
+   Die Bilder werden nirgends öffentlich gezeigt — es gibt keine Galerie und
+   keinen Feed, und hier entsteht auch keiner.
+
+   Die Basis bringt eine gestrichelte Dropzone, runde Icon-Kreise,
+   überlappende Avatar-Thumbs, Zähler-Pillen und Karten mit. All das ist
+   Upload-Widget-Sprache und wird zurückgenommen. Was bleibt: eine gesetzte
+   Abgabefläche auf Haarlinien und eine ruhige Dateiliste.
+
+   Datenlage (PhotoUpload/shared.ts, useUpload.ts): Mehrfachauswahl, Bilder
+   bis 25 MB, Status je Datei (pending/uploading/done/error), echter
+   Fortschritt je Datei im State, Entfernen vor dem Upload, lokale Vorschau
+   über ObjectURL, optionales Namensfeld, Erfolg/Fehler je Durchgang.
+
+     A  PHOTO DROP           eine Spalte: Abgabefläche, darunter die Dateien
+     B  EDITORIAL PHOTO DESK Information links, Abgabe rechts
+     C  SHARED MEMORY        Statement, Ablauf als Index, Abgabe daneben
+
+   Spezifität: gemeinsame Regeln `.up[data-style-upload='editorial']` (0,3,0),
+   variantenspezifische `.up.upX-section[data-style-upload='editorial']`
+   (0,4,0). Mobilblöcke tragen dieselbe Stufe.
+   ========================================================================= */
+
+.up[data-style-upload='editorial'] {
+  position: relative;
+  padding-block: clamp(52px, 6.5vw, 88px);
+  padding-inline: var(--gutter);
+  background: var(--bg);
+  color: var(--ink);
+  --up-soft: color-mix(in srgb, currentColor 62%, transparent);
+  --up-accent: var(--accent-deep, var(--accent));
+}
+.up[data-style-upload='editorial'] .styled-bg-editorial { display: none; }
+
+/* --- Kopf ---------------------------------------------------------------- */
+
+.up[data-style-upload='editorial'] .up-head {
+  max-inline-size: none;
+  margin: 0 0 var(--sp-7);
+  text-align: start;
+}
+.up[data-style-upload='editorial'] .up-eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  font-weight: 500;
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--up-soft);
+  margin: 0;
+}
+.up[data-style-upload='editorial'] .up-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-7);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.015em;
+  margin: var(--sp-3) 0 0;
+  max-inline-size: 20ch;
+}
+.up[data-style-upload='editorial'] .up-title em,
+.up[data-style-upload='editorial'] .upB-title em,
+.up[data-style-upload='editorial'] .upC-h em {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: inherit;
+  font-size: 1em;
+  color: inherit;
+}
+.up[data-style-upload='editorial'] .up-desc {
+  font-family: var(--font-body);
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  color: var(--up-soft);
+  margin: var(--sp-4) 0 0;
+  max-inline-size: 58ch;
+}
+.up[data-style-upload='editorial'] .up-head-ornament,
+.up[data-style-upload='editorial'] .up-head-decor-wrap { display: none; }
+
+/* --- Eingabe, Aktion, Meta ------------------------------------------------ */
+
+.up[data-style-upload='editorial'] .up-field-label {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-block-end: var(--sp-2);
+}
+.up[data-style-upload='editorial'] .up-input {
+  border: 0;
+  border-block-end: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  background: transparent;
+  padding: 10px 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  min-block-size: var(--touch);
+}
+.up[data-style-upload='editorial'] .up-input:focus {
+  outline: none;
+  border-block-end-color: currentColor;
+  box-shadow: 0 1px 0 0 currentColor;
+}
+.up[data-style-upload='editorial'] .up-btn {
+  min-block-size: 48px;
+  padding: 0 var(--sp-6);
+  background: var(--ink);
+  color: var(--bg);
+  border: 0;
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transform: none;
+}
+.up[data-style-upload='editorial'] .up-btn:hover {
+  background: var(--up-accent);
+  border-color: var(--up-accent);
+  transform: none;
+}
+.up[data-style-upload='editorial'] .up-btn svg { display: none; }
+/* Der Datenschutzhinweis ist eine Metazeile, kein Badge mit Schloss. */
+.up[data-style-upload='editorial'] .up-privacy {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  color: var(--up-soft);
+}
+.up[data-style-upload='editorial'] .up-privacy svg { display: none; }
+/* Fehler tragen Text und eine Kante — nicht nur Farbe. */
+.up[data-style-upload='editorial'] .up-error {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  font-weight: 500;
+  line-height: var(--lh-normal);
+  color: var(--up-accent);
+  border-inline-start: 2px solid var(--up-accent);
+  padding-inline-start: var(--sp-3);
+}
+
+/* --- Erfolg -------------------------------------------------------------- */
+
+.up[data-style-upload='editorial'] .up-success {
+  display: block;
+  max-inline-size: none;
+  margin: 0;
+  background: none;
+  border: 0;
+  border-block: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  padding: var(--sp-6) 0;
+  text-align: start;
+}
+.up[data-style-upload='editorial'] .up-success-icon { display: none; }
+.up[data-style-upload='editorial'] .up-success-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-6);
+  line-height: var(--lh-snug);
+  max-inline-size: 26ch;
+}
+.up[data-style-upload='editorial'] .up-success-sub {
+  font-family: var(--font-body);
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  color: var(--up-soft);
+  margin-block-start: var(--sp-3);
+  max-inline-size: 46ch;
+}
+.up[data-style-upload='editorial'] .up-success-link {
+  margin-block-start: var(--sp-4);
+  min-block-size: var(--touch);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  border-block-end-color: currentColor;
+}
+
+/* =========================================================================
+   A · PHOTO DROP
+   Eine Spalte: Abgabefläche als gesetztes Feld, darunter die Dateien als
+   Zeilen. Keine gestrichelte Zone, keine Kacheln.
+   ========================================================================= */
+
+.up.upA-section[data-style-upload='editorial'] .up-head,
+.up.upA-section[data-style-upload='editorial'] .upA-wrap {
+  max-inline-size: var(--wrap-narrow);
+  margin-inline: auto;
+}
+/* Keine eigene Abschlusslinie: die Abgabefläche bringt ihre Oberkante
+   schon mit, zwei Linien übereinander wären ein Fehler im Satz. */
+.up.upA-section[data-style-upload='editorial'] .up-head {
+  margin-block-end: var(--sp-6);
+}
+/* Die Abgabefläche: ein Feld zwischen zwei Linien, links auf der Achse.
+   Es bleibt eine echte Klick- und Dropfläche (role=button im Markup). */
+.up.upA-section[data-style-upload='editorial'] .upA-drop {
+  display: block;
+  border: 0;
+  border-block: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  background: none;
+  padding: var(--sp-7) 0;
+  text-align: start;
+  transition: background-color 200ms ease;
+}
+.up.upA-section[data-style-upload='editorial'] .upA-drop:hover,
+.up.upA-section[data-style-upload='editorial'] .upA-drop.is-drag {
+  background: var(--ed-fill);
+  transform: none;
+  border-color: currentColor;
+}
+.up.upA-section[data-style-upload='editorial'] .upA-drop:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+.up.upA-section[data-style-upload='editorial'] .upA-drop-icon { display: none; }
+.up.upA-section[data-style-upload='editorial'] .upA-drop-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-6);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.01em;
+  max-inline-size: 34ch;
+}
+.up.upA-section[data-style-upload='editorial'] .upA-drop-mono {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  color: var(--up-soft);
+  margin-block-start: var(--sp-4);
+}
+.up.upA-section[data-style-upload='editorial'] .upA-selected {
+  margin-block-start: var(--sp-6);
+  gap: var(--sp-5);
+}
+.up.upA-section[data-style-upload='editorial'] .upA-selected-head {
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: var(--sp-5);
+}
+.up.upA-section[data-style-upload='editorial'] .upA-selected-count {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  color: var(--up-soft);
+}
+.up.upA-section[data-style-upload='editorial'] .upA-selected-count strong {
+  font-family: var(--font-display);
+  font-size: var(--fs-5);
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--up-accent);
+  margin-inline-end: var(--sp-2);
+}
+/* Aus dem Kachelstreifen wird eine Liste: Vorschau, Dateiname, Status. */
+.up.upA-section[data-style-upload='editorial'] .up-thumbs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  border-block-start: 1px solid var(--ed-rule);
+}
+.up.upA-section[data-style-upload='editorial'] .up-thumb {
+  position: relative;
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--sp-4);
+  inline-size: auto;
+  block-size: auto;
+  flex: none;
+  padding-block: var(--sp-3);
+  background: none;
+  border: 0;
+  border-block-end: 1px solid var(--ed-rule);
+  border-radius: 0;
+  overflow: visible;
+}
+/* Die Reihenfolge im Markup ist Bild, Status, Entfernen, Dateiname. Für die
+   Zeile wird sie explizit gesetzt statt der DOM-Folge überlassen — sonst
+   steht der Name ganz rechts und der Entfernen-Knopf mitten im Satz. */
+.up.upA-section[data-style-upload='editorial'] .up-thumb > * { grid-row: 1; }
+.up.upA-section[data-style-upload='editorial'] .up-thumb img {
+  grid-column: 1;
+  inline-size: 72px;
+  block-size: 48px;
+  object-fit: cover;
+  background: var(--ed-fill);
+}
+.up.upA-section[data-style-upload='editorial'] .up-thumb-meta { grid-column: 2; }
+.up.upA-section[data-style-upload='editorial'] .upA-thumb-progress { grid-column: 3; }
+.up.upA-section[data-style-upload='editorial'] .up-thumb-remove { grid-column: 4; }
+/* Der Dateiname war eine Bildunterschrift im Bild — hier ist er die Zeile. */
+.up.upA-section[data-style-upload='editorial'] .up-thumb-meta {
+  position: static;
+  inset: auto;
+  background: none;
+  color: var(--ink);
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  letter-spacing: 0;
+  line-height: var(--lh-snug);
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+}
+/* Statusanzeige: kein Overlay über dem Bild, sondern eine Spur in der Zeile.
+   Der Ring zeigt „lädt", das Häkchen „angekommen" — mehr gibt der Zustand
+   je Datei nicht her, und es werden keine Prozente erfunden. */
+.up.upA-section[data-style-upload='editorial'] .upA-thumb-progress {
+  position: static;
+  inset: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  inline-size: auto;
+  background: none;
+  color: var(--up-soft);
+}
+.up.upA-section[data-style-upload='editorial'] .upA-thumb-progress .ring {
+  inline-size: 14px;
+  block-size: 14px;
+  border: 1.5px solid var(--ed-rule-strong);
+  border-top-color: currentColor;
+}
+.up.upA-section[data-style-upload='editorial'] .up-thumb.is-done .upA-thumb-progress {
+  background: none;
+  color: var(--up-accent);
+}
+.up.upA-section[data-style-upload='editorial'] .up-thumb.is-done .check svg {
+  inline-size: 14px;
+  block-size: 14px;
+}
+.up.upA-section[data-style-upload='editorial'] .up-thumb-remove {
+  position: static;
+  inline-size: var(--touch);
+  block-size: var(--touch);
+  border-radius: 0;
+  background: none;
+  color: var(--up-soft);
+}
+.up.upA-section[data-style-upload='editorial'] .up-thumb-remove:hover {
+  background: none;
+  color: var(--ink);
+}
+.up.upA-section[data-style-upload='editorial'] .up-thumb-remove svg {
+  inline-size: 12px;
+  block-size: 12px;
+}
+.up.upA-section[data-style-upload='editorial'] .upA-actions {
+  justify-content: flex-start;
+  gap: var(--sp-5);
+  align-items: center;
+}
+
+/* =========================================================================
+   B · EDITORIAL PHOTO DESK
+   Information in der Randspalte, Abgabe in der Hauptfläche. Zwei Rollen,
+   eine Seite — keine zwei Karten nebeneinander.
+   ========================================================================= */
+
+.up.upB-section[data-style-upload='editorial'] {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--ed-gap-lg);
+  align-items: start;
+  max-inline-size: calc(var(--wrap) + 2 * var(--gutter));
+  margin-inline: auto;
+}
+.up.upB-section[data-style-upload='editorial'] .up-head {
+  grid-column: 1 / span 5;
+  margin: 0;
+}
+.up.upB-section[data-style-upload='editorial'] .up-title { max-inline-size: 14ch; }
+.up.upB-section[data-style-upload='editorial'] .up-desc { max-inline-size: 38ch; }
+.up.upB-section[data-style-upload='editorial'] .upB-wrap {
+  grid-column: 7 / -1;
+  display: block;
+  min-inline-size: 0;
+}
+.up.upB-section[data-style-upload='editorial'] .upB-card {
+  max-inline-size: none;
+  background: none;
+  border: 0;
+  border-block-start: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  padding: var(--sp-5) 0 0;
+  text-align: start;
+  align-items: stretch;
+  gap: var(--sp-5);
+}
+.up.upB-section[data-style-upload='editorial'] .upB-icon { display: none; }
+.up.upB-section[data-style-upload='editorial'] .upB-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.01em;
+  max-inline-size: 26ch;
+}
+.up.upB-section[data-style-upload='editorial'] .upB-sub {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  color: var(--up-soft);
+  max-inline-size: 46ch;
+}
+/* Statt überlappender runder Avatare ein Streifen kontrollierter Crops. */
+.up.upB-section[data-style-upload='editorial'] .upB-thumbs {
+  justify-content: flex-start;
+  gap: var(--sp-3);
+  margin: 0;
+}
+.up.upB-section[data-style-upload='editorial'] .upB-thumb-mini {
+  inline-size: 64px;
+  block-size: 44px;
+  flex: none;
+  border: 0;
+  border-radius: 0;
+  margin-left: 0;
+  box-shadow: none;
+  background: var(--ed-fill);
+}
+.up.upB-section[data-style-upload='editorial'] .upB-count-pill {
+  inline-size: auto;
+  block-size: 44px;
+  padding-inline: var(--sp-3);
+  margin-left: 0;
+  border: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-2);
+  letter-spacing: var(--ed-meta-ls);
+  flex: none;
+}
+.up.upB-section[data-style-upload='editorial'] .upB-name { margin: 0; }
+.up.upB-section[data-style-upload='editorial'] .upB-actions {
+  align-items: flex-start;
+  gap: var(--sp-4);
+  margin: 0;
+}
+.up.upB-section[data-style-upload='editorial'] .upB-actions .up-btn {
+  inline-size: max-content;
+  max-inline-size: none;
+}
+
+/* =========================================================================
+   C · SHARED MEMORY
+   Der vorhandene Titel wird zur Aussage, der Ablauf zum Index, die Abgabe
+   steht direkt daneben — erreichbar ohne langes Scrollen.
+   ========================================================================= */
+
+.up.upC-section[data-style-upload='editorial'] .up-head,
+.up.upC-section[data-style-upload='editorial'] .upC-wrap {
+  max-inline-size: calc(var(--wrap-wide) + 2 * var(--gutter));
+  margin-inline: auto;
+}
+.up.upC-section[data-style-upload='editorial'] .up-title {
+  font-size: var(--fs-8);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  max-inline-size: 14ch;
+}
+.up.upC-section[data-style-upload='editorial'] .up-desc { max-inline-size: 46ch; }
+.up.upC-section[data-style-upload='editorial'] .upC-grid {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--ed-gap-lg);
+  row-gap: var(--sp-6);
+  border-block-start: 1px solid var(--ed-rule-strong);
+  padding-block-start: var(--sp-6);
+}
+.up.upC-section[data-style-upload='editorial'] .upC-left {
+  grid-column: 1 / span 5;
+  padding: 0;
+  min-inline-size: 0;
+}
+.up.upC-section[data-style-upload='editorial'] .upC-right {
+  grid-column: 7 / -1;
+  min-inline-size: 0;
+}
+.up.upC-section[data-style-upload='editorial'] .upC-kicker {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  font-weight: 500;
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--up-soft);
+  margin: 0 0 var(--sp-3);
+}
+.up.upC-section[data-style-upload='editorial'] .upC-h {
+  font-family: var(--font-display);
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--sp-5);
+  max-inline-size: 24ch;
+}
+/* Der Ablauf als Register: Ziffern in der Randspur, kein Kreis-Badge. */
+.up.upC-section[data-style-upload='editorial'] .upC-steps {
+  gap: 0;
+  border-block-start: 1px solid var(--ed-rule);
+}
+.up.upC-section[data-style-upload='editorial'] .upC-step {
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: var(--sp-4);
+  padding-block: var(--sp-4);
+  border-block-end: 1px solid var(--ed-rule);
+}
+.up.upC-section[data-style-upload='editorial'] .upC-step-num {
+  inline-size: auto;
+  block-size: auto;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--fs-4);
+  font-weight: 400;
+  color: var(--up-accent);
+}
+.up.upC-section[data-style-upload='editorial'] .upC-step-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-4);
+  line-height: var(--lh-snug);
+}
+.up.upC-section[data-style-upload='editorial'] .upC-step-desc {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  color: var(--up-soft);
+  max-inline-size: 44ch;
+}
+/* Die Abgabe rechts: kein Kasten, nur eine gesetzte Spalte. */
+.up.upC-section[data-style-upload='editorial'] .upC-box {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  gap: var(--sp-5);
+}
+.up.upC-section[data-style-upload='editorial'] .upC-mini-drop {
+  border: 0;
+  border-block: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  background: none;
+  padding: var(--sp-6) 0;
+  text-align: start;
+  align-items: flex-start;
+  gap: var(--sp-3);
+}
+.up.upC-section[data-style-upload='editorial'] .upC-mini-drop:hover,
+.up.upC-section[data-style-upload='editorial'] .upC-mini-drop.is-drag {
+  background: var(--ed-fill);
+  border-color: currentColor;
+}
+.up.upC-section[data-style-upload='editorial'] .upC-mini-drop:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+.up.upC-section[data-style-upload='editorial'] .upC-mini-drop-icon { display: none; }
+.up.upC-section[data-style-upload='editorial'] .upC-mini-drop-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  max-inline-size: 22ch;
+}
+.up.upC-section[data-style-upload='editorial'] .upC-mini-drop-sub {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  color: var(--up-soft);
+}
+.up.upC-section[data-style-upload='editorial'] .upC-selected-list {
+  gap: 0;
+  border-block-start: 1px solid var(--ed-rule);
+}
+.up.upC-section[data-style-upload='editorial'] .upC-selected-row {
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  gap: var(--sp-4);
+  align-items: center;
+  padding: var(--sp-3) 0;
+  background: none;
+  border: 0;
+  border-block-end: 1px solid var(--ed-rule);
+  border-radius: 0;
+}
+.up.upC-section[data-style-upload='editorial'] .upC-mini-thumb {
+  inline-size: 56px;
+  block-size: 38px;
+  border-radius: 0;
+  background: var(--ed-fill);
+}
+/* Lange Dateinamen brechen um, statt abgeschnitten zu werden — ein Gast
+   soll erkennen, welches Foto in der Zeile steht. */
+.up.upC-section[data-style-upload='editorial'] .upC-selected-name {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  line-height: var(--lh-snug);
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+}
+.up.upC-section[data-style-upload='editorial'] .upC-selected-size {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--up-soft);
+}
+.up.upC-section[data-style-upload='editorial'] .upC-remove {
+  inline-size: var(--touch);
+  block-size: var(--touch);
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--up-soft);
+}
+.up.upC-section[data-style-upload='editorial'] .upC-remove:hover {
+  background: none;
+  color: var(--ink);
+}
+
+/* =========================================================================
+   FOTO-UPLOAD — MOBIL
+   Eine Spalte, Abgabefläche zuerst erreichbar, Dateien darunter linear.
+   Trefferflächen bleiben bei 44px, Eingaben bei 16px.
+   ========================================================================= */
+
+@media (max-width: 900px) {
+  /* B: aus Randspalte und Hauptfläche wird eine Folge — erst die
+     Information, direkt danach die Abgabe. */
+  .up.upB-section[data-style-upload='editorial'] {
+    display: block;
+    max-inline-size: var(--wrap);
+  }
+  .up.upB-section[data-style-upload='editorial'] .up-head {
+    margin-block-end: var(--sp-6);
+  }
+  .up.upB-section[data-style-upload='editorial'] .up-title { max-inline-size: 18ch; }
+  .up.upB-section[data-style-upload='editorial'] .up-desc { max-inline-size: 52ch; }
+
+  /* C: Ablauf und Abgabe untereinander; das Register bleibt ein Register. */
+  .up.upC-section[data-style-upload='editorial'] .upC-grid {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--sp-6);
+  }
+  .up.upC-section[data-style-upload='editorial'] .upC-left,
+  .up.upC-section[data-style-upload='editorial'] .upC-right { grid-column: 1 / -1; }
+  /* Auf dem Telefon steht die Abgabe vor dem Ablauf: Foto-Upload ist
+     Utility, und der Weg dorthin darf nicht hinter drei Erklärschritten
+     liegen. Die Tastaturreihenfolge ändert sich dadurch nicht — im linken
+     Block gibt es nichts Fokussierbares. */
+  .up.upC-section[data-style-upload='editorial'] .upC-right { order: -1; }
+  .up.upC-section[data-style-upload='editorial'] .upC-step-desc { max-inline-size: 60ch; }
+}
+
+@media (max-width: 600px) {
+  .up[data-style-upload='editorial'] { padding-block: clamp(40px, 10vw, 60px); }
+
+  /* A: Abgabefläche kompakter, Dateizeile bleibt zweizeilig lesbar. */
+  .up.upA-section[data-style-upload='editorial'] .upA-drop { padding-block: var(--sp-6); }
+  .up.upA-section[data-style-upload='editorial'] .upA-drop-title { font-size: var(--fs-5); }
+  .up.upA-section[data-style-upload='editorial'] .up-thumb {
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+    gap: var(--sp-3);
+    padding-block: var(--sp-3);
+  }
+  .up.upA-section[data-style-upload='editorial'] .up-thumb img {
+    inline-size: 56px;
+    block-size: 38px;
+  }
+  .up.upA-section[data-style-upload='editorial'] .up-thumb img {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+  .up.upA-section[data-style-upload='editorial'] .up-thumb-meta { grid-column: 2; }
+  /* Status rutscht unter den Dateinamen, Entfernen bleibt rechts. */
+  .up.upA-section[data-style-upload='editorial'] .upA-thumb-progress {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .up.upA-section[data-style-upload='editorial'] .up-thumb-remove {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+  }
+  .up.upA-section[data-style-upload='editorial'] .upA-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-4);
+  }
+  .up.upA-section[data-style-upload='editorial'] .upA-actions .up-btn {
+    inline-size: 100%;
+  }
+
+  /* C: Statement skaliert, damit die Abgabe im ersten Blickfeld bleibt. */
+  .up.upC-section[data-style-upload='editorial'] .up-title {
+    font-size: clamp(34px, 10.5vw, 52px);
+    line-height: 1.02;
+    max-inline-size: 13ch;
+  }
+  .up.upC-section[data-style-upload='editorial'] .up-head { margin-block-end: var(--sp-6); }
+  .up.upC-section[data-style-upload='editorial'] .upC-h { font-size: var(--fs-4); }
+  .up.upC-section[data-style-upload='editorial'] .upC-step { padding-block: var(--sp-3); }
+  .up.upC-section[data-style-upload='editorial'] .upC-mini-drop { padding-block: var(--sp-5); }
+  .up.upC-section[data-style-upload='editorial'] .upC-mini-drop-title { font-size: var(--fs-4); }
+
+  /* B: Aktionen über die volle Breite — der häufigste Upload kommt vom Handy. */
+  .up.upB-section[data-style-upload='editorial'] .upB-actions .up-btn {
+    inline-size: 100%;
   }
 }
