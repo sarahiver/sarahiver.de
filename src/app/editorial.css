@@ -35,7 +35,8 @@
 [data-style-wit='editorial'],
 [data-style-abc='editorial'],
 [data-style-faq='editorial'],
-[data-style-rsvp='editorial'] {
+[data-style-rsvp='editorial'],
+[data-style-gift='editorial'] {
   --ed-rule: color-mix(in srgb, currentColor 16%, transparent);
   --ed-rule-strong: color-mix(in srgb, currentColor 42%, transparent);
   --ed-fill: color-mix(in srgb, currentColor 5%, transparent);
@@ -4445,4 +4446,730 @@
     padding-block-start: var(--sp-5);
   }
   .rsvp.rv-c[data-style-rsvp='editorial'] .rv-done-text { font-size: var(--fs-4); }
+}
+
+/* =========================================================================
+   GESCHENKE
+   -------------------------------------------------------------------------
+   Kein Shop. Die Sektion ist eine persönliche Notiz des Paares, in der
+   zufällig auch ein paar Wünsche stehen. Deshalb: keine Karten, keine
+   Kacheln, keine Preis-Pillen, keine Hover-Anhebung, keine Schatten — die
+   Basis bringt all das mit und wird hier zurückgenommen.
+
+   Datenlage (Gifts/shared.ts): eyebrow, title, description, items[] mit
+   title, description?, amount?, image?, reserved/reserved_by, dazu optional
+   IBAN-Block. Reservieren läuft über ein Modal. Mehr gibt es nicht, mehr
+   wird auch nicht erfunden: keine externen Links, keine Wunschlisten-URLs.
+
+     A  GIFT NOTE     schmale Lesespalte, Notiz, darunter Wünsche auf Linien
+     B  GIFT GUIDE    Randspalte mit Kopf, rechts nummerierte Einträge
+     C  GIFT STATEMENT Aussage groß, Zäsur, danach die Wünsche sehr schlicht
+
+   Prüfstein ohne Farbe und Schrift: A ist eine Spalte, B ist zweispaltig
+   mit Rand, C ist Aussage über Zäsur über Liste.
+
+   Spezifität: gemeinsame Regeln `.gift[data-style-gift='editorial']` (0,3,0),
+   variantenspezifische `.gift.giftX-section[data-style-gift='editorial']`
+   (0,4,0). Die Mobilblöcke tragen dieselbe Stufe.
+   ========================================================================= */
+
+.gift[data-style-gift='editorial'] {
+  position: relative;
+  padding-block: clamp(52px, 6.5vw, 88px);
+  padding-inline: var(--gutter);
+  background: var(--bg);
+  color: var(--ink);
+  --gf-soft: color-mix(in srgb, currentColor 62%, transparent);
+  --gf-accent: var(--accent-deep, var(--accent));
+}
+
+/* Die Dekorationsebene gehört zu den Bildsektionen; über einer Notiz ist sie
+   Zierrat und läuft dem linken Sektionskopf in die Quere. */
+.gift[data-style-gift='editorial'] .styled-bg-editorial { display: none; }
+
+/* --- Kopf ---------------------------------------------------------------- */
+
+.gift[data-style-gift='editorial'] .gift-head {
+  max-inline-size: none;
+  margin: 0 0 var(--sp-7);
+  text-align: start;
+}
+.gift[data-style-gift='editorial'] .gift-eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  font-weight: 500;
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--gf-soft);
+  margin: 0;
+}
+.gift[data-style-gift='editorial'] .gift-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-7);
+  font-weight: var(--display-weight, 400);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.015em;
+  margin: var(--sp-3) 0 0;
+  text-wrap: balance;
+  max-inline-size: 20ch;
+}
+/* Die Basis setzt <em> auf Script-Schrift in Akzentfarbe und 1.12em — das
+   ist Hochzeitstemplate, nicht Magazin. Hier bleibt es dieselbe Serif,
+   kursiv, in Textfarbe. */
+.gift[data-style-gift='editorial'] .gift-title em {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: inherit;
+  font-size: 1em;
+  color: inherit;
+}
+.gift[data-style-gift='editorial'] .gift-desc {
+  font-family: var(--font-body);
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  color: var(--gf-soft);
+  margin: var(--sp-4) 0 0;
+  max-inline-size: 58ch;
+}
+.gift[data-style-gift='editorial'] .gift-head-ornament,
+.gift[data-style-gift='editorial'] .gift-head-decor-wrap { display: none; }
+
+/* --- Betrag, Aktion, Reserviert-Vermerk ---------------------------------- */
+
+/* Aus der Preis-Pille wird eine Angabe in der Metazeile. */
+.gift[data-style-gift='editorial'] .gift-amount {
+  display: inline;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  color: var(--gf-soft);
+  font-family: var(--font-body);
+  font-size: var(--fs-2);
+  letter-spacing: 0.02em;
+}
+
+/* Aktion als gesetzte Zeile auf einer Haarlinie statt als Knopf. Die
+   Trefferfläche bleibt bei 44px, die Schrift bei 12px. */
+.gift[data-style-gift='editorial'] .gift-btn-out {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--touch);
+  padding: 0;
+  gap: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  border-block-end: 1px solid currentColor;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: color 200ms ease, border-color 200ms ease;
+}
+.gift[data-style-gift='editorial'] .gift-btn-out svg { display: none; }
+.gift[data-style-gift='editorial'] .gift-btn-out:hover {
+  background: none;
+  color: var(--gf-accent);
+  border-block-end-color: var(--gf-accent);
+}
+/* Reserviert ist kein Knopf mehr, sondern ein Vermerk. */
+.gift[data-style-gift='editorial'] .gift-btn-out[disabled] {
+  border-block-end: 0;
+  color: var(--gf-soft);
+  opacity: 1;
+  letter-spacing: var(--ed-meta-ls);
+}
+.gift[data-style-gift='editorial'] .gift-reserved-tag {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--gf-soft);
+}
+.gift[data-style-gift='editorial'] .gift-reserved-tag svg,
+.gift[data-style-gift='editorial'] .giftB-reserved-by svg { display: none; }
+.gift[data-style-gift='editorial'] .giftB-reserved-by {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--gf-soft);
+  margin: 0;
+}
+
+/* --- Reisekasse ---------------------------------------------------------- */
+
+.gift[data-style-gift='editorial'] .gift-iban {
+  background: none;
+  border: 0;
+  border-block: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  padding: var(--sp-5) 0;
+  gap: var(--sp-5);
+  align-items: end;
+}
+.gift[data-style-gift='editorial'] .gift-iban-label {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--gf-soft);
+}
+.gift[data-style-gift='editorial'] .gift-iban-note {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  color: var(--ink);
+  max-inline-size: 36ch;
+}
+.gift[data-style-gift='editorial'] .gift-iban-num {
+  font-family: var(--font-body);
+  font-size: var(--fs-4);
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  margin-block-start: var(--sp-2);
+}
+.gift[data-style-gift='editorial'] .gift-iban-holder {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  color: var(--gf-soft);
+}
+.gift[data-style-gift='editorial'] .gift-iban-copy {
+  min-block-size: var(--touch);
+  padding: 0;
+  gap: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  border-block-end: 1px solid currentColor;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.gift[data-style-gift='editorial'] .gift-iban-copy svg { display: none; }
+.gift[data-style-gift='editorial'] .gift-iban-copy:hover,
+.gift[data-style-gift='editorial'] .gift-iban-copy.is-copied {
+  background: none;
+  color: var(--gf-accent);
+  border-block-end-color: var(--gf-accent);
+}
+
+/* --- Kein Eintrag gepflegt ----------------------------------------------- */
+
+.gift[data-style-gift='editorial'] .gift-empty {
+  display: block;
+  max-inline-size: 46ch;
+  margin: 0 0 var(--sp-6);
+  padding: var(--sp-5) 0;
+  background: none;
+  border-radius: 0;
+  border-block-start: 1px solid var(--ed-rule-strong);
+  text-align: start;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  color: var(--ink);
+}
+.gift[data-style-gift='editorial'] .gift-empty-ornament { display: none; }
+
+/* --- Reservieren-Dialog --------------------------------------------------- */
+
+.gift[data-style-gift='editorial'] .gift-modal {
+  background: var(--bg);
+  border: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  box-shadow: none;
+  padding: var(--sp-7) var(--sp-6) var(--sp-6);
+  gap: var(--sp-4);
+}
+.gift[data-style-gift='editorial'] .gift-modal-eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  color: var(--gf-soft);
+}
+.gift[data-style-gift='editorial'] .gift-modal-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-6);
+  line-height: var(--lh-snug);
+}
+.gift[data-style-gift='editorial'] .gift-modal-sub,
+.gift[data-style-gift='editorial'] .gift-modal-error {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+}
+.gift[data-style-gift='editorial'] .gift-modal-error { color: var(--gf-accent); }
+.gift[data-style-gift='editorial'] .gift-field-label {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--ink);
+}
+.gift[data-style-gift='editorial'] .gift-input {
+  border: 0;
+  border-block-end: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  background: transparent;
+  padding: 10px 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  min-block-size: var(--touch);
+}
+.gift[data-style-gift='editorial'] .gift-input:focus {
+  border-block-end-color: currentColor;
+  box-shadow: 0 1px 0 0 currentColor;
+}
+.gift[data-style-gift='editorial'] .gift-btn {
+  min-block-size: 48px;
+  background: var(--ink);
+  color: var(--bg);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transform: none;
+}
+.gift[data-style-gift='editorial'] .gift-btn:hover {
+  background: var(--gf-accent);
+  border-color: var(--gf-accent);
+  transform: none;
+}
+.gift[data-style-gift='editorial'] .gift-btn svg { display: none; }
+.gift[data-style-gift='editorial'] .gift-modal-esc {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-align: start;
+  color: var(--gf-soft);
+}
+
+/* =========================================================================
+   A · GIFT NOTE — eine Lesespalte, Wünsche auf Haarlinien
+   ========================================================================= */
+
+.gift.giftA-section[data-style-gift='editorial'] .gift-head,
+.gift.giftA-section[data-style-gift='editorial'] .giftA-wrap {
+  max-inline-size: var(--wrap-narrow);
+  margin-inline: auto;
+}
+.gift.giftA-section[data-style-gift='editorial'] .gift-head {
+  border-block-end: 1px solid var(--ed-rule);
+  padding-block-end: var(--sp-5);
+  margin-block-end: var(--sp-6);
+}
+/* Aus der Kartenliste wird ein Satzspiegel. */
+.gift.giftA-section[data-style-gift='editorial'] .giftA-list {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin-block-end: var(--sp-7);
+}
+.gift.giftA-section[data-style-gift='editorial'] .giftA-row {
+  gap: var(--sp-5);
+  padding-block: var(--sp-5);
+  border-block-end: 1px solid var(--ed-rule);
+  align-items: baseline;
+}
+.gift.giftA-section[data-style-gift='editorial'] .giftA-row:last-child {
+  border-block-end: 1px solid var(--ed-rule);
+}
+.gift.giftA-section[data-style-gift='editorial'] .giftA-body { gap: var(--sp-2); }
+.gift.giftA-section[data-style-gift='editorial'] .giftA-title-row {
+  align-items: baseline;
+  gap: var(--sp-3);
+}
+.gift.giftA-section[data-style-gift='editorial'] .giftA-title {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight, 400);
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.01em;
+}
+.gift.giftA-section[data-style-gift='editorial'] .giftA-desc {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  color: var(--gf-soft);
+  max-inline-size: 52ch;
+}
+.gift.giftA-section[data-style-gift='editorial'] .giftA-actions {
+  align-items: flex-end;
+  gap: var(--sp-1);
+}
+
+/* =========================================================================
+   B · EDITORIAL GIFT GUIDE — Randspalte und nummerierte Einträge
+   ========================================================================= */
+
+.gift.giftB-section[data-style-gift='editorial'] {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--ed-gap-lg);
+  align-items: start;
+  max-inline-size: calc(var(--wrap-wide) + 2 * var(--gutter));
+  margin-inline: auto;
+}
+.gift.giftB-section[data-style-gift='editorial'] .gift-head {
+  grid-column: 1 / span 4;
+  margin: 0;
+}
+.gift.giftB-section[data-style-gift='editorial'] .gift-title { max-inline-size: 12ch; }
+.gift.giftB-section[data-style-gift='editorial'] .gift-desc { max-inline-size: 34ch; }
+.gift.giftB-section[data-style-gift='editorial'] .giftB-wrap {
+  grid-column: 6 / -1;
+  max-inline-size: none;
+  margin: 0;
+  min-inline-size: 0;
+}
+/* Aus dem Kachelraster wird eine Folge redaktioneller Einträge. */
+.gift.giftB-section[data-style-gift='editorial'] .giftB-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  counter-reset: giftentry;
+}
+.gift.giftB-section[data-style-gift='editorial'] .giftB-card {
+  counter-increment: giftentry;
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr) clamp(120px, 14vw, 190px);
+  column-gap: var(--ed-gap);
+  align-items: start;
+  background: none;
+  border: 0;
+  border-block-start: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+  padding-block: var(--sp-6);
+  transform: none;
+  transition: none;
+}
+.gift.giftB-section[data-style-gift='editorial'] .giftB-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+/* Die Ziffer ist Teil der Rubrik, nicht Dekoration: sie zählt die Einträge
+   und steht in der eigenen Spur. */
+.gift.giftB-section[data-style-gift='editorial'] .giftB-card::before {
+  content: counter(giftentry, decimal-leading-zero);
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  font-family: var(--font-display);
+  font-size: var(--fs-6);
+  line-height: 1;
+  color: var(--gf-accent);
+}
+.gift.giftB-section[data-style-gift='editorial'] .giftB-body {
+  grid-column: 2;
+  grid-row: 1;
+  padding: 0;
+  gap: var(--sp-2);
+}
+.gift.giftB-section[data-style-gift='editorial'] .giftB-title {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight, 400);
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.01em;
+  max-inline-size: 22ch;
+}
+.gift.giftB-section[data-style-gift='editorial'] .giftB-desc {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  color: var(--gf-soft);
+  max-inline-size: 46ch;
+  flex: none;
+}
+.gift.giftB-section[data-style-gift='editorial'] .giftB-foot {
+  justify-content: flex-start;
+  gap: var(--sp-5);
+  margin-block-start: var(--sp-3);
+}
+.gift.giftB-section[data-style-gift='editorial'] .giftB-foot .gift-btn-out {
+  flex: none;
+  min-inline-size: 0;
+}
+/* Bild: kontrollierter Crop in der rechten Spur. Fehlt es, bleibt die Spur
+   leer statt einen Platzhalter zu zeigen — ein „Bild folgt"-Kasten wäre ein
+   leerer visueller Slot. */
+.gift.giftB-section[data-style-gift='editorial'] .giftB-img {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  aspect-ratio: var(--ar-classic);
+  background: var(--ed-fill);
+  border-radius: 0;
+}
+.gift.giftB-section[data-style-gift='editorial'] .giftB-img:has(.giftB-img-placeholder) {
+  display: none;
+}
+.gift.giftB-section[data-style-gift='editorial'] .giftB-img-placeholder { display: none; }
+.gift.giftB-section[data-style-gift='editorial'] .giftB-card.is-reserved { opacity: 0.55; }
+/* Leichter Versatz: bei jedem zweiten Eintrag rückt der Text ein, die
+   Ziffernspur bleibt bündig. Dadurch entstehen zwei Startpunkte im Satz,
+   ohne dass die Zeilen gegeneinander kippen. */
+.gift.giftB-section[data-style-gift='editorial'] .giftB-card:nth-child(even) .giftB-body {
+  padding-inline-start: var(--sp-5);
+}
+/* Die Reisekasse steht als letzter Eintrag in derselben Folge, aber ohne
+   Ziffer — sie ist kein Wunsch, sondern eine Möglichkeit. */
+.gift.giftB-section[data-style-gift='editorial'] .giftB-iban-card {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  column-gap: var(--ed-gap);
+  background: none;
+  border: 0;
+  border-block-start: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  padding: var(--sp-6) 0 0;
+  gap: var(--sp-2);
+}
+.gift.giftB-section[data-style-gift='editorial'] .giftB-iban-card > * { grid-column: 2; }
+
+/* =========================================================================
+   C · GIFT STATEMENT — Aussage, Zäsur, dann die Wünsche
+   ========================================================================= */
+
+.gift.giftC-section[data-style-gift='editorial'] .gift-head {
+  max-inline-size: calc(var(--wrap-wide) + 2 * var(--gutter));
+  margin: 0 auto var(--sp-8);
+}
+.gift.giftC-section[data-style-gift='editorial'] .gift-title {
+  font-size: var(--fs-8);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  max-inline-size: 16ch;
+  text-wrap: pretty;
+}
+.gift.giftC-section[data-style-gift='editorial'] .gift-desc {
+  font-size: var(--fs-5);
+  max-inline-size: 44ch;
+  margin-block-start: var(--sp-6);
+}
+/* Die Zäsur: eine Linie über die volle Satzbreite trennt die Aussage von
+   der praktischen Ebene. */
+.gift.giftC-section[data-style-gift='editorial'] .giftC-wrap {
+  max-inline-size: calc(var(--wrap-wide) + 2 * var(--gutter));
+  margin-inline: auto;
+  border-block-start: 1px solid var(--ed-rule-strong);
+  padding-block-start: var(--sp-7);
+}
+.gift.giftC-section[data-style-gift='editorial'] .giftC-grid,
+.gift.giftC-section[data-style-gift='editorial'] .giftC-grid.is-no-collage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-7);
+  max-inline-size: none;
+  margin: 0 0 var(--sp-7);
+}
+/* Aus der gedrehten Collage wird ein ruhiges Band im Format 21:9. Gezeigt
+   wird das erste vorhandene Bild; die weiteren treten zurück, damit die
+   praktische Ebene kurz bleibt. Geschwisterselektor statt :nth-child, damit
+   die Regel bei einem einzigen Bild nicht kippt. */
+.gift.giftC-section[data-style-gift='editorial'] .giftC-collage {
+  position: static;
+  display: block;
+  aspect-ratio: var(--ar-band);
+  /* Nicht über die volle Satzbreite: das Band steht auf der linken Achse und
+     lässt rechts Rand stehen. Über die ganze Breite wäre es bei 21:9 fast
+     400px hoch und die Sektion unnötig lang. */
+  inline-size: 100%;
+  max-inline-size: 72%;
+  margin: 0;
+  overflow: hidden;
+}
+.gift.giftC-section[data-style-gift='editorial'] .giftC-coll-img {
+  position: static;
+  inline-size: 100%;
+  block-size: 100%;
+  aspect-ratio: auto;
+  transform: none;
+  border: 0;
+  box-shadow: none;
+  background: var(--ed-fill);
+}
+.gift.giftC-section[data-style-gift='editorial'] .giftC-coll-img + .giftC-coll-img {
+  display: none;
+}
+.gift.giftC-section[data-style-gift='editorial'] .giftC-list {
+  counter-reset: giftrow;
+  border-block-start: 1px solid var(--ed-rule);
+}
+.gift.giftC-section[data-style-gift='editorial'] .giftC-row {
+  counter-increment: giftrow;
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+  column-gap: var(--ed-gap);
+  align-items: baseline;
+  padding-block: var(--sp-5);
+  border-block-end: 1px solid var(--ed-rule);
+}
+.gift.giftC-section[data-style-gift='editorial'] .giftC-row:first-child,
+.gift.giftC-section[data-style-gift='editorial'] .giftC-row:last-child {
+  padding-block: var(--sp-5);
+}
+.gift.giftC-section[data-style-gift='editorial'] .giftC-row:last-child {
+  border-block-end: 1px solid var(--ed-rule);
+}
+.gift.giftC-section[data-style-gift='editorial'] .giftC-row::before {
+  content: counter(giftrow, decimal-leading-zero);
+  font-family: var(--font-display);
+  font-size: var(--fs-5);
+  line-height: 1;
+  color: var(--gf-accent);
+}
+.gift.giftC-section[data-style-gift='editorial'] .giftC-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.01em;
+}
+.gift.giftC-section[data-style-gift='editorial'] .giftC-desc {
+  font-family: var(--font-body);
+  font-style: normal;
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  color: var(--gf-soft);
+  max-inline-size: 52ch;
+  margin-block-start: var(--sp-2);
+}
+.gift.giftC-section[data-style-gift='editorial'] .giftC-actions {
+  align-items: flex-end;
+  gap: var(--sp-1);
+}
+.gift.giftC-section[data-style-gift='editorial'] .gift-iban {
+  max-inline-size: calc(var(--wrap-wide) + 2 * var(--gutter));
+  margin-inline: auto;
+}
+
+/* =========================================================================
+   GESCHENKE — MOBIL
+   -------------------------------------------------------------------------
+   Eigene Setzung, keine geschrumpfte Desktopansicht. Gemeinsam: eine
+   Lesespalte, Aktionen bleiben 44px hoch und links auf der Achse statt als
+   volle Balken, funktionale Schriftgrößen bleiben unverändert.
+   Selektoren tragen dieselbe Stufe wie oben.
+   ========================================================================= */
+
+@media (max-width: 900px) {
+  /* B: die Randspalte legt sich über die Einträge. */
+  .gift.giftB-section[data-style-gift='editorial'] {
+    display: block;
+    max-inline-size: var(--wrap);
+  }
+  .gift.giftB-section[data-style-gift='editorial'] .gift-head {
+    margin-block-end: var(--sp-6);
+  }
+  .gift.giftB-section[data-style-gift='editorial'] .gift-title { max-inline-size: 18ch; }
+  .gift.giftB-section[data-style-gift='editorial'] .gift-desc { max-inline-size: 52ch; }
+  .gift.giftB-section[data-style-gift='editorial'] .giftB-card {
+    grid-template-columns: 3rem minmax(0, 1fr);
+    padding-block: var(--sp-5);
+  }
+  /* Der Textversatz der geraden Einträge entfällt: auf dieser Breite kostet
+     er Satzbreite, ohne Komposition zu erzeugen. */
+  .gift.giftB-section[data-style-gift='editorial'] .giftB-card:nth-child(even) .giftB-body {
+    padding-inline-start: 0;
+  }
+  /* Bild rückt unter den Text und wird zum Band — ein schmaler Streifen
+     neben dem Text wäre auf dieser Breite unlesbar klein. */
+  .gift.giftB-section[data-style-gift='editorial'] .giftB-img {
+    grid-column: 2;
+    grid-row: 2;
+    aspect-ratio: var(--ar-wide);
+    margin-block-start: var(--sp-4);
+  }
+  .gift.giftB-section[data-style-gift='editorial'] .giftB-body { grid-row: 1; }
+
+  /* C: das Band wird flacher und nimmt die volle Breite — auf 72 % bliebe
+     rechts nur ein nutzloser Streifen. */
+  .gift.giftC-section[data-style-gift='editorial'] .giftC-collage {
+    aspect-ratio: var(--ar-wide);
+    max-inline-size: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .gift[data-style-gift='editorial'] { padding-block: clamp(40px, 10vw, 60px); }
+  .gift[data-style-gift='editorial'] .gift-iban {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-4);
+    padding-block: var(--sp-5);
+  }
+  .gift[data-style-gift='editorial'] .gift-iban-copy {
+    inline-size: max-content;
+    justify-content: flex-start;
+  }
+
+  /* A: Wunsch und Aktion untereinander, Aktion links auf der Achse. */
+  .gift.giftA-section[data-style-gift='editorial'] .giftA-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-2);
+    padding-block: var(--sp-4);
+  }
+  .gift.giftA-section[data-style-gift='editorial'] .giftA-actions {
+    align-items: flex-start;
+  }
+  .gift.giftA-section[data-style-gift='editorial'] .giftA-actions .gift-btn-out {
+    inline-size: max-content;
+  }
+
+  /* B: Ziffer und Titel in einer Zeile, darunter Text, Bild, Aktion. */
+  .gift.giftB-section[data-style-gift='editorial'] .giftB-card {
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+  }
+  .gift.giftB-section[data-style-gift='editorial'] .giftB-card:nth-child(even) .giftB-body {
+    padding-inline-start: 0;
+  }
+  .gift.giftB-section[data-style-gift='editorial'] .giftB-card::before {
+    font-size: var(--fs-5);
+  }
+  .gift.giftB-section[data-style-gift='editorial'] .giftB-iban-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .gift.giftB-section[data-style-gift='editorial'] .giftB-iban-card > * { grid-column: 1; }
+
+  /* C: Ziffer neben dem Titel, Aktion darunter — drei Spalten wären hier
+     drei Spalten zu viel. */
+  .gift.giftC-section[data-style-gift='editorial'] .giftC-row {
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    row-gap: var(--sp-2);
+    padding-block: var(--sp-4);
+  }
+  .gift.giftC-section[data-style-gift='editorial'] .giftC-actions {
+    grid-column: 2;
+    align-items: flex-start;
+  }
+  /* Ohne Breitenbegrenzung zieht die Haarlinie der Aktion über die ganze
+     Spalte und liest sich als Trennlinie statt als Aktion. */
+  .gift.giftC-section[data-style-gift='editorial'] .giftC-actions .gift-btn-out {
+    inline-size: max-content;
+  }
+  .gift.giftC-section[data-style-gift='editorial'] .giftC-row::before {
+    font-size: var(--fs-4);
+  }
+  .gift.giftC-section[data-style-gift='editorial'] .giftC-wrap {
+    padding-block-start: var(--sp-6);
+  }
+  .gift.giftC-section[data-style-gift='editorial'] .giftC-grid,
+  .gift.giftC-section[data-style-gift='editorial'] .giftC-grid.is-no-collage {
+    gap: var(--sp-6);
+    margin-block-end: var(--sp-6);
+  }
 }

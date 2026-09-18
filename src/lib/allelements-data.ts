@@ -305,24 +305,39 @@ export function buildContent(key: BereichKey, load: ContentLoad): Record<string,
         })),
       };
 
-    case 'gifts':
+    case 'gifts': {
+      // Das Feld heißt im Datenmodell `amount` (siehe Gifts/shared.ts,
+      // readItems). Hier stand bisher `price` — der Betrag wurde deshalb in
+      // der Review nie gerendert.
+      const titles = [
+        'Eine Nacht im Baumhaus',
+        'Abendessen in Kopenhagen',
+        'Fahrräder für zwei Tage',
+        'Ein Kochkurs',
+        'Ein Tag im Thermalbad an der Schlei, inklusive Abendessen',
+      ];
+      // kurz: ein Eintrag, ohne Beschreibung und ohne Bild — der Fall, in dem
+      // wenig gepflegt wurde. mittel: vier. lang: fünf mit langen Texten.
+      const count = load === 'kurz' ? 1 : load === 'lang' ? 5 : 4;
       return {
         eyebrow: 'Geschenke',
         title: 'Falls ihr <em>fragt</em>.',
-        description: load === 'kurz' ? '' : STORY_LONG,
+        description: load === 'kurz' ? '' : load === 'lang' ? STORY_LONG : STORY_SHORT,
         iban_enabled: true,
         iban: 'DE02 1203 0000 0000 2020 51',
         iban_holder: `${couple.n1} & ${couple.n2}`,
         iban_note: 'Für unsere Hochzeitsreise.',
-        items: [0, 1, 2, 3].map((i) => ({
+        items: Array.from({ length: count }, (_, i) => ({
           id: `gift-${i}`,
-          title: ['Eine Nacht im Baumhaus', 'Abendessen in Kopenhagen', 'Fahrräder für zwei Tage', 'Ein Kochkurs'][i],
-          description: i === 0 ? STORY_SHORT : '',
-          price: ['180 €', '120 €', '60 €', '90 €'][i],
-          image: IMAGE_POOL.landscape(i),
+          title: titles[i],
+          description: load === 'kurz' ? '' : load === 'lang' ? STORY_LONG : i === 0 ? STORY_SHORT : '',
+          amount: i === 2 ? null : ['180 €', '120 €', '60 €', '90 €', '240 €'][i],
+          image: load === 'kurz' || i === 1 ? null : IMAGE_POOL.landscape(i),
           reserved: i === 3,
+          reserved_by: i === 3 ? 'Familie Petersen' : '',
         })),
       };
+    }
 
     case 'musicwishes':
       return {
