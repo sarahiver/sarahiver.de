@@ -642,34 +642,65 @@
   color: var(--ink);
 }
 
-/* --- B: versetzte Zeitangaben auf einer weichen Achse -------------------- */
-.cd.cdB-wrap[data-style-countdown='organic'] .cdB-cards,
+/* --- B: eine gemeinsame Fläche, die Zahlen darin versetzt ----------------
+   Vorher trug jede Einheit ihre eigene Fläche — fünf Kacheln, jede zweite
+   abgesetzt und tiefer. Das las sich als verstreute Karten, nicht als
+   komponierte Zeitangabe. Jetzt trägt EINE weiche Sandfläche alle
+   Einheiten; die Komposition entsteht innerhalb dieser Fläche über
+   Versätze, nicht über einzelne Kästen. */
 .cd.cdB-wrap[data-style-countdown='organic'] .cdB-row {
   position: relative;
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
+  flex-wrap: nowrap;
+  align-items: flex-start;
   justify-content: center;
-  gap: clamp(20px, 3vw, 52px);
+  gap: clamp(16px, 2.6vw, 44px);
   max-inline-size: var(--wrap);
   margin-inline: auto;
+  padding: clamp(32px, 4vw, 56px) clamp(28px, 5vw, 88px) clamp(48px, 5.5vw, 84px);
+  /* Sage auf dem Sandband der Sektion: die Fläche muss als eigenes Element
+     lesbar sein, ohne zur Karte zu werden. */
+  background: var(--og-sage);
+  border-radius: var(--og-shape-soft);
+  /* Dieselbe ruhige Atembewegung wie die übrigen Organic-Flächen. Die Zahlen
+     darin bleiben unbewegt. */
+  animation: og-breathe-still var(--og-dur-breathe) var(--og-ease) infinite alternate;
+}
+.cd.cdB-wrap[data-style-countdown='organic'] .cdB-cards {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: clamp(4px, 0.6vw, 10px);
 }
 .cd.cdB-wrap[data-style-countdown='organic'] .cdB-unit {
   display: grid;
   justify-items: center;
   gap: var(--sp-2);
-  padding: clamp(18px, 2vw, 30px) clamp(20px, 2.4vw, 36px);
-  background: var(--og-sand);
+  padding: 0;
+  background: none;
   border: 0;
-  border-radius: var(--og-shape-soft);
+  border-radius: 0;
 }
-/* Die Versätze machen aus der Reihe eine Kurve — jede zweite Einheit sitzt
-   tiefer, die äußeren etwas weiter außen. */
-.cd.cdB-wrap[data-style-countdown='organic'] .cdB-unit:nth-child(2n) {
-  transform: translateY(clamp(14px, 2vw, 30px));
-  border-radius: var(--og-shape-soft);
-  background: var(--og-sage);
+/* Die Einheiten folgen einer flachen Kurve: außen tiefer, in der Mitte
+   höher. Eine einfache visuelle Staffelung, keine Layoutarchitektur —
+   die Reihenfolge und die Zahl der Einheiten bleiben unangetastet. */
+.cd.cdB-wrap[data-style-countdown='organic'] .cdB-unit:nth-child(1) { transform: translateY(clamp(16px, 2.2vw, 34px)); }
+.cd.cdB-wrap[data-style-countdown='organic'] .cdB-unit:nth-child(2) { transform: translateY(clamp(4px, 0.6vw, 10px)); }
+.cd.cdB-wrap[data-style-countdown='organic'] .cdB-unit:nth-child(3) { transform: none; }
+.cd.cdB-wrap[data-style-countdown='organic'] .cdB-unit:nth-child(4) { transform: translateY(clamp(8px, 1.2vw, 18px)); }
+.cd.cdB-wrap[data-style-countdown='organic'] .cdB-unit:nth-child(5) { transform: translateY(clamp(20px, 2.8vw, 42px)); }
+/* Eine Einheit trägt etwas mehr Gewicht als die übrigen — die Tage. Das ist
+   Gewichtung innerhalb der Komposition, nicht ein zweites Statement: die
+   dominante Zahl bleibt Variante C vorbehalten. */
+.cd.cdB-wrap[data-style-countdown='organic'] .cdB-unit:nth-child(2) .flip-card {
+  transform: scale(1.12);
+  transform-origin: bottom center;
 }
+.cd.cdB-wrap[data-style-countdown='organic'] .cdB-unit:nth-child(2) .cd-label {
+  color: var(--accent-deep);
+  margin-block-start: var(--sp-3);
+}
+
 /* Die Flip-Mechanik der Basis bleibt, wie sie ist: sie bewegt sich nur beim
    Ziffernwechsel, nicht dauerhaft — das ist Funktion, keine Dekoration.
    Organic ändert daran nur die Oberfläche: warme Fläche statt Karte mit
@@ -682,9 +713,19 @@
 .cd.cdB-wrap[data-style-countdown='organic'] .flip-bottom,
 .cd.cdB-wrap[data-style-countdown='organic'] .flip-anim-top,
 .cd.cdB-wrap[data-style-countdown='organic'] .flip-anim-bot {
-  background: var(--bg);
+  /* Kein deckendes Weiß: die Halbschalen liegen nur leicht heller auf der
+     gemeinsamen Fläche, damit die Zahlen zur Fläche gehören und nicht als
+     Kacheln darauf liegen. */
+  background: color-mix(in srgb, var(--bg) 62%, transparent);
   border: 0;
+  box-shadow: none;
   color: var(--ink);
+}
+/* Die Glanzverläufe der Halbschalen erzeugten Schlagschatten — genau die
+   Kartenanmutung, die hier weg soll. */
+.cd.cdB-wrap[data-style-countdown='organic'] .flip-top::after,
+.cd.cdB-wrap[data-style-countdown='organic'] .flip-bottom::after {
+  background: none;
 }
 .cd.cdB-wrap[data-style-countdown='organic'] .flip-mid {
   background: var(--og-line-soft);
@@ -1324,8 +1365,22 @@
     gap: var(--sp-5);
     padding: clamp(24px, 6vw, 40px);
   }
-  .cd.cdB-wrap[data-style-countdown='organic'] .cdB-unit:nth-child(2n) {
-    transform: translateY(10px);
+  /* Die Fläche bleibt, die Kurve wird flacher: auf dieser Breite müssen die
+     Einheiten umbrechen, und starke Versätze würden dabei als Unordnung
+     lesen statt als Komposition. */
+  .cd.cdB-wrap[data-style-countdown='organic'] .cdB-row {
+    flex-wrap: wrap;
+    gap: clamp(16px, 4vw, 32px);
+    padding: clamp(28px, 6vw, 44px) clamp(20px, 5vw, 36px) clamp(32px, 6vw, 48px);
+  }
+  .cd.cdB-wrap[data-style-countdown='organic'] .cdB-unit:nth-child(1),
+  .cd.cdB-wrap[data-style-countdown='organic'] .cdB-unit:nth-child(3),
+  .cd.cdB-wrap[data-style-countdown='organic'] .cdB-unit:nth-child(5) {
+    transform: none;
+  }
+  .cd.cdB-wrap[data-style-countdown='organic'] .cdB-unit:nth-child(2),
+  .cd.cdB-wrap[data-style-countdown='organic'] .cdB-unit:nth-child(4) {
+    transform: translateY(clamp(6px, 1.4vw, 12px));
   }
 
   .ls.lsA[data-style-ls='organic'] .lsA-single,
@@ -1415,13 +1470,21 @@
     inline-size: 110vw;
     block-size: 70vw;
   }
-  .cd.cdB-wrap[data-style-countdown='organic'] .cdB-cards,
+  /* Auf dem Telefon stehen die Einheiten zu zweit in der Fläche, ohne
+     Versatz — lesbar vor komponiert. */
   .cd.cdB-wrap[data-style-countdown='organic'] .cdB-row {
-    gap: var(--sp-4);
+    row-gap: clamp(18px, 5vw, 28px);
   }
   .cd.cdB-wrap[data-style-countdown='organic'] .cdB-unit {
-    flex: 1 1 42%;
-    padding: var(--sp-4);
+    flex: 0 1 40%;
+    padding: 0;
+  }
+  .cd.cdB-wrap[data-style-countdown='organic'] .cdB-unit:nth-child(2),
+  .cd.cdB-wrap[data-style-countdown='organic'] .cdB-unit:nth-child(4) {
+    transform: none;
+  }
+  .cd.cdB-wrap[data-style-countdown='organic'] .cdB-unit:nth-child(2) .flip-card {
+    transform: scale(1.06);
   }
   .gal.galC-wrap[data-style-gallery='organic'] .galC-tile {
     flex-basis: clamp(200px, 66vw, 280px);
