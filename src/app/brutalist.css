@@ -1250,6 +1250,19 @@
 .wedding-site-wrapper[data-style='brutalist'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.styled-bg-editorial, .styled-bg-brutalist, .styled-bereich-bg) {
   display: none;
 }
+/* Die Kopfzone liegt in einem eigenen Wrapper (.tl-head, .dir-head, …), der
+   zentriert und die Breite begrenzt. Für Brutalist wird daraus eine volle
+   linksbündige Zone. */
+.wedding-site-wrapper[data-style='brutalist'] :where(.tl-head, .dir-head, .acc-head, .wit-head, .faq-head, .abc-head) {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  text-align: start;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.tl-head-ornament, .dir-head-ornament, .acc-head-ornament, .wit-head-ornament, .faq-head-ornament, .abc-head-ornament) {
+  display: none;
+}
+
 /* Kopfzone: Kennung als Ink-Band, Titel als Schaugröße, Vorspann schlicht. */
 .wedding-site-wrapper[data-style='brutalist'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.tl-eyebrow, .dir-eyebrow, .acc-eyebrow, .wit-eyebrow, .faq-eyebrow, .abc-eyebrow) {
   display: block;
@@ -1285,7 +1298,7 @@
   padding: 0 0.12em;
   transform: none;
 }
-.wedding-site-wrapper[data-style='brutalist'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.tl-intro, .dir-intro, .acc-intro, .wit-intro, .faq-intro, .abc-intro) {
+.wedding-site-wrapper[data-style='brutalist'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.tl-desc, .dir-desc, .acc-desc, .wit-desc, .faq-desc, .abc-desc, .tl-intro, .dir-intro, .acc-intro, .wit-intro, .faq-intro, .abc-intro) {
   margin: 0;
   padding: clamp(12px, 1.4vw, 20px) var(--br-pad-inline) clamp(20px, 2.4vw, 36px);
   font-family: var(--font-body);
@@ -1346,31 +1359,73 @@
 
 /* =========================================================================
    7.1 · ABLAUF
+   -------------------------------------------------------------------------
+   Tatsächliche Struktur (gelesen, nicht vermutet):
+     A  .tlA-wrap > .tlA-cards (Flexfächer aus .tlA-card, je Karte gedreht
+        über --r, mit Radius, Versatzschatten und einer ::after-Verbindung)
+        + .tlA-rail (Linie mit Punkten) + .tlA-hint. Die Karten sind
+        anklickbar (setActive) — die Interaktion bleibt.
+     B  .tlB-wrap > .tlB-line + .tlB-event(.tlB-event-time > .t/.u,
+        .tlB-knode > .dot, .tlB-event-content > .ttl/.dsc/.pills)
+     C  .tlC-wrap > .tlC-row > .tlC-card (waagerechtes Akkordeon aus
+        Bildkarten; die aktive Karte wächst). Bleibt ein Bildstreifen.
+
+   Der frühere Fehler lag genau hier: die Karten wurden als Listenzeilen
+   behandelt, Drehung, Schatten und ::after-Verbindung blieben aber stehen —
+   daher die schrägen Linien, die Überlappungen und der Überstand.
    ========================================================================= */
 
-/* --- A: HARD SCHEDULE — Zeit | Programm | Ort auf harten Linien --------- */
-.tl.tlA-section[data-style-tl='brutalist'] .tlA-wrap { max-inline-size: none; margin: 0; padding: 0; }
-.tl.tlA-section[data-style-tl='brutalist'] .tlA-rail,
-.tl.tlA-section[data-style-tl='brutalist'] .tlA-rail-line { display: none; }
+/* --- A: HARD SCHEDULE — Zeit | Programm | Ort --------------------------- */
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+}
 .tl.tlA-section[data-style-tl='brutalist'] .tlA-cards {
   display: grid;
   gap: 0;
+  padding: 0;
+  min-block-size: 0;
+  overflow: visible;
   border-block-start: var(--br-border);
 }
-.tl.tlA-section[data-style-tl='brutalist'] .tlA-card-head,
-.tl.tlA-section[data-style-tl='brutalist'] .tlA-cards > * {
-  border: 0;
-  background: none;
-  box-shadow: none;
-}
-.tl.tlA-section[data-style-tl='brutalist'] .tlA-cards > li,
-.tl.tlA-section[data-style-tl='brutalist'] .tlA-cards > div {
+/* Drehung, Radius, Schatten und die Verbindungslinie der Bestandsfassung
+   werden vollständig zurückgenommen — inklusive der Hover- und
+   Aktiv-Zustände, die sonst weiter kippen und schieben. */
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-card,
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-card:hover,
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-card.is-active,
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-card.is-active:hover {
+  --r: 0deg;
+  flex: none;
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 7fr) minmax(0, 3fr);
+  grid-template-columns: minmax(0, 2fr) minmax(0, 7fr) minmax(0, 4fr);
   align-items: baseline;
   gap: clamp(12px, 2vw, 32px);
   padding: clamp(14px, 1.6vw, 22px) var(--br-pad-inline);
+  margin: 0;
+  background: var(--br-paper);
+  border: 0;
   border-block-end: var(--br-border);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+  transition: background-color var(--br-dur) var(--br-ease);
+}
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-card::after { display: none; }
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-card:hover { background: var(--br-grey); }
+/* Die aktive Station bekommt die Signalkante statt eines Sprungs. */
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-card.is-active {
+  box-shadow: inset 6px 0 0 0 var(--br-signal);
+}
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-card:focus-visible {
+  outline: var(--br-line-thick) solid var(--br-signal-deep);
+  outline-offset: -4px;
+}
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-card-head {
+  margin: 0;
+  gap: 0;
+  align-items: baseline;
 }
 .tl.tlA-section[data-style-tl='brutalist'] .tlA-time-badge {
   font-family: var(--font-mono, monospace);
@@ -1378,347 +1433,646 @@
   font-size: clamp(16px, 1.6vw, 22px);
   letter-spacing: 0.02em;
   color: var(--br-ink);
+  background: none;
+  border: 0;
+  padding: 0;
 }
 .tl.tlA-section[data-style-tl='brutalist'] .tlA-emoji-badge { display: none; }
 .tl.tlA-section[data-style-tl='brutalist'] .tlA-title {
+  grid-column: 2;
+  margin: 0;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(18px, 1.8vw, 26px);
-  line-height: 1;
+  font-size: clamp(17px, 1.8vw, 26px);
+  line-height: 1.05;
   letter-spacing: -0.02em;
   text-transform: uppercase;
+  color: var(--br-ink);
 }
-.tl.tlA-section[data-style-tl='brutalist'] .tlA-desc,
-.tl.tlA-section[data-style-tl='brutalist'] .tlA-hint {
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-desc {
+  grid-column: 2;
   font-family: var(--font-body);
   font-size: clamp(13px, 0.95vw, 15px);
   line-height: 1.5;
   color: var(--br-ink);
 }
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-loc-inline {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-loc-inline .pin { color: var(--br-signal-deep); }
+/* Schiene und Punkte gehören zur weichen Fassung; hier trägt die Linie
+   zwischen den Zeilen. */
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-rail,
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-rail-line,
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-rail-dot { display: none; }
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-hint {
+  margin: 0;
+  padding: 12px var(--br-pad-inline);
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+  text-align: start;
+}
 
-/* --- B: PROGRAM GRID — Zeitachse links, Ereignisse versetzt ------------- */
-.tl.tlB-section[data-style-tl='brutalist'] .tlB-wrap { max-inline-size: none; margin: 0; padding: 0; }
-.tl.tlB-section[data-style-tl='brutalist'] .tlB-line,
-.tl.tlB-section[data-style-tl='brutalist'] .dot,
-.tl.tlB-section[data-style-tl='brutalist'] .tlB-knode { display: none; }
-.tl.tlB-section[data-style-tl='brutalist'] .tlB-wrap > ol,
-.tl.tlB-section[data-style-tl='brutalist'] .tlB-wrap > ul,
-.tl.tlB-section[data-style-tl='brutalist'] .tlB-wrap > div {
-  display: grid;
-  gap: 0;
+/* --- B: PROGRAM GRID — Zeitachse links, Stationen rechts ---------------- */
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
   border-block-start: var(--br-border);
 }
-.tl.tlB-section[data-style-tl='brutalist'] li,
-.tl.tlB-section[data-style-tl='brutalist'] .tlB-event-content {
-  border: 0;
-  background: none;
-}
-.tl.tlB-section[data-style-tl='brutalist'] li {
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-line,
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-knode { display: none; }
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-event {
   display: grid;
-  grid-template-columns: var(--br-col);
+  grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+  gap: 0;
   padding: 0;
+  margin: 0;
   border-block-end: var(--br-border);
+  background: none;
 }
 .tl.tlB-section[data-style-tl='brutalist'] .tlB-event-time {
-  grid-column: 1 / span 3;
-  padding: clamp(14px, 1.6vw, 22px) var(--br-pad-inline);
-  font-family: var(--font-mono, monospace);
-  font-weight: 600;
-  font-size: clamp(18px, 2.2vw, 30px);
-  color: var(--br-ink);
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 6px;
+  padding: clamp(14px, 1.8vw, 24px) var(--br-pad-inline);
   border-inline-end: var(--br-border);
 }
-.tl.tlB-section[data-style-tl='brutalist'] .tlB-event-content {
-  grid-column: 4 / -1;
-  padding: clamp(14px, 1.6vw, 22px) var(--br-pad-inline);
-  display: grid;
-  gap: 6px;
-}
-/* Jede dritte Station ist Schlüsselereignis und bekommt die Signalfläche. */
-.tl.tlB-section[data-style-tl='brutalist'] li:nth-child(3n + 1) .tlB-event-time {
-  background: var(--br-signal);
-}
-.tl.tlB-section[data-style-tl='brutalist'] .ttl,
-.tl.tlB-section[data-style-tl='brutalist'] .t {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: clamp(18px, 2vw, 28px);
-  line-height: 1;
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
-}
-.tl.tlB-section[data-style-tl='brutalist'] .dsc,
-.tl.tlB-section[data-style-tl='brutalist'] .u,
-.tl.tlB-section[data-style-tl='brutalist'] .pills {
-  font-family: var(--font-body);
-  font-size: clamp(13px, 0.95vw, 15px);
-  line-height: 1.5;
-}
-
-/* --- C: TIME IMPACT — Uhrzeiten als Schaugröße -------------------------- */
-.tl.tlC-section[data-style-tl='brutalist'] .tlC-wrap { max-inline-size: none; margin: 0; padding: 0; }
-.tl.tlC-section[data-style-tl='brutalist'] .tlC-row {
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  align-items: center;
-  gap: clamp(16px, 2vw, 32px);
-  padding: clamp(10px, 1.4vw, 20px) var(--br-pad-inline);
-  border-block-start: var(--br-border);
-  background: none;
-}
-.tl.tlC-section[data-style-tl='brutalist'] .tlC-uhr,
-.tl.tlC-section[data-style-tl='brutalist'] .tlC-time {
-  font-family: var(--font-display);
-  font-weight: 800;
-  /* Kontrolliert groß: bei vielen Stationen darf die Seite nicht explodieren. */
-  font-size: clamp(40px, 6vw, 104px);
-  line-height: 0.86;
-  letter-spacing: -0.05em;
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-event-time .t {
+  font-family: var(--font-mono, monospace);
+  font-weight: 600;
+  font-size: clamp(20px, 2.4vw, 34px);
+  letter-spacing: 0;
   color: var(--br-ink);
 }
-.tl.tlC-section[data-style-tl='brutalist'] .tlC-titlelab,
-.tl.tlC-section[data-style-tl='brutalist'] .tlC-bigtitle {
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-event-time .u {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+/* Die laufende Station ist die Schlüsselstation — sie bekommt die
+   Signalfläche. Kein zusätzlicher Versatz, kein Chaos. */
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-event.is-current .tlB-event-time {
+  background: var(--br-signal);
+}
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-event-content {
+  display: grid;
+  gap: 6px;
+  padding: clamp(14px, 1.8vw, 24px) var(--br-pad-inline);
+}
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-event-content .ttl {
+  margin: 0;
   font-family: var(--font-display);
   font-weight: 800;
   font-size: clamp(18px, 2vw, 30px);
   line-height: 1;
   letter-spacing: -0.02em;
   text-transform: uppercase;
+  color: var(--br-ink);
 }
-.tl.tlC-section[data-style-tl='brutalist'] .tlC-descpill,
-.tl.tlC-section[data-style-tl='brutalist'] .tlC-loc {
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-event-content .dsc {
+  margin: 0;
   font-family: var(--font-body);
   font-size: clamp(13px, 0.95vw, 15px);
   line-height: 1.5;
-  background: none;
-  border: 0;
-  padding: 0;
   color: var(--br-ink);
 }
-.tl.tlC-section[data-style-tl='brutalist'] .tlC-img {
-  border: 0;
-  filter: grayscale(1) contrast(1.15);
+.tl.tlB-section[data-style-tl='brutalist'] .pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
-.tl.tlC-section[data-style-tl='brutalist'] .tlC-now-row { background: var(--br-signal); }
+/* Jede zweite Station rückt im Satz ein — ein kontrollierter Versatz,
+   nicht fünf Richtungen. */
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-event:nth-child(even) .tlB-event-content {
+  padding-inline-start: calc(var(--br-pad-inline) + clamp(16px, 3vw, 64px));
+}
+
+/* --- C: TIME IMPACT — Bildstreifen mit Zeit als Schaugröße -------------- */
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  border-block-start: var(--br-border);
+}
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-row {
+  display: flex;
+  gap: var(--br-gap);
+  align-items: stretch;
+  min-block-size: clamp(340px, 42vw, 520px);
+  padding: var(--br-gap) 0;
+  background: var(--br-ink);
+}
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-card {
+  border-radius: 0;
+  border: 0;
+  box-shadow: none;
+  filter: none;
+}
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-card .tlC-img {
+  filter: grayscale(1) contrast(1.25) brightness(0.8);
+}
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-card.is-active .tlC-img {
+  filter: grayscale(1) contrast(1.35) brightness(0.62);
+}
+/* Aus dem weichen Verlauf wird eine harte Fläche am Fuß der Karte. */
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-card::after {
+  background: linear-gradient(to top, var(--br-ink) 0 34%, transparent 62%);
+}
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-content {
+  text-align: start;
+  overflow: hidden;
+  padding: clamp(12px, 1.4vw, 20px);
+  color: var(--br-paper);
+}
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-time {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.4vw, 34px);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  font-style: normal;
+  color: var(--br-paper);
+}
+/* Nur die aktive Station trägt die Schaugröße — nicht acht Zeiten
+   gleichzeitig. */
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-card.is-active .tlC-time {
+  font-size: clamp(44px, 6vw, 96px);
+  font-style: normal;
+  font-weight: 800;
+  color: var(--br-signal);
+}
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-uhr {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.32em;
+  letter-spacing: 0.16em;
+  opacity: 1;
+  color: var(--br-paper);
+}
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-card.is-active .tlC-uhr { color: var(--br-signal); }
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-titlelab,
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-loc {
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--br-paper);
+  opacity: 1;
+}
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-bigtitle {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(18px, 2.2vw, 30px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--br-paper);
+}
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-descpill {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--br-paper);
+}
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-now-row {
+  background: var(--br-signal);
+  color: var(--br-ink);
+  border-radius: 0;
+}
 
 /* =========================================================================
    7.2 · ANFAHRT
+   -------------------------------------------------------------------------
+   Tatsächliche Struktur (gelesen):
+     A  .dirA-wrap > .dirA-map (MapFrame) + .dirA-grid (zwei Spalten, bei
+        einer Location .is-one) > .dirA-card > Chip, .dir-name,
+        .dir-address, .dir-description, DirTransit, RouteBtn
+     B  .dirB-wrap > .dirB-grid > .dirB-list (Buttons .dirB-row mit .dirB-num,
+        .dirB-content, .dirB-details) + .dirB-mapwrap. Die Zeilen schalten
+        die Karte um — die Interaktion bleibt unangetastet.
+     C  .dirC-wrap > .dirC-block je Location > .dirC-text + .dirC-mapwrap
+   Kartenrahmen (.dir-mapframe) und Buttons (.dir-btn) sind gemeinsam.
    ========================================================================= */
 
-/* --- A: LOCATION DATA ---------------------------------------------------- */
-.dir.dirA-section[data-style-dir='brutalist'] .dirA-wrap {
-  display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  gap: 0;
-  max-inline-size: none;
-  margin: 0;
-  border-block-start: var(--br-border);
+.dir[data-style-dir='brutalist'] .dir-mapframe {
+  background: var(--br-grey);
+  border: var(--br-border);
+  border-radius: 0;
+  overflow: hidden;
 }
-.dir.dirA-section[data-style-dir='brutalist'] .dirA-map {
-  min-block-size: clamp(260px, 30vw, 460px);
-  border: 0;
-  border-inline-end: var(--br-border);
+.dir[data-style-dir='brutalist'] .dir-mapframe iframe { filter: grayscale(1) contrast(1.05); }
+.dir[data-style-dir='brutalist'] .dir-map-missing {
+  font-family: var(--font-mono, monospace);
+  color: var(--br-ink);
 }
-.dir.dirA-section[data-style-dir='brutalist'] .dirA-card {
-  display: grid;
-  align-content: center;
-  gap: clamp(10px, 1.2vw, 18px);
-  padding: clamp(20px, 2.4vw, 40px);
+.dir[data-style-dir='brutalist'] .dir-label-chip {
+  display: inline-block;
   background: var(--br-ink);
   color: var(--br-paper);
   border: 0;
-  box-shadow: none;
+  border-radius: 0;
+  padding: 4px 8px;
+  font-family: var(--font-mono, monospace);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
-.dir.dirA-section[data-style-dir='brutalist'] .dir-name {
+.dir[data-style-dir='brutalist'] .dir-transit,
+.dir[data-style-dir='brutalist'] .dir-transit-item {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+
+/* --- A: LOCATION DATA — Karte oben, Datenblöcke darunter ---------------- */
+.dir.dirA-section[data-style-dir='brutalist'] .dirA-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  border-block-start: var(--br-border);
+}
+.dir.dirA-section[data-style-dir='brutalist'] .dirA-map {
+  block-size: clamp(260px, 30vw, 420px);
+  margin: 0;
+  border: 0;
+  border-block-end: var(--br-border);
+}
+.dir.dirA-section[data-style-dir='brutalist'] .dirA-grid,
+.dir.dirA-section[data-style-dir='brutalist'] .dirA-grid.is-one {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  justify-content: stretch;
+  text-align: start;
+}
+.dir.dirA-section[data-style-dir='brutalist'] .dirA-grid.is-one {
+  grid-template-columns: minmax(0, 1fr);
+}
+.dir.dirA-section[data-style-dir='brutalist'] .dirA-card,
+.dir.dirA-section[data-style-dir='brutalist'] .dirA-grid.is-one .dirA-card {
+  display: grid;
+  align-content: start;
+  gap: clamp(8px, 1vw, 14px);
+  padding: clamp(18px, 2.2vw, 32px) var(--br-pad-inline);
+  border-inline-end: var(--br-border);
+  text-align: start;
+}
+.dir.dirA-section[data-style-dir='brutalist'] .dirA-card:last-child,
+.dir.dirA-section[data-style-dir='brutalist'] .dirA-grid.is-one .dirA-card {
+  border-inline-end: 0;
+}
+.dir.dirA-section[data-style-dir='brutalist'] .dir-name,
+.dir.dirA-section[data-style-dir='brutalist'] .dirA-grid.is-one .dirA-card .dir-name {
+  margin: 0;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(24px, 2.8vw, 42px);
-  line-height: 0.92;
+  font-size: clamp(22px, 2.6vw, 38px);
+  line-height: 0.95;
   letter-spacing: -0.03em;
   text-transform: uppercase;
-  color: var(--br-paper);
+  color: var(--br-ink);
+  text-align: start;
 }
 .dir.dirA-section[data-style-dir='brutalist'] .dir-address,
+.dir.dirA-section[data-style-dir='brutalist'] .dirA-grid.is-one .dirA-card .dir-address,
 .dir.dirA-section[data-style-dir='brutalist'] .dir-description {
+  margin: 0;
   font-family: var(--font-body);
   font-size: clamp(13px, 0.95vw, 15px);
   line-height: 1.55;
-  color: var(--br-paper);
+  color: var(--br-ink);
+  text-align: start;
+}
+.dir.dirA-section[data-style-dir='brutalist'] .dirA-card .dir-btn,
+.dir.dirA-section[data-style-dir='brutalist'] .dirA-grid.is-one .dirA-card .dir-btn {
+  align-self: start;
+  justify-self: start;
+  margin-block-start: 6px;
 }
 
-/* --- B: ROUTE SHEET ------------------------------------------------------ */
-.dir.dirB-section[data-style-dir='brutalist'] .dirB-wrap { max-inline-size: none; margin: 0; padding: 0; }
-.dir.dirB-section[data-style-dir='brutalist'] .dirB-grid {
-  display: grid;
-  grid-template-columns: var(--br-col);
-  gap: 0;
+/* --- B: ROUTE SHEET — nummerierte Zeilen, Karte daneben ---------------- */
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
   border-block-start: var(--br-border);
 }
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0;
+  align-items: stretch;
+}
 .dir.dirB-section[data-style-dir='brutalist'] .dirB-list {
-  grid-column: 1 / span 5;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 0;
   border-inline-end: var(--br-border);
 }
-.dir.dirB-section[data-style-dir='brutalist'] .dirB-mapwrap {
-  grid-column: 6 / -1;
-  min-block-size: clamp(280px, 32vw, 520px);
-}
-.dir.dirB-section[data-style-dir='brutalist'] .dirB-content,
-.dir.dirB-section[data-style-dir='brutalist'] .dirB-details,
-.dir.dirB-section[data-style-dir='brutalist'] .dirB-details-inner {
-  border: 0;
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-row {
+  grid-template-columns: clamp(44px, 5vw, 72px) minmax(0, 1fr);
+  gap: clamp(10px, 1.4vw, 20px);
+  padding: clamp(14px, 1.8vw, 24px) var(--br-pad-inline);
   background: none;
-  padding: 0;
-}
-.dir.dirB-section[data-style-dir='brutalist'] .dirB-list > * {
-  padding: clamp(14px, 1.6vw, 24px) var(--br-pad-inline);
+  border: 0;
   border-block-end: var(--br-border);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+  transition: background-color var(--br-dur) var(--br-ease);
+}
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-row:hover { background: var(--br-grey); }
+/* Die aktive Location trägt die Signalfläche — sie steuert die Karte. */
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-row.is-active {
+  background: var(--br-signal);
+  border-color: var(--br-ink);
+  box-shadow: none;
+}
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-row:focus-visible {
+  outline: var(--br-line-thick) solid var(--br-signal-deep);
+  outline-offset: -4px;
 }
 .dir.dirB-section[data-style-dir='brutalist'] .dirB-num {
-  font-size: clamp(24px, 2.6vw, 40px);
+  font-size: clamp(22px, 2.4vw, 36px);
   line-height: 1;
+  color: var(--br-ink);
 }
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-content { display: grid; gap: 6px; }
 .dir.dirB-section[data-style-dir='brutalist'] .dirB-name {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(20px, 2.2vw, 32px);
-  line-height: 0.95;
+  font-size: clamp(18px, 2vw, 28px);
+  line-height: 1;
   letter-spacing: -0.025em;
   text-transform: uppercase;
+  color: var(--br-ink);
 }
 .dir.dirB-section[data-style-dir='brutalist'] .dirB-short-addr,
-.dir.dirB-section[data-style-dir='brutalist'] .dir-description {
-  font-family: var(--font-mono, monospace);
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  line-height: 1.6;
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-details,
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-details-inner {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.5;
+  color: var(--br-ink);
+  background: none;
+  border: 0;
+}
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-mapwrap {
+  min-block-size: clamp(280px, 32vw, 480px);
+  position: sticky;
+  top: 0;
+  align-self: stretch;
+}
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-mapwrap .dir-mapframe {
+  block-size: 100%;
+  border: 0;
 }
 
-/* --- C: DESTINATION BLOCK ----------------------------------------------- */
-.dir.dirC-section[data-style-dir='brutalist'] .dirC-wrap { max-inline-size: none; margin: 0; padding: 0; }
-.dir.dirC-section[data-style-dir='brutalist'] .dirC-block {
-  display: grid;
-  grid-template-columns: var(--br-col);
-  gap: 0;
+/* --- C: DESTINATION BLOCK — Ortsname groß, Karte als Gegenblock -------- */
+.dir.dirC-section[data-style-dir='brutalist'] .dirC-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
   border-block-start: var(--br-border);
 }
+.dir.dirC-section[data-style-dir='brutalist'] .dirC-block {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+  gap: 0;
+  align-items: stretch;
+  border-block-end: var(--br-border);
+  padding: 0;
+  background: none;
+}
+/* Jede zweite Location spiegelt — dieselbe Grammatik, andere Achse. */
+.dir.dirC-section[data-style-dir='brutalist'] .dirC-block:nth-child(even) .dirC-text { order: 2; border-inline: var(--br-border) 0; }
+.dir.dirC-section[data-style-dir='brutalist'] .dirC-block:nth-child(even) .dirC-mapwrap { order: 1; border-inline: 0; }
 .dir.dirC-section[data-style-dir='brutalist'] .dirC-text {
-  grid-column: 1 / span 6;
   display: grid;
   align-content: center;
-  gap: clamp(10px, 1.2vw, 18px);
-  padding: clamp(24px, 3vw, 56px) var(--br-pad-inline);
+  gap: clamp(8px, 1vw, 16px);
+  padding: clamp(24px, 3vw, 52px) var(--br-pad-inline);
+  border-inline-end: var(--br-border);
 }
 .dir.dirC-section[data-style-dir='brutalist'] .dirC-mapwrap {
-  grid-column: 7 / -1;
-  min-block-size: clamp(280px, 30vw, 480px);
-  border-inline-start: var(--br-border);
+  min-block-size: clamp(260px, 28vw, 440px);
+}
+.dir.dirC-section[data-style-dir='brutalist'] .dirC-mapwrap .dir-mapframe {
+  block-size: 100%;
+  border: 0;
 }
 .dir.dirC-section[data-style-dir='brutalist'] .dir-name {
+  margin: 0;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(36px, 5.6vw, 96px);
-  line-height: 0.86;
+  font-size: clamp(32px, 4.6vw, 80px);
+  line-height: 0.88;
   letter-spacing: -0.04em;
   text-transform: uppercase;
+  color: var(--br-ink);
   overflow-wrap: normal;
   word-break: normal;
   hyphens: none;
 }
 .dir.dirC-section[data-style-dir='brutalist'] .dir-address,
 .dir.dirC-section[data-style-dir='brutalist'] .dir-description {
+  margin: 0;
   font-family: var(--font-body);
   font-size: clamp(13px, 0.95vw, 15px);
   line-height: 1.55;
-  max-inline-size: 48ch;
+  max-inline-size: 46ch;
+  color: var(--br-ink);
 }
 
 /* =========================================================================
    7.3 · ÜBERNACHTUNG
+   -------------------------------------------------------------------------
+   Tatsächliche Struktur (gelesen):
+     A  .accA-wrap > .accA-grid(.is-one/.is-two) > .accA-card > .accA-photo,
+        .accA-body(.accA-name, AccMeta, .accA-desc, .accA-footer mit Button)
+     B  .accB-wrap > .accB-list > .accB-item (Foto | Körper | Aktion; bei
+        fehlendem Foto .no-photo mit zwei Spuren) > .accB-photo, .accB-body
+        (.accB-name, .accB-desc, .accB-metaRow), .accB-cta
+     C  .accC-wrap > .accC-grid > .accC-mapwrap (Karte mit Pins) +
+        .accC-list > Einträge mit .accC-num, .accC-name, .accC-bookline
+   Meta liegt gemeinsam in .acc-meta.
    ========================================================================= */
 
-/* --- A: STAY INDEX — Vergleichsliste auf Linien ------------------------- */
-.acc.accA-section[data-style-acc='brutalist'] .accA-wrap { max-inline-size: none; margin: 0; padding: 0; }
-.acc.accA-section[data-style-acc='brutalist'] .accA-card {
+.acc[data-style-acc='brutalist'] .acc-meta {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+.acc[data-style-acc='brutalist'] .acc-meta .meta-item svg { color: var(--br-signal-deep); }
+
+/* --- A: STAY INDEX — harte Vergleichsliste ------------------------------ */
+.acc.accA-section[data-style-acc='brutalist'] .accA-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  border-block-start: var(--br-border);
+}
+.acc.accA-section[data-style-acc='brutalist'] .accA-grid,
+.acc.accA-section[data-style-acc='brutalist'] .accA-grid.is-one,
+.acc.accA-section[data-style-acc='brutalist'] .accA-grid.is-two {
   display: grid;
-  grid-template-columns: clamp(96px, 12vw, 180px) minmax(0, 1fr) minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  max-inline-size: none;
+  margin: 0;
+  justify-content: stretch;
+  counter-reset: stay;
+}
+.acc.accA-section[data-style-acc='brutalist'] .accA-card,
+.acc.accA-section[data-style-acc='brutalist'] .accA-card:hover {
+  counter-increment: stay;
+  display: grid;
+  grid-template-columns: clamp(44px, 4vw, 72px) clamp(110px, 13vw, 200px) minmax(0, 1fr) auto;
   align-items: center;
   gap: clamp(12px, 2vw, 28px);
   padding: clamp(12px, 1.4vw, 20px) var(--br-pad-inline);
-  background: none;
+  background: var(--br-paper);
   border: 0;
-  border-block-start: var(--br-border);
+  border-block-end: var(--br-border);
+  border-radius: 0;
   box-shadow: none;
+  transform: none;
+  overflow: visible;
+}
+.acc.accA-section[data-style-acc='brutalist'] .accA-card::before {
+  content: counter(stay, decimal-leading-zero);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 34px);
+  line-height: 1;
+  color: var(--br-signal-deep);
 }
 .acc.accA-section[data-style-acc='brutalist'] .accA-photo {
   inline-size: 100%;
   aspect-ratio: var(--ar-classic);
   border: 0;
+  border-radius: 0;
+}
+/* Der Körper bleibt ein eigener Block: `display: contents` hätte Name, Meta
+   und Text in die Rasterspuren verteilt — bei ungleich vielen Feldern je
+   Unterkunft überlagern sie sich dann. */
+.acc.accA-section[data-style-acc='brutalist'] .accA-body {
+  display: grid;
+  gap: 6px;
+  align-content: center;
+  padding: 0;
 }
 .acc.accA-section[data-style-acc='brutalist'] .accA-name {
+  margin: 0;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(18px, 1.9vw, 28px);
-  line-height: 1;
+  font-size: clamp(17px, 1.8vw, 26px);
+  line-height: 1.05;
   letter-spacing: -0.02em;
   text-transform: uppercase;
+  color: var(--br-ink);
 }
-.acc.accA-section[data-style-acc='brutalist'] .accA-desc,
-.acc.accA-section[data-style-acc='brutalist'] .accA-body,
-.acc.accA-section[data-style-acc='brutalist'] .accA-footer {
+.acc.accA-section[data-style-acc='brutalist'] .accA-desc {
   font-family: var(--font-body);
   font-size: clamp(13px, 0.95vw, 15px);
   line-height: 1.5;
-  border: 0;
-  padding: 0;
-  background: none;
+  color: var(--br-ink);
 }
+.acc.accA-section[data-style-acc='brutalist'] .accA-footer {
+  margin: 0;
+  justify-self: end;
+}
+.acc.accA-section[data-style-acc='brutalist'] .accA-card .acc-btn { inline-size: auto; }
 
-/* --- B: HOTEL DIRECTORY -------------------------------------------------- */
-.acc.accB-section[data-style-acc='brutalist'] .accB-wrap { max-inline-size: none; margin: 0; padding: 0; }
+/* --- B: HOTEL DIRECTORY — Nummer, harter Bildcrop, Meta ---------------- */
+.acc.accB-section[data-style-acc='brutalist'] .accB-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  border-block-start: var(--br-border);
+}
 .acc.accB-section[data-style-acc='brutalist'] .accB-list {
   display: grid;
   gap: 0;
-  counter-reset: stay;
-  border-block-start: var(--br-border);
+  counter-reset: stayb;
 }
-.acc.accB-section[data-style-acc='brutalist'] .accB-list > * {
-  counter-increment: stay;
+.acc.accB-section[data-style-acc='brutalist'] .accB-item,
+.acc.accB-section[data-style-acc='brutalist'] .accB-item:hover,
+.acc.accB-section[data-style-acc='brutalist'] .accB-item.no-photo {
+  counter-increment: stayb;
   display: grid;
-  grid-template-columns: clamp(60px, 6vw, 96px) minmax(0, 6fr) minmax(0, 5fr);
-  align-items: start;
-  gap: clamp(12px, 2vw, 32px);
-  padding: clamp(16px, 2vw, 28px) var(--br-pad-inline);
-  border-block-end: var(--br-border);
+  grid-template-columns: clamp(52px, 5vw, 88px) clamp(160px, 20vw, 320px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(14px, 2vw, 32px);
+  padding: clamp(14px, 1.8vw, 26px) var(--br-pad-inline);
   background: none;
-  border-inline: 0;
+  border: 0;
+  border-block-end: var(--br-border);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
 }
-.acc.accB-section[data-style-acc='brutalist'] .accB-list > *::before {
-  content: counter(stay, decimal-leading-zero);
+.acc.accB-section[data-style-acc='brutalist'] .accB-item.no-photo {
+  grid-template-columns: clamp(52px, 5vw, 88px) minmax(0, 1fr) auto;
+}
+.acc.accB-section[data-style-acc='brutalist'] .accB-item::before {
+  content: counter(stayb, decimal-leading-zero);
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(24px, 2.8vw, 44px);
+  font-size: clamp(26px, 3vw, 48px);
   line-height: 1;
   color: var(--br-signal-deep);
 }
 .acc.accB-section[data-style-acc='brutalist'] .accB-photo {
   inline-size: 100%;
+  block-size: auto;
   aspect-ratio: var(--ar-wide);
+  border-radius: 0;
+  overflow: hidden;
 }
+.acc.accB-section[data-style-acc='brutalist'] .accB-body { display: grid; gap: 6px; }
 .acc.accB-section[data-style-acc='brutalist'] .accB-name {
   font-family: var(--font-display);
   font-weight: 800;
   font-size: clamp(20px, 2.2vw, 34px);
-  line-height: 0.95;
+  line-height: 0.98;
   letter-spacing: -0.025em;
   text-transform: uppercase;
+  color: var(--br-ink);
 }
-.acc.accB-section[data-style-acc='brutalist'] .accB-desc,
-.acc.accB-section[data-style-acc='brutalist'] .accB-metaRow {
+.acc.accB-section[data-style-acc='brutalist'] .accB-desc {
   font-family: var(--font-body);
   font-size: clamp(13px, 0.95vw, 15px);
   line-height: 1.5;
+  color: var(--br-ink);
 }
 .acc.accB-section[data-style-acc='brutalist'] .accB-metaRow {
   font-family: var(--font-mono, monospace);
@@ -1727,23 +2081,29 @@
   text-transform: uppercase;
 }
 
-/* --- C: STAY POSTER ------------------------------------------------------ */
-.acc.accC-section[data-style-acc='brutalist'] .accC-wrap { max-inline-size: none; margin: 0; padding: 0; }
-.acc.accC-section[data-style-acc='brutalist'] .accC-grid {
-  display: grid;
-  grid-template-columns: var(--br-col);
-  gap: 0;
+/* --- C: STAY POSTER — Karte als Gegenblock, Namen groß ----------------- */
+.acc.accC-section[data-style-acc='brutalist'] .accC-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
   border-block-start: var(--br-border);
 }
+.acc.accC-section[data-style-acc='brutalist'] .accC-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 0;
+  align-items: stretch;
+  max-inline-size: none;
+}
 .acc.accC-section[data-style-acc='brutalist'] .accC-list {
-  grid-column: 1 / span 7;
   display: grid;
   gap: 0;
   border-inline-end: var(--br-border);
 }
 .acc.accC-section[data-style-acc='brutalist'] .accC-mapwrap {
-  grid-column: 8 / -1;
-  min-block-size: clamp(260px, 28vw, 440px);
+  min-block-size: clamp(260px, 28vw, 460px);
+  border: 0;
+  border-radius: 0;
 }
 .acc.accC-section[data-style-acc='brutalist'] .accC-content {
   display: grid;
@@ -1754,16 +2114,17 @@
   border-inline: 0;
 }
 .acc.accC-section[data-style-acc='brutalist'] .accC-num {
-  font-size: clamp(28px, 3.2vw, 52px);
+  font-size: clamp(26px, 3vw, 46px);
   line-height: 1;
 }
 .acc.accC-section[data-style-acc='brutalist'] .accC-name {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(24px, 3vw, 48px);
-  line-height: 0.92;
+  font-size: clamp(22px, 2.8vw, 44px);
+  line-height: 0.95;
   letter-spacing: -0.03em;
   text-transform: uppercase;
+  color: var(--br-ink);
 }
 .acc.accC-section[data-style-acc='brutalist'] .accC-bookline,
 .acc.accC-section[data-style-acc='brutalist'] .accC-maplegend {
@@ -1771,7 +2132,9 @@
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  color: var(--br-ink);
 }
+/* Pins sind Marken, keine Bubbles. */
 .acc.accC-section[data-style-acc='brutalist'] .accC-pin,
 .acc.accC-section[data-style-acc='brutalist'] .accC-pin-bubble {
   border-radius: 0;
@@ -1780,6 +2143,16 @@
   border: var(--br-line) solid var(--br-ink);
   box-shadow: none;
 }
+.acc.accC-section[data-style-acc='brutalist'] .accC-pin-num {
+  font-family: var(--font-mono, monospace);
+  font-weight: 700;
+  color: var(--br-ink);
+}
+.acc.accC-section[data-style-acc='brutalist'] .accC-pin.is-venue .accC-pin-bubble {
+  background: var(--br-ink);
+  color: var(--br-paper);
+}
+.acc.accC-section[data-style-acc='brutalist'] .heart { color: var(--br-signal); }
 
 /* =========================================================================
    7.4 · TRAUZEUGEN
@@ -2193,10 +2566,12 @@
    ========================================================================= */
 
 @media (max-width: 900px) {
-  .tl.tlA-section[data-style-tl='brutalist'] .tlA-cards > li,
-  .tl.tlA-section[data-style-tl='brutalist'] .tlA-cards > div,
+  .tl.tlA-section[data-style-tl='brutalist'] .tlA-card,
+  .tl.tlA-section[data-style-tl='brutalist'] .tlA-card.is-active,
   .acc.accA-section[data-style-acc='brutalist'] .accA-card,
-  .acc.accB-section[data-style-acc='brutalist'] .accB-list > *,
+  .acc.accA-section[data-style-acc='brutalist'] .accA-card:hover,
+  .acc.accB-section[data-style-acc='brutalist'] .accB-item,
+  .acc.accB-section[data-style-acc='brutalist'] .accB-item.no-photo,
   .wit.witB-section[data-style-wit='brutalist'] .witB-row,
   .faq.faqC-section[data-style-faq='brutalist'] .faqC-item,
   .abc.abcC-section[data-style-abc='brutalist'] .abcC-group {
@@ -2204,16 +2579,19 @@
     gap: 8px;
   }
   .acc.accA-section[data-style-acc='brutalist'] .accA-photo,
+  .acc.accB-section[data-style-acc='brutalist'] .accB-photo,
   .wit.witB-section[data-style-wit='brutalist'] .witB-photo { aspect-ratio: var(--ar-wide); }
+  .acc.accA-section[data-style-acc='brutalist'] .accA-footer { justify-self: start; }
 
-  .tl.tlB-section[data-style-tl='brutalist'] li { grid-template-columns: minmax(0, 1fr); }
-  .tl.tlB-section[data-style-tl='brutalist'] .tlB-event-time,
-  .tl.tlB-section[data-style-tl='brutalist'] .tlB-event-content { grid-column: 1; }
+  .tl.tlB-section[data-style-tl='brutalist'] .tlB-event { grid-template-columns: minmax(0, 1fr); }
   .tl.tlB-section[data-style-tl='brutalist'] .tlB-event-time {
     border-inline-end: 0;
     border-block-end: var(--br-border);
   }
-  .tl.tlC-section[data-style-tl='brutalist'] .tlC-row { grid-template-columns: minmax(0, 1fr); }
+  .tl.tlB-section[data-style-tl='brutalist'] .tlB-event:nth-child(even) .tlB-event-content {
+    padding-inline-start: var(--br-pad-inline);
+  }
+  .tl.tlC-section[data-style-tl='brutalist'] .tlC-row { min-block-size: clamp(300px, 70vw, 420px); }
 
   .dir.dirA-section[data-style-dir='brutalist'] .dirA-wrap,
   .dir.dirB-section[data-style-dir='brutalist'] .dirB-grid,
@@ -2222,7 +2600,18 @@
   .wit.witC-section[data-style-wit='brutalist'] .witC-block {
     grid-template-columns: minmax(0, 1fr);
   }
-  .dir.dirA-section[data-style-dir='brutalist'] .dirA-map { border-inline-end: 0; border-block-end: var(--br-border); }
+  .dir.dirA-section[data-style-dir='brutalist'] .dirA-grid,
+  .dir.dirA-section[data-style-dir='brutalist'] .dirA-grid.is-one { grid-template-columns: minmax(0, 1fr); }
+  .dir.dirA-section[data-style-dir='brutalist'] .dirA-card { border-inline-end: 0; border-block-end: var(--br-border); }
+  .dir.dirC-section[data-style-dir='brutalist'] .dirC-text,
+  .dir.dirC-section[data-style-dir='brutalist'] .dirC-block:nth-child(even) .dirC-text {
+    border-inline: 0;
+    border-block-end: var(--br-border);
+    order: 0;
+  }
+  .dir.dirC-section[data-style-dir='brutalist'] .dirC-block:nth-child(even) .dirC-mapwrap { order: 0; }
+  .dir.dirB-section[data-style-dir='brutalist'] .dirB-list { border-inline-end: 0; border-block-end: var(--br-border); }
+  .dir.dirB-section[data-style-dir='brutalist'] .dirB-mapwrap { position: static; }
   .dir.dirB-section[data-style-dir='brutalist'] .dirB-list,
   .dir.dirB-section[data-style-dir='brutalist'] .dirB-mapwrap,
   .dir.dirC-section[data-style-dir='brutalist'] .dirC-text,
