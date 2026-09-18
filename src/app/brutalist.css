@@ -422,19 +422,35 @@
   gap: var(--sp-4);
   text-align: left;
 }
+/* Namen laufen nie aus dem Bild: wie in Hero A werden Vorname, Ampersand
+   und Vorname über Flex zu drei Einheiten — umgebrochen wird nur zwischen
+   ihnen. Die Schaugröße richtet sich zusätzlich nach der Länge der Namen
+   (--name-ch wird unten aus der Zeichenzahl abgeleitet), damit bei langen
+   Namen zuerst die Größe sinkt und nicht das Layout bricht. */
 .hero-c[data-style-hero='brutalist'] .hero-c-title {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(54px, 11vw, 190px);
-  line-height: 0.82;
+  font-size: clamp(40px, 9.5vw, 170px);
+  line-height: 0.84;
   letter-spacing: -0.045em;
   text-transform: uppercase;
   color: var(--br-paper);
   background: none;
   padding: 0;
-  max-inline-size: none;
-  display: block;
+  max-inline-size: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.14em;
+  row-gap: 0;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
 }
+.hero-c[data-style-hero='brutalist'] .hero-c-title .amp { white-space: nowrap; }
+/* Ein einzelner sehr langer Vorname bleibt eine Einheit — er darf die Zeile
+   füllen, aber nicht überlaufen. */
+.hero-c[data-style-hero='brutalist'] .hero-c-title > * { max-inline-size: 100%; }
 .hero-c[data-style-hero='brutalist'] .hero-c-title .amp { color: var(--br-signal); }
 .hero-c[data-style-hero='brutalist'] .hero-c-eyebrow,
 .hero-c[data-style-hero='brutalist'] .hero-c-volume {
@@ -1172,7 +1188,15 @@
 @media (max-width: 600px) {
   .hero-a[data-style-hero='brutalist'] .hero-a-title { font-size: clamp(28px, 10.5vw, 60px); }
   .hero-b[data-style-hero='brutalist'] .hero-b-title { font-size: clamp(38px, 11vw, 60px); }
-  .hero-c[data-style-hero='brutalist'] .hero-c-title { font-size: clamp(42px, 13vw, 76px); }
+  /* Mobil eine eigene Zeilenlogik: jeder Name auf eine Zeile, das Ampersand
+     dazwischen als eigene Zeile in Signal. */
+  .hero-c[data-style-hero='brutalist'] .hero-c-title {
+    font-size: clamp(30px, 10.5vw, 60px);
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 0.02em;
+  }
+  .hero-c[data-style-hero='brutalist'] .hero-c-content { gap: var(--sp-5); }
   .cd.cdC-wrap[data-style-countdown='brutalist'] .cdC-bar-row:first-child .cdC-bar-num-value {
     font-size: clamp(88px, 32vw, 140px);
   }
@@ -1195,4 +1219,1040 @@
   .gal.galC-wrap[data-style-gallery='brutalist'] .galC-tile:nth-child(4n) {
     flex-basis: clamp(120px, 34vw, 160px);
   }
+}
+
+/* =========================================================================
+   7 · SERVICE & INFORMATION — Phase 2
+   -------------------------------------------------------------------------
+   Ablauf, Anfahrt, Übernachtung, Trauzeugen, FAQ, Hochzeits-ABC.
+
+   Diese sechs Bereiche teilen sich EINE Grammatik; sie bekommen keine
+   eigene Brutalist-Idee. Wiederverwendet werden die Bausteine aus Phase 1:
+   Kopfzone auf Ink, Mono-Meta, Zeilen auf 2px-Linien, Signal für Nummern
+   und Schlüsselinformation, Schwarzweißfotografie, 0 Radius.
+
+   Kohärenz vor Spezialeffekt: A ist immer die harte Liste, B immer das
+   komponierte Raster mit Nummern, C immer die typografische Zuspitzung.
+   ========================================================================= */
+
+/* --- Gemeinsame Zone ----------------------------------------------------- */
+
+.wedding-site-wrapper[data-style='brutalist'] :where(.tl, .dir, .acc, .wit, .faq, .abc) {
+  padding: 0;
+  background: var(--br-paper);
+  color: var(--br-ink);
+  border-block-end: var(--br-border-thick);
+  text-align: start;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(*) {
+  border-radius: 0;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.styled-bg-editorial, .styled-bg-brutalist, .styled-bereich-bg) {
+  display: none;
+}
+/* Kopfzone: Kennung als Ink-Band, Titel als Schaugröße, Vorspann schlicht. */
+.wedding-site-wrapper[data-style='brutalist'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.tl-eyebrow, .dir-eyebrow, .acc-eyebrow, .wit-eyebrow, .faq-eyebrow, .abc-eyebrow) {
+  display: block;
+  margin: 0;
+  padding: 12px var(--br-pad-inline);
+  background: var(--br-ink);
+  color: var(--br-paper);
+  border-block-end: var(--br-border);
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: start;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.tl-title, .dir-title, .acc-title, .wit-title, .faq-title, .abc-title) {
+  margin: 0;
+  padding: clamp(20px, 2.4vw, 40px) var(--br-pad-inline) 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(30px, 4.6vw, 68px);
+  line-height: 0.88;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+  text-align: start;
+  max-inline-size: none;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.tl-title, .dir-title, .acc-title, .wit-title, .faq-title, .abc-title) em {
+  font-style: normal;
+  background: var(--br-signal);
+  color: var(--br-ink);
+  padding: 0 0.12em;
+  transform: none;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.tl-intro, .dir-intro, .acc-intro, .wit-intro, .faq-intro, .abc-intro) {
+  margin: 0;
+  padding: clamp(12px, 1.4vw, 20px) var(--br-pad-inline) clamp(20px, 2.4vw, 36px);
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1vw, 16px);
+  line-height: 1.55;
+  color: var(--br-ink);
+  max-inline-size: 62ch;
+  text-align: start;
+}
+/* Meta, Nummern, Aktionen — dieselben drei Bausteine in allen sechs. */
+.wedding-site-wrapper[data-style='brutalist'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.tlA-time-badge, .tlB-event-time, .tlC-uhr, .dirB-num, .accC-num, .faqB-num, .faqC-num, .abcA-letter, .abcB-badge, .abcC-group-letter, .witC-photo-initials) {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--br-signal-deep);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.dir-btn, .accB-cta, .accC-booklink, .witB-actions a, .witC-contacts a) {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding: 0 clamp(14px, 1.6vw, 22px);
+  background: var(--br-signal);
+  color: var(--br-ink);
+  border: var(--br-border);
+  box-shadow: var(--br-shift) var(--br-shift) 0 0 var(--br-ink);
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform var(--br-dur) var(--br-ease), background-color var(--br-dur) var(--br-ease),
+    box-shadow var(--br-dur) var(--br-ease);
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.dir-btn, .accB-cta, .accC-booklink, .witB-actions a, .witC-contacts a):hover {
+  background: var(--br-ink);
+  color: var(--br-paper);
+  transform: translate(var(--br-shift), var(--br-shift));
+  box-shadow: 0 0 0 0 var(--br-ink);
+}
+/* Fotos: Schwarzweiß mit Kontrast, hart beschnitten, ohne Rahmen. */
+.wedding-site-wrapper[data-style='brutalist'] :where(.acc, .wit, .dir) :where(img, .accA-photo, .accB-photo, .witA-photo, .witB-photo, .witC-photo) {
+  filter: grayscale(1) contrast(1.15);
+  border-radius: 0;
+  border: 0;
+  object-fit: cover;
+}
+/* Karten bleiben funktional, verlieren aber Rundung und Schatten. */
+.wedding-site-wrapper[data-style='brutalist'] :where(.dirA-map, .dirB-mapwrap, .dirC-mapwrap, .accC-mapwrap) {
+  border: var(--br-border);
+  box-shadow: none;
+  filter: grayscale(1) contrast(1.05);
+}
+
+/* =========================================================================
+   7.1 · ABLAUF
+   ========================================================================= */
+
+/* --- A: HARD SCHEDULE — Zeit | Programm | Ort auf harten Linien --------- */
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-wrap { max-inline-size: none; margin: 0; padding: 0; }
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-rail,
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-rail-line { display: none; }
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-cards {
+  display: grid;
+  gap: 0;
+  border-block-start: var(--br-border);
+}
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-card-head,
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-cards > * {
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-cards > li,
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-cards > div {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 7fr) minmax(0, 3fr);
+  align-items: baseline;
+  gap: clamp(12px, 2vw, 32px);
+  padding: clamp(14px, 1.6vw, 22px) var(--br-pad-inline);
+  border-block-end: var(--br-border);
+}
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-time-badge {
+  font-family: var(--font-mono, monospace);
+  font-weight: 600;
+  font-size: clamp(16px, 1.6vw, 22px);
+  letter-spacing: 0.02em;
+  color: var(--br-ink);
+}
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-emoji-badge { display: none; }
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(18px, 1.8vw, 26px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-desc,
+.tl.tlA-section[data-style-tl='brutalist'] .tlA-hint {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.5;
+  color: var(--br-ink);
+}
+
+/* --- B: PROGRAM GRID — Zeitachse links, Ereignisse versetzt ------------- */
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-wrap { max-inline-size: none; margin: 0; padding: 0; }
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-line,
+.tl.tlB-section[data-style-tl='brutalist'] .dot,
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-knode { display: none; }
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-wrap > ol,
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-wrap > ul,
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-wrap > div {
+  display: grid;
+  gap: 0;
+  border-block-start: var(--br-border);
+}
+.tl.tlB-section[data-style-tl='brutalist'] li,
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-event-content {
+  border: 0;
+  background: none;
+}
+.tl.tlB-section[data-style-tl='brutalist'] li {
+  display: grid;
+  grid-template-columns: var(--br-col);
+  padding: 0;
+  border-block-end: var(--br-border);
+}
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-event-time {
+  grid-column: 1 / span 3;
+  padding: clamp(14px, 1.6vw, 22px) var(--br-pad-inline);
+  font-family: var(--font-mono, monospace);
+  font-weight: 600;
+  font-size: clamp(18px, 2.2vw, 30px);
+  color: var(--br-ink);
+  border-inline-end: var(--br-border);
+}
+.tl.tlB-section[data-style-tl='brutalist'] .tlB-event-content {
+  grid-column: 4 / -1;
+  padding: clamp(14px, 1.6vw, 22px) var(--br-pad-inline);
+  display: grid;
+  gap: 6px;
+}
+/* Jede dritte Station ist Schlüsselereignis und bekommt die Signalfläche. */
+.tl.tlB-section[data-style-tl='brutalist'] li:nth-child(3n + 1) .tlB-event-time {
+  background: var(--br-signal);
+}
+.tl.tlB-section[data-style-tl='brutalist'] .ttl,
+.tl.tlB-section[data-style-tl='brutalist'] .t {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(18px, 2vw, 28px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.tl.tlB-section[data-style-tl='brutalist'] .dsc,
+.tl.tlB-section[data-style-tl='brutalist'] .u,
+.tl.tlB-section[data-style-tl='brutalist'] .pills {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.5;
+}
+
+/* --- C: TIME IMPACT — Uhrzeiten als Schaugröße -------------------------- */
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-wrap { max-inline-size: none; margin: 0; padding: 0; }
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-row {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  align-items: center;
+  gap: clamp(16px, 2vw, 32px);
+  padding: clamp(10px, 1.4vw, 20px) var(--br-pad-inline);
+  border-block-start: var(--br-border);
+  background: none;
+}
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-uhr,
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-time {
+  font-family: var(--font-display);
+  font-weight: 800;
+  /* Kontrolliert groß: bei vielen Stationen darf die Seite nicht explodieren. */
+  font-size: clamp(40px, 6vw, 104px);
+  line-height: 0.86;
+  letter-spacing: -0.05em;
+  color: var(--br-ink);
+}
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-titlelab,
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-bigtitle {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(18px, 2vw, 30px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-descpill,
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-loc {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.5;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--br-ink);
+}
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-img {
+  border: 0;
+  filter: grayscale(1) contrast(1.15);
+}
+.tl.tlC-section[data-style-tl='brutalist'] .tlC-now-row { background: var(--br-signal); }
+
+/* =========================================================================
+   7.2 · ANFAHRT
+   ========================================================================= */
+
+/* --- A: LOCATION DATA ---------------------------------------------------- */
+.dir.dirA-section[data-style-dir='brutalist'] .dirA-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 0;
+  max-inline-size: none;
+  margin: 0;
+  border-block-start: var(--br-border);
+}
+.dir.dirA-section[data-style-dir='brutalist'] .dirA-map {
+  min-block-size: clamp(260px, 30vw, 460px);
+  border: 0;
+  border-inline-end: var(--br-border);
+}
+.dir.dirA-section[data-style-dir='brutalist'] .dirA-card {
+  display: grid;
+  align-content: center;
+  gap: clamp(10px, 1.2vw, 18px);
+  padding: clamp(20px, 2.4vw, 40px);
+  background: var(--br-ink);
+  color: var(--br-paper);
+  border: 0;
+  box-shadow: none;
+}
+.dir.dirA-section[data-style-dir='brutalist'] .dir-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(24px, 2.8vw, 42px);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--br-paper);
+}
+.dir.dirA-section[data-style-dir='brutalist'] .dir-address,
+.dir.dirA-section[data-style-dir='brutalist'] .dir-description {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.55;
+  color: var(--br-paper);
+}
+
+/* --- B: ROUTE SHEET ------------------------------------------------------ */
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-wrap { max-inline-size: none; margin: 0; padding: 0; }
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-grid {
+  display: grid;
+  grid-template-columns: var(--br-col);
+  gap: 0;
+  border-block-start: var(--br-border);
+}
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-list {
+  grid-column: 1 / span 5;
+  display: grid;
+  gap: 0;
+  border-inline-end: var(--br-border);
+}
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-mapwrap {
+  grid-column: 6 / -1;
+  min-block-size: clamp(280px, 32vw, 520px);
+}
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-content,
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-details,
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-details-inner {
+  border: 0;
+  background: none;
+  padding: 0;
+}
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-list > * {
+  padding: clamp(14px, 1.6vw, 24px) var(--br-pad-inline);
+  border-block-end: var(--br-border);
+}
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-num {
+  font-size: clamp(24px, 2.6vw, 40px);
+  line-height: 1;
+}
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 32px);
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+}
+.dir.dirB-section[data-style-dir='brutalist'] .dirB-short-addr,
+.dir.dirB-section[data-style-dir='brutalist'] .dir-description {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+}
+
+/* --- C: DESTINATION BLOCK ----------------------------------------------- */
+.dir.dirC-section[data-style-dir='brutalist'] .dirC-wrap { max-inline-size: none; margin: 0; padding: 0; }
+.dir.dirC-section[data-style-dir='brutalist'] .dirC-block {
+  display: grid;
+  grid-template-columns: var(--br-col);
+  gap: 0;
+  border-block-start: var(--br-border);
+}
+.dir.dirC-section[data-style-dir='brutalist'] .dirC-text {
+  grid-column: 1 / span 6;
+  display: grid;
+  align-content: center;
+  gap: clamp(10px, 1.2vw, 18px);
+  padding: clamp(24px, 3vw, 56px) var(--br-pad-inline);
+}
+.dir.dirC-section[data-style-dir='brutalist'] .dirC-mapwrap {
+  grid-column: 7 / -1;
+  min-block-size: clamp(280px, 30vw, 480px);
+  border-inline-start: var(--br-border);
+}
+.dir.dirC-section[data-style-dir='brutalist'] .dir-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(36px, 5.6vw, 96px);
+  line-height: 0.86;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+.dir.dirC-section[data-style-dir='brutalist'] .dir-address,
+.dir.dirC-section[data-style-dir='brutalist'] .dir-description {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.55;
+  max-inline-size: 48ch;
+}
+
+/* =========================================================================
+   7.3 · ÜBERNACHTUNG
+   ========================================================================= */
+
+/* --- A: STAY INDEX — Vergleichsliste auf Linien ------------------------- */
+.acc.accA-section[data-style-acc='brutalist'] .accA-wrap { max-inline-size: none; margin: 0; padding: 0; }
+.acc.accA-section[data-style-acc='brutalist'] .accA-card {
+  display: grid;
+  grid-template-columns: clamp(96px, 12vw, 180px) minmax(0, 1fr) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 2vw, 28px);
+  padding: clamp(12px, 1.4vw, 20px) var(--br-pad-inline);
+  background: none;
+  border: 0;
+  border-block-start: var(--br-border);
+  box-shadow: none;
+}
+.acc.accA-section[data-style-acc='brutalist'] .accA-photo {
+  inline-size: 100%;
+  aspect-ratio: var(--ar-classic);
+  border: 0;
+}
+.acc.accA-section[data-style-acc='brutalist'] .accA-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(18px, 1.9vw, 28px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.acc.accA-section[data-style-acc='brutalist'] .accA-desc,
+.acc.accA-section[data-style-acc='brutalist'] .accA-body,
+.acc.accA-section[data-style-acc='brutalist'] .accA-footer {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.5;
+  border: 0;
+  padding: 0;
+  background: none;
+}
+
+/* --- B: HOTEL DIRECTORY -------------------------------------------------- */
+.acc.accB-section[data-style-acc='brutalist'] .accB-wrap { max-inline-size: none; margin: 0; padding: 0; }
+.acc.accB-section[data-style-acc='brutalist'] .accB-list {
+  display: grid;
+  gap: 0;
+  counter-reset: stay;
+  border-block-start: var(--br-border);
+}
+.acc.accB-section[data-style-acc='brutalist'] .accB-list > * {
+  counter-increment: stay;
+  display: grid;
+  grid-template-columns: clamp(60px, 6vw, 96px) minmax(0, 6fr) minmax(0, 5fr);
+  align-items: start;
+  gap: clamp(12px, 2vw, 32px);
+  padding: clamp(16px, 2vw, 28px) var(--br-pad-inline);
+  border-block-end: var(--br-border);
+  background: none;
+  border-inline: 0;
+}
+.acc.accB-section[data-style-acc='brutalist'] .accB-list > *::before {
+  content: counter(stay, decimal-leading-zero);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(24px, 2.8vw, 44px);
+  line-height: 1;
+  color: var(--br-signal-deep);
+}
+.acc.accB-section[data-style-acc='brutalist'] .accB-photo {
+  inline-size: 100%;
+  aspect-ratio: var(--ar-wide);
+}
+.acc.accB-section[data-style-acc='brutalist'] .accB-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 34px);
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+}
+.acc.accB-section[data-style-acc='brutalist'] .accB-desc,
+.acc.accB-section[data-style-acc='brutalist'] .accB-metaRow {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.5;
+}
+.acc.accB-section[data-style-acc='brutalist'] .accB-metaRow {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* --- C: STAY POSTER ------------------------------------------------------ */
+.acc.accC-section[data-style-acc='brutalist'] .accC-wrap { max-inline-size: none; margin: 0; padding: 0; }
+.acc.accC-section[data-style-acc='brutalist'] .accC-grid {
+  display: grid;
+  grid-template-columns: var(--br-col);
+  gap: 0;
+  border-block-start: var(--br-border);
+}
+.acc.accC-section[data-style-acc='brutalist'] .accC-list {
+  grid-column: 1 / span 7;
+  display: grid;
+  gap: 0;
+  border-inline-end: var(--br-border);
+}
+.acc.accC-section[data-style-acc='brutalist'] .accC-mapwrap {
+  grid-column: 8 / -1;
+  min-block-size: clamp(260px, 28vw, 440px);
+}
+.acc.accC-section[data-style-acc='brutalist'] .accC-content {
+  display: grid;
+  gap: 8px;
+  padding: clamp(16px, 2vw, 28px) var(--br-pad-inline);
+  border-block-end: var(--br-border);
+  background: none;
+  border-inline: 0;
+}
+.acc.accC-section[data-style-acc='brutalist'] .accC-num {
+  font-size: clamp(28px, 3.2vw, 52px);
+  line-height: 1;
+}
+.acc.accC-section[data-style-acc='brutalist'] .accC-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(24px, 3vw, 48px);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+.acc.accC-section[data-style-acc='brutalist'] .accC-bookline,
+.acc.accC-section[data-style-acc='brutalist'] .accC-maplegend {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.acc.accC-section[data-style-acc='brutalist'] .accC-pin,
+.acc.accC-section[data-style-acc='brutalist'] .accC-pin-bubble {
+  border-radius: 0;
+  background: var(--br-signal);
+  color: var(--br-ink);
+  border: var(--br-line) solid var(--br-ink);
+  box-shadow: none;
+}
+
+/* =========================================================================
+   7.4 · TRAUZEUGEN
+   ========================================================================= */
+
+.wit[data-style-wit='brutalist'] .witA-wrap,
+.wit[data-style-wit='brutalist'] .witB-wrap,
+.wit[data-style-wit='brutalist'] .witC-wrap { max-inline-size: none; margin: 0; padding: 0; }
+
+/* --- A: CONTACT INDEX ---------------------------------------------------- */
+.wit.witA-section[data-style-wit='brutalist'] .witA-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--br-gap);
+  background: var(--br-ink);
+  border-block-start: var(--br-border);
+  padding: var(--br-gap) 0;
+}
+.wit.witA-section[data-style-wit='brutalist'] .witA-card {
+  display: grid;
+  gap: 0;
+  background: var(--br-paper);
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+.wit.witA-section[data-style-wit='brutalist'] .witA-photo {
+  inline-size: 100%;
+  aspect-ratio: var(--ar-portrait);
+  border: 0;
+}
+.wit.witA-section[data-style-wit='brutalist'] .witA-headings {
+  padding: clamp(12px, 1.4vw, 18px);
+  display: grid;
+  gap: 4px;
+}
+.wit.witA-section[data-style-wit='brutalist'] .witA-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(16px, 1.6vw, 24px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.wit.witA-section[data-style-wit='brutalist'] .witA-role {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--br-signal-deep);
+}
+
+/* --- B: PEOPLE GRID ------------------------------------------------------ */
+.wit.witB-section[data-style-wit='brutalist'] .witB-list {
+  display: grid;
+  gap: 0;
+  border-block-start: var(--br-border);
+}
+.wit.witB-section[data-style-wit='brutalist'] .witB-row {
+  display: grid;
+  grid-template-columns: clamp(90px, 10vw, 160px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 2vw, 28px);
+  padding: clamp(12px, 1.4vw, 20px) var(--br-pad-inline);
+  border-block-end: var(--br-border);
+  background: none;
+  border-inline: 0;
+}
+.wit.witB-section[data-style-wit='brutalist'] .witB-photo {
+  inline-size: 100%;
+  aspect-ratio: var(--ar-square);
+}
+.wit.witB-section[data-style-wit='brutalist'] .witB-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 34px);
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+}
+.wit.witB-section[data-style-wit='brutalist'] .witB-role,
+.wit.witB-section[data-style-wit='brutalist'] .witB-body {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.5;
+}
+
+/* --- C: PEOPLE STATEMENT ------------------------------------------------- */
+.wit.witC-section[data-style-wit='brutalist'] .witC-block {
+  display: grid;
+  grid-template-columns: var(--br-col);
+  align-items: center;
+  gap: clamp(12px, 2vw, 32px);
+  padding: clamp(16px, 2vw, 32px) var(--br-pad-inline);
+  border-block-start: var(--br-border);
+  background: none;
+}
+.wit.witC-section[data-style-wit='brutalist'] .witC-photo-wrap {
+  grid-column: 1 / span 4;
+  border: 0;
+}
+.wit.witC-section[data-style-wit='brutalist'] .witC-photo {
+  inline-size: 100%;
+  aspect-ratio: var(--ar-portrait);
+}
+.wit.witC-section[data-style-wit='brutalist'] .witC-photo-initials {
+  font-size: clamp(48px, 6vw, 96px);
+  line-height: 1;
+  color: var(--br-signal);
+  background: var(--br-ink);
+  display: grid;
+  place-items: center;
+  aspect-ratio: var(--ar-portrait);
+}
+.wit.witC-section[data-style-wit='brutalist'] .witC-body {
+  grid-column: 6 / -1;
+  display: grid;
+  gap: clamp(8px, 1vw, 14px);
+}
+.wit.witC-section[data-style-wit='brutalist'] .witC-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(30px, 4.4vw, 76px);
+  line-height: 0.88;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.wit.witC-section[data-style-wit='brutalist'] .witC-role {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--br-signal-deep);
+}
+.wit.witC-section[data-style-wit='brutalist'] .witC-intro {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.55;
+  max-inline-size: 52ch;
+}
+
+/* =========================================================================
+   7.5 · FAQ
+   ========================================================================= */
+
+.faq[data-style-faq='brutalist'] .faqA-wrap,
+.faq[data-style-faq='brutalist'] .faqB-wrap,
+.faq[data-style-faq='brutalist'] .faqC-wrap { max-inline-size: none; margin: 0; padding: 0; }
+
+/* --- A: HARD FAQ — lineare Liste, Toggle bleibt ------------------------- */
+.faq.faqA-section[data-style-faq='brutalist'] .faqA-list {
+  display: grid;
+  gap: 0;
+  border-block-start: var(--br-border);
+}
+.faq.faqA-section[data-style-faq='brutalist'] .faqA-item {
+  border: 0;
+  border-block-end: var(--br-border);
+  background: none;
+  padding: 0;
+}
+.faq.faqA-section[data-style-faq='brutalist'] .faqA-q-btn {
+  inline-size: 100%;
+  min-block-size: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: clamp(12px, 1.4vw, 18px) var(--br-pad-inline);
+  background: none;
+  border: 0;
+  text-align: start;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(16px, 1.7vw, 24px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+  transition: background-color var(--br-dur) var(--br-ease);
+}
+.faq.faqA-section[data-style-faq='brutalist'] .faqA-q-btn:hover,
+.faq.faqA-section[data-style-faq='brutalist'] .faqA-item[data-open='true'] .faqA-q-btn {
+  background: var(--br-signal);
+}
+.faq.faqA-section[data-style-faq='brutalist'] .faqA-q-btn:focus-visible {
+  outline: var(--br-line-thick) solid var(--br-signal-deep);
+  outline-offset: -4px;
+}
+.faq.faqA-section[data-style-faq='brutalist'] .faqA-panel-inner,
+.faq.faqA-section[data-style-faq='brutalist'] .faqA-answer {
+  padding: 0 var(--br-pad-inline) clamp(14px, 1.6vw, 22px);
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1vw, 16px);
+  line-height: 1.55;
+  max-inline-size: 70ch;
+}
+
+/* --- B: QUESTION GRID ---------------------------------------------------- */
+.faq.faqB-section[data-style-faq='brutalist'] .faqB-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  border-block-start: var(--br-border);
+}
+.faq.faqB-section[data-style-faq='brutalist'] .faqB-card {
+  display: grid;
+  grid-template-columns: clamp(48px, 5vw, 80px) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(10px, 1.4vw, 20px);
+  padding: clamp(16px, 2vw, 28px) var(--br-pad-inline);
+  border: 0;
+  border-block-end: var(--br-border);
+  border-inline-end: var(--br-border);
+  background: none;
+  box-shadow: none;
+}
+.faq.faqB-section[data-style-faq='brutalist'] .faqB-card:nth-child(2n) { border-inline-end: 0; }
+.faq.faqB-section[data-style-faq='brutalist'] .faqB-num {
+  font-size: clamp(22px, 2.4vw, 36px);
+  line-height: 1;
+}
+.faq.faqB-section[data-style-faq='brutalist'] .faqB-q {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(17px, 1.8vw, 26px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.faq.faqB-section[data-style-faq='brutalist'] .faqB-a {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.55;
+  grid-column: 2;
+}
+
+/* --- C: BIG QUESTIONS ---------------------------------------------------- */
+.faq.faqC-section[data-style-faq='brutalist'] .faqC-list {
+  display: grid;
+  gap: 0;
+  border-block-start: var(--br-border);
+}
+.faq.faqC-section[data-style-faq='brutalist'] .faqC-item {
+  display: grid;
+  grid-template-columns: clamp(56px, 6vw, 96px) minmax(0, 6fr) minmax(0, 5fr);
+  align-items: baseline;
+  gap: clamp(12px, 2vw, 32px);
+  padding: clamp(16px, 2vw, 30px) var(--br-pad-inline);
+  border-block-end: var(--br-border);
+  background: none;
+  border-inline: 0;
+}
+.faq.faqC-section[data-style-faq='brutalist'] .faqC-num {
+  font-size: clamp(24px, 2.6vw, 40px);
+  line-height: 1;
+}
+.faq.faqC-section[data-style-faq='brutalist'] .faqC-q,
+.faq.faqC-section[data-style-faq='brutalist'] .faqC-q-col {
+  font-family: var(--font-display);
+  font-weight: 800;
+  /* Begrenzt: zehn Fragen dürfen keine zehn Bildschirme ergeben. */
+  font-size: clamp(22px, 2.8vw, 46px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+.faq.faqC-section[data-style-faq='brutalist'] .faqC-a {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.55;
+}
+
+/* =========================================================================
+   7.6 · HOCHZEITS-ABC
+   ========================================================================= */
+
+.abc[data-style-abc='brutalist'] .abcA-wrap,
+.abc[data-style-abc='brutalist'] .abcB-wrap,
+.abc[data-style-abc='brutalist'] .abcC-wrap { max-inline-size: none; margin: 0; padding: 0; }
+
+/* --- A: INDEX ------------------------------------------------------------ */
+.abc.abcA-section[data-style-abc='brutalist'] .abcA-list {
+  display: grid;
+  gap: 0;
+  border-block-start: var(--br-border);
+}
+.abc.abcA-section[data-style-abc='brutalist'] .abcA-item {
+  display: grid;
+  grid-template-columns: clamp(56px, 6vw, 96px) minmax(0, 1fr);
+  align-items: baseline;
+  gap: clamp(12px, 2vw, 28px);
+  padding: clamp(12px, 1.4vw, 20px) var(--br-pad-inline);
+  border-block-end: var(--br-border);
+  background: none;
+  border-inline: 0;
+}
+.abc.abcA-section[data-style-abc='brutalist'] .abcA-letter {
+  font-size: clamp(30px, 3.4vw, 56px);
+  line-height: 0.9;
+  color: var(--br-ink);
+}
+.abc.abcA-section[data-style-abc='brutalist'] .abcA-term {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(16px, 1.7vw, 24px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.abc.abcA-section[data-style-abc='brutalist'] .abcA-text,
+.abc.abcA-section[data-style-abc='brutalist'] .abcA-body {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.55;
+  max-inline-size: 70ch;
+}
+
+/* --- B: ALPHABET GRID ---------------------------------------------------- */
+.abc.abcB-section[data-style-abc='brutalist'] .abcB-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  border-block-start: var(--br-border);
+}
+.abc.abcB-section[data-style-abc='brutalist'] .abcB-card {
+  display: grid;
+  gap: 6px;
+  padding: clamp(14px, 1.8vw, 24px) var(--br-pad-inline);
+  border: 0;
+  border-block-end: var(--br-border);
+  border-inline-end: var(--br-border);
+  background: none;
+  box-shadow: none;
+}
+.abc.abcB-section[data-style-abc='brutalist'] .abcB-card:nth-child(3n) { border-inline-end: 0; }
+.abc.abcB-section[data-style-abc='brutalist'] .abcB-badge {
+  font-size: clamp(28px, 3vw, 48px);
+  line-height: 1;
+  justify-self: start;
+}
+.abc.abcB-section[data-style-abc='brutalist'] .abcB-term {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(16px, 1.7vw, 24px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.abc.abcB-section[data-style-abc='brutalist'] .abcB-text {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.55;
+}
+
+/* --- C: LETTER IMPACT ---------------------------------------------------- */
+.abc.abcC-section[data-style-abc='brutalist'] .abcC-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: clamp(10px, 1.2vw, 16px) var(--br-pad-inline);
+  border-block: var(--br-border);
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.abc.abcC-section[data-style-abc='brutalist'] .abcC-groups { display: grid; gap: 0; }
+.abc.abcC-section[data-style-abc='brutalist'] .abcC-group {
+  display: grid;
+  grid-template-columns: clamp(80px, 10vw, 180px) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(12px, 2vw, 32px);
+  padding: clamp(14px, 1.8vw, 26px) var(--br-pad-inline);
+  border-block-end: var(--br-border);
+  background: none;
+}
+.abc.abcC-section[data-style-abc='brutalist'] .abcC-group-letter {
+  font-size: clamp(56px, 8vw, 150px);
+  line-height: 0.8;
+  color: var(--br-signal);
+  -webkit-text-stroke: 0;
+}
+.abc.abcC-section[data-style-abc='brutalist'] .abcC-entries { display: grid; gap: clamp(8px, 1vw, 14px); }
+.abc.abcC-section[data-style-abc='brutalist'] .abcC-entry {
+  border: 0;
+  padding: 0;
+  background: none;
+}
+.abc.abcC-section[data-style-abc='brutalist'] .abcC-term {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(16px, 1.7vw, 24px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.abc.abcC-section[data-style-abc='brutalist'] .abcC-text {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.55;
+  max-inline-size: 70ch;
+}
+
+/* =========================================================================
+   7.7 · SERVICE — MOBIL
+   Harte Kanten bleiben; die Raster gehen auf eine oder zwei Spuren, große
+   Schaugrößen werden geclampt, Zeilen werden zu Blöcken.
+   ========================================================================= */
+
+@media (max-width: 900px) {
+  .tl.tlA-section[data-style-tl='brutalist'] .tlA-cards > li,
+  .tl.tlA-section[data-style-tl='brutalist'] .tlA-cards > div,
+  .acc.accA-section[data-style-acc='brutalist'] .accA-card,
+  .acc.accB-section[data-style-acc='brutalist'] .accB-list > *,
+  .wit.witB-section[data-style-wit='brutalist'] .witB-row,
+  .faq.faqC-section[data-style-faq='brutalist'] .faqC-item,
+  .abc.abcC-section[data-style-abc='brutalist'] .abcC-group {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  .acc.accA-section[data-style-acc='brutalist'] .accA-photo,
+  .wit.witB-section[data-style-wit='brutalist'] .witB-photo { aspect-ratio: var(--ar-wide); }
+
+  .tl.tlB-section[data-style-tl='brutalist'] li { grid-template-columns: minmax(0, 1fr); }
+  .tl.tlB-section[data-style-tl='brutalist'] .tlB-event-time,
+  .tl.tlB-section[data-style-tl='brutalist'] .tlB-event-content { grid-column: 1; }
+  .tl.tlB-section[data-style-tl='brutalist'] .tlB-event-time {
+    border-inline-end: 0;
+    border-block-end: var(--br-border);
+  }
+  .tl.tlC-section[data-style-tl='brutalist'] .tlC-row { grid-template-columns: minmax(0, 1fr); }
+
+  .dir.dirA-section[data-style-dir='brutalist'] .dirA-wrap,
+  .dir.dirB-section[data-style-dir='brutalist'] .dirB-grid,
+  .dir.dirC-section[data-style-dir='brutalist'] .dirC-block,
+  .acc.accC-section[data-style-acc='brutalist'] .accC-grid,
+  .wit.witC-section[data-style-wit='brutalist'] .witC-block {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dir.dirA-section[data-style-dir='brutalist'] .dirA-map { border-inline-end: 0; border-block-end: var(--br-border); }
+  .dir.dirB-section[data-style-dir='brutalist'] .dirB-list,
+  .dir.dirB-section[data-style-dir='brutalist'] .dirB-mapwrap,
+  .dir.dirC-section[data-style-dir='brutalist'] .dirC-text,
+  .dir.dirC-section[data-style-dir='brutalist'] .dirC-mapwrap,
+  .acc.accC-section[data-style-acc='brutalist'] .accC-list,
+  .acc.accC-section[data-style-acc='brutalist'] .accC-mapwrap,
+  .wit.witC-section[data-style-wit='brutalist'] .witC-photo-wrap,
+  .wit.witC-section[data-style-wit='brutalist'] .witC-body {
+    grid-column: 1;
+    border-inline: 0;
+  }
+  .wit.witA-section[data-style-wit='brutalist'] .witA-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .faq.faqB-section[data-style-faq='brutalist'] .faqB-grid { grid-template-columns: minmax(0, 1fr); }
+  .faq.faqB-section[data-style-faq='brutalist'] .faqB-card { border-inline-end: 0; }
+  .abc.abcB-section[data-style-abc='brutalist'] .abcB-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .abc.abcB-section[data-style-abc='brutalist'] .abcB-card:nth-child(3n) { border-inline-end: var(--br-border); }
+  .abc.abcB-section[data-style-abc='brutalist'] .abcB-card:nth-child(2n) { border-inline-end: 0; }
+}
+
+@media (max-width: 600px) {
+  .wedding-site-wrapper[data-style='brutalist'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.tl-title, .dir-title, .acc-title, .wit-title, .faq-title, .abc-title) {
+    font-size: clamp(26px, 8.5vw, 40px);
+  }
+  .tl.tlC-section[data-style-tl='brutalist'] .tlC-uhr,
+  .tl.tlC-section[data-style-tl='brutalist'] .tlC-time { font-size: clamp(34px, 12vw, 60px); }
+  .dir.dirC-section[data-style-dir='brutalist'] .dir-name { font-size: clamp(28px, 9.5vw, 48px); }
+  .wit.witC-section[data-style-wit='brutalist'] .witC-name { font-size: clamp(24px, 8.5vw, 42px); }
+  .faq.faqC-section[data-style-faq='brutalist'] .faqC-q { font-size: clamp(20px, 7vw, 32px); }
+  .abc.abcC-section[data-style-abc='brutalist'] .abcC-group-letter { font-size: clamp(44px, 16vw, 80px); }
+  .wit.witA-section[data-style-wit='brutalist'] .witA-grid { grid-template-columns: minmax(0, 1fr); }
+  .abc.abcB-section[data-style-abc='brutalist'] .abcB-grid { grid-template-columns: minmax(0, 1fr); }
+  .abc.abcB-section[data-style-abc='brutalist'] .abcB-card { border-inline-end: 0; }
 }
