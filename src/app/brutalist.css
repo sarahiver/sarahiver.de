@@ -909,6 +909,9 @@
   margin: 0;
   padding-inline: clamp(16px, 2vw, 32px);
 }
+/* Accessibility: Signal-Deep liegt auf Paper bei 4,2:1 — für kleinen Text zu
+   wenig. Kleine Meta-Labels stehen deshalb in Ink (16,4:1); Signal-Deep
+   bleibt großen Nummern und Buchstaben vorbehalten. */
 .ls.lsC[data-style-ls='brutalist'] .lsC-eyebrow {
   grid-row: 1;
   padding-block: clamp(16px, 2vw, 28px) 8px;
@@ -916,7 +919,7 @@
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--br-signal-deep);
+  color: var(--br-ink);
 }
 .ls.lsC[data-style-ls='brutalist'] .lsC-title {
   grid-row: 2;
@@ -2326,7 +2329,7 @@
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--br-signal-deep);
+  color: var(--br-ink);
 }
 .wit.witB-section[data-style-wit='brutalist'] .witB-actions {
   align-items: center;
@@ -2398,7 +2401,7 @@
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--br-signal-deep);
+  color: var(--br-ink);
 }
 .wit.witC-section[data-style-wit='brutalist'] .witC-intro {
   font-family: var(--font-body);
@@ -2556,7 +2559,7 @@
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--br-signal-deep);
+  color: var(--br-ink);
 }
 .faq.faqC-section[data-style-faq='brutalist'] .faqC-q {
   font-family: var(--font-display);
@@ -2894,4 +2897,603 @@
   .wit.witC-section[data-style-wit='brutalist'] .witC-name { font-size: clamp(24px, 8.5vw, 42px); }
   .abc.abcB-section[data-style-abc='brutalist'] .abcB-grid { grid-template-columns: minmax(0, 1fr); }
   .abc.abcB-section[data-style-abc='brutalist'] .abcB-card { border-inline-end: 0; }
+}
+
+/* =========================================================================
+   8 · INTERAKTION — Phase 3
+   -------------------------------------------------------------------------
+   Geschenke, RSVP, Gästebuch, Musikwünsche, Foto-Upload.
+
+   Diese Bereiche sind keine Plakate: Härte kommt aus Typografie, Kanten,
+   Raster und Signalflächen — nie aus schlechter Bedienbarkeit. Deshalb ein
+   gemeinsames Formularsystem für alle fünf, mit 44px-Trefferflächen,
+   16px-Eingaben, 4px-Fokus und Fehlern, die Text UND Fläche tragen.
+   ========================================================================= */
+
+/* --- Gemeinsames Formularsystem ----------------------------------------- */
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift, .rsvp, .gb, .mw, .up) :where(*) {
+  border-radius: 0;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-input, .gb-input, .gb-textarea, .mw-input, .up-input, .rv-input, .rv-textarea, .rv-code) {
+  inline-size: 100%;
+  min-block-size: 48px;
+  padding: 10px 12px;
+  background: var(--br-paper);
+  color: var(--br-ink);
+  border: var(--br-border);
+  border-radius: 0;
+  box-shadow: none;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.3;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-input, .gb-input, .gb-textarea, .mw-input, .up-input, .rv-input, .rv-textarea, .rv-code):focus,
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-input, .gb-input, .gb-textarea, .mw-input, .up-input, .rv-input, .rv-textarea, .rv-code):focus-visible {
+  outline: var(--br-line-thick) solid var(--br-signal);
+  outline-offset: 0;
+  border-color: var(--br-ink);
+  box-shadow: none;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-field-label, .gb-field-label, .mw-field-label, .up-field-label, .rv-label) {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.rv-hint, .rv-optional, .rv-count, .mw-hint, .gb-mod-hint, .up-privacy) {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--br-ink);
+  opacity: 1;
+}
+/* Fehler: Signalkante, Ink-Text, zusätzlich eine Marke — nie Farbe allein. */
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-modal-error, .gb-error, .mw-error, .up-error, .rv-error, .rv-alert) {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--br-ink);
+  background: var(--br-signal);
+  border: 0;
+  padding: 8px 12px;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-modal-error, .gb-error, .mw-error, .up-error, .rv-error, .rv-alert)::before {
+  content: 'ACHTUNG — ';
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+}
+/* Knöpfe: harte Rechtecke mit Versatzschatten, 48px hoch. */
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-btn, .gb-btn, .mw-btn, .up-btn, .rv-button--primary) {
+  min-block-size: 48px;
+  padding: 0 clamp(18px, 2vw, 28px);
+  background: var(--br-signal);
+  color: var(--br-ink);
+  border: var(--br-border);
+  border-radius: 0;
+  box-shadow: var(--br-shift) var(--br-shift) 0 0 var(--br-ink);
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transform: none;
+  transition: transform var(--br-dur) var(--br-ease), background-color var(--br-dur) var(--br-ease),
+    color var(--br-dur) var(--br-ease), box-shadow var(--br-dur) var(--br-ease);
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-btn, .gb-btn, .mw-btn, .up-btn, .rv-button--primary):hover:not(:disabled) {
+  background: var(--br-ink);
+  color: var(--br-paper);
+  transform: translate(var(--br-shift), var(--br-shift));
+  box-shadow: 0 0 0 0 var(--br-ink);
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-btn, .gb-btn, .mw-btn, .up-btn, .rv-button--primary):disabled {
+  background: var(--br-grey);
+  color: var(--br-ink);
+  box-shadow: none;
+  opacity: 1;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-btn, .gb-btn, .mw-btn, .up-btn, .rv-button--primary, .gift-btn-out, .gift-iban-copy):focus-visible {
+  outline: var(--br-line-thick) solid var(--br-signal-deep);
+  outline-offset: 2px;
+}
+/* Sekundäre Aktionen: Outline statt Fläche. */
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-btn-out, .gift-iban-copy, .rv-button--quiet, .gb-success-link, .up-success-link) {
+  min-block-size: 44px;
+  padding: 0 14px;
+  background: var(--br-paper);
+  color: var(--br-ink);
+  border: var(--br-border);
+  border-radius: 0;
+  box-shadow: none;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color var(--br-dur) var(--br-ease), color var(--br-dur) var(--br-ease);
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-btn-out, .gift-iban-copy, .rv-button--quiet):hover:not(:disabled) {
+  background: var(--br-ink);
+  color: var(--br-paper);
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-btn, .gb-btn, .mw-btn, .up-btn, .gift-btn-out, .gift-iban-copy) svg { display: none; }
+
+/* Kopfzone wie in den Service-Bereichen. */
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift, .rsvp, .gb, .mw, .up) {
+  padding: 0;
+  background: var(--br-paper);
+  color: var(--br-ink);
+  border-block-end: var(--br-border-thick);
+  text-align: start;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift-head, .gb-head, .mw-head, .up-head, .rv-head) {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  text-align: start;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift-eyebrow, .gb-eyebrow, .mw-eyebrow, .up-eyebrow, .rv-kicker) {
+  display: block;
+  margin: 0;
+  padding: 12px var(--br-pad-inline);
+  background: var(--br-ink);
+  color: var(--br-paper);
+  border-block-end: var(--br-border);
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift-title, .gb-title, .mw-title, .up-title, .rv-title) {
+  margin: 0;
+  padding: clamp(20px, 2.4vw, 40px) var(--br-pad-inline) 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(30px, 4.6vw, 68px);
+  line-height: 0.88;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+  max-inline-size: none;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift-title, .gb-title, .mw-title, .up-title, .rv-title) em {
+  font-style: normal;
+  background: var(--br-signal);
+  color: var(--br-ink);
+  padding: 0 0.12em;
+  transform: none;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift-desc, .gb-desc, .mw-desc, .up-desc, .rv-lead) {
+  margin: 0;
+  padding: clamp(12px, 1.4vw, 20px) var(--br-pad-inline) clamp(20px, 2.4vw, 36px);
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1vw, 16px);
+  line-height: 1.55;
+  color: var(--br-ink);
+  max-inline-size: 66ch;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.styled-bg-editorial, .styled-bg-brutalist, .styled-bereich-bg, .gift-head-ornament, .gb-head-ornament, .mw-head-ornament, .up-head-ornament) {
+  display: none;
+}
+
+/* =========================================================================
+   8.1 · GESCHENKE
+   -------------------------------------------------------------------------
+   Struktur (gelesen): A .giftA-list > .giftA-row(.is-reserved) mit
+   .giftA-body(.giftA-title-row(.giftA-title, .gift-amount), .giftA-desc) und
+   .giftA-actions; B .giftB-grid > .giftB-card(.giftB-img/.giftB-img-
+   placeholder, .giftB-body, .giftB-foot); C .giftC-grid > .giftC-collage +
+   .giftC-list > .giftC-row. Gemeinsam: .gift-btn-out (Reservieren, öffnet
+   das Modal), .gift-reserved-tag, .gift-iban-Block, .gift-empty, .gift-modal.
+   Reservierungslogik und Modal bleiben unverändert.
+   ========================================================================= */
+
+.gift[data-style-gift='brutalist'] .gift-amount {
+  display: inline-block;
+  background: var(--br-signal);
+  color: var(--br-ink);
+  border: 0;
+  border-radius: 0;
+  padding: 2px 8px;
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+/* Reserviert wird nicht über Farbe erzählt: Vermerk, Durchstreichung und
+   zurückgenommene Fläche zusammen. */
+.gift[data-style-gift='brutalist'] .gift-reserved-tag,
+.gift[data-style-gift='brutalist'] .giftB-reserved-by {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+  background: var(--br-grey);
+  padding: 4px 8px;
+}
+.gift[data-style-gift='brutalist'] :where(.giftA-row, .giftB-card, .giftC-row).is-reserved { opacity: 1; }
+.gift[data-style-gift='brutalist'] :where(.giftA-row, .giftB-card, .giftC-row).is-reserved :where(.giftA-title, .giftB-title, .giftC-title) {
+  text-decoration: line-through;
+  color: color-mix(in srgb, var(--br-ink) 55%, var(--br-paper));
+}
+/* Reisekasse: Mono-Block mit harter Aktion. */
+.gift[data-style-gift='brutalist'] .gift-iban {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 2vw, 32px);
+  background: var(--br-ink);
+  color: var(--br-paper);
+  border: 0;
+  border-radius: 0;
+  padding: clamp(16px, 2vw, 28px) var(--br-pad-inline);
+}
+.gift[data-style-gift='brutalist'] .gift-iban-label,
+.gift[data-style-gift='brutalist'] .gift-iban-holder {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--br-paper);
+}
+.gift[data-style-gift='brutalist'] .gift-iban-note {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(18px, 2vw, 30px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  font-style: normal;
+  color: var(--br-paper);
+}
+.gift[data-style-gift='brutalist'] .gift-iban-num {
+  font-family: var(--font-mono, monospace);
+  font-size: clamp(14px, 1.4vw, 20px);
+  letter-spacing: 0.12em;
+  color: var(--br-signal);
+}
+.gift[data-style-gift='brutalist'] .gift-iban-copy {
+  background: var(--br-signal);
+  color: var(--br-ink);
+  border-color: var(--br-ink);
+}
+.gift[data-style-gift='brutalist'] .gift-iban-copy:hover,
+.gift[data-style-gift='brutalist'] .gift-iban-copy.is-copied {
+  background: var(--br-paper);
+  color: var(--br-ink);
+}
+.gift[data-style-gift='brutalist'] .gift-empty {
+  display: block;
+  margin: 0;
+  padding: clamp(20px, 2.4vw, 36px) var(--br-pad-inline);
+  background: none;
+  border: 0;
+  border-block-start: var(--br-border);
+  text-align: start;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(18px, 2vw, 28px);
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+.gift[data-style-gift='brutalist'] .gift-empty-ornament,
+.gift[data-style-gift='brutalist'] .gift-ornament { display: none; }
+/* Reservierungsdialog in derselben Sprache. */
+.gift[data-style-gift='brutalist'] .gift-modal {
+  background: var(--br-paper);
+  border: var(--br-border-thick);
+  border-radius: 0;
+  box-shadow: var(--br-shift) var(--br-shift) 0 0 var(--br-ink);
+  padding: clamp(20px, 2.4vw, 36px);
+}
+.gift[data-style-gift='brutalist'] .gift-modal-eyebrow,
+.gift[data-style-gift='brutalist'] .gift-modal-esc {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+  text-align: start;
+}
+.gift[data-style-gift='brutalist'] .gift-modal-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.4vw, 34px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+.gift[data-style-gift='brutalist'] .gift-modal-sub {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* --- A: GIFT INDEX ------------------------------------------------------- */
+.gift.giftA-section[data-style-gift='brutalist'] .giftA-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+}
+.gift.giftA-section[data-style-gift='brutalist'] .giftA-list {
+  display: grid;
+  gap: 0;
+  background: none;
+  border: 0;
+  border-block-start: var(--br-border);
+  padding: 0;
+  counter-reset: wish;
+}
+.gift.giftA-section[data-style-gift='brutalist'] .giftA-row {
+  counter-increment: wish;
+  display: grid;
+  grid-template-columns: clamp(44px, 4vw, 72px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 2vw, 28px);
+  padding: clamp(12px, 1.4vw, 20px) var(--br-pad-inline);
+  border: 0;
+  border-block-end: var(--br-border);
+}
+.gift.giftA-section[data-style-gift='brutalist'] .giftA-row::before {
+  content: counter(wish, decimal-leading-zero);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 34px);
+  line-height: 1;
+  color: var(--br-signal-deep);
+}
+.gift.giftA-section[data-style-gift='brutalist'] .giftA-body { display: grid; gap: 6px; }
+.gift.giftA-section[data-style-gift='brutalist'] .giftA-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.gift.giftA-section[data-style-gift='brutalist'] .giftA-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(17px, 1.8vw, 26px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+.gift.giftA-section[data-style-gift='brutalist'] .giftA-desc {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.5;
+  color: var(--br-ink);
+  max-inline-size: 70ch;
+}
+.gift.giftA-section[data-style-gift='brutalist'] .giftA-actions {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+}
+
+/* --- B: GIFT CATALOGUE --------------------------------------------------- */
+.gift.giftB-section[data-style-gift='brutalist'] .giftB-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+}
+.gift.giftB-section[data-style-gift='brutalist'] .giftB-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  border-block-start: var(--br-border);
+  counter-reset: wishb;
+}
+.gift.giftB-section[data-style-gift='brutalist'] .giftB-card,
+.gift.giftB-section[data-style-gift='brutalist'] .giftB-card:hover {
+  counter-increment: wishb;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  padding: clamp(14px, 1.8vw, 26px) var(--br-pad-inline);
+  background: none;
+  border: 0;
+  border-block-end: var(--br-border);
+  border-inline-end: var(--br-border);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+  overflow: visible;
+}
+.gift.giftB-section[data-style-gift='brutalist'] .giftB-card:nth-child(3n) { border-inline-end: 0; }
+.gift.giftB-section[data-style-gift='brutalist'] .giftB-card::before {
+  content: counter(wishb, decimal-leading-zero);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(28px, 3.2vw, 52px);
+  line-height: 1;
+  color: var(--br-signal-deep);
+}
+.gift.giftB-section[data-style-gift='brutalist'] .giftB-img {
+  aspect-ratio: var(--ar-classic);
+  background: var(--br-grey);
+  border-radius: 0;
+  filter: grayscale(1) contrast(1.15);
+}
+.gift.giftB-section[data-style-gift='brutalist'] .giftB-img-placeholder { display: none; }
+.gift.giftB-section[data-style-gift='brutalist'] .giftB-body { padding: 0; display: grid; gap: 6px; }
+.gift.giftB-section[data-style-gift='brutalist'] .giftB-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(17px, 1.8vw, 26px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.gift.giftB-section[data-style-gift='brutalist'] .giftB-desc {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.5;
+  flex: none;
+}
+/* Variante B legt die Reisekasse als eigene Karte ins Raster. Als Kachel
+   zwischen den Wünschen liest sie sich falsch (und hell auf hell) — hier
+   wird sie ein Ink-Band über die volle Breite. */
+.gift.giftB-section[data-style-gift='brutalist'] .giftB-iban-card {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 2vw, 32px);
+  background: var(--br-ink);
+  color: var(--br-paper);
+  border: 0;
+  border-block-end: var(--br-border);
+  border-radius: 0;
+  padding: clamp(16px, 2vw, 28px) var(--br-pad-inline);
+}
+.gift.giftB-section[data-style-gift='brutalist'] .giftB-iban-card :where(.gift-iban-label, .gift-iban-holder, .gift-iban-note) {
+  color: var(--br-paper);
+}
+.gift.giftB-section[data-style-gift='brutalist'] .giftB-iban-card .gift-iban-num { color: var(--br-signal); }
+.gift.giftB-section[data-style-gift='brutalist'] .giftB-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+/* --- C: GIFT STATEMENT --------------------------------------------------- */
+.gift.giftC-section[data-style-gift='brutalist'] .giftC-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+}
+.gift.giftC-section[data-style-gift='brutalist'] .giftC-grid,
+.gift.giftC-section[data-style-gift='brutalist'] .giftC-grid.is-no-collage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  max-inline-size: none;
+  margin: 0;
+}
+/* Aus der gedrehten Collage wird ein harter Bildstreifen. */
+.gift.giftC-section[data-style-gift='brutalist'] .giftC-collage {
+  position: static;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: var(--br-gap);
+  aspect-ratio: var(--ar-band);
+  inline-size: 100%;
+  max-inline-size: none;
+  margin: 0;
+  background: var(--br-ink);
+  border-block-start: var(--br-border);
+}
+.gift.giftC-section[data-style-gift='brutalist'] .giftC-coll-img {
+  position: static;
+  inline-size: 100%;
+  block-size: 100%;
+  aspect-ratio: auto;
+  transform: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  filter: grayscale(1) contrast(1.2);
+}
+.gift.giftC-section[data-style-gift='brutalist'] .giftC-list {
+  display: grid;
+  gap: 0;
+  border-block-start: var(--br-border);
+  counter-reset: wishc;
+}
+.gift.giftC-section[data-style-gift='brutalist'] .giftC-row {
+  counter-increment: wishc;
+  display: grid;
+  grid-template-columns: clamp(48px, 5vw, 80px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 2vw, 32px);
+  padding: clamp(14px, 1.8vw, 24px) var(--br-pad-inline);
+  border: 0;
+  border-block-end: var(--br-border);
+}
+.gift.giftC-section[data-style-gift='brutalist'] .giftC-row::before {
+  content: counter(wishc, decimal-leading-zero);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.4vw, 38px);
+  line-height: 1;
+  color: var(--br-signal-deep);
+}
+.gift.giftC-section[data-style-gift='brutalist'] .giftC-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.gift.giftC-section[data-style-gift='brutalist'] .giftC-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.4vw, 38px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+.gift.giftC-section[data-style-gift='brutalist'] .giftC-desc {
+  font-family: var(--font-body);
+  font-style: normal;
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.5;
+  margin: 0;
+}
+.gift.giftC-section[data-style-gift='brutalist'] .giftC-actions {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+}
+
+@media (max-width: 900px) {
+  .gift.giftB-section[data-style-gift='brutalist'] .giftB-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gift.giftB-section[data-style-gift='brutalist'] .giftB-card:nth-child(3n) { border-inline-end: var(--br-border); }
+  .gift.giftB-section[data-style-gift='brutalist'] .giftB-card:nth-child(2n) { border-inline-end: 0; }
+}
+
+@media (max-width: 600px) {
+  .wedding-site-wrapper[data-style='brutalist'] :where(.gift-title, .gb-title, .mw-title, .up-title, .rv-title) {
+    font-size: clamp(26px, 8.5vw, 40px);
+  }
+  .gift.giftA-section[data-style-gift='brutalist'] .giftA-row,
+  .gift.giftC-section[data-style-gift='brutalist'] .giftC-row {
+    grid-template-columns: clamp(38px, 11vw, 56px) minmax(0, 1fr);
+    row-gap: 10px;
+  }
+  .gift.giftA-section[data-style-gift='brutalist'] .giftA-actions,
+  .gift.giftC-section[data-style-gift='brutalist'] .giftC-actions {
+    grid-column: 2;
+    justify-items: start;
+  }
+  .gift.giftB-section[data-style-gift='brutalist'] .giftB-grid { grid-template-columns: minmax(0, 1fr); }
+  .gift.giftB-section[data-style-gift='brutalist'] .giftB-card,
+  .gift.giftB-section[data-style-gift='brutalist'] .giftB-card:nth-child(2n) { border-inline-end: 0; }
+  .gift[data-style-gift='brutalist'] .gift-iban { grid-template-columns: minmax(0, 1fr); }
 }
