@@ -1,0 +1,399 @@
+/* =========================================================================
+   RSVP — STILNEUTRALE BASIS (Phase 3)
+   -------------------------------------------------------------------------
+   Gilt für die neue RSVP-Komponente (.rsvp.rv) in ALLEN acht Designs.
+
+   Dieses Blatt legt nur fest, was jedes Design braucht, damit das Formular
+   funktioniert und bedienbar ist: Anordnung, Touch-Größen, versteckte
+   Radio-Inputs mit sichtbarem Fokus, Fehlerplätze, Schriftgröße ≥ 16px in
+   Eingabefeldern (sonst zoomt iOS beim Fokus).
+
+   Aussehen kommt NICHT von hier. Wo ein Wert sichtbar wird, verbraucht er die
+   bestehenden --rsvp-*-Variablen aus design-system-v2.css — jedes Design
+   behält damit seine Buttons, Rahmen und Labels, ohne dass es angefasst
+   werden muss. Editorial setzt die eigene Darstellung in editorial.css.
+
+   Spezifität: alle Regeln tragen .rsvp.rv (0,2,0) + Klasse = (0,3,0).
+   Damit liegen sie sicher über den alten generischen Regeln (.rsvp input =
+   0,1,1; .rsvp form = 0,1,1) und unter den Design-Regeln
+   (.rsvp.rv[data-style-rsvp='x'] … = 0,4,0).
+
+   Import-Reihenfolge (layout.tsx): nach design-system-v2.css, vor
+   editorial.css.
+   ========================================================================= */
+
+.rsvp.rv {
+  position: relative;
+}
+
+.rsvp.rv .rv-sr {
+  position: absolute !important;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.rsvp.rv .rv-frame {
+  position: relative;
+  z-index: 5;
+  max-inline-size: 760px;
+  margin-inline: auto;
+}
+
+/* Die alte Kartenregel (`.rsvp form`: max-width, Rahmen, Polster, Schatten
+   aus --rsvp-form-*) passt nicht mehr: A/B/C bringen ihre eigene Breite und
+   ihr eigenes Raster mit — ein Kasten um das Kapitelraster von B oder um die
+   Schaugröße von C wäre Unsinn. Die übrigen sieben Designs behalten ihre
+   Handschrift über Labels, Eingaben, Schalter und Knöpfe.
+   Doppelter Klassenselektor, damit die Regel über `.rsvp form` (0,1,1) liegt. */
+.rsvp.rv .rv-form,
+.rsvp.rv .rv-gate {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.rsvp.rv .rv-form,
+.rsvp.rv .rv-details-fields,
+.rsvp.rv .rv-yes,
+.rsvp.rv .rv-chapter-main {
+  display: grid;
+  gap: 24px;
+  min-inline-size: 0;
+}
+
+.rsvp.rv .rv-head { margin-block-end: 32px; }
+.rsvp.rv .rv-title,
+.rsvp.rv .rv-statement {
+  font-family: var(--rsvp-title-font, var(--font-display));
+  font-weight: var(--rsvp-title-weight, 400);
+  line-height: 1.1;
+  margin: 0;
+  overflow-wrap: break-word;
+}
+.rsvp.rv .rv-kicker,
+.rsvp.rv .rv-lead,
+.rsvp.rv .rv-deadline { margin: 0; }
+.rsvp.rv .rv-lead { margin-block-start: 12px; max-inline-size: 60ch; }
+.rsvp.rv .rv-deadline { margin-block-start: 12px; }
+
+/* --- Felder -------------------------------------------------------------- */
+
+.rsvp.rv fieldset {
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.rsvp.rv .rv-field {
+  display: grid;
+  gap: 6px;
+  min-inline-size: 0;
+}
+.rsvp.rv .rv-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  margin: 0;
+  padding: 0;
+  font-family: var(--rsvp-label-font, var(--font-body));
+  letter-spacing: var(--rsvp-label-tracking, normal);
+  text-transform: var(--rsvp-label-transform, none);
+  color: var(--rsvp-label-color, inherit);
+  font-size: max(12px, var(--rsvp-label-size, 12px));
+}
+.rsvp.rv .rv-optional {
+  font-size: 0.92em;
+  opacity: 0.7;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.rsvp.rv .rv-hint,
+.rsvp.rv .rv-count {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  opacity: 0.78;
+}
+.rsvp.rv .rv-input {
+  display: block;
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: 44px;
+  font-size: 16px;
+  line-height: 1.4;
+  color: inherit;
+}
+.rsvp.rv .rv-textarea {
+  min-block-size: 120px;
+  resize: vertical;
+}
+.rsvp.rv .rv-error {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 600;
+}
+.rsvp.rv .rv-input[aria-invalid='true'] {
+  border-width: 2px;
+}
+
+/* Zwei Felder nebeneinander, mobil untereinander. */
+.rsvp.rv .rv-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+}
+@media (min-width: 600px) {
+  .rsvp.rv .rv-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* --- Entscheidungen (Radio) ---------------------------------------------
+   Der native Radio-Input bleibt im DOM und fokussierbar (Pfeiltasten, Space).
+   Er wird nur optisch ersetzt. Der Fokusring liegt auf der ganzen Option. */
+
+.rsvp.rv .rv-choice-options {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+@media (min-width: 600px) {
+  .rsvp.rv .rv-choice-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.rsvp.rv .rv-option,
+.rsvp.rv .rv-pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-block-size: 52px;
+  padding: 12px 16px;
+  cursor: pointer;
+  border: var(--rsvp-toggle-border, 1px solid currentColor);
+  border-radius: var(--rsvp-toggle-radius, 0);
+  background: var(--rsvp-toggle-bg, transparent);
+  font-family: var(--rsvp-toggle-font, inherit);
+  font-weight: var(--rsvp-toggle-weight, 500);
+  -webkit-tap-highlight-color: transparent;
+}
+.rsvp.rv .rv-pill { min-block-size: 44px; padding: 8px 14px; }
+.rsvp.rv .rv-option[data-checked='true'],
+.rsvp.rv .rv-pill[data-checked='true'] {
+  background: var(--rsvp-toggle-on-bg, currentColor);
+  color: var(--rsvp-toggle-on-color, inherit);
+  border-color: var(--rsvp-toggle-on-border-color, currentColor);
+}
+.rsvp.rv .rv-option-input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  /* Die alte Regel `.rsvp input` gibt jedem Input Rahmen und Polster. */
+  border: 0;
+  padding: 0;
+  min-block-size: 0;
+}
+.rsvp.rv .rv-option:has(.rv-option-input:focus-visible),
+.rsvp.rv .rv-pill:has(.rv-option-input:focus-visible) {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+/* Marker: Form statt Farbe — leerer Kreis vs. Kreis mit Punkt. */
+.rsvp.rv .rv-option-mark,
+.rsvp.rv .rv-pill-mark {
+  flex: none;
+  inline-size: 18px;
+  block-size: 18px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+.rsvp.rv .rv-pill-mark { inline-size: 14px; block-size: 14px; }
+.rsvp.rv [data-checked='true'] > .rv-option-mark,
+.rsvp.rv [data-checked='true'] > .rv-pill-mark {
+  background: radial-gradient(circle, currentColor 0 42%, transparent 46%);
+}
+.rsvp.rv .rv-option-body { display: grid; gap: 2px; min-inline-size: 0; }
+.rsvp.rv .rv-option-note { font-size: 14px; opacity: 0.75; font-weight: 400; }
+.rsvp.rv .rv-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* --- Personen ------------------------------------------------------------ */
+
+.rsvp.rv .rv-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  inline-size: max-content;
+}
+.rsvp.rv .rv-stepper-btn {
+  inline-size: 44px;
+  block-size: 44px;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  color: inherit;
+  background: none;
+  border: 1px solid currentColor;
+}
+.rsvp.rv .rv-stepper-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.rsvp.rv .rv-stepper-value {
+  min-inline-size: 7.5em;
+  text-align: center;
+}
+
+/* --- Begleitungen -------------------------------------------------------- */
+
+.rsvp.rv .rv-companion-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.rsvp.rv .rv-companion { display: grid; gap: 12px; min-inline-size: 0; }
+.rsvp.rv .rv-companion-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 12px;
+}
+.rsvp.rv .rv-companion-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-block-size: 44px;
+  padding: 0 4px;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.rsvp.rv .rv-companion-food {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+@media (min-width: 600px) {
+  .rsvp.rv .rv-companion-food { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.rsvp.rv .rv-food,
+.rsvp.rv .rv-companions,
+.rsvp.rv .rv-questions { display: grid; gap: 16px; min-inline-size: 0; }
+.rsvp.rv .rv-legend { padding: 0; margin: 0 0 12px; }
+.rsvp.rv .rv-food > .rv-legend,
+.rsvp.rv .rv-companions > .rv-legend { margin-block-end: 0; }
+
+/* --- Buttons und Meldungen ----------------------------------------------- */
+
+.rsvp.rv .rv-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-block-size: 48px;
+  cursor: pointer;
+  font: inherit;
+}
+.rsvp.rv .rv-button--primary {
+  background: var(--rsvp-submit-bg, var(--ink));
+  color: var(--rsvp-submit-color, var(--bg));
+  border: var(--rsvp-submit-border, 0);
+  border-radius: var(--rsvp-submit-radius, 0);
+  font-family: var(--rsvp-submit-font, inherit);
+  font-size: max(13px, var(--rsvp-submit-size, 14px));
+  letter-spacing: var(--rsvp-submit-tracking, normal);
+  text-transform: var(--rsvp-submit-transform, none);
+  font-weight: var(--rsvp-submit-weight, 500);
+  padding: var(--rsvp-submit-pad, 12px 28px);
+  box-shadow: var(--rsvp-submit-shadow, none);
+}
+.rsvp.rv .rv-button:disabled { cursor: progress; opacity: 0.72; }
+.rsvp.rv .rv-button--quiet {
+  min-block-size: 44px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.rsvp.rv .rv-button:focus-visible,
+.rsvp.rv .rv-stepper-btn:focus-visible,
+.rsvp.rv .rv-companion-toggle:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+.rsvp.rv .rv-submit { display: grid; gap: 12px; justify-items: start; }
+.rsvp.rv .rv-notice,
+.rsvp.rv .rv-alert,
+.rsvp.rv .rv-aside { margin: 0; font-size: 15px; line-height: 1.5; }
+.rsvp.rv .rv-alert { font-weight: 600; }
+
+/* --- Gate ---------------------------------------------------------------- */
+
+.rsvp.rv .rv-gate { display: grid; gap: 16px; }
+.rsvp.rv .rv-gate-lead { margin: 0; max-inline-size: 52ch; }
+.rsvp.rv .rv-gate-row { display: grid; gap: 12px; align-items: start; }
+@media (min-width: 600px) {
+  .rsvp.rv .rv-gate-row { grid-template-columns: minmax(0, 22rem) auto; }
+  /* Button auf Höhe des Eingabefelds, nicht des Labels. */
+  .rsvp.rv .rv-gate-button { margin-block-start: calc(1.4em + 6px); }
+}
+
+/* --- Kapitel (B) --------------------------------------------------------- */
+
+.rsvp.rv .rv-chapter { display: grid; gap: 16px; min-inline-size: 0; }
+.rsvp.rv .rv-chapter-side { min-inline-size: 0; }
+.rsvp.rv .rv-chapter-title,
+.rsvp.rv .rv-chapter-no,
+.rsvp.rv .rv-chapter-note { margin: 0; }
+
+/* --- Erfolg / Frist / Prüfen --------------------------------------------- */
+
+.rsvp.rv .rv-done { display: grid; gap: 16px; }
+.rsvp.rv .rv-done-title:focus { outline: none; }
+.rsvp.rv .rv-done-title:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.rsvp.rv .rv-done-kicker,
+.rsvp.rv .rv-done-text,
+.rsvp.rv .rv-done-meta,
+.rsvp.rv .rv-signature { margin: 0; }
+.rsvp.rv .rv-summary { margin: 0; display: grid; gap: 6px; }
+.rsvp.rv .rv-summary-row {
+  display: grid;
+  grid-template-columns: 7.5em minmax(0, 1fr);
+  gap: 12px;
+}
+.rsvp.rv .rv-summary dt,
+.rsvp.rv .rv-summary dd { margin: 0; min-inline-size: 0; overflow-wrap: anywhere; }
+.rsvp.rv .rv-done-foot { display: grid; gap: 8px; justify-items: start; }
+
+.rsvp.rv .rv-checking { min-block-size: 120px; }
+.rsvp.rv .rv-checking-text,
+.rsvp.rv .rv-closed-title,
+.rsvp.rv .rv-closed-text { margin: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rsvp.rv *,
+  .rsvp.rv *::before,
+  .rsvp.rv *::after { transition: none !important; animation: none !important; }
+}

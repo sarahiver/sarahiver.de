@@ -34,7 +34,8 @@
 [data-style-acc='editorial'],
 [data-style-wit='editorial'],
 [data-style-abc='editorial'],
-[data-style-faq='editorial'] {
+[data-style-faq='editorial'],
+[data-style-rsvp='editorial'] {
   --ed-rule: color-mix(in srgb, currentColor 16%, transparent);
   --ed-rule-strong: color-mix(in srgb, currentColor 42%, transparent);
   --ed-fill: color-mix(in srgb, currentColor 5%, transparent);
@@ -3685,4 +3686,740 @@
   .cdC-wrap[data-style-countdown='editorial'] .cdC-bar-row:first-child .cdC-bar-label-short {
     display: none;
   }
+}
+
+/* =========================================================================
+   RSVP — Phase 3
+   -------------------------------------------------------------------------
+   Die Rückmeldung ist die wichtigste Handlung der ganzen Seite. Sie darf
+   etwas mehr Raum haben als Anfahrt oder Übernachtung, aber sie bleibt ein
+   Formular: gesetzte Felder auf Haarlinien, Serif nur für Emotionales
+   (Titel, Frage, Dank, Zahlen), Inter für alles Funktionale (Labels,
+   Eingaben, Hinweise, Knöpfe).
+
+     A  CLASSIC     eine Achse, eine Spalte, Entscheidung zuerst
+     B  JOURNEY     Kapitel mit Randspalte: Nummer, Titel, Marginalie
+     C  STATEMENT   Frage als Schaugröße, Details danach und kompakt
+
+   Prüfstein ohne Farbe und Schrift: A ist ein Formular, B ist zweispaltig
+   gegliedert, C ist eine Entscheidung mit nachgeordnetem Formular.
+
+   Spezifität: durchgehend `.rsvp.rv[data-style-rsvp='editorial']` (0,4,0).
+   Die Mobilblöcke am Ende tragen dieselbe Stufe — Media Queries erhöhen die
+   Spezifität nicht, deshalb muss der Selektor gleich stark sein.
+   ========================================================================= */
+
+.rsvp.rv[data-style-rsvp='editorial'] {
+  position: relative;
+  padding-block: clamp(56px, 7vw, 104px);
+  padding-inline: var(--gutter);
+  background: var(--bg);
+  color: var(--ink);
+  /* Eigene Ableitungen aus den Editorial-Tokens. */
+  --rv-soft: color-mix(in srgb, currentColor 62%, transparent);
+  --rv-line: color-mix(in srgb, currentColor 28%, transparent);
+  --rv-accent: var(--accent-deep, var(--accent));
+}
+
+/* Die Dekorationsebene (Haarlinie + „Ed. 01") gehört zu den Bildsektionen.
+   Über einem Formular ist sie Zierrat und kollidiert mit dem Sektionskopf. */
+.rsvp.rv[data-style-rsvp='editorial'] .styled-bg-editorial { display: none; }
+
+/* --- Kopf ---------------------------------------------------------------- */
+
+.rsvp.rv[data-style-rsvp='editorial'] .rv-kicker {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  font-weight: 500;
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--rv-soft);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-7);
+  font-weight: var(--display-weight, 400);
+  font-style: var(--display-style, normal);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.015em;
+  margin-block-start: var(--sp-3);
+  max-inline-size: 22ch;
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-title em { font-style: italic; }
+.rsvp.rv[data-style-rsvp='editorial'] .rv-lead {
+  font-family: var(--font-body);
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  color: var(--rv-soft);
+  max-inline-size: 58ch;
+  margin-block-start: var(--sp-4);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-deadline {
+  font-family: var(--font-body);
+  font-size: var(--fs-2);
+  margin-block-start: var(--sp-5);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-deadline-label {
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--rv-soft);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-deadline-date { font-size: var(--fs-3); }
+
+/* --- Felder -------------------------------------------------------------- */
+
+.rsvp.rv[data-style-rsvp='editorial'] .rv-label {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: currentColor;
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-optional {
+  letter-spacing: 0.04em;
+  text-transform: none;
+  font-weight: 400;
+  color: var(--rv-soft);
+  opacity: 1;
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-hint,
+.rsvp.rv[data-style-rsvp='editorial'] .rv-count {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  line-height: 1.5;
+  color: var(--rv-soft);
+  opacity: 1;
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-input {
+  font-family: var(--font-body);
+  font-size: 16px;
+  padding: 10px 0;
+  border: 0;
+  border-bottom: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  transition: border-color 200ms ease;
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-input::placeholder { color: var(--rv-line); }
+.rsvp.rv[data-style-rsvp='editorial'] .rv-input:focus,
+.rsvp.rv[data-style-rsvp='editorial'] .rv-input:focus-visible {
+  outline: none;
+  border-bottom-color: currentColor;
+  /* Zweite Linie statt Rahmen: sichtbarer Fokus in der Formsprache. */
+  box-shadow: 0 1px 0 0 currentColor;
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-textarea {
+  border: 1px solid var(--ed-rule-strong);
+  padding: var(--sp-3);
+  min-block-size: 132px;
+  line-height: var(--lh-normal);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-textarea:focus,
+.rsvp.rv[data-style-rsvp='editorial'] .rv-textarea:focus-visible {
+  border-color: currentColor;
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+/* Fehler: Text plus doppelte Linie — nicht nur Farbe. */
+.rsvp.rv[data-style-rsvp='editorial'] .rv-error {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  font-weight: 500;
+  color: var(--rv-accent);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-input[aria-invalid='true'] {
+  border-bottom: 2px solid var(--rv-accent);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-textarea[aria-invalid='true'] {
+  border: 2px solid var(--rv-accent);
+}
+
+/* --- Entscheidung -------------------------------------------------------- */
+
+.rsvp.rv[data-style-rsvp='editorial'] .rv-legend {
+  font-family: var(--font-display);
+  font-size: var(--fs-6);
+  font-weight: var(--display-weight, 400);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.01em;
+  margin-block-end: var(--sp-4);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-legend--sub {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-block-end: var(--sp-3);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-option {
+  align-items: baseline;
+  gap: var(--sp-3);
+  padding: var(--sp-4) 0;
+  border: 0;
+  border-block-start: 1px solid var(--ed-rule);
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font-family: var(--font-body);
+  transition: border-color 200ms ease, opacity 200ms ease;
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-option[data-checked='true'] {
+  border-block-start: 1px solid currentColor;
+  background: none;
+  color: inherit;
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-option-mark {
+  position: relative;
+  top: 0.22em;
+  inline-size: 15px;
+  block-size: 15px;
+  border: 1px solid var(--ed-rule-strong);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-option[data-checked='true'] > .rv-option-mark {
+  border-color: currentColor;
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-option-label {
+  font-family: var(--font-display);
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-option-note {
+  font-size: var(--fs-3);
+  color: var(--rv-soft);
+  opacity: 1;
+}
+/* Auswahl-Pillen der individuellen Fragen: kleine gesetzte Schalter. */
+.rsvp.rv[data-style-rsvp='editorial'] .rv-pill {
+  border: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  padding: 8px 14px;
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-pill[data-checked='true'] {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
+/* Individuelle Fragen sind Sätze, keine Feldnamen. Eine 200 Zeichen lange
+   Frage in Versalien mit Laufweite ist unlesbar — deshalb hier gemischt
+   gesetzt, in Fließtextgröße. */
+.rsvp.rv[data-style-rsvp='editorial'] .rv-question > .rv-label,
+.rsvp.rv[data-style-rsvp='editorial'] .rv-question > .rv-label .rv-label-text {
+  font-size: var(--fs-4);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: var(--lh-normal);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-question > .rv-label {
+  max-inline-size: 52ch;
+  margin-block-end: var(--sp-2);
+}
+
+/* --- Personen, Begleitungen, Essen -------------------------------------- */
+
+.rsvp.rv[data-style-rsvp='editorial'] .rv-stepper-btn {
+  border: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-5);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-stepper-value {
+  font-family: var(--font-display);
+  font-size: var(--fs-5);
+  min-inline-size: 8em;
+  text-align: start;
+  padding-inline-start: var(--sp-3);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-stepper-unit {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  color: var(--rv-soft);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-companion-list {
+  border-block-start: 1px solid var(--ed-rule);
+  gap: 0;
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-companion {
+  border-block-end: 1px solid var(--ed-rule);
+  padding-block: var(--sp-4);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-companion-toggle {
+  font-family: var(--font-body);
+  font-size: var(--fs-2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rv-soft);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-companion-toggle-mark {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 18px;
+  block-size: 18px;
+  border: 1px solid var(--ed-rule-strong);
+}
+
+/* --- Knöpfe und Meldungen ------------------------------------------------ */
+
+.rsvp.rv[data-style-rsvp='editorial'] .rv-button--primary {
+  min-block-size: 52px;
+  padding: 0 var(--sp-6);
+  background: var(--ink);
+  color: var(--bg);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: background-color 200ms ease;
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-button--primary:hover:not(:disabled) {
+  background: var(--rv-accent);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-button--quiet {
+  font-family: var(--font-body);
+  font-size: var(--fs-2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rv-soft);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-notice,
+.rsvp.rv[data-style-rsvp='editorial'] .rv-alert,
+.rsvp.rv[data-style-rsvp='editorial'] .rv-aside {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  border-inline-start: 2px solid var(--ed-rule-strong);
+  padding-inline-start: var(--sp-3);
+  max-inline-size: 56ch;
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-alert {
+  border-inline-start-color: var(--rv-accent);
+  font-weight: 500;
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-checking-text,
+.rsvp.rv[data-style-rsvp='editorial'] .rv-closed-text {
+  font-family: var(--font-body);
+  font-size: var(--fs-4);
+  color: var(--rv-soft);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-closed-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-6);
+  line-height: var(--lh-snug);
+  margin-block-end: var(--sp-3);
+}
+
+/* --- Gate ---------------------------------------------------------------- */
+
+.rsvp.rv[data-style-rsvp='editorial'] .rv-gate { gap: var(--sp-5); }
+.rsvp.rv[data-style-rsvp='editorial'] .rv-gate-lead {
+  font-family: var(--font-body);
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  color: var(--rv-soft);
+  max-inline-size: 52ch;
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-code {
+  font-family: var(--font-body);
+  font-size: 17px;
+  letter-spacing: 0.04em;
+}
+
+/* --- Erfolg -------------------------------------------------------------- */
+
+.rsvp.rv[data-style-rsvp='editorial'] .rv-done-kicker {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--rv-soft);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-done-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-7);
+  font-weight: var(--display-weight, 400);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.015em;
+  max-inline-size: 24ch;
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-done-text {
+  font-family: var(--font-body);
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  max-inline-size: 48ch;
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-done-meta {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--rv-soft);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-summary {
+  border-block-start: 1px solid var(--ed-rule);
+  gap: 0;
+  max-inline-size: 42ch;
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-summary-row {
+  border-block-end: 1px solid var(--ed-rule);
+  padding-block: var(--sp-3);
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-summary dt {
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--rv-soft);
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-signature {
+  font-family: var(--font-display);
+  font-size: var(--fs-5);
+  font-style: italic;
+}
+.rsvp.rv[data-style-rsvp='editorial'] .rv-done-foot { gap: var(--sp-4); }
+
+/* =========================================================================
+   A · CLASSIC — eine Achse, schnell durch
+   ========================================================================= */
+
+.rsvp.rv-a[data-style-rsvp='editorial'] .rv-frame { max-inline-size: var(--wrap-narrow); }
+.rsvp.rv-a[data-style-rsvp='editorial'] .rv-head {
+  border-block-end: 1px solid var(--ed-rule);
+  padding-block-end: var(--sp-5);
+  margin-block-end: var(--sp-7);
+}
+.rsvp.rv-a[data-style-rsvp='editorial'] .rv-form { gap: var(--sp-6); }
+.rsvp.rv-a[data-style-rsvp='editorial'] .rv-choice-options { gap: 0 var(--sp-5); }
+.rsvp.rv-a[data-style-rsvp='editorial'] .rv-yes { gap: var(--sp-6); }
+.rsvp.rv-a[data-style-rsvp='editorial'] .rv-submit { margin-block-start: var(--sp-2); }
+
+/* =========================================================================
+   B · JOURNEY — Randspalte und Satzspalte, Kapitel auf Haarlinien
+   ========================================================================= */
+
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-frame { max-inline-size: var(--wrap); }
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--ed-gap);
+  align-items: end;
+  margin-block-end: var(--sp-8);
+}
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-head-main { grid-column: 1 / span 8; min-inline-size: 0; }
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-head-side {
+  grid-column: 10 / -1;
+  text-align: end;
+  min-inline-size: 0;
+}
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-head-couple {
+  margin: var(--sp-3) 0 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-3);
+  font-style: italic;
+  color: var(--rv-soft);
+}
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-form { gap: 0; }
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--ed-gap);
+  border-block-start: 1px solid var(--ed-rule-strong);
+  padding-block: var(--sp-7);
+}
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter-side {
+  grid-column: 1 / span 3;
+  min-inline-size: 0;
+}
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter-main {
+  grid-column: 5 / span 8;
+  min-inline-size: 0;
+  gap: var(--sp-6);
+}
+/* Gezielte Offsets: die Kapitel rücken gegeneinander, statt in einer Spur
+   zu stehen. Klassen statt :nth-child — die Kapitelzahl ändert sich mit der
+   Antwort, eine Positionsregel würde dabei wandern. */
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter--attend .rv-chapter-main { grid-column: 5 / span 7; }
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter--food .rv-chapter-main { grid-column: 6 / span 7; }
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter--more .rv-chapter-main { grid-column: 5 / span 8; }
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter--gate .rv-chapter-main { grid-column: 5 / span 7; }
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter-no {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--fs-6);
+  line-height: 1;
+  color: var(--rv-accent);
+}
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-5);
+  font-weight: var(--display-weight, 400);
+  line-height: var(--lh-snug);
+  margin-block-start: var(--sp-3);
+  max-inline-size: 16ch;
+}
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter-note {
+  font-family: var(--font-body);
+  font-size: var(--fs-2);
+  line-height: 1.55;
+  color: var(--rv-soft);
+  margin-block-start: var(--sp-3);
+  max-inline-size: 26ch;
+}
+/* In B steht die Entscheidung als Liste untereinander — mit Marginalnotiz
+   je Option. Das ist die redaktionelle Fassung derselben Wahl. */
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-choice-options {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-option {
+  display: grid;
+  grid-template-columns: 15px minmax(0, 1fr);
+  gap: var(--sp-4);
+  padding-block: var(--sp-4);
+}
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-option:last-child {
+  border-block-end: 1px solid var(--ed-rule);
+}
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-option-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--sp-4);
+}
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-option-note { text-align: end; }
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-done {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--ed-gap);
+  border-block-start: 1px solid var(--ed-rule-strong);
+  padding-block-start: var(--sp-7);
+}
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-done-side { grid-column: 1 / span 3; min-inline-size: 0; }
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-done-main {
+  grid-column: 5 / span 8;
+  min-inline-size: 0;
+  display: grid;
+  gap: var(--sp-5);
+}
+.rsvp.rv-b[data-style-rsvp='editorial'] .rv-done-side .rv-summary { margin-block-start: var(--sp-4); }
+
+/* =========================================================================
+   C · STATEMENT — die Frage ist die Komposition
+   ========================================================================= */
+
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-frame { max-inline-size: var(--wrap-wide); }
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  border-block-end: 1px solid var(--ed-rule);
+  padding-block-end: var(--sp-3);
+  margin-block-end: var(--sp-8);
+}
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-head .rv-deadline { margin: 0; }
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-statement {
+  font-family: var(--font-display);
+  font-size: var(--fs-8);
+  font-weight: var(--display-weight, 400);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin: 0;
+  max-inline-size: 18ch;
+}
+ /* Nur die Frage der Entscheidung ist Schaugröße — die Unter-Legenden
+    (Begleitungen, Essen) bleiben funktionale Mikrotypografie. */
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-choice > .rv-legend {
+  margin-block-end: var(--sp-6);
+  font-size: inherit;
+}
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-stage-lead {
+  font-size: var(--fs-5);
+  line-height: var(--lh-normal);
+  color: var(--rv-soft);
+  max-inline-size: 46ch;
+  margin: var(--sp-5) 0 var(--sp-7);
+}
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-choice-options {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ed-gap-lg);
+}
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-option {
+  align-items: start;
+  gap: var(--sp-4);
+  border-block-start: 2px solid var(--ed-rule);
+  padding-block: var(--sp-5) var(--sp-6);
+}
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-option[data-checked='true'] {
+  border-block-start: 2px solid currentColor;
+}
+/* Die nicht gewählte Antwort tritt zurück, sobald eine Wahl getroffen ist —
+   die Entscheidung bleibt sichtbar, ohne sich in den Vordergrund zu drängen. */
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-choice[data-decided='true'] .rv-option:not([data-checked='true']) {
+  opacity: 0.45;
+}
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-option-label {
+  font-size: clamp(26px, 1rem + 2.2vw, 46px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-option-mark {
+  inline-size: 20px;
+  block-size: 20px;
+  top: 0.42em;
+}
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-details {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--ed-gap);
+  border-block-start: 1px solid var(--ed-rule);
+  margin-block-start: var(--sp-8);
+  padding-block-start: var(--sp-7);
+}
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-details-lead {
+  grid-column: 1 / span 4;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  color: var(--rv-soft);
+  max-inline-size: 20ch;
+}
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-details-fields {
+  grid-column: 6 / span 7;
+  min-inline-size: 0;
+  gap: var(--sp-5);
+}
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-done { gap: var(--sp-5); max-inline-size: var(--wrap); }
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-done-title { max-inline-size: 14ch; }
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-done-text { font-size: var(--fs-5); max-inline-size: 40ch; }
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-stage--gate { display: grid; gap: var(--sp-7); }
+.rsvp.rv-c[data-style-rsvp='editorial'] .rv-stage--gate .rv-gate { max-inline-size: 42rem; }
+
+/* =========================================================================
+   RSVP — MOBIL
+   -------------------------------------------------------------------------
+   Eigene Komposition, keine geschrumpfte Desktopansicht. Gemeinsam: die
+   Achse bleibt links, Haarlinien tragen die Struktur weiter, funktionale
+   Texte werden NICHT kleiner (Labels 12px, Hinweise und Fehler 14–15px,
+   Eingaben 16px gegen das iOS-Zoomen).
+
+   Die Selektoren tragen dieselbe Stufe wie oben (0,4,0) — sonst gewinnen
+   die Desktopregeln, weil Media Queries keine Spezifität hinzufügen.
+   ========================================================================= */
+
+@media (max-width: 900px) {
+  /* B: aus Rand und Satz wird eine Kolumne. Die Kapitelzeile bleibt als
+     Zeile erhalten: Nummer und Titel nebeneinander, Notiz darunter. */
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-head { grid-template-columns: minmax(0, 1fr); gap: var(--sp-4); }
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-head-main,
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-head-side { grid-column: 1 / -1; text-align: start; }
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-4);
+    padding-block: var(--sp-6);
+  }
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter-side,
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter-main,
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter--attend .rv-chapter-main,
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter--food .rv-chapter-main,
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter--more .rv-chapter-main,
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter--gate .rv-chapter-main {
+    grid-column: 1 / -1;
+  }
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter-main { gap: var(--sp-5); }
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter-side {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: baseline;
+    gap: var(--sp-3);
+  }
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter-no { font-size: var(--fs-5); }
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter-title { margin-block-start: 0; max-inline-size: none; }
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter-note {
+    grid-column: 2;
+    margin-block-start: var(--sp-2);
+    max-inline-size: 42ch;
+  }
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-done {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-5);
+  }
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-done-side,
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-done-main { grid-column: 1 / -1; }
+
+  /* C: Entscheidung zuerst, dann eine Spalte. Die Frage bleibt Schaugröße,
+     aber die Details stehen nicht mehr versetzt. */
+  .rsvp.rv-c[data-style-rsvp='editorial'] .rv-details { grid-template-columns: minmax(0, 1fr); }
+  .rsvp.rv-c[data-style-rsvp='editorial'] .rv-details-lead,
+  .rsvp.rv-c[data-style-rsvp='editorial'] .rv-details-fields { grid-column: 1 / -1; }
+  .rsvp.rv-c[data-style-rsvp='editorial'] .rv-details-lead { max-inline-size: 30ch; }
+  .rsvp.rv-c[data-style-rsvp='editorial'] .rv-choice-options { gap: var(--sp-5); }
+}
+
+@media (max-width: 600px) {
+  .rsvp.rv[data-style-rsvp='editorial'] { padding-block: clamp(44px, 11vw, 64px); }
+
+  /* A: einspaltig, die beiden Antworten als zwei Zeilen auf Haarlinien —
+     zwei 50%-Spalten wären auf 320px zwei zu enge Kästen. */
+  .rsvp.rv-a[data-style-rsvp='editorial'] .rv-head {
+    padding-block-end: var(--sp-4);
+    margin-block-end: var(--sp-6);
+  }
+  .rsvp.rv-a[data-style-rsvp='editorial'] .rv-form { gap: var(--sp-5); }
+  .rsvp.rv-a[data-style-rsvp='editorial'] .rv-choice-options {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .rsvp.rv-a[data-style-rsvp='editorial'] .rv-option:last-child {
+    border-block-end: 1px solid var(--ed-rule);
+  }
+  .rsvp.rv-a[data-style-rsvp='editorial'] .rv-yes { gap: var(--sp-5); }
+
+  /* B: Kapitel enger, Notizen bleiben lesbar. */
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-chapter { padding-block: var(--sp-5); }
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-option-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-1);
+  }
+  .rsvp.rv-b[data-style-rsvp='editorial'] .rv-option-note { text-align: start; }
+
+  /* C: Frage etwas kleiner als die Formel für Desktop, Antworten gestapelt
+     und groß genug, um die Statement-Wirkung zu halten. */
+  .rsvp.rv-c[data-style-rsvp='editorial'] .rv-head { margin-block-end: var(--sp-6); }
+  .rsvp.rv-c[data-style-rsvp='editorial'] .rv-statement {
+    font-size: clamp(34px, 11vw, 52px);
+    max-inline-size: 14ch;
+  }
+  .rsvp.rv-c[data-style-rsvp='editorial'] .rv-stage-lead {
+    font-size: var(--fs-4);
+    margin: var(--sp-4) 0 var(--sp-6);
+  }
+  .rsvp.rv-c[data-style-rsvp='editorial'] .rv-choice-options {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .rsvp.rv-c[data-style-rsvp='editorial'] .rv-option {
+    padding-block: var(--sp-4) var(--sp-5);
+  }
+  .rsvp.rv-c[data-style-rsvp='editorial'] .rv-option-label { font-size: clamp(24px, 8vw, 34px); }
+  .rsvp.rv-c[data-style-rsvp='editorial'] .rv-option-mark { top: 0.35em; }
+  .rsvp.rv-c[data-style-rsvp='editorial'] .rv-details {
+    margin-block-start: var(--sp-6);
+    padding-block-start: var(--sp-5);
+  }
+  .rsvp.rv-c[data-style-rsvp='editorial'] .rv-done-text { font-size: var(--fs-4); }
 }

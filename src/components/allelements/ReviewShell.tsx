@@ -10,6 +10,11 @@ import {
 } from '@/lib/wedding-config';
 import type { ContentLoad } from '@/lib/allelements-data';
 import {
+  RSVP_REVIEW_LABEL,
+  RSVP_REVIEW_STATES,
+  type RsvpReviewState,
+} from '@/components/bereiche/RSVP/shared';
+import {
   buildSnapshot,
   captureNode,
   composeContactSheet,
@@ -42,6 +47,7 @@ interface Props {
   preset: ComponentVariant | null;
   variants: Record<BereichKey, ComponentVariant>;
   load: ContentLoad;
+  rsvpState: RsvpReviewState;
   order: BereichKey[];
   presetsLoaded: boolean;
   orderMatchesFunnel: boolean;
@@ -64,18 +70,20 @@ export default function ReviewShell(props: Props) {
   const [style, setStyle] = useState<StyleId>(props.style);
   const [viewport, setViewport] = useState(props.viewport);
   const [load, setLoad] = useState<ContentLoad>(props.load);
+  const [rsvpState, setRsvpState] = useState<RsvpReviewState>(props.rsvpState);
   const [preset, setPreset] = useState<ComponentVariant | null>(props.preset ?? 'a');
   const [variants, setVariants] = useState(props.variants);
   const [customOpen, setCustomOpen] = useState(props.preset === null);
 
   const src = useMemo(() => {
     const q = new URLSearchParams({ embed: '1', view, style, load });
+    if (rsvpState !== 'form') q.set('rsvp', rsvpState);
     if (view === 'full') {
       if (customOpen) q.set('variants', variantsToParam(variants));
       else q.set('config', preset ?? 'a');
     }
     return `/allelements?${q.toString()}`;
-  }, [view, style, load, preset, variants, customOpen]);
+  }, [view, style, load, preset, variants, customOpen, rsvpState]);
 
   const frameWidth = viewport === 'mobile' ? 390 : '100%';
 
@@ -90,9 +98,10 @@ export default function ReviewShell(props: Props) {
             style,
             load,
             config: v,
+            ...(rsvpState !== 'form' ? { rsvp: rsvpState } : {}),
           }).toString()}`,
       ),
-    [style, load],
+    [style, load, rsvpState],
   );
 
   /**
@@ -228,7 +237,9 @@ export default function ReviewShell(props: Props) {
         if (!node) throw new Error(`Vorschau ${key} ${variant} nicht gefunden`);
 
         const shot = await captureNode(node, { pixelRatio: 2 });
-        const base = fileBase([style, key, variant, viewport]);
+        const base = fileBase(
+          key === 'rsvp' ? [style, key, variant, rsvpState, viewport] : [style, key, variant, viewport],
+        );
         downloadDataUrl(shot.dataUrl, `${base}.png`);
         downloadJson(
           buildSnapshot({
@@ -255,7 +266,7 @@ export default function ReviewShell(props: Props) {
         setBusy(null);
       }
     },
-    [frameDoc, report, style, variants, viewport, viewportPx, src],
+    [frameDoc, report, style, variants, viewport, viewportPx, src, rsvpState],
   );
 
   const exportContactSheet = useCallback(async () => {
@@ -399,6 +410,21 @@ export default function ReviewShell(props: Props) {
                 onClick={() => setStyle(s)}
               >
                 {s}
+              </button>
+            ))}
+          </div>
+
+          <div className="ae-group ae-group--wrap" role="group" aria-label="RSVP-Zustand">
+            <span className="ae-group-label">RSVP</span>
+            {RSVP_REVIEW_STATES.map((st) => (
+              <button
+                key={st}
+                type="button"
+                className={`ae-btn ae-btn--mini${rsvpState === st ? ' is-on' : ''}`}
+                onClick={() => setRsvpState(st)}
+                title={`RSVP A/B/C im Zustand „${RSVP_REVIEW_LABEL[st]}"`}
+              >
+                {RSVP_REVIEW_LABEL[st]}
               </button>
             ))}
           </div>

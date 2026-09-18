@@ -17,6 +17,15 @@ import { loadRsvpSiteContext } from '@/lib/rsvp-server';
  *   2. Berechtigung (Cookie), sofern Schutz aktiv
  *   3. Eingabedaten, Wertebereiche, Längen
  *   4. erst dann schreiben — mit Service-Role, nie per öffentlichem Client
+ *
+ * Phase 3:
+ *   - Fehlerantworten zu einzelnen Feldern tragen `field` ('name' | 'attending'
+ *     | 'email'), damit das Formular die Meldung direkt am Feld zeigt. Die
+ *     Texte selbst sind unverändert.
+ *   - guests[] wird im Dashboard-Format gespeichert: Index 0 = Hauptperson,
+ *     ab Index 1 die Begleitungen (siehe lib/rsvp-data.ts, RsvpList.flatten,
+ *     addRsvp). Vorher landeten nur die Begleitungen im Array — das Dashboard
+ *     hätte die erste Begleitung als Hauptperson übersprungen.
  */
 
 export const runtime = 'nodejs';
@@ -106,12 +115,15 @@ export async function POST(request: Request) {
   // --- 3) Daten ---
   const name = str(body.name, MAX.name);
   if (name.length < 2) {
-    return NextResponse.json({ ok: false, error: 'Bitte gebt euren Namen an.' }, { status: 400 });
+    return NextResponse.json(
+      { ok: false, field: 'name', error: 'Bitte gebt euren Namen an.' },
+      { status: 400 },
+    );
   }
 
   if (typeof body.attending !== 'boolean') {
     return NextResponse.json(
-      { ok: false, error: 'Bitte sagt uns, ob ihr dabei seid.' },
+      { ok: false, field: 'attending', error: 'Bitte sagt uns, ob ihr dabei seid.' },
       { status: 400 },
     );
   }
@@ -120,7 +132,7 @@ export async function POST(request: Request) {
   const email = str(body.email, MAX.email).toLowerCase();
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json(
-      { ok: false, error: 'Diese E-Mail-Adresse sieht nicht richtig aus.' },
+      { ok: false, field: 'email', error: 'Diese E-Mail-Adresse sieht nicht richtig aus.' },
       { status: 400 },
     );
   }
@@ -137,7 +149,10 @@ export async function POST(request: Request) {
   const allergies = attending ? str(body.allergies, MAX.text) : '';
   const message = str(body.message, MAX.message);
 
-  const guests: { name: string; dietary: string; allergies: string }[] = [];
+  // Index 0 = Hauptperson (Dashboard-Format), danach die Begleitungen.
+  const guests: { name: string; dietary: string; allergies: string }[] = [
+    { name, dietary, allergies },
+  ];
   if (attending && Array.isArray(body.guests)) {
     for (const g of (body.guests as GuestIn[]).slice(0, MAX.guests)) {
       const gn = str(g?.name, MAX.name);
@@ -190,6 +205,7 @@ export async function POST(request: Request) {
         {
           ok: false,
           code: 'duplicate',
+          field: 'email',
           error: 'Unter dieser E-Mail-Adresse liegt uns schon eine Rückmeldung vor.',
         },
         { status: 409 },

@@ -365,6 +365,44 @@ export function buildContent(key: BereichKey, load: ContentLoad): Record<string,
         ],
       };
 
+    case 'rsvp':
+      // Dieselbe Content-Struktur wie aus dem Dashboard (RsvpEditor):
+      // title, description, deadline, ask_dietary, ask_allergies,
+      // custom_questions[]. Kurz: ohne Fragen. Lang: lange Frage + Auswahl.
+      return {
+        title: 'Eure Zusage',
+        description:
+          load === 'kurz'
+            ? ''
+            : load === 'lang'
+              ? 'Wir würden uns riesig freuen, wenn ihr dabei seid. Sagt uns bitte bis zum genannten Datum Bescheid — auch wenn es eine Absage ist, dann können wir besser planen und niemand wartet vergeblich auf euch.'
+              : 'Sagt uns bitte bis zum genannten Datum Bescheid, ob ihr dabei seid.',
+        deadline: '2027-05-01',
+        ask_dietary: true,
+        ask_allergies: true,
+        custom_questions:
+          load === 'kurz'
+            ? []
+            : load === 'lang'
+              ? [
+                  {
+                    id: 'q1',
+                    label:
+                      'Wir organisieren einen Shuttle vom Bahnhof Hamburg-Bergedorf zur Location und am späten Abend zurück in die Stadt — möchtet ihr einen Platz reservieren?',
+                    type: 'boolean',
+                    required: true,
+                  },
+                  {
+                    id: 'q2',
+                    label: 'Wann reist ihr an?',
+                    type: 'choice',
+                    options: ['Freitag', 'Samstag vormittags', 'Samstag direkt zur Trauung'],
+                  },
+                  { id: 'q3', label: 'Ein Lied, bei dem ihr sofort tanzt?', type: 'text' },
+                ]
+              : [{ id: 'q1', label: 'Kommt ihr zum Brunch am Sonntag?', type: 'boolean' }],
+      };
+
     default:
       // Bereich rendert mit seinen eigenen Defaults — wie eine neu angelegte Seite.
       return {};
@@ -391,4 +429,52 @@ export function buildBereich(
     is_active: true,
     content: buildContent(key, load),
   } as unknown as WeddingBereich;
+}
+
+/* -------------------------------------------------------------------------
+   RSVP — Beispielangaben für die Review-Zustände
+   -------------------------------------------------------------------------
+   Nur für /allelements (runtime.mode 'review'). Drei Längen wie überall:
+   kurz = eine Person, knapp; mittel = Paar; lang = lange Namen, fünf
+   Personen, lange Allergie- und Nachrichtentexte (> 1000 Zeichen).
+   ------------------------------------------------------------------------- */
+
+export function buildRsvpSample(load: ContentLoad) {
+  if (load === 'kurz') {
+    return {
+      name: 'Mia',
+      email: 'mia@example.de',
+      persons: 1,
+      guests: [],
+      dietary: '',
+      allergies: '',
+      message: '',
+    };
+  }
+  if (load === 'lang') {
+    return {
+      name: 'Katharina-Luise von Sonnenberg',
+      email: 'katharina-luise.von-sonnenberg@beispiel-kanzlei-hamburg.de',
+      persons: 5,
+      guests: [
+        { name: 'Maximilian-Johannes von Sonnenberg', dietary: 'vegetarisch', allergies: '' },
+        { name: 'Charlotte-Amelie von Sonnenberg', dietary: '', allergies: 'Laktoseintoleranz, keine Sahnesaucen' },
+        { name: 'Friedrich', dietary: 'Kinderteller', allergies: '' },
+        { name: '', dietary: '', allergies: '' },
+      ],
+      dietary: 'pescetarisch — Fisch ja, Fleisch nein',
+      allergies:
+        'Schwere Haselnuss- und Walnussallergie (auch Spuren), außerdem Sellerie. Wir haben ein Notfallset dabei, würden uns aber freuen, wenn die Küche Bescheid weiß.',
+      message: `${STORY_LONG} ${STORY_LONG}`,
+    };
+  }
+  return {
+    name: 'Johanna Albers',
+    email: 'johanna@example.de',
+    persons: 2,
+    guests: [{ name: 'Felix Albers', dietary: 'vegetarisch', allergies: '' }],
+    dietary: '',
+    allergies: 'Haselnüsse',
+    message: 'Wir freuen uns riesig auf euch beide und euren Tag!',
+  };
 }

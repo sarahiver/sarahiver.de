@@ -45,6 +45,7 @@ import WitnessesVariantA from '@/components/bereiche/Witnesses/WitnessesVariantA
 import WitnessesVariantB from '@/components/bereiche/Witnesses/WitnessesVariantB';
 import WitnessesVariantC from '@/components/bereiche/Witnesses/WitnessesVariantC';
 import BereichPlaceholder from '@/components/layout/BereichPlaceholder';
+import type { RsvpRuntime } from '@/components/bereiche/RSVP/shared';
 
 /**
  * BereichRenderer — wählt die richtige Komponente basierend auf
@@ -59,9 +60,16 @@ interface BereichRendererProps {
   bereich: WeddingBereich;
   tokens: EffectiveTokens;
   weddingSlug?: string;
+  /**
+   * Nur für RSVP: Laufzeitkontext. Fehlt er, läuft RSVP als öffentliche
+   * Seite (Access-Status, Gate, echter Submit). 'preview' darf ausschließlich
+   * serverseitig nach Besitzprüfung gesetzt werden (lib/rsvp-preview.ts),
+   * 'review' nur von /allelements.
+   */
+  rsvp?: RsvpRuntime;
 }
 
-export function BereichRenderer({ bereich, tokens, weddingSlug }: BereichRendererProps) {
+export function BereichRenderer({ bereich, tokens, weddingSlug, rsvp }: BereichRendererProps) {
   const { bereich_key, variant, content } = bereich;
   const props = { tokens, content };
 
@@ -95,9 +103,10 @@ export function BereichRenderer({ bereich, tokens, weddingSlug }: BereichRendere
 
   // === RSVP ===
   if (bereich_key === 'rsvp') {
-    if (variant === 'a') return <RsvpVariantA {...props} />;
-    if (variant === 'b') return <RsvpVariantB {...props} />;
-    if (variant === 'c') return <RsvpVariantC {...props} />;
+    const rsvpProps = { ...props, weddingSlug, runtime: rsvp };
+    if (variant === 'a') return <RsvpVariantA {...rsvpProps} />;
+    if (variant === 'b') return <RsvpVariantB {...rsvpProps} />;
+    if (variant === 'c') return <RsvpVariantC {...rsvpProps} />;
   }
 
   // === TIMELINE ===

@@ -198,7 +198,7 @@ export function isDeadlinePassed(deadline: string, now?: Date): boolean {
    ==================================================================== */
 
 /**
- * Bereitet den Submit-Payload vor (was an Supabase geschickt wird).
+ * Bereitet den Submit-Payload vor (Wire-Format für POST /api/rsvp, ohne slug).
  * Passend zum sarahiver.com Excel-Export-Schema:
  *   - Hauptperson in Top-Level-Feldern
  *   - guests[] = nur Begleitungen (ohne Hauptperson)
@@ -227,6 +227,123 @@ export function buildSubmitPayload(state: RsvpState, config: RsvpConfig) {
     message: synced.message.trim(),
     guests: synced.attending ? synced.guests : [],
   };
+}
+
+/* ====================================================================
+   Grenzen und Validierung
+   --------------------------------------------------------------------
+   Spiegel der serverseitigen Grenzen aus /api/rsvp. Die Clientprüfung ist
+   nur UX: Fehler sollen sofort am Feld stehen statt nach einem Roundtrip.
+   Maßgeblich bleibt der Server — er prüft alles erneut.
+   ==================================================================== */
+
+export const RSVP_LIMITS = {
+  name: 100,
+  email: 160,
+  text: 500,
+  message: 2000,
+  personsMax: 20,
+} as const;
+
+/** Dieselbe Prüfung wie der Server — nicht strenger, sonst lehnt der Client ab, was der Server nimmt. */
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/**
+ * Fehler-Schlüssel sind stabil und entsprechen den Feld-IDs in RsvpFields:
+ *   attending · name · email · message · cq-<questionId>
+ */
+export type RsvpErrors = Partial<Record<string, string>>;
+
+/** Reihenfolge für „Fokus auf das erste fehlerhafte Feld". */
+export function errorOrder(config: RsvpConfig): string[] {
+  return ['attending', 'name', 'email', ...config.custom_questions.map((q) => `cq-${q.id}`), 'message'];
+}
+
+export function validateRsvp(state: RsvpState, config: RsvpConfig): RsvpErrors {
+  const errors: RsvpErrors = {};
+
+  if (state.attending === null) {
+    errors.attending = 'Bitte wählt aus, ob ihr dabei seid.';
+  }
+  if (state.name.trim().length < 2) {
+    errors.name = 'Bitte gebt euren Namen an.';
+  }
+  const email = state.email.trim();
+  if (email && !EMAIL_RE.test(email)) {
+    errors.email = 'Diese E-Mail-Adresse sieht noch nicht vollständig aus.';
+  }
+  if (state.message.length > RSVP_LIMITS.message) {
+    errors.message = `Die Nachricht darf höchstens ${RSVP_LIMITS.message} Zeichen haben.`;
+  }
+  // Individuelle Fragen gibt es nur bei einer Zusage — bei einer Absage
+  // verwirft der Server die Antworten ohnehin.
+  if (state.attending === true) {
+    for (const q of config.custom_questions) {
+      if (q.required && !(state.custom_answers[q.id] ?? '').trim()) {
+        errors[`cq-${q.id}`] = 'Bitte beantwortet diese Frage.';
+      }
+    }
+  }
+  return errors;
+}
+
+export function firstNameOf(name: string): string {
+  return name.trim().split(/\s+/)[0] ?? '';
+}
+
+/* ====================================================================
+   Laufzeitkontext
+   --------------------------------------------------------------------
+   Wo läuft die Komponente? Das bestimmt NUR, ob echte Requests gesendet
+   werden — nie, ob der Server etwas erlaubt.
+
+     live     öffentliche Hochzeitsseite: Access-Status abfragen, Gate,
+              echter Submit
+     preview  Owner-Vorschau im Dashboard. Wird ausschließlich serverseitig
+              gesetzt (lib/rsvp-preview.ts: Session + Besitz). Formular
+              entsperrt, Absenden wird simuliert und nicht gespeichert.
+     review   /allelements: keine Requests, Zustände per reviewState
+   ==================================================================== */
+
+export type RsvpMode = 'live' | 'preview' | 'review';
+
+export const RSVP_REVIEW_STATES = [
+  'form',
+  'gate',
+  'gate-wrong',
+  'form-yes',
+  'form-no',
+  'invalid',
+  'submitting',
+  'success-yes',
+  'success-no',
+  'error',
+] as const;
+
+export type RsvpReviewState = (typeof RSVP_REVIEW_STATES)[number];
+
+export const RSVP_REVIEW_LABEL: Record<RsvpReviewState, string> = {
+  form: 'Formular',
+  gate: 'Gate',
+  'gate-wrong': 'Falscher Code',
+  'form-yes': 'Zusage',
+  'form-no': 'Absage',
+  invalid: 'Validierung',
+  submitting: 'Senden',
+  'success-yes': 'Erfolg Zusage',
+  'success-no': 'Erfolg Absage',
+  error: 'Serverfehler',
+};
+
+export function isRsvpReviewState(v: unknown): v is RsvpReviewState {
+  return typeof v === 'string' && (RSVP_REVIEW_STATES as readonly string[]).includes(v);
+}
+
+export interface RsvpRuntime {
+  mode: RsvpMode;
+  /** Beispielangaben für die Review-Zustände (Inhaltslänge kurz/mittel/lang). */
+  sample?: Partial<RsvpState>;
+  reviewState?: RsvpReviewState;
 }
 
 /* ====================================================================

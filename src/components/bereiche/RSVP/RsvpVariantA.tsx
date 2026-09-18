@@ -1,304 +1,142 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import type { EffectiveTokens } from '@/types/supabase';
-import {
-  INITIAL_STATE,
-  buildSubmitPayload,
-  isDeadlinePassed,
-  readConfig,
-  syncGuests,
-  type RsvpState,
-} from './shared';
-import { RsvpHeader, RsvpClosed, RsvpSuccess, CustomQuestionField } from './shared-ui';
 import StyledBereichBg from '@/components/decoration/StyledBereichBg';
+import type { RsvpRuntime } from './shared';
+import { useRsvp } from './useRsvp';
+import {
+  RsvpAttendance,
+  RsvpChecking,
+  RsvpClosedNote,
+  RsvpCompanions,
+  RsvpCustomQuestions,
+  RsvpDeadline,
+  RsvpDoneFooter,
+  RsvpDoneHeading,
+  RsvpFood,
+  RsvpGate,
+  RsvpLead,
+  RsvpMessage,
+  RsvpPersons,
+  RsvpSubmit,
+  RsvpSummary,
+  RsvpTextField,
+  RsvpTitle,
+  successCopy,
+} from './RsvpFields';
 
 /**
- * RSVP Variante A — Klassisches Formular
+ * RSVP Variante A — CLASSIC
  *
- * Alle Felder auf einer Seite. Toggle für Zusage/Absage,
- * konditionale Felder werden bei Zusage eingeblendet (max-height-Transition).
- * Begleitpersonen-Cards erscheinen dynamisch bei persons > 1.
+ * Prinzip: Die Variante, mit der Gäste am schnellsten fertig sind.
+ * Eine Spalte, eine Leserichtung, keine Kapitel, keine Schritte:
  *
- * Hydration-Note: `closed` wird NICHT serverseitig evaluiert (würde
- * Date.now() benötigen → SSR-Mismatch). Stattdessen erst nach Hydration
- * in einem useEffect — wenn die Deadline schon vorbei ist, gibt es einen
- * kurzen "Flash" des Formulars, das ist akzeptabel.
+ *   Kopf (Titel, kurzer Text, Frist)
+ *   Entscheidung  → zwei gleichwertige Optionen nebeneinander
+ *   Name · E-Mail
+ *   [Zusage] Personen · Begleitungen · Essen · individuelle Fragen
+ *   Nachricht
+ *   Senden
+ *
+ * Ohne Farben und Schriften bleibt es ein direktes Formular von oben nach
+ * unten. Logik, Validierung, Sicherheit: useRsvp — identisch mit B und C.
  */
 
 interface Props {
   tokens: EffectiveTokens;
   content: Record<string, unknown>;
+  weddingSlug?: string;
+  runtime?: RsvpRuntime;
 }
 
-export default function RsvpVariantA({ tokens, content }: Props) {
+export default function RsvpVariantA({ tokens, content, weddingSlug, runtime }: Props) {
   const style =
     (tokens as EffectiveTokens & { start_style_id?: string }).start_style_id ?? 'editorial';
-  const config = readConfig(content, {
-    name1: tokens.couple_name_1,
-    name2: tokens.couple_name_2,
-  });
-  const [state, setState] = useState<RsvpState>(INITIAL_STATE);
-  const [submitted, setSubmitted] = useState(false);
-  const [closed, setClosed] = useState(false);
-
-  // Deadline-Check nur nach Hydration (SSR-safe)
-  useEffect(() => {
-    setClosed(isDeadlinePassed(config.deadline, new Date()));
-  }, [config.deadline]);
-
-  if (closed) {
-    return (
-      <div className="rsvp rsvpA-wrap" data-style-rsvp={style}>
-        <StyledBereichBg style={style} marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`} />
-        <RsvpHeader config={config} />
-        <RsvpClosed />
-      </div>
-    );
-  }
-
-  if (submitted) {
-    return (
-      <div className="rsvp rsvpA-wrap" data-style-rsvp={style}>
-        <StyledBereichBg style={style} marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`} />
-        <RsvpHeader config={config} />
-        <RsvpSuccess
-          firstName={state.name.split(' ')[0] || ''}
-          couple={config.couple}
-          onEdit={() => setSubmitted(false)}
-        />
-      </div>
-    );
-  }
-
-  const showAttending = state.attending === true;
-
-  const updateField = <K extends keyof RsvpState>(field: K, value: RsvpState[K]) => {
-    setState((s) => ({ ...s, [field]: value }));
-  };
-
-  const updateGuest = (idx: number, field: keyof RsvpState['guests'][0], value: string) => {
-    setState((s) => ({
-      ...s,
-      guests: s.guests.map((g, i) => (i === idx ? { ...g, [field]: value } : g)),
-    }));
-  };
-
-  const updateCustomAnswer = (questionId: string, value: string) => {
-    setState((s) => ({
-      ...s,
-      custom_answers: { ...s.custom_answers, [questionId]: value },
-    }));
-  };
-
-  const handlePersonsChange = (delta: number) => {
-    setState((s) => {
-      const persons = Math.max(1, Math.min(20, s.persons + delta));
-      return syncGuests({ ...s, persons });
-    });
-  };
-
-  const handleAttending = (value: boolean) => {
-    setState((s) => syncGuests({ ...s, attending: value }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (state.attending === null || !state.name.trim()) return;
-    const payload = buildSubmitPayload(state, config);
-    // TODO: Submit-Call zu Supabase (lib/supabase.ts -> submitRSVP)
-    // Vorerst: optimistisches Success-State
-    console.log('[RSVP A submit]', payload);
-    setSubmitted(true);
-  };
+  const r = useRsvp({ tokens, content, weddingSlug, runtime });
+  const attending = r.form.attending;
+  const done = successCopy(r);
 
   return (
-    <div className="rsvp rsvpA-wrap" data-style-rsvp={style}>
-        <StyledBereichBg style={style} marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`} />
-      <RsvpHeader config={config} />
+    <div className="rsvp rv rv-a" data-style-rsvp={style} data-rsvp-view={r.view}>
+      <StyledBereichBg style={style} marqueeText={`${tokens.couple_name_1} ★ ${tokens.couple_name_2} ★`} />
 
-      <form className="rsvpA" onSubmit={handleSubmit} noValidate>
-        <div className="field">
-          <label htmlFor="A-name">Name *</label>
-          <input
-            id="A-name"
-            type="text"
-            required
-            value={state.name}
-            onChange={(e) => updateField('name', e.target.value)}
-            placeholder="Wie heißt du?"
+      <div className="rv-frame">
+        <header className="rv-head">
+          <p className="rv-kicker">Rückmeldung</p>
+          <RsvpTitle r={r} />
+          <RsvpLead r={r} />
+          <RsvpDeadline r={r} />
+        </header>
+
+        {r.view === 'checking' && <RsvpChecking />}
+        {r.view === 'closed' && <RsvpClosedNote />}
+
+        {r.view === 'gate' && (
+          <RsvpGate
+            r={r}
+            lead="Für eure Rückmeldung braucht ihr den Einladungscode aus eurer Einladung."
           />
-        </div>
+        )}
 
-        <div className="field">
-          <label htmlFor="A-email">E-Mail (optional)</label>
-          <input
-            id="A-email"
-            type="email"
-            value={state.email}
-            onChange={(e) => updateField('email', e.target.value)}
-            placeholder="für die Bestätigung"
-          />
-        </div>
+        {r.view === 'success' && (
+          <section className="rv-done" aria-labelledby={r.fid('done')}>
+            <p className="rv-done-kicker">{done.kicker}</p>
+            <RsvpDoneHeading r={r}>{done.title}</RsvpDoneHeading>
+            <p className="rv-done-text">{done.text}</p>
+            <RsvpSummary r={r} />
+            <RsvpDoneFooter r={r} />
+          </section>
+        )}
 
-        <div>
-          <label className="rsvpA-section-label">Kommst du? *</label>
-          <div className="toggle-row">
-            <button
-              type="button"
-              className={`toggle-opt ${state.attending === true ? 'is-on' : ''}`}
-              onClick={() => handleAttending(true)}
-              aria-pressed={state.attending === true}
-            >
-              <span className="opt-emoji">🎉</span>
-              <span className="opt-text">Ja, wir kommen</span>
-            </button>
-            <button
-              type="button"
-              className={`toggle-opt ${state.attending === false ? 'is-on' : ''}`}
-              onClick={() => handleAttending(false)}
-              aria-pressed={state.attending === false}
-            >
-              <span className="opt-emoji">💌</span>
-              <span className="opt-text">Leider nicht</span>
-            </button>
-          </div>
-        </div>
+        {r.view === 'form' && (
+          <form className="rv-form" onSubmit={r.submit} noValidate aria-label="Rückmeldung">
+            <RsvpAttendance r={r} legend="Seid ihr dabei?" />
 
-        <div className={`rsvpA-conditional ${showAttending ? '' : 'is-hidden'}`}>
-          <div className="field">
-            <label>Personen insgesamt</label>
-            <div className="stepper" role="group" aria-label="Personenanzahl">
-              <button
-                type="button"
-                onClick={() => handlePersonsChange(-1)}
-                disabled={state.persons <= 1}
-                aria-label="weniger Personen"
-              >
-                −
-              </button>
-              <span className="count">{state.persons}</span>
-              <button
-                type="button"
-                onClick={() => handlePersonsChange(+1)}
-                disabled={state.persons >= 20}
-                aria-label="mehr Personen"
-              >
-                +
-              </button>
-            </div>
-          </div>
+            {attending === false && (
+              <p className="rv-aside">
+                Schade, dass ihr nicht dabei sein könnt. Wenn ihr möchtet, hinterlasst uns noch eine
+                Nachricht.
+              </p>
+            )}
 
-          {state.guests.map((guest, i) => (
-            <div key={i} className="rsvpA-guest-card">
-              <div className="rsvpA-guest-head">
-                <span>Begleitung {i + 2}</span>
-              </div>
-              <div className="field">
-                <label htmlFor={`A-guest-name-${i}`}>Name</label>
-                <input
-                  id={`A-guest-name-${i}`}
-                  type="text"
-                  value={guest.name}
-                  onChange={(e) => updateGuest(i, 'name', e.target.value)}
-                  placeholder="Name der Begleitperson"
-                />
-              </div>
-              {(config.ask_dietary || config.ask_allergies) && (
-                <div className="rsvpA-guest-grid">
-                  {config.ask_dietary && (
-                    <div className="field">
-                      <label>Ernährung</label>
-                      <input
-                        type="text"
-                        value={guest.dietary}
-                        onChange={(e) => updateGuest(i, 'dietary', e.target.value)}
-                        placeholder="z. B. vegetarisch"
-                      />
-                    </div>
-                  )}
-                  {config.ask_allergies && (
-                    <div className="field">
-                      <label>Allergien</label>
-                      <input
-                        type="text"
-                        value={guest.allergies}
-                        onChange={(e) => updateGuest(i, 'allergies', e.target.value)}
-                        placeholder="z. B. Nüsse"
-                      />
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          ))}
-
-          {config.ask_dietary && (
-            <div className="field">
-              <label>Deine Ernährungswünsche</label>
-              <input
-                type="text"
-                value={state.dietary}
-                onChange={(e) => updateField('dietary', e.target.value)}
-                placeholder="z. B. vegetarisch, vegan"
+            <div className="rv-pair">
+              <RsvpTextField
+                r={r}
+                k="name"
+                label="Vor- und Nachname"
+                autoComplete="name"
+                value={r.form.name}
+                onChange={(v) => r.setField('name', v)}
+                maxLength={100}
+              />
+              <RsvpTextField
+                r={r}
+                k="email"
+                type="email"
+                inputMode="email"
+                label="E-Mail"
+                optional
+                autoComplete="email"
+                value={r.form.email}
+                onChange={(v) => r.setField('email', v)}
+                maxLength={160}
               />
             </div>
-          )}
 
-          {config.ask_allergies && (
-            <div className="field">
-              <label>Allergien / Unverträglichkeiten</label>
-              <input
-                type="text"
-                value={state.allergies}
-                onChange={(e) => updateField('allergies', e.target.value)}
-                placeholder="optional"
-              />
-            </div>
-          )}
+            {attending === true && (
+              <div className="rv-yes">
+                <RsvpPersons r={r} />
+                <RsvpCompanions r={r} />
+                <RsvpFood r={r} />
+                <RsvpCustomQuestions r={r} />
+              </div>
+            )}
 
-          {config.custom_questions.map((q) => (
-            <CustomQuestionField
-              key={q.id}
-              question={q}
-              value={state.custom_answers[q.id] ?? ''}
-              onChange={(val) => updateCustomAnswer(q.id, val)}
-            />
-          ))}
-        </div>
-
-        <div className="field">
-          <label htmlFor="A-msg">Nachricht ans Brautpaar (optional)</label>
-          <textarea
-            id="A-msg"
-            value={state.message}
-            onChange={(e) => updateField('message', e.target.value)}
-            placeholder="Glückwünsche, Anekdoten, was auch immer"
-          />
-        </div>
-
-        <div className="rsvpA-submit-row">
-          <button
-            type="submit"
-            className="btn-primary"
-            disabled={state.attending === null || !state.name.trim()}
-          >
-            Antwort abschicken
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              aria-hidden="true"
-            >
-              <path d="M5 12h14M13 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-      </form>
+            <RsvpMessage r={r} />
+            <RsvpSubmit r={r} />
+          </form>
+        )}
+      </div>
     </div>
   );
 }

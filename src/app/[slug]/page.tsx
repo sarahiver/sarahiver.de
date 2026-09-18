@@ -9,6 +9,8 @@ import { isReservedSlug, isValidSlugFormat } from '@/lib/slug-validation';
 import { loadSiteAccess } from '@/lib/access';
 import { loadSitePhase, loadPhaseBereiche, STD_KEYS, ARCHIV_KEYS, type SitePhase } from '@/lib/phases';
 import SiteUnavailable from '@/components/layout/SiteUnavailable';
+import { isOwnerPreview } from '@/lib/rsvp-preview';
+import type { RsvpRuntime } from '@/components/bereiche/RSVP/shared';
 import type { WeddingBereich, Variant } from '@/types/supabase';
 import type { Metadata } from 'next';
 
@@ -125,6 +127,16 @@ export default async function WeddingSitePage({ params, searchParams }: PageProp
     showNav = false;
   }
 
+  // ----- RSVP: Owner-Vorschau -----
+  // ?preview allein entsperrt nichts. Erst Session + Besitz dieser Site
+  // (serverseitig geprüft) zeigen das Formular ohne Einladungscode — und auch
+  // dann wird aus der Vorschau nichts gespeichert. Ohne Preview-Parameter
+  // findet gar keine Prüfung statt: die öffentliche Seite kennt keinen
+  // Sonderweg.
+  const rsvpRuntime: RsvpRuntime | undefined = (await isOwnerPreview(slug, sp?.preview))
+    ? { mode: 'preview' }
+    : undefined;
+
   const navVariant = (tokens as typeof tokens & { nav_variant?: string }).nav_variant ?? 'a';
   const navItems = buildNavItems(renderBereiche.map((b) => b.bereich_key));
 
@@ -172,7 +184,12 @@ export default async function WeddingSitePage({ params, searchParams }: PageProp
                   data-bereich={bereich.bereich_key}
                   data-variant={bereich.variant}
                 >
-                  <BereichRenderer bereich={bereich} tokens={tokens} weddingSlug={slug} />
+                  <BereichRenderer
+                    bereich={bereich}
+                    tokens={tokens}
+                    weddingSlug={slug}
+                    rsvp={rsvpRuntime}
+                  />
                 </section>
                 {danksagungNode}
               </div>

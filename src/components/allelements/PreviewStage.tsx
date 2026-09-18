@@ -8,8 +8,10 @@ import {
   type BereichKey,
   type ComponentVariant,
 } from '@/lib/wedding-config';
+import type { RsvpReviewState, RsvpRuntime } from '@/components/bereiche/RSVP/shared';
 import {
   buildBereich,
+  buildRsvpSample,
   buildTokens,
   type ContentLoad,
   type StylePalette,
@@ -35,10 +37,16 @@ interface Props {
   palette: StylePalette;
   variants: Record<BereichKey, ComponentVariant>;
   load: ContentLoad;
+  /** RSVP-Review-Zustand. Default 'form' = entsperrt, leeres Formular. */
+  rsvpState: RsvpReviewState;
 }
 
-export default function PreviewStage({ view, style, palette, variants, load }: Props) {
+export default function PreviewStage({ view, style, palette, variants, load, rsvpState }: Props) {
   const tokens = buildTokens(style, palette, load);
+  // RSVP läuft hier grundsätzlich im Review-Modus: keine Requests, kein
+  // Gate-Zwang. Das ist unkritisch, weil /allelements keine echte Site hat
+  // und /api/rsvp keinerlei Ausnahme kennt — der Zustand ist reine Anzeige.
+  const rsvp: RsvpRuntime = { mode: 'review', reviewState: rsvpState, sample: buildRsvpSample(load) };
   const cssVars = tokensToCSSVariables(tokens);
   const dna = {
     align: tokens.dna_align,
@@ -65,7 +73,12 @@ export default function PreviewStage({ view, style, palette, variants, load }: P
                   data-bereich={key}
                   data-variant={variants[key]}
                 >
-                  <BereichRenderer bereich={bereich} tokens={tokens} weddingSlug="allelements" />
+                  <BereichRenderer
+                    bereich={bereich}
+                    tokens={tokens}
+                    weddingSlug="allelements"
+                    rsvp={rsvp}
+                  />
                 </section>
               );
             })}
@@ -96,6 +109,7 @@ export default function PreviewStage({ view, style, palette, variants, load }: P
                   <span className="ae-variant-letter">{variant.toUpperCase()}</span>
                   <span className="ae-variant-meta">
                     {style} · {key} · Variante {variant.toUpperCase()}
+                    {key === 'rsvp' ? ` · Zustand ${rsvpState}` : ''}
                   </span>
                   {/* Der Klick wird von der Review-Oberfläche abgefangen
                       (gleiche Herkunft). Der Button selbst wird bei der
@@ -125,6 +139,7 @@ export default function PreviewStage({ view, style, palette, variants, load }: P
                         bereich={bereich}
                         tokens={tokens}
                         weddingSlug="allelements"
+                        rsvp={rsvp}
                       />
                     </section>
                   </DnaProvider>

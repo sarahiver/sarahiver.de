@@ -12,6 +12,7 @@ import {
 } from '@/lib/wedding-config';
 import { FALLBACK_PALETTE, type ContentLoad, type StylePalette } from '@/lib/allelements-data';
 import PreviewStage from '@/components/allelements/PreviewStage';
+import { isRsvpReviewState, type RsvpReviewState } from '@/components/bereiche/RSVP/shared';
 import ReviewShell from '@/components/allelements/ReviewShell';
 
 /**
@@ -44,6 +45,7 @@ type SP = {
   variants?: string;
   load?: string;
   embed?: string;
+  rsvp?: string;
 };
 
 function readLoad(v: string | undefined): ContentLoad {
@@ -66,6 +68,9 @@ export default async function AllElementsPage({
   const style = resolveStyleId(sp.style) as StyleId;
   const viewport = sp.viewport === 'mobile' ? 'mobile' : 'desktop';
   const load = readLoad(sp.load);
+  // RSVP-Review-Zustand. Wirkt nur auf die Review-Darstellung dieser Route;
+  // die öffentliche Hochzeitsseite liest diesen Parameter nicht.
+  const rsvpState: RsvpReviewState = isRsvpReviewState(sp.rsvp) ? sp.rsvp : 'form';
 
   // Preset A/B/C oder freie Kombination je Bereich.
   const preset: ComponentVariant | null =
@@ -108,6 +113,7 @@ export default async function AllElementsPage({
       palette={palette}
       variants={variants}
       load={load}
+      rsvpState={rsvpState}
     />
   );
 
@@ -123,6 +129,7 @@ export default async function AllElementsPage({
       preset={preset}
       variants={variants}
       load={load}
+      rsvpState={rsvpState}
       order={[...PAGE_ORDER]}
       presetsLoaded={presetsLoaded}
       orderMatchesFunnel={PAGE_ORDER_MATCHES_FUNNEL}

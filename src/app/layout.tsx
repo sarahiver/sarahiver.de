@@ -4,6 +4,9 @@ import './globals.css';
 import './foundation.css';
 // Wedding Styles der Kundenseiten — eigenständige Ebene.
 import './design-system-v2.css';
+// RSVP (Phase 3) — stilneutrale Struktur für alle acht Designs. Nach den
+// Stil-Variablen aus design-system-v2.css, vor den Design-Layern.
+import './rsvp-base.css';
 // Ebene 2 — Design 01: Editorial. Muss nach design-system-v2.css stehen.
 import './editorial.css';
 // Sarahiver Brand: Landing + Launch Gate.

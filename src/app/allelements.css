@@ -237,3 +237,4 @@
   cursor: pointer;
 }
 .ae-export-one:hover { background: #2A241F; }
+.ae-group-label { align-self: center; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ae-mut); padding-inline: 4px 2px; }
