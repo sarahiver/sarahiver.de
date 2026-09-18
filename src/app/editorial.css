@@ -4946,21 +4946,47 @@
    C · GIFT STATEMENT — Aussage, Zäsur, dann die Wünsche
    ========================================================================= */
 
+/* Der Einstieg trennt C von A: A setzt Kopfzeile, Titel und Text als einen
+   linksbündigen Block untereinander. C staffelt sie über das 12-Spalten-
+   Raster — Kennung ganz links am Rand, Titel eingerückt als Schaugröße, der
+   erklärende Text erst darunter und nach rechts versetzt. Schon ohne Farbe,
+   Bild und Schrift ist das eine andere Komposition und nicht nur eine
+   größere Variante desselben Blocks. */
 .gift.giftC-section[data-style-gift='editorial'] .gift-head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--ed-gap);
+  align-items: start;
   max-inline-size: calc(var(--wrap-wide) + 2 * var(--gutter));
-  margin: 0 auto var(--sp-8);
+  margin: 0 auto var(--sp-9);
+}
+.gift.giftC-section[data-style-gift='editorial'] .gift-eyebrow {
+  grid-column: 1 / span 2;
+  grid-row: 1;
+  /* Die Kennung sitzt auf der Höhe der ersten Zeile des Titels, nicht
+     darüber — dadurch liest sich der Titel als Anfang, die Kennung als
+     Marginalie. */
+  margin-block-start: 0.55em;
 }
 .gift.giftC-section[data-style-gift='editorial'] .gift-title {
-  font-size: var(--fs-8);
-  line-height: 1;
+  grid-column: 3 / -1;
+  grid-row: 1;
+  /* Etwas mutiger als A (--fs-7, max 46px), aber unter Hero-Maß: Geschenke
+     bleibt eine sekundäre Sektion. */
+  font-size: clamp(38px, 1.6rem + 4.6vw, 82px);
+  line-height: 0.98;
   letter-spacing: -0.03em;
-  max-inline-size: 16ch;
-  text-wrap: pretty;
+  max-inline-size: 15ch;
+  margin: 0;
+  text-wrap: balance;
 }
 .gift.giftC-section[data-style-gift='editorial'] .gift-desc {
-  font-size: var(--fs-5);
-  max-inline-size: 44ch;
-  margin-block-start: var(--sp-6);
+  grid-column: 7 / span 5;
+  grid-row: 2;
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  max-inline-size: 42ch;
+  margin-block-start: var(--sp-7);
 }
 /* Die Zäsur: eine Linie über die volle Satzbreite trennt die Aussage von
    der praktischen Ebene. */
@@ -4968,29 +4994,33 @@
   max-inline-size: calc(var(--wrap-wide) + 2 * var(--gutter));
   margin-inline: auto;
   border-block-start: 1px solid var(--ed-rule-strong);
-  padding-block-start: var(--sp-7);
+  padding-block-start: var(--sp-8);
 }
 .gift.giftC-section[data-style-gift='editorial'] .giftC-grid,
 .gift.giftC-section[data-style-gift='editorial'] .giftC-grid.is-no-collage {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--sp-7);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--ed-gap);
+  row-gap: var(--sp-9);
   max-inline-size: none;
-  margin: 0 0 var(--sp-7);
+  margin: 0 0 var(--sp-8);
 }
 /* Aus der gedrehten Collage wird ein ruhiges Band im Format 21:9. Gezeigt
    wird das erste vorhandene Bild; die weiteren treten zurück, damit die
    praktische Ebene kurz bleibt. Geschwisterselektor statt :nth-child, damit
    die Regel bei einem einzigen Bild nicht kippt. */
+/* Das Bild ist die Pause zwischen Aussage und Wunschliste. Es steht deshalb
+   nicht als Contentbild über die volle Breite, sondern eingerückt in den
+   Spalten 4 bis 12 — gegen den eingerückten Titel gesetzt, mit viel Luft
+   davor und danach (row-gap --sp-9). Format 21:9, damit die Pause breit und
+   flach bleibt und die Sektion nicht verlängert. */
 .gift.giftC-section[data-style-gift='editorial'] .giftC-collage {
   position: static;
   display: block;
+  grid-column: 4 / -1;
   aspect-ratio: var(--ar-band);
-  /* Nicht über die volle Satzbreite: das Band steht auf der linken Achse und
-     lässt rechts Rand stehen. Über die ganze Breite wäre es bei 21:9 fast
-     400px hoch und die Sektion unnötig lang. */
   inline-size: 100%;
-  max-inline-size: 72%;
+  max-inline-size: none;
   margin: 0;
   overflow: hidden;
 }
@@ -5007,18 +5037,31 @@
 .gift.giftC-section[data-style-gift='editorial'] .giftC-coll-img + .giftC-coll-img {
   display: none;
 }
+/* Nach der Pause wird es sachlich: die Liste ist die Informationsebene und
+   tritt in Größe und Ton hinter das Statement zurück. */
 .gift.giftC-section[data-style-gift='editorial'] .giftC-list {
+  grid-column: 1 / -1;
   counter-reset: giftrow;
-  border-block-start: 1px solid var(--ed-rule);
+  border-block-start: 1px solid var(--ed-rule-strong);
 }
 .gift.giftC-section[data-style-gift='editorial'] .giftC-row {
   counter-increment: giftrow;
   display: grid;
-  grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+  grid-template-columns: 3.5rem minmax(0, 1fr) auto;
   column-gap: var(--ed-gap);
   align-items: baseline;
-  padding-block: var(--sp-5);
+  padding-block: var(--sp-4);
   border-block-end: 1px solid var(--ed-rule);
+}
+/* Waagerechte Ordnung statt gestapelter Blöcke: Titel und Betrag links,
+   Beschreibung in einer eigenen Spur daneben. Dadurch bleibt jede Zeile
+   eine Zeile. */
+.gift.giftC-section[data-style-gift='editorial'] .giftC-body {
+  display: grid;
+  grid-template-columns: minmax(0, 24ch) minmax(0, 1fr);
+  column-gap: var(--ed-gap);
+  align-items: baseline;
+  gap: var(--sp-2) var(--ed-gap);
 }
 .gift.giftC-section[data-style-gift='editorial'] .giftC-row:first-child,
 .gift.giftC-section[data-style-gift='editorial'] .giftC-row:last-child {
@@ -5029,16 +5072,17 @@
 }
 .gift.giftC-section[data-style-gift='editorial'] .giftC-row::before {
   content: counter(giftrow, decimal-leading-zero);
-  font-family: var(--font-display);
-  font-size: var(--fs-5);
-  line-height: 1;
+  font-family: var(--font-body);
+  font-size: var(--fs-2);
+  letter-spacing: var(--ed-meta-ls);
+  line-height: 1.6;
   color: var(--gf-accent);
 }
 .gift.giftC-section[data-style-gift='editorial'] .giftC-title {
   font-family: var(--font-display);
-  font-size: var(--fs-5);
+  font-size: var(--fs-4);
   line-height: var(--lh-snug);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.005em;
 }
 .gift.giftC-section[data-style-gift='editorial'] .giftC-desc {
   font-family: var(--font-body);
@@ -5046,8 +5090,23 @@
   font-size: var(--fs-3);
   line-height: var(--lh-normal);
   color: var(--gf-soft);
-  max-inline-size: 52ch;
-  margin-block-start: var(--sp-2);
+  max-inline-size: 48ch;
+  margin: 0;
+}
+/* Die Aktion ist hier Information, nicht Angebot: kleiner gesetzt und mit
+   einer zurückhaltenden Linie statt einer in Textfarbe. */
+.gift.giftC-section[data-style-gift='editorial'] .giftC-actions .gift-btn-out {
+  font-size: 11px;
+  color: var(--gf-soft);
+  border-block-end-color: var(--ed-rule-strong);
+}
+.gift.giftC-section[data-style-gift='editorial'] .giftC-actions .gift-btn-out:hover {
+  color: var(--gf-accent);
+  border-block-end-color: var(--gf-accent);
+}
+/* Die Reisekasse schließt in derselben sachlichen Tonlage an. */
+.gift.giftC-section[data-style-gift='editorial'] .gift-iban-note {
+  font-size: var(--fs-4);
 }
 .gift.giftC-section[data-style-gift='editorial'] .giftC-actions {
   align-items: flex-end;
@@ -5097,11 +5156,37 @@
   }
   .gift.giftB-section[data-style-gift='editorial'] .giftB-body { grid-row: 1; }
 
-  /* C: das Band wird flacher und nimmt die volle Breite — auf 72 % bliebe
-     rechts nur ein nutzloser Streifen. */
+  /* C: die gestaffelte Kopfkomposition und die Einrückung des Bildes lösen
+     sich auf — auf dieser Breite bleibt vom 12-Spalten-Raster nur Enge. Das
+     Statement bleibt Statement, aber alles steht auf einer Achse. */
+  .gift.giftC-section[data-style-gift='editorial'] .gift-head {
+    display: block;
+    margin-block-end: var(--sp-7);
+  }
+  .gift.giftC-section[data-style-gift='editorial'] .gift-eyebrow { margin-block-start: 0; }
+  .gift.giftC-section[data-style-gift='editorial'] .gift-title {
+    margin-block-start: var(--sp-3);
+    max-inline-size: 13ch;
+  }
+  .gift.giftC-section[data-style-gift='editorial'] .gift-desc {
+    margin-block-start: var(--sp-5);
+    max-inline-size: 52ch;
+  }
+  .gift.giftC-section[data-style-gift='editorial'] .giftC-grid,
+  .gift.giftC-section[data-style-gift='editorial'] .giftC-grid.is-no-collage {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--sp-7);
+  }
+  /* Das Bild nimmt die volle mobile Breite und wird flacher — eingerückt
+     bliebe rechts nur ein nutzloser Streifen. */
   .gift.giftC-section[data-style-gift='editorial'] .giftC-collage {
+    grid-column: 1 / -1;
     aspect-ratio: var(--ar-wide);
     max-inline-size: none;
+  }
+  .gift.giftC-section[data-style-gift='editorial'] .giftC-list { grid-column: 1 / -1; }
+  .gift.giftC-section[data-style-gift='editorial'] .giftC-body {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -5162,7 +5247,17 @@
     inline-size: max-content;
   }
   .gift.giftC-section[data-style-gift='editorial'] .giftC-row::before {
+    font-size: var(--fs-2);
+    line-height: 1.5;
+  }
+  /* Das Statement bleibt charaktervoll, verbraucht aber keine zwei Screens. */
+  .gift.giftC-section[data-style-gift='editorial'] .gift-title {
+    font-size: clamp(34px, 10.5vw, 52px);
+    line-height: 1.02;
+  }
+  .gift.giftC-section[data-style-gift='editorial'] .gift-desc {
     font-size: var(--fs-4);
+    margin-block-start: var(--sp-4);
   }
   .gift.giftC-section[data-style-gift='editorial'] .giftC-wrap {
     padding-block-start: var(--sp-6);
