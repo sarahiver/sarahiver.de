@@ -12,6 +12,10 @@ import './editorial.css';
 // Ebene 2 — Design 03: Organic. Eigener Style-Layer, greift nur über
 // [data-style='organic']; muss nach editorial.css und design-system-v2.css stehen.
 import './organic.css';
+// Ebene 2 — Design 02: Brutalist. Eigener Style-Layer, greift nur über
+// [data-style='brutalist']; muss nach design-system-v2.css und den übrigen
+// Design-Layern stehen.
+import './brutalist.css';
 // Sarahiver Brand: Landing + Launch Gate.
 import './landing-v4.css';
 import './launch-gate.css';

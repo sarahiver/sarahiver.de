@@ -1,0 +1,1171 @@
+/* =========================================================================
+   DESIGN 02 — BRUTALIST · Phase 1
+   -------------------------------------------------------------------------
+   Foundation + Hero + Countdown + Love Story + Gallery.
+
+   Brutalist ist kein Editorial in Schwarz und kein Organic ohne Radien. Der
+   Unterschied muss aus zwanzig Metern lesbar sein und liegt in:
+
+     Typografie   fette Grotesk in Versalien, eng, groß, als Layoutelement
+     Raster       sichtbare Konstruktion, harte Zonen, 12 Spalten
+     Linien       Rahmen in 2 und 4 Pixeln, Radius durchgehend 0
+     Flächen      Ink-Blöcke und Signalflächen statt Weißraum
+     Bild         harte Crops, Schwarzweiß mit Kontrast, angeschnitten
+     Bewegung     kurz und mechanisch, 120–240 ms, nichts Dauerhaftes
+
+   Diese Ebene liegt NACH design-system-v2.css (dort steht die erste
+   Brutalist-Fassung), nach editorial.css und nach organic.css. Sie greift
+   ausschließlich über `[data-style='brutalist']` bzw.
+   `[data-style-*='brutalist']`; die übrigen sieben Stile bleiben unberührt.
+
+   Spezifität: Die Bestandsregeln tragen `.hero-a[data-style-hero="brutalist"]`
+   (0,2,0). Hier wird dieselbe Stufe verwendet, die spätere Datei gewinnt.
+   Mobilblöcke tragen dieselbe Stufe wie ihre Desktopregeln.
+   ========================================================================= */
+
+/* =========================================================================
+   1 · FOUNDATION
+   ========================================================================= */
+
+.wedding-site-wrapper[data-style='brutalist'] {
+  /* --- Farbrollen ------------------------------------------------------
+     Drei Kräfte: Ink (fast Schwarz), Paper (warmes Off-White), Signal.
+     Signal ist hier keine dezente Akzentfarbe, sondern ein Baustein —
+     ganze Flächen, Zahlen, Kennungen, Aktionen. Grau ist neutral und
+     trägt nur Meta. */
+  --br-ink: var(--ink);
+  --br-paper: var(--bg);
+  --br-signal: var(--accent);
+  --br-signal-deep: var(--accent-deep);
+  --br-grey: color-mix(in srgb, var(--ink) 12%, var(--bg));
+  --br-grey-deep: color-mix(in srgb, var(--ink) 55%, var(--bg));
+
+  /* --- Konstruktion ---
+     Sichtbare Kanten in zwei Stärken, nie gerundet. */
+  --br-line: 2px;
+  --br-line-thick: 4px;
+  --br-border: var(--br-line) solid var(--br-ink);
+  --br-border-thick: var(--br-line-thick) solid var(--br-ink);
+  --br-gap: 2px;
+
+  /* --- Raum ---
+     Enger als Editorial und Organic: Brutalist füllt die Fläche. */
+  --br-pad-block: clamp(40px, 5vw, 88px);
+  --br-pad-inline: clamp(16px, 3vw, 48px);
+  --br-col: repeat(12, minmax(0, 1fr));
+
+  /* --- Bewegung --- */
+  --br-dur: 140ms;
+  --br-dur-slow: 240ms;
+  --br-ease: cubic-bezier(0.2, 0, 0, 1);
+  --br-shift: 4px;
+
+  background: var(--br-paper);
+  color: var(--br-ink);
+  font-family: var(--font-body);
+}
+
+/* Radius 0 im ganzen Stil. Die Basis rundet an vielen Stellen; hier wird das
+   für die Bereiche dieser Phase konsequent zurückgenommen. */
+.wedding-site-wrapper[data-style='brutalist'] :where(.hero-a, .hero-b, .hero-c, .cd, .ls, .gal) :where(*) {
+  border-radius: 0;
+}
+
+/* --- Typografie ---------------------------------------------------------
+   Display ist fette Grotesk in Versalien: groß, eng, plakativ. Body bleibt
+   eine klare Sans. Mono trägt ausschließlich Meta — Nummern, Zeiten,
+   Kennungen — und wird nirgends für Fließtext verwendet. */
+.wedding-site-wrapper[data-style='brutalist'] :where(.display, .h2-editorial),
+.wedding-site-wrapper[data-style='brutalist'] :where(.ls-title, .gal-title) {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: -0.035em;
+  line-height: 0.86;
+}
+/* Die Basis kippt hervorgehobene Wörter in eine schräge Signalfläche. Der
+   Block bleibt, die Schräge geht — Brutalist steht gerade. Das Ampersand ist
+   davon ausgenommen: es bleibt ein Zeichen, kein Kasten. */
+/* Höhere Stufe als die Bestandsregel `.display em` (0,2,1), sonst bleibt die
+   schräge Signalfläche stehen. */
+.wedding-site-wrapper[data-style='brutalist'] :is(.hero-a-title, .hero-b-title, .hero-c-title) em.amp,
+.wedding-site-wrapper[data-style='brutalist'] :is(.hero-a-title, .hero-b-title, .hero-c-title) .amp {
+  background: none;
+  padding: 0;
+  transform: none;
+  color: var(--br-signal);
+  animation: none;
+}
+/* Die Basis kippt hervorgehobene Wörter in eine schräge Signalfläche. Der
+   Block bleibt, die Schräge geht — Brutalist steht gerade. */
+.wedding-site-wrapper[data-style='brutalist'] :where(.display, .ls-title, .gal-title) em {
+  font-style: normal;
+  background: var(--br-signal);
+  color: var(--br-ink);
+  padding: 0 0.12em;
+  transform: none;
+  display: inline-block;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.ls-title, .gal-title) {
+  font-size: clamp(34px, 5.2vw, 76px);
+  color: var(--br-ink);
+  margin: 0;
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.ls-intro, .gal-intro) {
+  font-family: var(--font-body);
+  font-size: clamp(15px, 1.05vw, 17px);
+  line-height: 1.55;
+  color: var(--br-ink);
+  max-inline-size: 58ch;
+}
+/* Meta: Mono, klein, weit gesperrt, in Versalien. */
+.wedding-site-wrapper[data-style='brutalist'] :where(.ls-eyebrow, .gal-eyebrow, .cd-eyebrow, .cd-label, .hero-a-eyebrow, .hero-b-eyebrow, .hero-c-eyebrow) {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.ls-head-ornament, .gal-head-ornament) { display: none; }
+
+/* --- Bildbehandlung -------------------------------------------------------
+   Grundton ist hoher Kontrast in Schwarzweiß; einzelne Bilder bleiben
+   farbig, damit die Fotografie nicht zur Textur wird. Welche, entscheidet
+   die jeweilige Komponente. */
+.wedding-site-wrapper[data-style='brutalist'] :where(.hero-a, .hero-b, .hero-c, .ls, .gal) img,
+.wedding-site-wrapper[data-style='brutalist'] :where(.hero-a-image, .hero-b-image, .hero-c-image) {
+  filter: grayscale(1) contrast(1.15);
+}
+.wedding-site-wrapper[data-style='brutalist'] .br-photo-color img,
+.wedding-site-wrapper[data-style='brutalist'] .br-photo-color {
+  filter: contrast(1.08) saturate(1.05);
+}
+
+/* --- Knöpfe ---------------------------------------------------------------
+   Rechteckig, harte Kante, harte Zustände: beim Hover kippt die Fläche und
+   der Knopf springt vier Pixel. Keine Kapseln, keine weichen Übergänge. */
+.wedding-site-wrapper[data-style='brutalist'] :where(.gal-showmore) {
+  min-block-size: 44px;
+  padding: 0 clamp(18px, 2vw, 28px);
+  border: var(--br-border);
+  border-radius: 0;
+  background: var(--br-paper);
+  color: var(--br-ink);
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  box-shadow: var(--br-shift) var(--br-shift) 0 0 var(--br-ink);
+  transition: transform var(--br-dur) var(--br-ease), background-color var(--br-dur) var(--br-ease),
+    color var(--br-dur) var(--br-ease), box-shadow var(--br-dur) var(--br-ease);
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.gal-showmore):hover {
+  background: var(--br-signal);
+  color: var(--br-ink);
+  transform: translate(var(--br-shift), var(--br-shift));
+  box-shadow: 0 0 0 0 var(--br-ink);
+}
+.wedding-site-wrapper[data-style='brutalist'] :where(.gal-showmore):focus-visible {
+  outline: var(--br-line-thick) solid var(--br-signal-deep);
+  outline-offset: 2px;
+}
+.wedding-site-wrapper[data-style='brutalist'] .gal-more-count {
+  font-family: var(--font-mono, monospace);
+  color: var(--br-signal-deep);
+}
+
+/* --- Bewegung -------------------------------------------------------------
+   Kurz, mechanisch, nur auf Interaktion. Es gibt keine Daueranimation;
+   die Seite ist statisch vollständig. */
+@media (prefers-reduced-motion: reduce) {
+  .wedding-site-wrapper[data-style='brutalist'],
+  .wedding-site-wrapper[data-style='brutalist'] *,
+  .wedding-site-wrapper[data-style='brutalist'] *::before,
+  .wedding-site-wrapper[data-style='brutalist'] *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* =========================================================================
+   2 · HERO
+   -------------------------------------------------------------------------
+     A  COVER             Meta-Leiste, Riesennamen links, harter Bildcrop rechts
+     B  GRID COLLISION    Bild über mehrere Spuren, Satz und Signalblock dagegen
+     C  TYPOGRAPHIC       Bild als Fläche, Typografie darüber, Signalband unten
+   ========================================================================= */
+
+/* --- A --------------------------------------------------------------------
+   Im Markup ist das Bild ein Geschwister des Satzblocks, kein Kind. Die
+   Zonen werden deshalb auf der Sektion selbst gerastert: Satz links, harter
+   Bildcrop rechts, dazwischen eine sichtbare Kante. */
+.hero-a[data-style-hero='brutalist'] {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: stretch;
+  min-height: 0;
+  padding: 0;
+  perspective: none;
+  background: var(--br-paper);
+  color: var(--br-ink);
+  border-block-end: var(--br-border-thick);
+}
+.hero-a[data-style-hero='brutalist'] .hero-a-brutalist-marquee { display: none; }
+.hero-a[data-style-hero='brutalist'] .hero-a-content {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  max-width: none;
+  text-align: left;
+}
+/* Der Namensblock füllt die Zone, Datum und Ort schließen als Bänder ab. */
+.hero-a[data-style-hero='brutalist'] .hero-a-title { flex: 1 1 auto; display: flex; align-items: center; }
+.hero-a[data-style-hero='brutalist'] .hero-a-content::before { display: none; }
+.hero-a[data-style-hero='brutalist'] .hero-a-eyebrow {
+  padding: 14px var(--br-pad-inline);
+  border-block-end: var(--br-border);
+  background: var(--br-ink);
+  color: var(--br-paper);
+}
+.hero-a[data-style-hero='brutalist'] .hero-a-title {
+  margin: 0;
+  padding: clamp(28px, 4vw, 72px) var(--br-pad-inline);
+  font-family: var(--font-display);
+  font-weight: 800;
+  /* Die Namen sind lang; die Schaugröße richtet sich nach der Spur, nicht
+     nach dem Fenster, damit nichts über die Kante läuft. */
+  font-size: clamp(40px, 6.4vw, 104px);
+  line-height: 0.84;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+  overflow-wrap: anywhere;
+}
+.hero-a[data-style-hero='brutalist'] .hero-a-title .amp {
+  color: var(--br-signal);
+  animation: none;
+}
+.hero-a[data-style-hero='brutalist'] .hero-a-date,
+.hero-a[data-style-hero='brutalist'] .hero-a-location {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+  padding: 12px var(--br-pad-inline);
+  border-block-start: var(--br-border);
+  margin: 0;
+}
+.hero-a[data-style-hero='brutalist'] .hero-a-date { background: var(--br-signal); }
+/* Das Bild der Basis war ausgeblendet. Hier trägt es wieder — als harter
+   Crop in der rechten Spur. */
+.hero-a[data-style-hero='brutalist'] .hero-a-image {
+  display: block;
+  position: relative;
+  inset: auto;
+  grid-column: 2;
+  grid-row: 1;
+  min-block-size: clamp(340px, 44vw, 660px);
+  border-inline-start: var(--br-border);
+  background-size: cover;
+  background-position: center;
+}
+
+/* --- B --------------------------------------------------------------------
+   Kollision: das Bild läuft über die Spuren 5–12, der Namensblock schiebt
+   sich als Papierfläche mit Kante darüber, darunter ein Signalblock. */
+.hero-b[data-style-hero='brutalist'] {
+  display: grid;
+  grid-template-columns: var(--br-col);
+  align-items: center;
+  gap: 0;
+  padding: var(--br-pad-block) var(--br-pad-inline);
+  background: var(--br-paper);
+  border-block-end: var(--br-border-thick);
+  overflow: hidden;
+}
+.hero-b[data-style-hero='brutalist'] .hero-b-image-col {
+  grid-column: 5 / -1;
+  grid-row: 1;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+.hero-b[data-style-hero='brutalist'] .hero-b-image {
+  position: relative;
+  inset: auto;
+  inline-size: 100%;
+  block-size: clamp(340px, 46vw, 640px);
+  margin: 0;
+  border: var(--br-border);
+  background-size: cover;
+  background-position: center;
+  animation: none;
+}
+.hero-b[data-style-hero='brutalist'] .hero-b-text {
+  grid-column: 1 / span 7;
+  grid-row: 1;
+  z-index: 2;
+  padding: clamp(20px, 2.6vw, 40px);
+  background: var(--br-paper);
+  border: var(--br-border-thick);
+  color: var(--br-ink);
+}
+.hero-b[data-style-hero='brutalist'] .hero-b-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(42px, 6.4vw, 104px);
+  line-height: 0.86;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+.hero-b[data-style-hero='brutalist'] .hero-b-title .amp { color: var(--br-signal); }
+.hero-b[data-style-hero='brutalist'] .hero-b-rule {
+  inline-size: 100%;
+  block-size: var(--br-line-thick);
+  background: var(--br-ink);
+  margin-block: clamp(14px, 1.6vw, 24px);
+}
+.hero-b[data-style-hero='brutalist'] .hero-b-intro {
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1vw, 16px);
+  line-height: 1.55;
+  color: var(--br-ink);
+  max-inline-size: 46ch;
+}
+.hero-b[data-style-hero='brutalist'] .hero-b-date,
+.hero-b[data-style-hero='brutalist'] .hero-b-venue {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.hero-b[data-style-hero='brutalist'] .hero-b-date {
+  display: inline-block;
+  background: var(--br-signal);
+  padding: 6px 10px;
+}
+.hero-b[data-style-hero='brutalist'] .hero-b-image-caption {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+
+/* --- C --------------------------------------------------------------------
+   Maximale typografische Präsenz: das Bild ist Fläche, die Namen liegen in
+   Papierfarbe darüber, Meta klebt an den Kanten, unten ein Signalband. */
+.hero-c[data-style-hero='brutalist'] {
+  position: relative;
+  border-block-end: var(--br-border-thick);
+  overflow: hidden;
+}
+.hero-c[data-style-hero='brutalist'] .hero-c-image {
+  filter: grayscale(1) contrast(1.35) brightness(0.72);
+  animation: none;
+}
+.hero-c[data-style-hero='brutalist'] .hero-c-vignette { display: none; }
+.hero-c[data-style-hero='brutalist'] .hero-c-brutalist-marquee-top,
+.hero-c[data-style-hero='brutalist'] .hero-c-brutalist-marquee-bot { display: none; }
+/* Links auf der Achse, Meta an den Kanten — nicht zentriert wie die Basis. */
+.hero-c[data-style-hero='brutalist'] .hero-c-content {
+  color: var(--br-paper);
+  padding: var(--br-pad-block) var(--br-pad-inline);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  text-align: left;
+  block-size: 100%;
+  gap: clamp(20px, 3vw, 48px);
+}
+.hero-c[data-style-hero='brutalist'] .hero-c-top,
+.hero-c[data-style-hero='brutalist'] .hero-c-mid,
+.hero-c[data-style-hero='brutalist'] .hero-c-bot {
+  inline-size: 100%;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  text-align: left;
+}
+.hero-c[data-style-hero='brutalist'] .hero-c-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(54px, 11vw, 190px);
+  line-height: 0.82;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+  color: var(--br-paper);
+  background: none;
+  padding: 0;
+  max-inline-size: none;
+  display: block;
+}
+.hero-c[data-style-hero='brutalist'] .hero-c-title .amp { color: var(--br-signal); }
+.hero-c[data-style-hero='brutalist'] .hero-c-eyebrow,
+.hero-c[data-style-hero='brutalist'] .hero-c-volume {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--br-paper);
+  text-shadow: none;
+}
+.hero-c[data-style-hero='brutalist'] .hero-c-date,
+.hero-c[data-style-hero='brutalist'] .hero-c-venue {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+  background: var(--br-signal);
+  padding: 8px 12px;
+  text-shadow: none;
+}
+
+/* =========================================================================
+   3 · COUNTDOWN
+   -------------------------------------------------------------------------
+     A  harte Informationsleiste in Ink, Zahlen in Papierfarbe
+     B  Rasterkomposition, eine Einheit auf Signal
+     C  eine Zahl massiv, der Rest sekundär
+   ========================================================================= */
+
+.cd[data-style-countdown='brutalist'] {
+  --cd-num-font: var(--font-display);
+  --cd-num-weight: 800;
+  padding: 0;
+  background: var(--br-paper);
+  border-block-end: var(--br-border-thick);
+}
+.cd[data-style-countdown='brutalist'] .styled-bg-editorial { display: none; }
+/* Die Laufschrift und der Signalstern der ersten Fassung liefen über den
+   Viewport hinaus und waren Dekoration ohne Aufgabe. */
+.cd[data-style-countdown='brutalist'] :where(.cd-brutalist-marquee, .cd-brutalist-star, .cdB-marquee, .cdB-star, [class*='marquee'], [class*='-star']) {
+  display: none;
+}
+.cd[data-style-countdown='brutalist'] .cd-eyebrow {
+  display: block;
+  padding: 12px var(--br-pad-inline);
+  border-block-end: var(--br-border);
+  color: var(--br-ink);
+}
+.cd[data-style-countdown='brutalist'] .cd-footer,
+.cd[data-style-countdown='brutalist'] .cd-past {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+  padding: 12px var(--br-pad-inline);
+  border-block-start: var(--br-border);
+  margin: 0;
+}
+.cd[data-style-countdown='brutalist'] .cd-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* --- A: Informationsleiste ---------------------------------------------- */
+.cd.cdA-wrap[data-style-countdown='brutalist'] .cdA-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0;
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  background: var(--br-ink);
+}
+.cd.cdA-wrap[data-style-countdown='brutalist'] .cdA-unit {
+  display: grid;
+  justify-items: start;
+  align-content: center;
+  gap: 6px;
+  padding: clamp(20px, 2.4vw, 36px) var(--br-pad-inline);
+  border-inline-end: var(--br-line) solid var(--br-paper);
+  background: var(--br-ink);
+  color: var(--br-paper);
+}
+.cd.cdA-wrap[data-style-countdown='brutalist'] .cdA-unit:last-child { border-inline-end: 0; }
+.cd.cdA-wrap[data-style-countdown='brutalist'] .cd-num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(44px, 6vw, 96px);
+  line-height: 0.86;
+  letter-spacing: -0.04em;
+  color: var(--br-paper);
+}
+.cd.cdA-wrap[data-style-countdown='brutalist'] .cdA-unit:nth-child(2) { background: var(--br-signal); }
+.cd.cdA-wrap[data-style-countdown='brutalist'] .cdA-unit:nth-child(2) .cd-num,
+.cd.cdA-wrap[data-style-countdown='brutalist'] .cdA-unit:nth-child(2) .cd-label { color: var(--br-ink); }
+.cd.cdA-wrap[data-style-countdown='brutalist'] .cd-label { color: var(--br-paper); }
+
+/* --- B: Rasterkomposition ----------------------------------------------- */
+.cd.cdB-wrap[data-style-countdown='brutalist'] .cdB-row {
+  display: grid;
+  grid-template-columns: var(--br-col);
+  gap: var(--br-gap);
+  max-inline-size: none;
+  margin: 0;
+  padding: var(--br-gap);
+  background: var(--br-ink);
+}
+.cd.cdB-wrap[data-style-countdown='brutalist'] .cdB-unit {
+  display: grid;
+  justify-items: start;
+  align-content: end;
+  gap: 8px;
+  grid-column: span 3;
+  padding: clamp(16px, 2vw, 28px);
+  background: var(--br-paper);
+  border: 0;
+}
+/* Die zweite Einheit trägt die Komposition: doppelte Spur, Signalfläche. */
+.cd.cdB-wrap[data-style-countdown='brutalist'] .cdB-unit:nth-child(2) {
+  grid-column: span 6;
+  background: var(--br-signal);
+  align-content: center;
+}
+.cd.cdB-wrap[data-style-countdown='brutalist'] .cdB-unit:nth-child(3) { grid-column: span 3; }
+/* Zweite Reihe: zwei gleich breite Blöcke, damit keine tote Fläche bleibt. */
+.cd.cdB-wrap[data-style-countdown='brutalist'] .cdB-unit:nth-child(4) { grid-column: span 6; }
+.cd.cdB-wrap[data-style-countdown='brutalist'] .cdB-unit:nth-child(5) { grid-column: span 6; }
+.cd.cdB-wrap[data-style-countdown='brutalist'] .cdB-cards {
+  display: flex;
+  gap: 2px;
+}
+/* Die Halbschalen erben die Fläche ihres Blocks — transparent würden sich
+   obere und untere Hälfte überlagern und die Ziffer doppelt zeigen. */
+.cd.cdB-wrap[data-style-countdown='brutalist'] .cdB-cards,
+.cd.cdB-wrap[data-style-countdown='brutalist'] .flip-card,
+.cd.cdB-wrap[data-style-countdown='brutalist'] .flip-top,
+.cd.cdB-wrap[data-style-countdown='brutalist'] .flip-bottom,
+.cd.cdB-wrap[data-style-countdown='brutalist'] .flip-anim-top,
+.cd.cdB-wrap[data-style-countdown='brutalist'] .flip-anim-bot {
+  background-color: inherit;
+  background-image: none;
+  border: 0;
+  box-shadow: none;
+  color: inherit;
+}
+.cd.cdB-wrap[data-style-countdown='brutalist'] .flip-top::after,
+.cd.cdB-wrap[data-style-countdown='brutalist'] .flip-bottom::after { background: none; }
+.cd.cdB-wrap[data-style-countdown='brutalist'] .flip-mid { background: color-mix(in srgb, var(--br-ink) 20%, transparent); }
+.cd.cdB-wrap[data-style-countdown='brutalist'] .flip-digit {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(36px, 4.4vw, 72px);
+  letter-spacing: -0.04em;
+  color: var(--br-ink);
+}
+.cd.cdB-wrap[data-style-countdown='brutalist'] .cdB-unit:nth-child(2) .flip-digit {
+  font-size: clamp(56px, 8vw, 132px);
+}
+.cd.cdB-wrap[data-style-countdown='brutalist'] .cd-date-stamp-wrap {
+  justify-content: flex-start;
+  border: 0;
+  padding: 10px var(--br-pad-inline);
+  border-block-end: var(--br-border);
+}
+.cd.cdB-wrap[data-style-countdown='brutalist'] .cd-date-stamp {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+  background: none;
+  border: 0;
+}
+
+/* --- C: eine Zahl massiv ------------------------------------------------- */
+.cd.cdC-wrap[data-style-countdown='brutalist'] .cdC-bars {
+  display: grid;
+  gap: 0;
+  max-inline-size: none;
+  margin: 0;
+}
+.cd.cdC-wrap[data-style-countdown='brutalist'] .cdC-bar-row {
+  display: grid;
+  grid-template-columns: minmax(0, 8rem) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 2vw, 32px);
+  padding: 10px var(--br-pad-inline);
+  border-block-end: var(--br-border);
+}
+.cd.cdC-wrap[data-style-countdown='brutalist'] .cdC-bar-row:first-child {
+  grid-template-columns: minmax(0, 1fr);
+  background: var(--br-signal);
+  padding-block: clamp(16px, 2vw, 32px);
+  border-block-end: var(--br-border-thick);
+}
+.cd.cdC-wrap[data-style-countdown='brutalist'] .cdC-bar-num,
+.cd.cdC-wrap[data-style-countdown='brutalist'] .cdC-bar-num-value {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  color: var(--br-ink);
+  justify-self: start;
+}
+.cd.cdC-wrap[data-style-countdown='brutalist'] .cdC-bar-row:first-child .cdC-bar-num-value {
+  font-size: clamp(96px, 20vw, 280px);
+  line-height: 0.8;
+}
+.cd.cdC-wrap[data-style-countdown='brutalist'] .cdC-bar-row:not(:first-child) .cdC-bar-num-value {
+  font-size: clamp(22px, 2.4vw, 34px);
+}
+.cd.cdC-wrap[data-style-countdown='brutalist'] .cdC-bar-num-max { display: none; }
+.cd.cdC-wrap[data-style-countdown='brutalist'] .cdC-bar-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+.cd.cdC-wrap[data-style-countdown='brutalist'] .cdC-bar-track {
+  block-size: 10px;
+  background: var(--br-grey);
+  border: var(--br-line) solid var(--br-ink);
+}
+.cd.cdC-wrap[data-style-countdown='brutalist'] .cdC-bar-fill { background: var(--br-ink); }
+.cd.cdC-wrap[data-style-countdown='brutalist'] .cdC-bar-row:first-child .cdC-bar-track { display: none; }
+
+/* =========================================================================
+   4 · LOVE STORY
+   -------------------------------------------------------------------------
+     A  Wechsel Bild/Text in harten Zonen
+     B  Raster mit unterschiedlich großen Blöcken, Nummern in Signal
+     C  Photo Essay mit massiver Typografie und angeschnittenen Bildern
+   ========================================================================= */
+
+.ls[data-style-ls='brutalist'] {
+  padding: 0;
+  background: var(--br-paper);
+  color: var(--br-ink);
+  border-block-end: var(--br-border-thick);
+  text-align: start;
+}
+/* Die Dekorationsebene der Bestandsfassung (Laufschrift, Signalstern) lief
+   über den rechten Rand hinaus und trug keine Information. */
+.ls[data-style-ls='brutalist'] :where(.styled-bg-editorial, .styled-bg-brutalist),
+.ls[data-style-ls='brutalist'] .styled-bereich-bg { display: none; }
+.ls[data-style-ls='brutalist'] :where(.ls-eyebrow, .ls-title, .ls-intro) {
+  margin-inline: 0;
+  padding-inline: var(--br-pad-inline);
+  text-align: start;
+}
+.ls[data-style-ls='brutalist'] .ls-eyebrow {
+  padding-block: 12px;
+  border-block-end: var(--br-border);
+  background: var(--br-ink);
+  color: var(--br-paper);
+  display: block;
+}
+.ls[data-style-ls='brutalist'] .ls-title { padding-block: clamp(20px, 2.4vw, 40px) 0; }
+.ls[data-style-ls='brutalist'] .ls-intro { padding-block: clamp(12px, 1.4vw, 20px) clamp(24px, 3vw, 44px); }
+
+/* --- A ------------------------------------------------------------------- */
+.ls.lsA[data-style-ls='brutalist'] .lsA-single {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+  gap: 0;
+  max-inline-size: none;
+  margin: 0;
+  border-block-start: var(--br-border);
+}
+.ls.lsA[data-style-ls='brutalist'] .lsA-images {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--br-gap);
+  padding: 0;
+  background: var(--br-ink);
+}
+.ls.lsA[data-style-ls='brutalist'] .lsA-images::before { display: none; }
+.ls.lsA[data-style-ls='brutalist'] .lsA-img {
+  position: relative;
+  inset: auto;
+  transform: none;
+  margin: 0;
+  inline-size: 100%;
+  border: 0;
+  box-shadow: none;
+  overflow: hidden;
+  aspect-ratio: var(--ar-classic);
+}
+.ls.lsA[data-style-ls='brutalist'] .lsA-img img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.ls.lsA[data-style-ls='brutalist'] .lsA-img--1 { grid-column: 1 / -1; aspect-ratio: var(--ar-wide); }
+.ls.lsA[data-style-ls='brutalist'] .lsA-text {
+  display: grid;
+  align-content: center;
+  gap: clamp(10px, 1.2vw, 18px);
+  padding: clamp(24px, 3vw, 56px);
+  border-inline-start: var(--br-border);
+  max-inline-size: none;
+  text-align: start;
+  justify-items: start;
+}
+.ls.lsA[data-style-ls='brutalist'] .lsA-eyebrow {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: var(--br-signal);
+  padding: 4px 8px;
+}
+.ls.lsA[data-style-ls='brutalist'] .lsA-moment-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(28px, 3.4vw, 52px);
+  line-height: 0.9;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+}
+.ls.lsA[data-style-ls='brutalist'] .lsA-desc {
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1vw, 16px);
+  line-height: 1.55;
+}
+.ls.lsA[data-style-ls='brutalist'] .lsA-sig {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* --- B: Raster ----------------------------------------------------------- */
+.ls.lsB[data-style-ls='brutalist'] .lsB-list {
+  display: grid;
+  gap: 0;
+  max-inline-size: none;
+  margin: 0;
+  border-block-start: var(--br-border);
+}
+.ls.lsB[data-style-ls='brutalist'] .lsB-item {
+  display: grid;
+  grid-template-columns: var(--br-col);
+  align-items: stretch;
+  gap: 0;
+  border: 0;
+  border-block-end: var(--br-border);
+  padding: 0;
+}
+.ls.lsB[data-style-ls='brutalist'] .lsB-img-wrap {
+  grid-column: 1 / span 7;
+  border: 0;
+  border-inline-end: var(--br-border);
+  overflow: hidden;
+  aspect-ratio: var(--ar-wide);
+}
+.ls.lsB[data-style-ls='brutalist'] .lsB-item:nth-child(even) .lsB-img-wrap {
+  grid-column: 6 / -1;
+  grid-row: 1;
+  border-inline-end: 0;
+  border-inline-start: var(--br-border);
+}
+.ls.lsB[data-style-ls='brutalist'] .lsB-img-wrap img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.ls.lsB[data-style-ls='brutalist'] .lsB-text {
+  grid-column: 8 / -1;
+  display: grid;
+  align-content: center;
+  gap: clamp(8px, 1vw, 14px);
+  padding: clamp(20px, 2.4vw, 40px);
+}
+.ls.lsB[data-style-ls='brutalist'] .lsB-item:nth-child(even) .lsB-text {
+  grid-column: 1 / span 5;
+  grid-row: 1;
+}
+.ls.lsB[data-style-ls='brutalist'] .lsB-num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(34px, 4vw, 64px);
+  line-height: 0.9;
+  color: var(--br-signal);
+  background: none;
+  border: 0;
+  padding: 0;
+}
+.ls.lsB[data-style-ls='brutalist'] .lsB-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(24px, 2.8vw, 44px);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+}
+.ls.lsB[data-style-ls='brutalist'] .lsB-desc {
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1vw, 16px);
+  line-height: 1.55;
+  max-inline-size: 46ch;
+}
+.ls.lsB[data-style-ls='brutalist'] .lsB-date {
+  position: static;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: var(--br-ink);
+  color: var(--br-paper);
+  padding: 4px 8px;
+  border: 0;
+  justify-self: start;
+}
+
+/* --- C: Photo Essay ------------------------------------------------------ */
+.ls.lsC[data-style-ls='brutalist'] .lsC-wrap {
+  display: grid;
+  gap: 0;
+  max-inline-size: none;
+  margin: 0;
+  border-block-start: var(--br-border);
+}
+.ls.lsC[data-style-ls='brutalist'] .lsC-line { display: none; }
+.ls.lsC[data-style-ls='brutalist'] .lsC-item {
+  display: block;
+  padding: 0;
+  border: 0;
+  border-block-end: var(--br-border);
+}
+.ls.lsC[data-style-ls='brutalist'] .lsC-item::before,
+.ls.lsC[data-style-ls='brutalist'] .lsC-item::after { display: none; }
+.ls.lsC[data-style-ls='brutalist'] .lsC-card {
+  display: grid;
+  grid-template-columns: var(--br-col);
+  grid-template-rows: auto auto auto;
+  align-items: start;
+  gap: 0;
+  background: none;
+  border: 0;
+  padding: 0;
+  box-shadow: none;
+}
+/* Das Bild läuft über die halbe Breite und wird angeschnitten, der Satz
+   steht als Block dagegen. */
+.ls.lsC[data-style-ls='brutalist'] .lsC-img {
+  grid-column: 1 / span 7;
+  grid-row: 1 / span 3;
+  margin: 0;
+  border: 0;
+  border-inline-end: var(--br-border);
+  overflow: hidden;
+  aspect-ratio: var(--ar-classic);
+}
+.ls.lsC[data-style-ls='brutalist'] .lsC-img img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.ls.lsC[data-style-ls='brutalist'] .lsC-eyebrow,
+.ls.lsC[data-style-ls='brutalist'] .lsC-title,
+.ls.lsC[data-style-ls='brutalist'] .lsC-desc {
+  grid-column: 8 / -1;
+  margin: 0;
+  padding-inline: clamp(16px, 2vw, 32px);
+}
+.ls.lsC[data-style-ls='brutalist'] .lsC-eyebrow {
+  grid-row: 1;
+  padding-block: clamp(16px, 2vw, 28px) 8px;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--br-signal-deep);
+}
+.ls.lsC[data-style-ls='brutalist'] .lsC-title {
+  grid-row: 2;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(30px, 4vw, 64px);
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+.ls.lsC[data-style-ls='brutalist'] .lsC-desc {
+  grid-row: 3;
+  padding-block: clamp(12px, 1.4vw, 20px) clamp(16px, 2vw, 28px);
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1vw, 16px);
+  line-height: 1.55;
+}
+.ls.lsC[data-style-ls='brutalist'] .lsC-item:nth-child(even) .lsC-img {
+  grid-column: 6 / -1;
+  border-inline-end: 0;
+  border-inline-start: var(--br-border);
+}
+.ls.lsC[data-style-ls='brutalist'] .lsC-item:nth-child(even) :where(.lsC-eyebrow, .lsC-title, .lsC-desc) {
+  grid-column: 1 / span 5;
+}
+
+/* =========================================================================
+   5 · GALLERY
+   -------------------------------------------------------------------------
+     A  hartes Raster, 2px Fugen auf Ink
+     B  grafische Collage, ein Signalblock als Gegengewicht
+     C  filmischer Bildstrom in Schwarz
+   ========================================================================= */
+
+.gal[data-style-gallery='brutalist'] {
+  padding: 0;
+  background: var(--br-paper);
+  color: var(--br-ink);
+  border-block-end: var(--br-border-thick);
+  text-align: start;
+}
+.gal[data-style-gallery='brutalist'] :where(.styled-bg-editorial, .styled-bg-brutalist),
+.gal[data-style-gallery='brutalist'] .styled-bereich-bg { display: none; }
+.gal[data-style-gallery='brutalist'] :where(.gal-eyebrow, .gal-title, .gal-intro) {
+  margin-inline: 0;
+  padding-inline: var(--br-pad-inline);
+  text-align: start;
+}
+.gal[data-style-gallery='brutalist'] .gal-eyebrow {
+  display: block;
+  padding-block: 12px;
+  background: var(--br-signal);
+  color: var(--br-ink);
+  border-block-end: var(--br-border);
+}
+.gal[data-style-gallery='brutalist'] .gal-title { padding-block: clamp(20px, 2.4vw, 40px) 0; }
+.gal[data-style-gallery='brutalist'] .gal-intro { padding-block: clamp(12px, 1.4vw, 20px) clamp(20px, 2.4vw, 36px); }
+.gal[data-style-gallery='brutalist'] .gal-showmore-row {
+  padding: clamp(20px, 2.4vw, 36px) var(--br-pad-inline);
+  justify-content: flex-start;
+}
+.gal[data-style-gallery='brutalist'] :where(.galA-cap, .galB-cap) {
+  font-family: var(--font-mono, monospace);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--br-grey-deep);
+  padding: 6px 0 0;
+}
+
+/* --- A ------------------------------------------------------------------- */
+.gal.galA-wrap[data-style-gallery='brutalist'] .galA {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--br-gap);
+  max-inline-size: none;
+  margin: 0;
+  padding: var(--br-gap) 0;
+  background: var(--br-ink);
+}
+.gal.galA-wrap[data-style-gallery='brutalist'] .galA-tile {
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  aspect-ratio: var(--ar-classic);
+}
+.gal.galA-wrap[data-style-gallery='brutalist'] .galA-tile img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  transition: filter var(--br-dur) var(--br-ease), transform var(--br-dur) var(--br-ease);
+}
+.gal.galA-wrap[data-style-gallery='brutalist'] .galA-tile:hover img {
+  filter: grayscale(0) contrast(1.1);
+  transform: scale(1.02);
+}
+.gal.galA-wrap[data-style-gallery='brutalist'] .galA-cap { display: none; }
+
+/* --- B: Collage ---------------------------------------------------------- */
+.gal.galB-wrap[data-style-gallery='brutalist'] .galB {
+  display: grid;
+  grid-template-columns: var(--br-col);
+  grid-auto-rows: clamp(60px, 5vw, 92px);
+  grid-auto-flow: row dense;
+  gap: var(--br-gap);
+  max-inline-size: none;
+  margin: 0;
+  padding: var(--br-gap) 0;
+  background: var(--br-ink);
+}
+.gal.galB-wrap[data-style-gallery='brutalist'] .galB-group,
+.gal.galB-wrap[data-style-gallery='brutalist'] .galB-grid { display: contents; }
+.gal.galB-wrap[data-style-gallery='brutalist'] .galB-item {
+  grid-column: span 4;
+  grid-row: span 3;
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+}
+.gal.galB-wrap[data-style-gallery='brutalist'] .galB-group[data-layout='full'] .galB-item {
+  grid-column: span 8;
+  grid-row: span 4;
+}
+.gal.galB-wrap[data-style-gallery='brutalist'] .galB-group[data-layout='pair'] .galB-item {
+  grid-column: span 4;
+  grid-row: span 4;
+}
+.gal.galB-wrap[data-style-gallery='brutalist'] .galB-group[data-layout='pair'] .galB-item:first-child {
+  grid-column: span 8;
+}
+.gal.galB-wrap[data-style-gallery='brutalist'] .galB-imgwrap {
+  inline-size: 100%;
+  block-size: 100%;
+  border: 0;
+}
+.gal.galB-wrap[data-style-gallery='brutalist'] .galB-imgwrap img,
+.gal.galB-wrap[data-style-gallery='brutalist'] .galB-item img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+.gal.galB-wrap[data-style-gallery='brutalist'] .galB-cap { display: none; }
+
+/* --- C: Bildstrom -------------------------------------------------------- */
+.gal.galC-wrap[data-style-gallery='brutalist'] .galC {
+  display: flex;
+  gap: var(--br-gap);
+  max-inline-size: none;
+  margin: 0;
+  padding: var(--br-gap) 0;
+  background: var(--br-ink);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.gal.galC-wrap[data-style-gallery='brutalist'] .galC::-webkit-scrollbar { display: none; }
+.gal.galC-wrap[data-style-gallery='brutalist'] .galC-tile {
+  flex: 0 0 clamp(220px, 26vw, 380px);
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  aspect-ratio: var(--ar-classic);
+  scroll-snap-align: start;
+}
+.gal.galC-wrap[data-style-gallery='brutalist'] .galC-tile:nth-child(4n) {
+  flex-basis: clamp(140px, 14vw, 200px);
+}
+.gal.galC-wrap[data-style-gallery='brutalist'] .galC-tile img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+/* =========================================================================
+   6 · MOBIL
+   -------------------------------------------------------------------------
+   Brutalist bleibt hart: keine weichen Ecken, keine freundlichen Abstände.
+   Neu komponiert wird trotzdem — Zonen stapeln sich, Schaugrößen werden
+   geclampt, Raster gehen von zwölf auf vier oder zwei Spuren.
+   ========================================================================= */
+
+@media (max-width: 900px) {
+  .hero-a[data-style-hero='brutalist'] .hero-a-content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hero-a[data-style-hero='brutalist'] .hero-a-title { grid-column: 1; }
+  .hero-a[data-style-hero='brutalist'] .hero-a-image {
+    grid-column: 1;
+    grid-row: auto;
+    border-inline-start: 0;
+    border-block-start: var(--br-border);
+    min-block-size: clamp(240px, 56vw, 420px);
+  }
+  .hero-a[data-style-hero='brutalist'] .hero-a-date,
+  .hero-a[data-style-hero='brutalist'] .hero-a-location {
+    grid-column: 1;
+    border-inline-start: 0;
+  }
+
+  .hero-b[data-style-hero='brutalist'] {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .hero-b[data-style-hero='brutalist'] .hero-b-image-col,
+  .hero-b[data-style-hero='brutalist'] .hero-b-text {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .hero-b[data-style-hero='brutalist'] .hero-b-text { border-block-start: 0; }
+  .hero-b[data-style-hero='brutalist'] .hero-b-image { block-size: clamp(240px, 56vw, 420px); }
+
+  .cd.cdB-wrap[data-style-countdown='brutalist'] .cdB-unit,
+  .cd.cdB-wrap[data-style-countdown='brutalist'] .cdB-unit:nth-child(2),
+  .cd.cdB-wrap[data-style-countdown='brutalist'] .cdB-unit:nth-child(3),
+  .cd.cdB-wrap[data-style-countdown='brutalist'] .cdB-unit:nth-child(4),
+  .cd.cdB-wrap[data-style-countdown='brutalist'] .cdB-unit:nth-child(5) {
+    grid-column: span 6;
+    grid-row: auto;
+  }
+  .cd.cdB-wrap[data-style-countdown='brutalist'] .cdB-unit:nth-child(2) { grid-column: span 12; }
+
+  .ls.lsA[data-style-ls='brutalist'] .lsA-single { grid-template-columns: minmax(0, 1fr); }
+  .ls.lsA[data-style-ls='brutalist'] .lsA-text {
+    border-inline-start: 0;
+    border-block-start: var(--br-border);
+  }
+  .ls.lsB[data-style-ls='brutalist'] .lsB-item,
+  .ls.lsC[data-style-ls='brutalist'] .lsC-card { grid-template-columns: minmax(0, 1fr); }
+  .ls.lsB[data-style-ls='brutalist'] .lsB-img-wrap,
+  .ls.lsB[data-style-ls='brutalist'] .lsB-item:nth-child(even) .lsB-img-wrap,
+  .ls.lsB[data-style-ls='brutalist'] .lsB-text,
+  .ls.lsB[data-style-ls='brutalist'] .lsB-item:nth-child(even) .lsB-text {
+    grid-column: 1;
+    grid-row: auto;
+    border-inline: 0;
+  }
+  .ls.lsB[data-style-ls='brutalist'] .lsB-text { border-block-start: var(--br-border); }
+  .ls.lsC[data-style-ls='brutalist'] .lsC-img,
+  .ls.lsC[data-style-ls='brutalist'] .lsC-item:nth-child(even) .lsC-img,
+  .ls.lsC[data-style-ls='brutalist'] :where(.lsC-eyebrow, .lsC-title, .lsC-desc),
+  .ls.lsC[data-style-ls='brutalist'] .lsC-item:nth-child(even) :where(.lsC-eyebrow, .lsC-title, .lsC-desc) {
+    grid-column: 1;
+    grid-row: auto;
+    border-inline: 0;
+  }
+
+  .gal.galA-wrap[data-style-gallery='brutalist'] .galA { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gal.galB-wrap[data-style-gallery='brutalist'] .galB {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-auto-rows: clamp(52px, 12vw, 84px);
+  }
+  .gal.galB-wrap[data-style-gallery='brutalist'] .galB-item,
+  .gal.galB-wrap[data-style-gallery='brutalist'] .galB-group[data-layout='pair'] .galB-item {
+    grid-column: span 3;
+    grid-row: span 3;
+  }
+  .gal.galB-wrap[data-style-gallery='brutalist'] .galB-group[data-layout='full'] .galB-item,
+  .gal.galB-wrap[data-style-gallery='brutalist'] .galB-group[data-layout='pair'] .galB-item:first-child {
+    grid-column: span 6;
+    grid-row: span 4;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-a[data-style-hero='brutalist'] .hero-a-title { font-size: clamp(44px, 13vw, 72px); }
+  .hero-b[data-style-hero='brutalist'] .hero-b-title { font-size: clamp(38px, 11vw, 60px); }
+  .hero-c[data-style-hero='brutalist'] .hero-c-title { font-size: clamp(42px, 13vw, 76px); }
+  .cd.cdC-wrap[data-style-countdown='brutalist'] .cdC-bar-row:first-child .cdC-bar-num-value {
+    font-size: clamp(88px, 32vw, 140px);
+  }
+  .cd.cdC-wrap[data-style-countdown='brutalist'] .cdC-bar-row {
+    grid-template-columns: minmax(0, 5rem) minmax(0, 1fr);
+    column-gap: var(--sp-3);
+  }
+  .cd.cdC-wrap[data-style-countdown='brutalist'] .cdC-bar-track { grid-column: 1 / -1; }
+  .cd.cdA-wrap[data-style-countdown='brutalist'] .cdA-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cd.cdA-wrap[data-style-countdown='brutalist'] .cdA-unit {
+    border-block-end: var(--br-line) solid var(--br-paper);
+  }
+  .ls[data-style-ls='brutalist'] .ls-title,
+  .gal[data-style-gallery='brutalist'] .gal-title { font-size: clamp(30px, 9vw, 44px); }
+  .gal.galC-wrap[data-style-gallery='brutalist'] .galC-tile {
+    flex-basis: clamp(200px, 68vw, 280px);
+  }
+  .gal.galC-wrap[data-style-gallery='brutalist'] .galC-tile:nth-child(4n) {
+    flex-basis: clamp(120px, 34vw, 160px);
+  }
+}
