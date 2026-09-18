@@ -9,6 +9,9 @@ import './design-system-v2.css';
 import './rsvp-base.css';
 // Ebene 2 — Design 01: Editorial. Muss nach design-system-v2.css stehen.
 import './editorial.css';
+// Ebene 2 — Design 03: Organic. Eigener Style-Layer, greift nur über
+// [data-style='organic']; muss nach editorial.css und design-system-v2.css stehen.
+import './organic.css';
 // Sarahiver Brand: Landing + Launch Gate.
 import './landing-v4.css';
 import './launch-gate.css';
