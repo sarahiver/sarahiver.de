@@ -1035,51 +1035,66 @@
 }
 .gal.galA-wrap[data-style-gallery='organic'] .galA-tile:hover img { transform: scale(1.03); }
 
-/* --- B: unterschiedliche Formate und Formen ------------------------------ */
+/* --- B: kompakte organische Collage --------------------------------------
+   Die Basis liefert die Bilder in Gruppen (.galB-group > .galB-grid) mit der
+   Aufteilung als data-layout: full, pair, triple. Untereinander gesetzt ergab
+   das bei zwölf Bildern eine über 4000px lange Bahn — die Galerie hätte einen
+   unverhältnismäßigen Teil der Hochzeitsseite getragen.
+
+   Deshalb lösen sich Gruppe und Gruppenraster per `display: contents` im
+   gemeinsamen Zwölfspalter auf: alle Bilder fließen in ein Raster,
+   `grid-auto-flow: dense` schließt die Lücken, und über Spalten- UND
+   Zeilenspannen je Aufteilung entstehen Cluster aus zwei bis drei Bildern
+   pro Reihe. Die Proportion kommt aus der Zahl der belegten Rasterzeilen,
+   nicht mehr aus aspect-ratio — dadurch bleiben die Reihen bündig und die
+   Gesamthöhe kontrollierbar.
+
+   Produktlogik, Reihenfolge, Lightbox und „Mehr Bilder zeigen" bleiben
+   unangetastet; es wird nur die Fläche anders belegt. */
 .gal.galB-wrap[data-style-gallery='organic'] .galB {
   display: grid;
-  gap: var(--og-gap);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  /* Rastereinheit und Fuge bestimmen den Rhythmus der Collage. Beide sind
+     bewusst kleiner als der sonstige Organic-Abstand: die Bilder sollen als
+     zusammenhängende Fläche lesen, nicht als einzeln stehende Tafeln. */
+  grid-auto-rows: clamp(62px, 5vw, 86px);
+  grid-auto-flow: row dense;
+  align-items: stretch;
+  gap: clamp(14px, 1.6vw, 24px);
   max-inline-size: var(--wrap-wide);
   margin: var(--og-gap-lg) auto 0;
 }
+.gal.galB-wrap[data-style-gallery='organic'] .galB-group,
 .gal.galB-wrap[data-style-gallery='organic'] .galB-grid {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: var(--og-gap);
-  align-items: center;
+  display: contents;
 }
 .gal.galB-wrap[data-style-gallery='organic'] .galB-item {
   grid-column: span 4;
+  grid-row: span 3;
+  aspect-ratio: auto;
   margin: 0;
   overflow: hidden;
   border: 0;
   border-radius: var(--og-r-l) var(--og-r-s) var(--og-r-l) var(--og-r-s);
-  aspect-ratio: var(--ar-portrait);
 }
-/* Die Gruppen tragen ihre Aufteilung bereits als data-layout (full, pair,
-   triple). Organic gibt jeder Aufteilung eine eigene Form und ein eigenes
-   Format — daraus entsteht die Komposition, ohne nth-child-Architektur und
-   ohne dass die Sammlung ins Endlose wächst. */
+/* Leitbild jeder Gruppe: breit und ruhig, in der Bogenform. */
 .gal.galB-wrap[data-style-gallery='organic'] .galB-group[data-layout='full'] .galB-item {
-  grid-column: span 12;
-  aspect-ratio: var(--ar-band);
+  grid-column: span 6;
+  grid-row: span 4;
   border-radius: var(--og-shape-arch);
 }
+/* Paar: zwei schmale Begleiter, die sich neben ein Leitbild setzen. */
 .gal.galB-wrap[data-style-gallery='organic'] .galB-group[data-layout='pair'] .galB-item {
-  grid-column: span 6;
-  aspect-ratio: var(--ar-wide);
+  grid-column: span 3;
+  grid-row: span 4;
 }
 .gal.galB-wrap[data-style-gallery='organic'] .galB-group[data-layout='pair'] .galB-item:first-child {
-  grid-column: span 7;
   border-radius: var(--og-r-xl) var(--og-r-m) var(--og-r-xl) var(--og-r-m);
 }
-.gal.galB-wrap[data-style-gallery='organic'] .galB-group[data-layout='pair'] .galB-item:last-child {
-  grid-column: span 5;
-  aspect-ratio: var(--ar-classic);
-}
+/* Dreiergruppe: eine eigene, flachere Reihe. */
 .gal.galB-wrap[data-style-gallery='organic'] .galB-group[data-layout='triple'] .galB-item {
   grid-column: span 4;
-  aspect-ratio: var(--ar-classic);
+  grid-row: span 3;
 }
 .gal.galB-wrap[data-style-gallery='organic'] .galB-group[data-layout='triple'] .galB-item:nth-child(2) {
   border-radius: var(--og-r-xl) var(--og-r-m) var(--og-r-xl) var(--og-r-m);
@@ -1214,12 +1229,30 @@
   .gal.galA-wrap[data-style-gallery='organic'] .galA {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .gal.galB-wrap[data-style-gallery='organic'] .galB-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* Mobil bleibt die Collage eine Collage, nur schmaler: sechs Spalten,
+     kleinere Rastereinheit, Leitbilder über die volle Breite, Begleiter zu
+     zweit. Kein Zusammenquetschen der Desktopfassung. */
+  .gal.galB-wrap[data-style-gallery='organic'] .galB {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-auto-rows: clamp(58px, 13vw, 92px);
     gap: var(--sp-4);
   }
-  .gal.galB-wrap[data-style-gallery='organic'] .galB-item { grid-column: span 1; }
-  .gal.galB-wrap[data-style-gallery='organic'] .galB-item:first-child { grid-column: span 2; }
+  .gal.galB-wrap[data-style-gallery='organic'] .galB-group[data-layout='full'] .galB-item {
+    grid-column: span 6;
+    grid-row: span 3;
+  }
+  .gal.galB-wrap[data-style-gallery='organic'] .galB-group[data-layout='pair'] .galB-item {
+    grid-column: span 3;
+    grid-row: span 4;
+  }
+  .gal.galB-wrap[data-style-gallery='organic'] .galB-group[data-layout='triple'] .galB-item {
+    grid-column: span 3;
+    grid-row: span 3;
+  }
+  .gal.galB-wrap[data-style-gallery='organic'] .galB-group[data-layout='triple'] .galB-item:first-child {
+    grid-column: span 6;
+    grid-row: span 3;
+  }
 }
 
 @media (max-width: 600px) {
