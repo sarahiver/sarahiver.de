@@ -4104,6 +4104,25 @@
 .rsvp.rv-a[data-style-rsvp='editorial'] .rv-choice-options { gap: 0 var(--sp-5); }
 .rsvp.rv-a[data-style-rsvp='editorial'] .rv-yes { gap: var(--sp-6); }
 .rsvp.rv-a[data-style-rsvp='editorial'] .rv-submit { margin-block-start: var(--sp-2); }
+/* Das Nachrichtenfeld ist in A der einzige Rahmen im ganzen Formular und
+   wirkte dadurch wie ein eingesetztes Webformular. Statt des kräftigen
+   Rahmens (--ed-rule-strong, 42 %) nur noch eine Haarlinie auf dem Niveau
+   der übrigen Trennlinien — Fläche und Schreibraum bleiben unverändert,
+   Radius 0, kein Hintergrund, keine Dekoration. Nur A: B ist abgenommen,
+   und C hat seine eigene Setzung. */
+.rsvp.rv-a[data-style-rsvp='editorial'] .rv-textarea {
+  border: 1px solid var(--ed-rule);
+}
+/* Der Fokus bleibt deutlich: Linie auf Textfarbe plus eine zweite Linie
+   innen — dieselbe Sprache wie bei den einzeiligen Feldern. */
+.rsvp.rv-a[data-style-rsvp='editorial'] .rv-textarea:focus,
+.rsvp.rv-a[data-style-rsvp='editorial'] .rv-textarea:focus-visible {
+  border-color: currentColor;
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+.rsvp.rv-a[data-style-rsvp='editorial'] .rv-textarea[aria-invalid='true'] {
+  border: 2px solid var(--rv-accent);
+}
 
 /* =========================================================================
    B · JOURNEY — Randspalte und Satzspalte, Kapitel auf Haarlinien
@@ -4250,7 +4269,11 @@
   font-size: var(--fs-5);
   line-height: var(--lh-normal);
   color: var(--rv-soft);
-  max-inline-size: 46ch;
+  /* 46ch trennte den Satz direkt vor „dabei seid." — ein Umbruch, der wie
+     ein Versehen aussieht. Auf Desktopbreiten trägt die Zeile den ganzen
+     Satz; auf schmalen Geräten begrenzt ohnehin das Viewport und der Umbruch
+     fällt dort natürlich. */
+  max-inline-size: 70ch;
   margin: var(--sp-5) 0 var(--sp-7);
 }
 .rsvp.rv-c[data-style-rsvp='editorial'] .rv-choice-options {
