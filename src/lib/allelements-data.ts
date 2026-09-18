@@ -339,31 +339,70 @@ export function buildContent(key: BereichKey, load: ContentLoad): Record<string,
       };
     }
 
-    case 'musicwishes':
+    case 'musicwishes': {
+      // Das Feld heißt im Datenmodell `guest_name` (MusicWishes/shared.ts,
+      // readItems) — hier stand `from`, der Name wurde deshalb nie gerendert.
+      // kurz = noch keine Wünsche (Leerzustand), mittel = vier, lang = zwölf
+      // inklusive sehr langem Titel, langem Interpreten und fehlender Meta.
+      const songs: [string, string, string][] = [
+        ['Dancing Queen', 'ABBA', 'Johanna'],
+        ['Tanz mit mir', 'Element of Crime', ''],
+        ['September', 'Earth, Wind & Fire', 'Familie Petersen'],
+        ['Nichts als die Wahrheit', 'Fettes Brot', ''],
+        ['Sweet Disposition', 'The Temper Trap', 'Lena'],
+        ['Cello', 'Udo Lindenberg', 'Onkel Bernd'],
+        ['Zwischen Sonne und Regen (Live aus der Elbphilharmonie, Zugabe)', 'Die Sterne feat. das Ensemble der Norddeutschen Philharmonie', ''],
+        ['Sunday Morning', 'Maroon 5', 'Mia'],
+        ['Über den Wolken', 'Reinhard Mey', 'Oma Hilde'],
+        ['Bringt mich nach Haus', 'AnnenMayKantereit', ''],
+        ['Valerie', 'Mark Ronson', 'Felix & Tom'],
+        ['Tage wie dieser', 'Die Toten Hosen', ''],
+      ];
+      const count = load === 'kurz' ? 0 : load === 'lang' ? songs.length : 4;
       return {
         eyebrow: 'Musik',
         title: 'Was <em>läuft</em>?',
         description: load === 'kurz' ? '' : STORY_SHORT,
-        items: [0, 1, 2, 3].map((i) => ({
+        items: songs.slice(0, count).map(([title, artist, guest], i) => ({
           id: `mw-${i}`,
-          title: ['Dancing Queen', 'Tanz mit mir', 'September', 'Nichts als die Wahrheit'][i],
-          artist: ['ABBA', 'Element of Crime', 'Earth, Wind & Fire', 'Fettes Brot'][i],
-          from: i % 2 === 0 ? 'Johanna' : '',
+          title,
+          artist,
+          guest_name: guest,
+          created_at: `2027-06-${String((i % 9) + 1).padStart(2, '0')}T18:00:00Z`,
         })),
       };
+    }
 
-    case 'guestbook':
+    case 'guestbook': {
+      // kurz = noch keine freigegebenen Einträge (Leerzustand), mittel = vier,
+      // lang = zwölf mit sehr kurzen, normalen und sehr langen Nachrichten.
+      const voices: [string, string][] = [
+        ['Oma Hilde', STORY_LONG],
+        ['Felix', 'Wir freuen uns so für euch beide!'],
+        ['Marie-Christin & Jan', 'Alles Liebe — wir sehen uns im Juli.'],
+        ['Tom', 'Endlich!'],
+        ['Familie Petersen aus Flensburg', STORY_SHORT],
+        ['Lena', 'Ihr zwei seid der Beweis, dass es sowas noch gibt.'],
+        ['Onkel Bernd', 'Auf viele gemeinsame Jahre. Und auf den Tanz mit der Braut.'],
+        ['Mia', 'Danke für alles.'],
+        ['Katharina-Luise von Sonnenberg', STORY_LONG],
+        ['Die Kollegen aus dem Hafenbüro', 'Wir kommen mit Sack und Pack und guter Laune.'],
+        ['Johanna', 'Ich weine jetzt schon.'],
+        ['Paul & Hanna', 'Zwei Menschen, ein Weg. Wie schön, dass wir dabei sein dürfen.'],
+      ];
+      const count = load === 'kurz' ? 0 : load === 'lang' ? voices.length : 4;
       return {
         eyebrow: 'Gästebuch',
         title: 'Schreibt uns <em>etwas</em>.',
         description: load === 'kurz' ? '' : STORY_SHORT,
-        entries: [0, 1, 2].map((i) => ({
+        entries: voices.slice(0, count).map(([name, message], i) => ({
           id: `gb-${i}`,
-          name: ['Oma Hilde', 'Felix', 'Marie-Christin & Jan'][i],
-          message: i === 0 ? STORY_LONG : 'Wir freuen uns so für euch beide!',
-          created_at: '2027-06-0' + (i + 1) + 'T12:00:00Z',
+          name,
+          message,
+          created_at: `2027-06-${String((i % 9) + 1).padStart(2, '0')}T12:00:00Z`,
         })),
       };
+    }
 
     case 'weddingabc':
       return {

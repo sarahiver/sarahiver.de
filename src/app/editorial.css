@@ -36,7 +36,9 @@
 [data-style-abc='editorial'],
 [data-style-faq='editorial'],
 [data-style-rsvp='editorial'],
-[data-style-gift='editorial'] {
+[data-style-gift='editorial'],
+[data-style-guest='editorial'],
+[data-style-music='editorial'] {
   --ed-rule: color-mix(in srgb, currentColor 16%, transparent);
   --ed-rule-strong: color-mix(in srgb, currentColor 42%, transparent);
   --ed-fill: color-mix(in srgb, currentColor 5%, transparent);
@@ -5266,5 +5268,1132 @@
   .gift.giftC-section[data-style-gift='editorial'] .giftC-grid.is-no-collage {
     gap: var(--sp-6);
     margin-block-end: var(--sp-6);
+  }
+}
+
+/* =========================================================================
+   GÄSTEBUCH
+   -------------------------------------------------------------------------
+   Eine Sammlung persönlicher Worte, kein Kommentarbereich. Die Basis bringt
+   Karten, Polaroid-Rotation, Klebestreifen und eine Spaltenwand mit; all das
+   wird hier zurückgenommen. Was bleibt, sind Stimmen auf Haarlinien.
+
+   Datenlage (Guestbook/shared.ts): eyebrow, title, description, moderation,
+   success_message/_sub und entries[] mit name, message, created_at. Mehr
+   gibt es nicht — keine Avatare, keine Likes, keine Antworten.
+
+     A  GUEST NOTES        eine Lesespalte: Formular, dann Stimmen als Folge
+     B  GUESTBOOK EDITORIAL Randspalte mit Formular, Stimmen in der Satzspalte
+     C  VOICES             erste Stimme groß, danach die Sammlung kleiner
+
+   Spezifität: gemeinsame Regeln `.gb[data-style-guest='editorial']` (0,3,0),
+   variantenspezifische `.gb.gbX-section[data-style-guest='editorial']`
+   (0,4,0). Mobilblöcke tragen dieselbe Stufe.
+   ========================================================================= */
+
+.gb[data-style-guest='editorial'] {
+  position: relative;
+  padding-block: clamp(52px, 6.5vw, 88px);
+  padding-inline: var(--gutter);
+  background: var(--bg);
+  color: var(--ink);
+  --gb-soft: color-mix(in srgb, currentColor 62%, transparent);
+  --gb-accent: var(--accent-deep, var(--accent));
+}
+.gb[data-style-guest='editorial'] .styled-bg-editorial { display: none; }
+
+/* --- Kopf ---------------------------------------------------------------- */
+
+.gb[data-style-guest='editorial'] .gb-head {
+  max-inline-size: none;
+  margin: 0 0 var(--sp-7);
+  text-align: start;
+}
+.gb[data-style-guest='editorial'] .gb-eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  font-weight: 500;
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--gb-soft);
+  margin: 0;
+}
+.gb[data-style-guest='editorial'] .gb-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-7);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.015em;
+  margin: var(--sp-3) 0 0;
+  max-inline-size: 20ch;
+}
+.gb[data-style-guest='editorial'] .gb-title em {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: inherit;
+  font-size: 1em;
+  color: inherit;
+}
+.gb[data-style-guest='editorial'] .gb-desc {
+  font-family: var(--font-body);
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  color: var(--gb-soft);
+  margin: var(--sp-4) 0 0;
+  max-inline-size: 58ch;
+}
+.gb[data-style-guest='editorial'] .gb-head-ornament,
+.gb[data-style-guest='editorial'] .gb-head-decor-wrap { display: none; }
+
+/* --- Formularfelder ------------------------------------------------------ */
+
+.gb[data-style-guest='editorial'] .gb-field-label {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-block-end: var(--sp-2);
+}
+.gb[data-style-guest='editorial'] .gb-input {
+  border: 0;
+  border-block-end: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  background: transparent;
+  padding: 10px 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  min-block-size: var(--touch);
+}
+.gb[data-style-guest='editorial'] .gb-textarea {
+  border: 1px solid var(--ed-rule);
+  border-radius: 0;
+  background: transparent;
+  padding: var(--sp-3);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: var(--lh-normal);
+  min-block-size: 132px;
+}
+.gb[data-style-guest='editorial'] .gb-input:focus,
+.gb[data-style-guest='editorial'] .gb-textarea:focus {
+  outline: none;
+  border-color: currentColor;
+  box-shadow: 0 1px 0 0 currentColor;
+}
+.gb[data-style-guest='editorial'] .gb-textarea:focus {
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+.gb[data-style-guest='editorial'] .gb-btn {
+  min-block-size: 48px;
+  padding: 0 var(--sp-6);
+  background: var(--ink);
+  color: var(--bg);
+  border: 0;
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transform: none;
+}
+.gb[data-style-guest='editorial'] .gb-btn:hover {
+  background: var(--gb-accent);
+  border-color: var(--gb-accent);
+  transform: none;
+}
+.gb[data-style-guest='editorial'] .gb-btn svg { display: none; }
+/* Moderationshinweis und Fehler sind Text, kein Icon-Badge. */
+.gb[data-style-guest='editorial'] .gb-mod-hint {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  color: var(--gb-soft);
+}
+.gb[data-style-guest='editorial'] .gb-mod-hint svg { display: none; }
+.gb[data-style-guest='editorial'] .gb-error {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  font-weight: 500;
+  color: var(--gb-accent);
+  border-inline-start: 2px solid var(--gb-accent);
+  padding-inline-start: var(--sp-3);
+}
+
+/* --- Erfolg und Leerzustand ---------------------------------------------- */
+
+.gb[data-style-guest='editorial'] .gb-success {
+  display: block;
+  background: none;
+  border: 0;
+  border-block: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  padding: var(--sp-6) 0;
+  text-align: start;
+}
+.gb[data-style-guest='editorial'] .gb-success-icon { display: none; }
+.gb[data-style-guest='editorial'] .gb-success-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-6);
+  line-height: var(--lh-snug);
+  max-inline-size: 30ch;
+}
+.gb[data-style-guest='editorial'] .gb-success-sub {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  color: var(--gb-soft);
+  margin-block-start: var(--sp-3);
+  max-inline-size: 48ch;
+}
+.gb[data-style-guest='editorial'] .gb-success-link {
+  margin-block-start: var(--sp-4);
+  min-block-size: var(--touch);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  border-block-end-color: currentColor;
+}
+/* Ohne Einträge trägt die Einladung die Sektion — ohne Kasten und ohne
+   erfundene Beispielstimmen. */
+.gb[data-style-guest='editorial'] .gb-empty {
+  display: block;
+  max-inline-size: 42ch;
+  margin: 0;
+  padding: var(--sp-5) 0 0;
+  background: none;
+  border-radius: 0;
+  border-block-start: 1px solid var(--ed-rule-strong);
+  text-align: start;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  color: var(--ink);
+}
+.gb[data-style-guest='editorial'] .gb-ornament { display: none; }
+
+/* =========================================================================
+   GÄSTEBUCH · A — GUEST NOTES
+   Eine Lesespalte: kompaktes Formular, darunter die Stimmen als Folge.
+   ========================================================================= */
+
+.gb.gbA-section[data-style-guest='editorial'] .gb-head,
+.gb.gbA-section[data-style-guest='editorial'] .gbA-wrap {
+  max-inline-size: var(--wrap-narrow);
+  margin-inline: auto;
+}
+.gb.gbA-section[data-style-guest='editorial'] .gb-head {
+  border-block-end: 1px solid var(--ed-rule);
+  padding-block-end: var(--sp-5);
+  margin-block-end: var(--sp-6);
+}
+.gb.gbA-section[data-style-guest='editorial'] .gbA-form {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-5);
+  margin-block-end: var(--sp-7);
+}
+.gb.gbA-section[data-style-guest='editorial'] .gbA-actions {
+  align-items: baseline;
+  gap: var(--sp-4);
+}
+.gb.gbA-section[data-style-guest='editorial'] .gbA-form-success { margin-block-end: var(--sp-7); }
+/* Aus dem Kartenraster wird eine Folge von Notizen auf Haarlinien. */
+.gb.gbA-section[data-style-guest='editorial'] .gbA-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  border-block-start: 1px solid var(--ed-rule-strong);
+}
+.gb.gbA-section[data-style-guest='editorial'] .gbA-card {
+  background: none;
+  border: 0;
+  border-block-end: 1px solid var(--ed-rule);
+  border-radius: 0;
+  box-shadow: none;
+  padding: var(--sp-5) 0;
+  min-block-size: 0;
+  gap: var(--sp-3);
+}
+.gb.gbA-section[data-style-guest='editorial'] .gbA-msg {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  max-inline-size: 60ch;
+  flex: none;
+}
+/* Signatur wie unter einem Brief: Name und Datum in einer Metazeile, ohne
+   zusätzliche Trennlinie innerhalb des Eintrags. */
+.gb.gbA-section[data-style-guest='editorial'] .gbA-meta {
+  border: 0;
+  padding: 0;
+  justify-content: flex-start;
+  gap: var(--sp-4);
+}
+.gb.gbA-section[data-style-guest='editorial'] .gbA-name {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  font-weight: 500;
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+}
+.gb.gbA-section[data-style-guest='editorial'] .gbA-date {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  color: var(--gb-soft);
+}
+
+/* =========================================================================
+   GÄSTEBUCH · B — GUESTBOOK EDITORIAL
+   Randspalte mit dem Formular, Stimmen in der breiteren Satzspalte. Die
+   erste Stimme bekommt mehr Raum, die folgenden stehen ruhiger darunter.
+   ========================================================================= */
+
+.gb.gbB-section[data-style-guest='editorial'] .gb-head,
+.gb.gbB-section[data-style-guest='editorial'] .gbB-wrap {
+  max-inline-size: calc(var(--wrap) + 2 * var(--gutter));
+  margin-inline: auto;
+}
+.gb.gbB-section[data-style-guest='editorial'] .gb-head { max-inline-size: none; }
+.gb.gbB-section[data-style-guest='editorial'] .gbB-grid {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--ed-gap-lg);
+  row-gap: var(--sp-7);
+}
+.gb.gbB-section[data-style-guest='editorial'] .gbB-left {
+  grid-column: 1 / span 4;
+  position: sticky;
+  top: var(--sp-6);
+  background: none;
+  border: 0;
+  border-block-start: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  padding: var(--sp-5) 0 0;
+  gap: var(--sp-4);
+}
+.gb.gbB-section[data-style-guest='editorial'] .gbB-form-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.01em;
+  max-inline-size: 18ch;
+}
+.gb.gbB-section[data-style-guest='editorial'] .gbB-form-sub {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  color: var(--gb-soft);
+}
+.gb.gbB-section[data-style-guest='editorial'] .gbB-actions { gap: var(--sp-4); }
+.gb.gbB-section[data-style-guest='editorial'] .gbB-actions .gb-btn {
+  inline-size: max-content;
+}
+.gb.gbB-section[data-style-guest='editorial'] .gbB-feed {
+  grid-column: 6 / -1;
+  gap: 0;
+  border-block-start: 1px solid var(--ed-rule-strong);
+}
+/* Die farbige Zitatkante der Basis weicht der Haarlinie. */
+.gb.gbB-section[data-style-guest='editorial'] .gbB-entry {
+  border-left: 0;
+  border-block-end: 1px solid var(--ed-rule);
+  padding: var(--sp-6) 0;
+}
+.gb.gbB-section[data-style-guest='editorial'] .gbB-entry:last-child {
+  border-block-end: 1px solid var(--ed-rule);
+  padding-block-end: var(--sp-6);
+}
+.gb.gbB-section[data-style-guest='editorial'] .gbB-msg {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  max-inline-size: 56ch;
+  margin-block-end: var(--sp-3);
+}
+/* Die erste Stimme trägt die Rubrik an: größer gesetzt und breiter. */
+/* Bewusst nur eine Stufe größer: Nachrichten können lang sein, und eine
+   Schaugröße würde aus einem langen Gruß eine Wand machen. */
+.gb.gbB-section[data-style-guest='editorial'] .gbB-entry:first-child .gbB-msg {
+  font-size: var(--fs-5);
+  line-height: var(--lh-normal);
+  max-inline-size: 40ch;
+}
+.gb.gbB-section[data-style-guest='editorial'] .gbB-meta { gap: var(--sp-4); }
+.gb.gbB-section[data-style-guest='editorial'] .gbB-name,
+.gb.gbB-section[data-style-guest='editorial'] .gbB-date {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+}
+.gb.gbB-section[data-style-guest='editorial'] .gbB-name { font-weight: 500; color: var(--ink); }
+.gb.gbB-section[data-style-guest='editorial'] .gbB-date { color: var(--gb-soft); }
+
+/* =========================================================================
+   GÄSTEBUCH · C — VOICES
+   Die Stimmen sind der Inhalt: die erste steht groß, die übrigen folgen in
+   drei Spuren. Pinnwand, Klebestreifen und Rotation entfallen.
+   ========================================================================= */
+
+.gb.gbC-section[data-style-guest='editorial'] .gb-head,
+.gb.gbC-section[data-style-guest='editorial'] .gbC-wrap {
+  max-inline-size: calc(var(--wrap-wide) + 2 * var(--gutter));
+  margin-inline: auto;
+}
+.gb.gbC-section[data-style-guest='editorial'] .gb-title {
+  font-size: var(--fs-8);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  max-inline-size: 14ch;
+}
+.gb.gbC-section[data-style-guest='editorial'] .gb-desc { max-inline-size: 46ch; }
+.gb.gbC-section[data-style-guest='editorial'] .gbC-bar {
+  border-block-start: 1px solid var(--ed-rule-strong);
+  padding-block-start: var(--sp-4);
+  margin-block-end: var(--sp-7);
+  align-items: baseline;
+}
+.gb.gbC-section[data-style-guest='editorial'] .gbC-count {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  color: var(--gb-soft);
+}
+.gb.gbC-section[data-style-guest='editorial'] .gbC-count strong {
+  font-family: var(--font-display);
+  font-size: var(--fs-5);
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--gb-accent);
+  margin-inline-end: var(--sp-2);
+}
+/* Die Einladung zum eigenen Eintrag ist eine gesetzte Aktion, kein Knopf. */
+.gb.gbC-section[data-style-guest='editorial'] .gbC-bar .gb-btn {
+  min-block-size: var(--touch);
+  padding: 0;
+  background: none;
+  color: var(--ink);
+  border: 0;
+  border-block-end: 1px solid currentColor;
+}
+.gb.gbC-section[data-style-guest='editorial'] .gbC-bar .gb-btn:hover {
+  background: none;
+  color: var(--gb-accent);
+  border-block-end-color: var(--gb-accent);
+}
+.gb.gbC-section[data-style-guest='editorial'] .gbC-board {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  column-count: auto;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--ed-gap-lg);
+  row-gap: var(--sp-6);
+  align-items: start;
+}
+.gb.gbC-section[data-style-guest='editorial'] .gbC-card {
+  display: block;
+  grid-column: span 4;
+  inline-size: auto;
+  margin: 0;
+  padding: var(--sp-4) 0 0;
+  background: none;
+  border: 0;
+  border-block-start: 1px solid var(--ed-rule);
+  box-shadow: none;
+  transform: none;
+  transition: none;
+}
+.gb.gbC-section[data-style-guest='editorial'] .gbC-card:hover { transform: none; }
+.gb.gbC-section[data-style-guest='editorial'] .gbC-card::before { display: none; }
+/* Die erste Stimme steht als Auftakt über die volle Breite, die übrigen
+   folgen darunter in drei Spuren. Volle Breite statt Teilspalte, weil die
+   Nachbarspalte sonst je nach Textlänge leer stehen bleibt. */
+.gb.gbC-section[data-style-guest='editorial'] .gbC-card:first-child {
+  grid-column: 1 / -1;
+  border-block-start: 1px solid var(--ed-rule-strong);
+  padding-block-start: var(--sp-5);
+  margin-block-end: var(--sp-3);
+}
+.gb.gbC-section[data-style-guest='editorial'] .gbC-msg {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  margin: 0 0 var(--sp-3);
+}
+.gb.gbC-section[data-style-guest='editorial'] .gbC-card:first-child .gbC-msg {
+  font-size: var(--fs-5);
+  line-height: var(--lh-normal);
+  max-inline-size: 46ch;
+  margin-block-end: var(--sp-4);
+}
+.gb.gbC-section[data-style-guest='editorial'] .gbC-foot {
+  border-block-start: 0;
+  padding: 0;
+  justify-content: flex-start;
+  gap: var(--sp-3);
+}
+.gb.gbC-section[data-style-guest='editorial'] .gbC-name,
+.gb.gbC-section[data-style-guest='editorial'] .gbC-date {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+}
+.gb.gbC-section[data-style-guest='editorial'] .gbC-name { font-weight: 500; color: var(--ink); }
+.gb.gbC-section[data-style-guest='editorial'] .gbC-date { color: var(--gb-soft); }
+/* Dialog in derselben Sprache wie die Formulare. */
+.gb.gbC-section[data-style-guest='editorial'] .gbC-dialog {
+  background: var(--bg);
+  border: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  box-shadow: none;
+  padding: var(--sp-7) var(--sp-6) var(--sp-6);
+  gap: var(--sp-4);
+}
+.gb.gbC-section[data-style-guest='editorial'] .gbC-dialog-close {
+  border-radius: 0;
+  background: none;
+  border: 1px solid var(--ed-rule);
+  color: var(--ink);
+}
+.gb.gbC-section[data-style-guest='editorial'] .gbC-dialog-close:hover {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
+/* =========================================================================
+   MUSIKWÜNSCHE
+   -------------------------------------------------------------------------
+   Derselbe Baukasten wie im Gästebuch — Haarlinien, Metatypografie, gleiche
+   Form-Controls —, aber eine andere Situation: hier entsteht eine Liste, ein
+   Ablauf, ein Abend. Deshalb Nummerierung, Spuren und Rhythmus statt
+   Zitatsatz. Vinyl-Scheiben, Cover-Farbverläufe und Pillenleisten der Basis
+   werden zurückgenommen.
+
+   Datenlage (MusicWishes/shared.ts): title, artist, optional guest_name,
+   created_at. Keine Playback-Funktion, keine Cover, keine Moderation —
+   neue Wünsche erscheinen sofort (isFresh).
+
+     A  SONG LIST       kompaktes Eingabefeld, darunter die Liste
+     B  PLAYLIST NOTES  Tracklisting mit Nummern und versetzten Spuren
+     C  DANCEFLOOR      der neueste Wunsch groß, der Rest als Verzeichnis
+   ========================================================================= */
+
+.mw[data-style-music='editorial'] {
+  position: relative;
+  padding-block: clamp(52px, 6.5vw, 88px);
+  padding-inline: var(--gutter);
+  background: var(--bg);
+  color: var(--ink);
+  --mw-soft: color-mix(in srgb, currentColor 62%, transparent);
+  --mw-accent: var(--accent-deep, var(--accent));
+}
+.mw[data-style-music='editorial'] .styled-bg-editorial { display: none; }
+
+/* --- Kopf ---------------------------------------------------------------- */
+
+.mw[data-style-music='editorial'] .mw-head {
+  max-inline-size: none;
+  margin: 0 0 var(--sp-7);
+  text-align: start;
+}
+.mw[data-style-music='editorial'] .mw-eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  font-weight: 500;
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--mw-soft);
+  margin: 0;
+}
+.mw[data-style-music='editorial'] .mw-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-7);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.015em;
+  margin: var(--sp-3) 0 0;
+  max-inline-size: 20ch;
+}
+.mw[data-style-music='editorial'] .mw-title em {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: inherit;
+  font-size: 1em;
+  color: inherit;
+}
+.mw[data-style-music='editorial'] .mw-desc {
+  font-family: var(--font-body);
+  font-size: var(--fs-4);
+  line-height: var(--lh-normal);
+  color: var(--mw-soft);
+  margin: var(--sp-4) 0 0;
+  max-inline-size: 58ch;
+}
+.mw[data-style-music='editorial'] .mw-head-ornament,
+.mw[data-style-music='editorial'] .mw-head-decor-wrap { display: none; }
+
+/* --- Formular, Hinweise, Zustände ---------------------------------------- */
+
+.mw[data-style-music='editorial'] .mw-field-label {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-block-end: var(--sp-2);
+}
+.mw[data-style-music='editorial'] .mw-input {
+  border: 0;
+  border-block-end: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  background: transparent;
+  padding: 10px 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  min-block-size: var(--touch);
+}
+.mw[data-style-music='editorial'] .mw-input:focus {
+  outline: none;
+  border-block-end-color: currentColor;
+  box-shadow: 0 1px 0 0 currentColor;
+}
+.mw[data-style-music='editorial'] .mw-btn {
+  min-block-size: 48px;
+  padding: 0 var(--sp-6);
+  background: var(--ink);
+  color: var(--bg);
+  border: 0;
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transform: none;
+}
+.mw[data-style-music='editorial'] .mw-btn:hover {
+  background: var(--mw-accent);
+  border-color: var(--mw-accent);
+  transform: none;
+}
+.mw[data-style-music='editorial'] .mw-btn svg { display: none; }
+.mw[data-style-music='editorial'] .mw-hint,
+.mw[data-style-music='editorial'] .mw-count {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--mw-soft);
+}
+.mw[data-style-music='editorial'] .mw-hint { letter-spacing: 0.04em; text-transform: none; font-size: var(--fs-3); }
+.mw[data-style-music='editorial'] .mw-hint svg { display: none; }
+.mw[data-style-music='editorial'] .mw-error,
+.mw[data-style-music='editorial'] .mw-dup-hint {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  color: var(--mw-accent);
+  border-inline-start: 2px solid var(--mw-accent);
+  padding-inline-start: var(--sp-3);
+}
+.mw[data-style-music='editorial'] .mw-dup-hint {
+  color: var(--mw-soft);
+  border-inline-start-color: var(--ed-rule-strong);
+}
+/* Der Erfolgsstreifen wird eine gesetzte Zeile statt eines farbigen Bandes. */
+.mw[data-style-music='editorial'] .mw-success {
+  display: block;
+  background: none;
+  border: 0;
+  border-block: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  padding: var(--sp-5) 0;
+}
+.mw[data-style-music='editorial'] .mw-success-icon { display: none; }
+.mw[data-style-music='editorial'] .mw-success-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+}
+.mw[data-style-music='editorial'] .mw-success-sub {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  line-height: var(--lh-normal);
+  color: var(--mw-soft);
+  margin-block-start: var(--sp-2);
+}
+.mw[data-style-music='editorial'] .mw-empty {
+  display: block;
+  max-inline-size: 42ch;
+  margin: 0;
+  padding: var(--sp-5) 0 0;
+  background: none;
+  border-radius: 0;
+  border-block-start: 1px solid var(--ed-rule-strong);
+  text-align: start;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  color: var(--ink);
+}
+.mw[data-style-music='editorial'] .mw-ornament { display: none; }
+
+/* =========================================================================
+   MUSIKWÜNSCHE · A — SONG LIST
+   Eine Spalte, schnell zu überfliegen: Eingabe oben, darunter die Wünsche
+   als Zeilen. Keine Cover, keine Play-Symbole — die gibt es im Produkt nicht.
+   ========================================================================= */
+
+.mw.mwA-section[data-style-music='editorial'] .mw-head,
+.mw.mwA-section[data-style-music='editorial'] .mwA-wrap {
+  max-inline-size: var(--wrap-narrow);
+  margin-inline: auto;
+}
+.mw.mwA-section[data-style-music='editorial'] .mw-head {
+  border-block-end: 1px solid var(--ed-rule);
+  padding-block-end: var(--sp-5);
+  margin-block-end: var(--sp-6);
+}
+.mw.mwA-section[data-style-music='editorial'] .mwA-form {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-5);
+  margin-block-end: var(--sp-6);
+}
+.mw.mwA-section[data-style-music='editorial'] .mwA-form .mw-btn {
+  padding: 0 var(--sp-6);
+  inline-size: max-content;
+}
+.mw.mwA-section[data-style-music='editorial'] .mwA-hint-row {
+  align-items: baseline;
+  margin-block-start: var(--sp-2);
+}
+.mw.mwA-section[data-style-music='editorial'] .mwA-list {
+  border-block-start: 1px solid var(--ed-rule-strong);
+}
+.mw.mwA-section[data-style-music='editorial'] .mwA-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--sp-4);
+  align-items: baseline;
+  padding: var(--sp-4) 0;
+  border-block-end: 1px solid var(--ed-rule);
+  transition: none;
+}
+.mw.mwA-section[data-style-music='editorial'] .mwA-row:hover { background: none; }
+/* Frisch eingetragen: eine Markierung an der Achse, nicht nur eine Färbung. */
+.mw.mwA-section[data-style-music='editorial'] .mwA-row.is-fresh {
+  background: none;
+  box-shadow: inset 2px 0 0 0 var(--mw-accent);
+  padding-inline-start: var(--sp-3);
+}
+.mw.mwA-section[data-style-music='editorial'] .mwA-note { display: none; }
+.mw.mwA-section[data-style-music='editorial'] .mwA-text { gap: var(--sp-1); }
+/* Lange Songtitel werden umgebrochen statt abgeschnitten. */
+.mw.mwA-section[data-style-music='editorial'] .mwA-title {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight, 400);
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+.mw.mwA-section[data-style-music='editorial'] .mwA-artist {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  color: var(--mw-soft);
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+.mw.mwA-section[data-style-music='editorial'] .mwA-meta {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  color: var(--mw-soft);
+  gap: var(--sp-1);
+  white-space: normal;
+  text-align: end;
+}
+.mw.mwA-section[data-style-music='editorial'] .mwA-guest {
+  color: var(--mw-soft);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+}
+
+/* =========================================================================
+   MUSIKWÜNSCHE · B — PLAYLIST NOTES
+   Tracklisting: gezählte Einträge, versetzte Spuren, Eingabe als Band über
+   der Liste. Kein Cover-Raster.
+   ========================================================================= */
+
+.mw.mwB-section[data-style-music='editorial'] .mw-head,
+.mw.mwB-section[data-style-music='editorial'] .mwB-wrap {
+  max-inline-size: calc(var(--wrap) + 2 * var(--gutter));
+  margin-inline: auto;
+}
+.mw.mwB-section[data-style-music='editorial'] .mwB-form {
+  background: none;
+  border: 0;
+  border-block: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  padding: var(--sp-5) 0;
+  gap: var(--sp-5) var(--ed-gap);
+  margin-block-end: var(--sp-7);
+}
+.mw.mwB-section[data-style-music='editorial'] .mwB-form-foot {
+  align-items: baseline;
+  margin-block-start: var(--sp-2);
+}
+.mw.mwB-section[data-style-music='editorial'] .mwB-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  counter-reset: track;
+  border-block-start: 1px solid var(--ed-rule-strong);
+}
+.mw.mwB-section[data-style-music='editorial'] .mwB-card {
+  counter-increment: track;
+  grid-template-columns: 3.5rem minmax(0, 1fr) auto;
+  gap: var(--ed-gap);
+  align-items: baseline;
+  background: none;
+  border: 0;
+  border-block-end: 1px solid var(--ed-rule);
+  border-radius: 0;
+  padding: var(--sp-5) 0;
+  box-shadow: none;
+  transition: none;
+}
+.mw.mwB-section[data-style-music='editorial'] .mwB-card::before {
+  content: counter(track, decimal-leading-zero);
+  font-family: var(--font-display);
+  font-size: var(--fs-5);
+  line-height: 1;
+  color: var(--mw-accent);
+}
+.mw.mwB-section[data-style-music='editorial'] .mwB-card.is-fresh {
+  box-shadow: inset 2px 0 0 0 var(--mw-accent);
+  padding-inline-start: var(--sp-3);
+}
+/* Cover-Kacheln mit Farbverlauf und Initiale sind Musik-App, nicht Magazin. */
+.mw.mwB-section[data-style-music='editorial'] .mwB-cover { display: none; }
+.mw.mwB-section[data-style-music='editorial'] .mwB-info { gap: var(--sp-1); }
+.mw.mwB-section[data-style-music='editorial'] .mwB-title {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight, 400);
+  font-size: var(--fs-5);
+  line-height: var(--lh-snug);
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  max-inline-size: 34ch;
+}
+.mw.mwB-section[data-style-music='editorial'] .mwB-artist {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  color: var(--mw-soft);
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+.mw.mwB-section[data-style-music='editorial'] .mwB-guest {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  color: var(--mw-soft);
+  margin-block-start: var(--sp-2);
+}
+/* Versetzte Spuren: jeder zweite Titel rückt ein, die Ziffern bleiben
+   bündig — der Rhythmus einer Platte, keine Unruhe. */
+.mw.mwB-section[data-style-music='editorial'] .mwB-card:nth-child(even) .mwB-info {
+  padding-inline-start: var(--sp-5);
+}
+
+/* =========================================================================
+   MUSIKWÜNSCHE · C — DANCEFLOOR
+   Der zuletzt gewünschte Song steht groß, die übrigen folgen als knappes
+   Verzeichnis, darunter die Eingabe als Abschluss. Keine Plattenteller.
+   ========================================================================= */
+
+.mw.mwC-section[data-style-music='editorial'] .mw-head,
+.mw.mwC-section[data-style-music='editorial'] .mwC-wrap {
+  max-inline-size: calc(var(--wrap-wide) + 2 * var(--gutter));
+  margin-inline: auto;
+}
+.mw.mwC-section[data-style-music='editorial'] .mw-title {
+  font-size: var(--fs-8);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  max-inline-size: 14ch;
+}
+.mw.mwC-section[data-style-music='editorial'] .mw-desc { max-inline-size: 46ch; }
+.mw.mwC-section[data-style-music='editorial'] .mwC-bar {
+  background: none;
+  border: 0;
+  border-block-start: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  padding: var(--sp-4) 0 0;
+  margin-block-end: var(--sp-6);
+  align-items: baseline;
+}
+.mw.mwC-section[data-style-music='editorial'] .mwC-bar-label {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  font-weight: 500;
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--mw-soft);
+}
+.mw.mwC-section[data-style-music='editorial'] .mwC-bar-label svg { display: none; }
+.mw.mwC-section[data-style-music='editorial'] .mwC-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--ed-gap-lg);
+  row-gap: var(--sp-5);
+  justify-items: stretch;
+  margin-block-end: var(--sp-8);
+}
+.mw.mwC-section[data-style-music='editorial'] .mwC-item {
+  display: block;
+  grid-column: span 4;
+  text-align: start;
+  border-block-start: 1px solid var(--ed-rule);
+  padding-block-start: var(--sp-3);
+}
+/* Der neueste Wunsch steht als Aussage über die volle Breite, das übrige
+   Verzeichnis folgt darunter in drei Spuren. Eine Teilspalte hätte je nach
+   Titellänge eine halb leere Zeile daneben erzeugt. */
+.mw.mwC-section[data-style-music='editorial'] .mwC-item:first-child {
+  grid-column: 1 / -1;
+  border-block-start: 1px solid var(--ed-rule-strong);
+  padding-block-start: var(--sp-5);
+  margin-block-end: var(--sp-3);
+}
+.mw.mwC-section[data-style-music='editorial'] .mwC-vinyl { display: none; }
+.mw.mwC-section[data-style-music='editorial'] .mwC-info {
+  align-items: flex-start;
+  gap: var(--sp-1);
+  max-inline-size: none;
+}
+.mw.mwC-section[data-style-music='editorial'] .mwC-title {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight, 400);
+  font-size: var(--fs-4);
+  line-height: var(--lh-snug);
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  max-inline-size: none;
+}
+.mw.mwC-section[data-style-music='editorial'] .mwC-item:first-child .mwC-title {
+  font-size: var(--fs-6);
+  letter-spacing: -0.015em;
+  max-inline-size: 22ch;
+}
+.mw.mwC-section[data-style-music='editorial'] .mwC-artist {
+  font-family: var(--font-body);
+  font-size: var(--fs-3);
+  color: var(--mw-soft);
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  max-inline-size: none;
+}
+.mw.mwC-section[data-style-music='editorial'] .mwC-item:first-child .mwC-artist {
+  font-size: var(--fs-4);
+}
+.mw.mwC-section[data-style-music='editorial'] .mwC-guest {
+  font-family: var(--font-body);
+  font-size: var(--fs-1);
+  letter-spacing: var(--ed-meta-ls);
+  text-transform: uppercase;
+  color: var(--mw-soft);
+  margin-block-start: var(--sp-2);
+}
+.mw.mwC-section[data-style-music='editorial'] .mwC-item.is-fresh {
+  box-shadow: inset 2px 0 0 0 var(--mw-accent);
+  padding-inline-start: var(--sp-3);
+}
+/* Die Eingabe schließt die Sektion ab und bekommt dafür Gewicht. */
+.mw.mwC-section[data-style-music='editorial'] .mwC-form {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--ed-gap);
+  row-gap: var(--sp-5);
+  background: none;
+  border: 0;
+  border-block-start: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+  padding: var(--sp-7) 0 0;
+}
+.mw.mwC-section[data-style-music='editorial'] .mwC-form .mw-field { grid-column: span 4; }
+.mw.mwC-section[data-style-music='editorial'] .mwC-form .mw-btn {
+  grid-column: span 4;
+  inline-size: max-content;
+}
+.mw.mwC-section[data-style-music='editorial'] .mwC-form-foot {
+  grid-column: 1 / -1;
+  align-items: baseline;
+}
+
+/* =========================================================================
+   GÄSTEBUCH + MUSIKWÜNSCHE — MOBIL
+   Eigene Setzung: eine Lesespalte, Metatypografie und Eingabegrößen bleiben
+   unverändert (Labels 12px, Eingaben 16px, Trefferflächen 44px).
+   Selektoren tragen dieselbe Stufe wie oben.
+   ========================================================================= */
+
+@media (max-width: 900px) {
+  /* Gästebuch B: Randspalte über den Stimmen, nicht daneben. */
+  .gb.gbB-section[data-style-guest='editorial'] .gbB-grid {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--sp-7);
+  }
+  .gb.gbB-section[data-style-guest='editorial'] .gbB-left,
+  .gb.gbB-section[data-style-guest='editorial'] .gbB-feed { grid-column: 1 / -1; }
+  .gb.gbB-section[data-style-guest='editorial'] .gbB-left { position: static; }
+  .gb.gbB-section[data-style-guest='editorial'] .gbB-entry:first-child .gbB-msg {
+    font-size: var(--fs-5);
+    max-inline-size: none;
+  }
+
+  /* Gästebuch C: erste Stimme über die volle Breite, danach zwei Spuren.
+     Das Raster geht von zwölf auf zwei Spalten — zwölf Spalten tragen elf
+     Spaltenabstände, und die allein sind breiter als ein Telefon. */
+  .gb.gbC-section[data-style-guest='editorial'] .gbC-board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--ed-gap);
+  }
+  .gb.gbC-section[data-style-guest='editorial'] .gbC-card { grid-column: span 1; }
+  .gb.gbC-section[data-style-guest='editorial'] .gbC-card:first-child { grid-column: 1 / -1; }
+
+  /* Musik C: der große Wunsch nimmt die Breite, das Verzeichnis zwei Spuren. */
+  .mw.mwC-section[data-style-music='editorial'] .mwC-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--ed-gap);
+  }
+  .mw.mwC-section[data-style-music='editorial'] .mwC-item { grid-column: span 1; }
+  .mw.mwC-section[data-style-music='editorial'] .mwC-item:first-child { grid-column: 1 / -1; }
+  .mw.mwC-section[data-style-music='editorial'] .mwC-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .mw.mwC-section[data-style-music='editorial'] .mwC-form .mw-field { grid-column: span 1; }
+  .mw.mwC-section[data-style-music='editorial'] .mwC-form .mw-btn { grid-column: 1 / -1; }
+  .mw.mwC-section[data-style-music='editorial'] .mwC-form .mw-field { grid-column: span 6; }
+  .mw.mwC-section[data-style-music='editorial'] .mwC-form .mw-btn { grid-column: 1 / -1; }
+}
+
+@media (max-width: 600px) {
+  .gb[data-style-guest='editorial'],
+  .mw[data-style-music='editorial'] { padding-block: clamp(40px, 10vw, 60px); }
+
+  /* Gästebuch A: Eingabe und Aktion untereinander. */
+  .gb.gbA-section[data-style-guest='editorial'] .gbA-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-3);
+  }
+  .gb.gbA-section[data-style-guest='editorial'] .gbA-card { padding-block: var(--sp-4); }
+
+  /* Gästebuch C: Statement kleiner, Stimmen einspaltig. */
+  .gb.gbC-section[data-style-guest='editorial'] .gb-title {
+    font-size: clamp(34px, 10.5vw, 52px);
+    line-height: 1.02;
+    max-inline-size: 13ch;
+  }
+  .gb.gbC-section[data-style-guest='editorial'] .gbC-board {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .gb.gbC-section[data-style-guest='editorial'] .gbC-card,
+  .gb.gbC-section[data-style-guest='editorial'] .gbC-card:first-child {
+    grid-column: 1 / -1;
+  }
+  .gb.gbC-section[data-style-guest='editorial'] .gbC-card:first-child .gbC-msg {
+    font-size: var(--fs-5);
+    max-inline-size: none;
+  }
+  .gb.gbC-section[data-style-guest='editorial'] .gbC-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-3);
+  }
+
+  /* Musik A: Felder untereinander, Zeilen kompakt. */
+  .mw.mwA-section[data-style-music='editorial'] .mwA-form {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-4);
+  }
+  .mw.mwA-section[data-style-music='editorial'] .mwA-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-2);
+    padding-block: var(--sp-4);
+  }
+  .mw.mwA-section[data-style-music='editorial'] .mwA-meta {
+    align-items: flex-start;
+    text-align: start;
+    flex-direction: row;
+    gap: var(--sp-3);
+  }
+
+  /* Musik B: Ziffer neben dem Titel, kein Versatz. */
+  .mw.mwB-section[data-style-music='editorial'] .mwB-form {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-4);
+  }
+  .mw.mwB-section[data-style-music='editorial'] .mwB-card {
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    padding-block: var(--sp-4);
+  }
+  .mw.mwB-section[data-style-music='editorial'] .mwB-card::before { font-size: var(--fs-4); }
+  .mw.mwB-section[data-style-music='editorial'] .mwB-card:nth-child(even) .mwB-info {
+    padding-inline-start: 0;
+  }
+  .mw.mwB-section[data-style-music='editorial'] .mwB-guest { grid-column: 2; }
+
+  /* Musik C: Statement skaliert, Verzeichnis einspaltig. */
+  .mw.mwC-section[data-style-music='editorial'] .mw-title {
+    font-size: clamp(34px, 10.5vw, 52px);
+    line-height: 1.02;
+    max-inline-size: 13ch;
+  }
+  .mw.mwC-section[data-style-music='editorial'] .mwC-grid,
+  .mw.mwC-section[data-style-music='editorial'] .mwC-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mw.mwC-section[data-style-music='editorial'] .mwC-item,
+  .mw.mwC-section[data-style-music='editorial'] .mwC-item:first-child {
+    grid-column: 1 / -1;
+  }
+  .mw.mwC-section[data-style-music='editorial'] .mwC-item:first-child .mwC-title {
+    font-size: var(--fs-5);
+    max-inline-size: none;
+  }
+  .mw.mwC-section[data-style-music='editorial'] .mwC-form .mw-field,
+  .mw.mwC-section[data-style-music='editorial'] .mwC-form .mw-btn { grid-column: 1 / -1; }
+  .mw.mwC-section[data-style-music='editorial'] .mwC-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-2);
   }
 }
