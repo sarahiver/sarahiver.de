@@ -2156,121 +2156,230 @@
 
 /* =========================================================================
    7.4 · TRAUZEUGEN
+   -------------------------------------------------------------------------
+   Tatsächliche Struktur (gelesen):
+     gemeinsam  .wit-photo (Kreis, 1:1, mit .wit-photo-initials als Ersatz
+                ohne Bild), .wit-contacts > .wit-btn (Pillen, decken auf
+                Klick die Kontaktdaten auf; `.is-revealed::after` zeigt sie
+                als Tooltip — die Interaktion bleibt unangetastet)
+     A  .witA-grid (auto-fit ab 220px) > .witA-card (zentriert, Karte mit
+        Radius) > .witA-photo, .witA-headings(.witA-role, .witA-name),
+        WitContacts
+     B  .witB-list (Kasten) > .witB-row (Foto 56px | Körper | Aktionen)
+     C  .witC-block je Person > .witC-photo-wrap + .witC-body
    ========================================================================= */
 
+/* Runde Porträts werden rechteckige Crops; die Initialen-Ersatzfläche wird
+   ein Ink-Block mit Signalzeichen. */
+.wit[data-style-wit='brutalist'] .wit-photo {
+  border-radius: 0;
+  border: 0;
+  background: var(--br-grey);
+  aspect-ratio: var(--ar-portrait);
+  inline-size: 100%;
+}
+.wit[data-style-wit='brutalist'] .wit-photo img { filter: grayscale(1) contrast(1.15); }
+.wit[data-style-wit='brutalist'] .wit-photo-initials {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--br-signal);
+  background: var(--br-ink);
+  font-size: clamp(28px, 5vw, 56px);
+}
+/* Kontaktaktionen: rechteckig, harte Kante, Ink-Umschlag beim Hover. */
+.wit[data-style-wit='brutalist'] .wit-btn {
+  min-block-size: 44px;
+  padding: 0 14px;
+  border-radius: 0;
+  border: var(--br-border);
+  background: var(--br-paper);
+  color: var(--br-ink);
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: background-color var(--br-dur) var(--br-ease), color var(--br-dur) var(--br-ease);
+}
+.wit[data-style-wit='brutalist'] .wit-btn:hover,
+.wit[data-style-wit='brutalist'] .wit-btn.is-revealed {
+  background: var(--br-signal);
+  color: var(--br-ink);
+  border-color: var(--br-ink);
+}
+.wit[data-style-wit='brutalist'] .wit-btn:focus-visible {
+  outline: var(--br-line-thick) solid var(--br-signal-deep);
+  outline-offset: 2px;
+}
+.wit[data-style-wit='brutalist'] .wit-btn.is-revealed::after {
+  border-radius: 0;
+  background: var(--br-ink);
+  color: var(--br-paper);
+}
+.wit[data-style-wit='brutalist'] .wit-contacts { justify-content: flex-start; gap: 8px; }
 .wit[data-style-wit='brutalist'] .witA-wrap,
 .wit[data-style-wit='brutalist'] .witB-wrap,
-.wit[data-style-wit='brutalist'] .witC-wrap { max-inline-size: none; margin: 0; padding: 0; }
+.wit[data-style-wit='brutalist'] .witC-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  border-block-start: var(--br-border);
+}
 
-/* --- A: CONTACT INDEX ---------------------------------------------------- */
+/* --- A: CONTACT INDEX — Personen als harte Zeilen ---------------------- */
 .wit.witA-section[data-style-wit='brutalist'] .witA-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--br-gap);
-  background: var(--br-ink);
-  border-block-start: var(--br-border);
-  padding: var(--br-gap) 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  counter-reset: person;
 }
 .wit.witA-section[data-style-wit='brutalist'] .witA-card {
+  counter-increment: person;
   display: grid;
-  gap: 0;
-  background: var(--br-paper);
+  grid-template-columns: clamp(44px, 4vw, 72px) clamp(90px, 10vw, 150px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 2vw, 28px);
+  padding: clamp(12px, 1.4vw, 20px) var(--br-pad-inline);
+  background: none;
   border: 0;
-  box-shadow: none;
-  padding: 0;
+  border-block-end: var(--br-border);
+  border-radius: 0;
+  text-align: start;
 }
-.wit.witA-section[data-style-wit='brutalist'] .witA-photo {
-  inline-size: 100%;
-  aspect-ratio: var(--ar-portrait);
-  border: 0;
+.wit.witA-section[data-style-wit='brutalist'] .witA-card::before {
+  content: counter(person, decimal-leading-zero);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 34px);
+  line-height: 1;
+  color: var(--br-signal-deep);
 }
+.wit.witA-section[data-style-wit='brutalist'] .witA-photo { inline-size: 100%; }
 .wit.witA-section[data-style-wit='brutalist'] .witA-headings {
-  padding: clamp(12px, 1.4vw, 18px);
   display: grid;
   gap: 4px;
+  align-items: start;
+  text-align: start;
 }
 .wit.witA-section[data-style-wit='brutalist'] .witA-name {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(16px, 1.6vw, 24px);
+  font-size: clamp(18px, 2vw, 30px);
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   text-transform: uppercase;
+  color: var(--br-ink);
+  overflow-wrap: normal;
+  word-break: normal;
 }
 .wit.witA-section[data-style-wit='brutalist'] .witA-role {
   font-family: var(--font-mono, monospace);
   font-size: 11px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--br-signal-deep);
+  color: var(--br-ink);
 }
+.wit.witA-section[data-style-wit='brutalist'] .wit-contacts { justify-content: flex-end; }
 
-/* --- B: PEOPLE GRID ------------------------------------------------------ */
+/* --- B: PEOPLE GRID — Verzeichnis mit Initialenspur -------------------- */
 .wit.witB-section[data-style-wit='brutalist'] .witB-list {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
   display: grid;
   gap: 0;
-  border-block-start: var(--br-border);
 }
 .wit.witB-section[data-style-wit='brutalist'] .witB-row {
-  display: grid;
-  grid-template-columns: clamp(90px, 10vw, 160px) minmax(0, 1fr) auto;
-  align-items: center;
-  gap: clamp(12px, 2vw, 28px);
-  padding: clamp(12px, 1.4vw, 20px) var(--br-pad-inline);
+  grid-template-columns: clamp(140px, 16vw, 240px) minmax(0, 1fr) auto;
+  gap: clamp(14px, 2vw, 32px);
+  align-items: stretch;
+  padding: clamp(14px, 1.8vw, 26px) var(--br-pad-inline);
   border-block-end: var(--br-border);
-  background: none;
-  border-inline: 0;
 }
+.wit.witB-section[data-style-wit='brutalist'] .witB-row:last-child { border-block-end: 0; }
 .wit.witB-section[data-style-wit='brutalist'] .witB-photo {
   inline-size: 100%;
-  aspect-ratio: var(--ar-square);
+  aspect-ratio: var(--ar-classic);
+}
+/* Jede zweite Person rückt im Satz ein — Rasterspannung ohne Collage. */
+.wit.witB-section[data-style-wit='brutalist'] .witB-row:nth-child(even) .witB-body {
+  padding-inline-start: clamp(12px, 3vw, 56px);
+}
+.wit.witB-section[data-style-wit='brutalist'] .witB-body {
+  display: grid;
+  align-content: center;
+  gap: 6px;
 }
 .wit.witB-section[data-style-wit='brutalist'] .witB-name {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(20px, 2.2vw, 34px);
-  line-height: 0.95;
-  letter-spacing: -0.025em;
+  font-size: clamp(22px, 2.6vw, 42px);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
   text-transform: uppercase;
+  color: var(--br-ink);
 }
-.wit.witB-section[data-style-wit='brutalist'] .witB-role,
-.wit.witB-section[data-style-wit='brutalist'] .witB-body {
-  font-family: var(--font-body);
-  font-size: clamp(13px, 0.95vw, 15px);
-  line-height: 1.5;
+.wit.witB-section[data-style-wit='brutalist'] .witB-role {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--br-signal-deep);
+}
+.wit.witB-section[data-style-wit='brutalist'] .witB-actions {
+  align-items: center;
+  justify-content: flex-end;
 }
 
-/* --- C: PEOPLE STATEMENT ------------------------------------------------- */
+/* --- C: PEOPLE STATEMENT — Name groß, Porträt als Gegenfläche ---------- */
 .wit.witC-section[data-style-wit='brutalist'] .witC-block {
   display: grid;
-  grid-template-columns: var(--br-col);
-  align-items: center;
-  gap: clamp(12px, 2vw, 32px);
-  padding: clamp(16px, 2vw, 32px) var(--br-pad-inline);
-  border-block-start: var(--br-border);
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  border-block-end: var(--br-border);
   background: none;
 }
+.wit.witC-section[data-style-wit='brutalist'] .witC-block:nth-child(even) .witC-photo-wrap { order: 2; }
+/* Die Bestandsfassung rahmt das Porträt wie ein Polaroid (weiße Fläche,
+   Polster, Schatten). Für Brutalist bleibt nur der Crop. */
 .wit.witC-section[data-style-wit='brutalist'] .witC-photo-wrap {
-  grid-column: 1 / span 4;
   border: 0;
+  border-inline-end: var(--br-border);
+  border-radius: 0;
+  background: none;
+  padding: 0;
+  box-shadow: none;
+  transform: none;
 }
-.wit.witC-section[data-style-wit='brutalist'] .witC-photo {
-  inline-size: 100%;
-  aspect-ratio: var(--ar-portrait);
-}
+/* Variante C bringt eine eigene Initialenfläche mit — sie folgt derselben
+   Regel wie die gemeinsame: Ink-Block mit Signalzeichen. */
 .wit.witC-section[data-style-wit='brutalist'] .witC-photo-initials {
-  font-size: clamp(48px, 6vw, 96px);
-  line-height: 1;
-  color: var(--br-signal);
-  background: var(--br-ink);
   display: grid;
   place-items: center;
+  inline-size: 100%;
+  block-size: 100%;
   aspect-ratio: var(--ar-portrait);
+  background: var(--br-ink);
+  color: var(--br-signal);
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(36px, 6vw, 92px);
+  letter-spacing: -0.04em;
 }
+.wit.witC-section[data-style-wit='brutalist'] .witC-block:nth-child(even) .witC-photo-wrap {
+  border-inline: var(--br-border) 0;
+}
+.wit.witC-section[data-style-wit='brutalist'] .witC-photo { inline-size: 100%; }
 .wit.witC-section[data-style-wit='brutalist'] .witC-body {
-  grid-column: 6 / -1;
   display: grid;
-  gap: clamp(8px, 1vw, 14px);
+  align-content: center;
+  gap: clamp(8px, 1vw, 16px);
+  padding: clamp(20px, 2.6vw, 44px) var(--br-pad-inline);
 }
 .wit.witC-section[data-style-wit='brutalist'] .witC-name {
   font-family: var(--font-display);
@@ -2279,13 +2388,15 @@
   line-height: 0.88;
   letter-spacing: -0.035em;
   text-transform: uppercase;
+  color: var(--br-ink);
   overflow-wrap: normal;
   word-break: normal;
+  hyphens: none;
 }
 .wit.witC-section[data-style-wit='brutalist'] .witC-role {
   font-family: var(--font-mono, monospace);
   font-size: 11px;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--br-signal-deep);
 }
@@ -2294,34 +2405,41 @@
   font-size: clamp(13px, 0.95vw, 15px);
   line-height: 1.55;
   max-inline-size: 52ch;
+  color: var(--br-ink);
 }
 
 /* =========================================================================
    7.5 · FAQ
+   -------------------------------------------------------------------------
+   Tatsächliche Struktur (gelesen):
+     A  .faqA-list > .faqA-item[data-open] > .faqA-q-btn (mit aria-expanded
+        und .icon) + .faqA-panel > .faqA-panel-inner > .faqA-answer.
+        Aufgeklappt wird über grid-template-rows 0fr → 1fr; die Logik bleibt
+        vollständig unberührt, nur Flächen und Typografie ändern sich.
+     B  .faqB-grid (zwei Spalten) > .faqB-card > .faqB-num, .faqB-q, .faqB-a
+        — offen, ohne Toggle.
+     C  .faqC-list > .faqC-item > .faqC-q-col(.faqC-num, .faqC-q) + .faqC-a
    ========================================================================= */
 
 .faq[data-style-faq='brutalist'] .faqA-wrap,
 .faq[data-style-faq='brutalist'] .faqB-wrap,
-.faq[data-style-faq='brutalist'] .faqC-wrap { max-inline-size: none; margin: 0; padding: 0; }
+.faq[data-style-faq='brutalist'] .faqC-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+}
 
-/* --- A: HARD FAQ — lineare Liste, Toggle bleibt ------------------------- */
+/* --- A: HARD FAQ — Liste mit Toggle ------------------------------------ */
 .faq.faqA-section[data-style-faq='brutalist'] .faqA-list {
-  display: grid;
-  gap: 0;
   border-block-start: var(--br-border);
 }
 .faq.faqA-section[data-style-faq='brutalist'] .faqA-item {
-  border: 0;
   border-block-end: var(--br-border);
   background: none;
-  padding: 0;
 }
 .faq.faqA-section[data-style-faq='brutalist'] .faqA-q-btn {
   inline-size: 100%;
   min-block-size: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   gap: var(--sp-4);
   padding: clamp(12px, 1.4vw, 18px) var(--br-pad-inline);
   background: none;
@@ -2329,53 +2447,72 @@
   text-align: start;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(16px, 1.7vw, 24px);
-  line-height: 1.1;
+  font-size: clamp(16px, 1.7vw, 26px);
+  line-height: 1.08;
   letter-spacing: -0.02em;
   text-transform: uppercase;
   color: var(--br-ink);
   transition: background-color var(--br-dur) var(--br-ease);
 }
-.faq.faqA-section[data-style-faq='brutalist'] .faqA-q-btn:hover,
+.faq.faqA-section[data-style-faq='brutalist'] .faqA-q-btn:hover { color: var(--br-ink); background: var(--br-grey); }
+/* Die geöffnete Frage ist der aktive Zustand — Signalfläche plus gedrehtes
+   Zeichen; nie Farbe allein. */
 .faq.faqA-section[data-style-faq='brutalist'] .faqA-item[data-open='true'] .faqA-q-btn {
   background: var(--br-signal);
+  color: var(--br-ink);
 }
+.faq.faqA-section[data-style-faq='brutalist'] .faqA-q-btn .icon {
+  color: var(--br-ink);
+  border: var(--br-line) solid var(--br-ink);
+  inline-size: 28px;
+  block-size: 28px;
+  border-radius: 0;
+}
+.faq.faqA-section[data-style-faq='brutalist'] .faqA-item[data-open='true'] .faqA-q-btn .icon { color: var(--br-ink); }
 .faq.faqA-section[data-style-faq='brutalist'] .faqA-q-btn:focus-visible {
   outline: var(--br-line-thick) solid var(--br-signal-deep);
   outline-offset: -4px;
 }
-.faq.faqA-section[data-style-faq='brutalist'] .faqA-panel-inner,
 .faq.faqA-section[data-style-faq='brutalist'] .faqA-answer {
-  padding: 0 var(--br-pad-inline) clamp(14px, 1.6vw, 22px);
+  padding: clamp(12px, 1.4vw, 18px) var(--br-pad-inline) clamp(16px, 1.8vw, 24px);
   font-family: var(--font-body);
   font-size: clamp(14px, 1vw, 16px);
   line-height: 1.55;
-  max-inline-size: 70ch;
+  color: var(--br-ink);
+  max-inline-size: 72ch;
 }
 
-/* --- B: QUESTION GRID ---------------------------------------------------- */
+/* --- B: QUESTION GRID — zwei Spuren, nummeriert ------------------------ */
 .faq.faqB-section[data-style-faq='brutalist'] .faqB-grid {
-  display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0;
+  align-items: stretch;
   border-block-start: var(--br-border);
 }
-.faq.faqB-section[data-style-faq='brutalist'] .faqB-card {
+.faq.faqB-section[data-style-faq='brutalist'] .faqB-card,
+.faq.faqB-section[data-style-faq='brutalist'] .faqB-card:hover {
   display: grid;
-  grid-template-columns: clamp(48px, 5vw, 80px) minmax(0, 1fr);
-  align-items: start;
-  gap: clamp(10px, 1.4vw, 20px);
+  gap: 8px;
+  align-content: start;
   padding: clamp(16px, 2vw, 28px) var(--br-pad-inline);
+  background: none;
   border: 0;
   border-block-end: var(--br-border);
   border-inline-end: var(--br-border);
-  background: none;
+  border-radius: 0;
   box-shadow: none;
+  transform: none;
 }
 .faq.faqB-section[data-style-faq='brutalist'] .faqB-card:nth-child(2n) { border-inline-end: 0; }
 .faq.faqB-section[data-style-faq='brutalist'] .faqB-num {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
   font-size: clamp(22px, 2.4vw, 36px);
   line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--br-signal-deep);
+  text-transform: none;
 }
 .faq.faqB-section[data-style-faq='brutalist'] .faqB-q {
   font-family: var(--font-display);
@@ -2384,15 +2521,16 @@
   line-height: 1.05;
   letter-spacing: -0.02em;
   text-transform: uppercase;
+  color: var(--br-ink);
 }
 .faq.faqB-section[data-style-faq='brutalist'] .faqB-a {
   font-family: var(--font-body);
   font-size: clamp(13px, 0.95vw, 15px);
   line-height: 1.55;
-  grid-column: 2;
+  color: var(--br-ink);
 }
 
-/* --- C: BIG QUESTIONS ---------------------------------------------------- */
+/* --- C: BIG QUESTIONS — Frage als Schaugröße, Antwort daneben --------- */
 .faq.faqC-section[data-style-faq='brutalist'] .faqC-list {
   display: grid;
   gap: 0;
@@ -2400,43 +2538,76 @@
 }
 .faq.faqC-section[data-style-faq='brutalist'] .faqC-item {
   display: grid;
-  grid-template-columns: clamp(56px, 6vw, 96px) minmax(0, 6fr) minmax(0, 5fr);
-  align-items: baseline;
-  gap: clamp(12px, 2vw, 32px);
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: start;
+  gap: clamp(16px, 2.4vw, 40px);
   padding: clamp(16px, 2vw, 30px) var(--br-pad-inline);
   border-block-end: var(--br-border);
   background: none;
   border-inline: 0;
 }
-.faq.faqC-section[data-style-faq='brutalist'] .faqC-num {
-  font-size: clamp(24px, 2.6vw, 40px);
-  line-height: 1;
-}
-.faq.faqC-section[data-style-faq='brutalist'] .faqC-q,
 .faq.faqC-section[data-style-faq='brutalist'] .faqC-q-col {
+  display: grid;
+  gap: 6px;
+}
+.faq.faqC-section[data-style-faq='brutalist'] .faqC-num {
+  font-family: var(--font-mono, monospace);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--br-signal-deep);
+}
+.faq.faqC-section[data-style-faq='brutalist'] .faqC-q {
   font-family: var(--font-display);
   font-weight: 800;
-  /* Begrenzt: zehn Fragen dürfen keine zehn Bildschirme ergeben. */
-  font-size: clamp(22px, 2.8vw, 46px);
-  line-height: 0.95;
-  letter-spacing: -0.03em;
+  /* Begrenzt gehalten: zehn Fragen dürfen keine zehn Bildschirme ergeben. */
+  font-size: clamp(22px, 3vw, 52px);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
   text-transform: uppercase;
+  color: var(--br-ink);
 }
+/* Die erste Frage trägt die Sektion — sie steht auf Signal und größer. */
+.faq.faqC-section[data-style-faq='brutalist'] .faqC-item:first-child {
+  background: var(--br-signal);
+}
+.faq.faqC-section[data-style-faq='brutalist'] .faqC-item:first-child .faqC-q {
+  font-size: clamp(28px, 4vw, 72px);
+}
+.faq.faqC-section[data-style-faq='brutalist'] .faqC-item:first-child .faqC-num { color: var(--br-ink); }
 .faq.faqC-section[data-style-faq='brutalist'] .faqC-a {
   font-family: var(--font-body);
   font-size: clamp(13px, 0.95vw, 15px);
   line-height: 1.55;
+  color: var(--br-ink);
+  align-self: end;
 }
 
 /* =========================================================================
    7.6 · HOCHZEITS-ABC
+   -------------------------------------------------------------------------
+   Tatsächliche Struktur (gelesen):
+     A  .abcA-list > .abcA-item > .abcA-letter + .abcA-body(.abcA-term,
+        .abcA-text)
+     B  .abcB-grid (drei Spalten) > .abcB-card > .abcB-badge, .abcB-term,
+        .abcB-text
+     C  .abcC-wrap > .abcC-index (Buttons .abcC-idx-btn, springen zu den
+        Gruppen — Interaktion bleibt) + .abcC-groups > .abcC-group >
+        .abcC-group-letter + .abcC-entries > .abcC-entry(.abcC-term,
+        .abcC-text)
+   Die alphabetische Logik und die Sprungmarken bleiben unangetastet.
    ========================================================================= */
 
 .abc[data-style-abc='brutalist'] .abcA-wrap,
 .abc[data-style-abc='brutalist'] .abcB-wrap,
-.abc[data-style-abc='brutalist'] .abcC-wrap { max-inline-size: none; margin: 0; padding: 0; }
+.abc[data-style-abc='brutalist'] .abcC-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+}
 
-/* --- A: INDEX ------------------------------------------------------------ */
+/* --- A: HARD INDEX — Buchstabe links, Eintrag rechts ------------------- */
 .abc.abcA-section[data-style-abc='brutalist'] .abcA-list {
   display: grid;
   gap: 0;
@@ -2448,84 +2619,136 @@
   align-items: baseline;
   gap: clamp(12px, 2vw, 28px);
   padding: clamp(12px, 1.4vw, 20px) var(--br-pad-inline);
+  border: 0;
   border-block-end: var(--br-border);
   background: none;
-  border-inline: 0;
 }
 .abc.abcA-section[data-style-abc='brutalist'] .abcA-letter {
+  font-family: var(--font-display);
+  font-weight: 800;
   font-size: clamp(30px, 3.4vw, 56px);
   line-height: 0.9;
-  color: var(--br-ink);
+  letter-spacing: -0.04em;
+  color: var(--br-signal-deep);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
 }
 .abc.abcA-section[data-style-abc='brutalist'] .abcA-term {
+  margin: 0 0 4px;
   font-family: var(--font-display);
   font-weight: 800;
   font-size: clamp(16px, 1.7vw, 24px);
-  line-height: 1;
+  line-height: 1.05;
   letter-spacing: -0.02em;
   text-transform: uppercase;
+  color: var(--br-ink);
 }
-.abc.abcA-section[data-style-abc='brutalist'] .abcA-text,
-.abc.abcA-section[data-style-abc='brutalist'] .abcA-body {
+.abc.abcA-section[data-style-abc='brutalist'] .abcA-item:hover .abcA-term { color: var(--br-ink); }
+.abc.abcA-section[data-style-abc='brutalist'] .abcA-text {
   font-family: var(--font-body);
   font-size: clamp(13px, 0.95vw, 15px);
   line-height: 1.55;
-  max-inline-size: 70ch;
+  color: var(--br-ink);
+  max-inline-size: 74ch;
 }
 
-/* --- B: ALPHABET GRID ---------------------------------------------------- */
+/* --- B: ALPHABET GRID — Buchstaben als Rasteranker -------------------- */
 .abc.abcB-section[data-style-abc='brutalist'] .abcB-grid {
-  display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0;
+  align-items: stretch;
   border-block-start: var(--br-border);
 }
-.abc.abcB-section[data-style-abc='brutalist'] .abcB-card {
+.abc.abcB-section[data-style-abc='brutalist'] .abcB-card,
+.abc.abcB-section[data-style-abc='brutalist'] .abcB-card:hover {
   display: grid;
   gap: 6px;
+  align-content: start;
   padding: clamp(14px, 1.8vw, 24px) var(--br-pad-inline);
+  background: none;
   border: 0;
   border-block-end: var(--br-border);
   border-inline-end: var(--br-border);
-  background: none;
+  border-radius: 0;
   box-shadow: none;
+  transform: none;
 }
 .abc.abcB-section[data-style-abc='brutalist'] .abcB-card:nth-child(3n) { border-inline-end: 0; }
 .abc.abcB-section[data-style-abc='brutalist'] .abcB-badge {
-  font-size: clamp(28px, 3vw, 48px);
-  line-height: 1;
+  margin: 0;
   justify-self: start;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(26px, 3vw, 46px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--br-signal-deep);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  text-transform: none;
 }
 .abc.abcB-section[data-style-abc='brutalist'] .abcB-term {
+  margin: 0;
   font-family: var(--font-display);
   font-weight: 800;
   font-size: clamp(16px, 1.7vw, 24px);
-  line-height: 1;
+  line-height: 1.05;
   letter-spacing: -0.02em;
   text-transform: uppercase;
+  color: var(--br-ink);
 }
 .abc.abcB-section[data-style-abc='brutalist'] .abcB-text {
   font-family: var(--font-body);
   font-size: clamp(13px, 0.95vw, 15px);
   line-height: 1.55;
+  color: var(--br-ink);
 }
 
-/* --- C: LETTER IMPACT ---------------------------------------------------- */
+/* --- C: LETTER IMPACT — Buchstabe als linke Achse ---------------------- */
 .abc.abcC-section[data-style-abc='brutalist'] .abcC-index {
   display: flex;
   flex-wrap: wrap;
   gap: 2px;
   padding: clamp(10px, 1.2vw, 16px) var(--br-pad-inline);
   border-block: var(--br-border);
+  background: none;
+  border-radius: 0;
+}
+.abc.abcC-section[data-style-abc='brutalist'] .abcC-idx-btn {
+  min-inline-size: 36px;
+  min-block-size: 36px;
+  border: var(--br-line) solid transparent;
+  border-radius: 0;
+  background: none;
+  color: color-mix(in srgb, var(--br-ink) 45%, var(--br-paper));
   font-family: var(--font-mono, monospace);
-  font-size: 11px;
-  letter-spacing: 0.16em;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  transition: background-color var(--br-dur) var(--br-ease), color var(--br-dur) var(--br-ease);
+}
+/* Buchstaben mit Einträgen sind anklickbar und tragen die volle Textfarbe. */
+.abc.abcC-section[data-style-abc='brutalist'] .abcC-idx-btn.has {
+  color: var(--br-ink);
+  border-color: var(--br-ink);
+}
+.abc.abcC-section[data-style-abc='brutalist'] .abcC-idx-btn.has:hover {
+  background: var(--br-signal);
+  color: var(--br-ink);
+}
+.abc.abcC-section[data-style-abc='brutalist'] .abcC-idx-btn:focus-visible {
+  outline: var(--br-line-thick) solid var(--br-signal-deep);
+  outline-offset: 2px;
 }
 .abc.abcC-section[data-style-abc='brutalist'] .abcC-groups { display: grid; gap: 0; }
 .abc.abcC-section[data-style-abc='brutalist'] .abcC-group {
   display: grid;
-  grid-template-columns: clamp(80px, 10vw, 180px) minmax(0, 1fr);
+  grid-template-columns: clamp(96px, 11vw, 200px) minmax(0, 1fr);
   align-items: start;
   gap: clamp(12px, 2vw, 32px);
   padding: clamp(14px, 1.8vw, 26px) var(--br-pad-inline);
@@ -2533,30 +2756,40 @@
   background: none;
 }
 .abc.abcC-section[data-style-abc='brutalist'] .abcC-group-letter {
-  font-size: clamp(56px, 8vw, 150px);
-  line-height: 0.8;
+  font-family: var(--font-display);
+  font-weight: 800;
+  /* 80–160px, aber nie breiter als die eigene Spur. */
+  font-size: clamp(56px, 9vw, 160px);
+  line-height: 0.78;
+  letter-spacing: -0.05em;
   color: var(--br-signal);
+  background: none;
+  border: 0;
+  padding: 0;
   -webkit-text-stroke: 0;
 }
-.abc.abcC-section[data-style-abc='brutalist'] .abcC-entries { display: grid; gap: clamp(8px, 1vw, 14px); }
+.abc.abcC-section[data-style-abc='brutalist'] .abcC-entries { display: grid; gap: clamp(10px, 1.2vw, 18px); }
 .abc.abcC-section[data-style-abc='brutalist'] .abcC-entry {
   border: 0;
   padding: 0;
   background: none;
 }
 .abc.abcC-section[data-style-abc='brutalist'] .abcC-term {
+  margin: 0 0 4px;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(16px, 1.7vw, 24px);
-  line-height: 1;
+  font-size: clamp(16px, 1.7vw, 26px);
+  line-height: 1.05;
   letter-spacing: -0.02em;
   text-transform: uppercase;
+  color: var(--br-ink);
 }
 .abc.abcC-section[data-style-abc='brutalist'] .abcC-text {
   font-family: var(--font-body);
   font-size: clamp(13px, 0.95vw, 15px);
   line-height: 1.55;
-  max-inline-size: 70ch;
+  color: var(--br-ink);
+  max-inline-size: 74ch;
 }
 
 /* =========================================================================
@@ -2572,11 +2805,28 @@
   .acc.accA-section[data-style-acc='brutalist'] .accA-card:hover,
   .acc.accB-section[data-style-acc='brutalist'] .accB-item,
   .acc.accB-section[data-style-acc='brutalist'] .accB-item.no-photo,
+  .wit.witA-section[data-style-wit='brutalist'] .witA-card,
   .wit.witB-section[data-style-wit='brutalist'] .witB-row,
-  .faq.faqC-section[data-style-faq='brutalist'] .faqC-item,
+  .wit.witC-section[data-style-wit='brutalist'] .witC-block,
+  .faq.faqC-section[data-style-faq='brutalist'] .faqC-item {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  .wit.witB-section[data-style-wit='brutalist'] .witB-row:nth-child(even) .witB-body,
+  .wit.witC-section[data-style-wit='brutalist'] .witC-photo-wrap,
+  .wit.witC-section[data-style-wit='brutalist'] .witC-block:nth-child(even) .witC-photo-wrap {
+    padding-inline-start: 0;
+    border-inline: 0;
+    order: 0;
+  }
+  .wit.witA-section[data-style-wit='brutalist'] .witA-photo,
+  .wit.witB-section[data-style-wit='brutalist'] .witB-photo { aspect-ratio: var(--ar-wide); }
+  .wit.witA-section[data-style-wit='brutalist'] .wit-contacts { justify-content: flex-start; }
+  /* ABC C behält die Buchstabenachse, aber schmaler — der Buchstabe steht
+     über dem Eintrag statt daneben. */
   .abc.abcC-section[data-style-abc='brutalist'] .abcC-group {
     grid-template-columns: minmax(0, 1fr);
-    gap: 8px;
+    gap: 4px;
   }
   .acc.accA-section[data-style-acc='brutalist'] .accA-photo,
   .acc.accB-section[data-style-acc='brutalist'] .accB-photo,
@@ -2623,7 +2873,6 @@
     grid-column: 1;
     border-inline: 0;
   }
-  .wit.witA-section[data-style-wit='brutalist'] .witA-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .faq.faqB-section[data-style-faq='brutalist'] .faqB-grid { grid-template-columns: minmax(0, 1fr); }
   .faq.faqB-section[data-style-faq='brutalist'] .faqB-card { border-inline-end: 0; }
   .abc.abcB-section[data-style-abc='brutalist'] .abcB-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -2641,7 +2890,8 @@
   .wit.witC-section[data-style-wit='brutalist'] .witC-name { font-size: clamp(24px, 8.5vw, 42px); }
   .faq.faqC-section[data-style-faq='brutalist'] .faqC-q { font-size: clamp(20px, 7vw, 32px); }
   .abc.abcC-section[data-style-abc='brutalist'] .abcC-group-letter { font-size: clamp(44px, 16vw, 80px); }
-  .wit.witA-section[data-style-wit='brutalist'] .witA-grid { grid-template-columns: minmax(0, 1fr); }
+  .faq.faqC-section[data-style-faq='brutalist'] .faqC-item:first-child .faqC-q { font-size: clamp(24px, 8vw, 38px); }
+  .wit.witC-section[data-style-wit='brutalist'] .witC-name { font-size: clamp(24px, 8.5vw, 42px); }
   .abc.abcB-section[data-style-abc='brutalist'] .abcB-grid { grid-template-columns: minmax(0, 1fr); }
   .abc.abcB-section[data-style-abc='brutalist'] .abcB-card { border-inline-end: 0; }
 }
