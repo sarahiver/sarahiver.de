@@ -1205,3 +1205,4591 @@
   max-inline-size: none;
   overflow-wrap: break-word;
 }
+
+
+/* =========================================================================
+   7 · BAUHAUS — ÜBERTRAGUNG AUF DIE ÜBRIGEN ELF BEREICHE
+   -------------------------------------------------------------------------
+   Ablauf, Anfahrt, Übernachtung, Trauzeugen, Geschenke, FAQ, RSVP,
+   Gästebuch, Musikwünsche, Foto-Upload, Hochzeits-ABC.
+
+   Keine neue Gestaltung: Die Regeln sitzen auf den bereits gelesenen und
+   geprüften Selektoren der echten Produktionsstruktur und übersetzen sie in
+   den eingefrorenen Bauhaus-Contract:
+
+     gefüllte Aktions-/Zustandsfläche → Blau mit Paper-Text (6,9:1). Rot
+                          trägt als Fläche keinen Kleintext (Paper/Rot 4,2:1)
+     Signaltext (Nummern) → Rot, nur in Großschrift
+     2/4px-Konstruktion   → 1px; innere Listenlinien leise (7.9)
+     Versatzschatten      → keiner
+     Display              → Manrope 800, Normalschreibung
+     Meta                 → Karla (über --font-body, kein Mono)
+     Bildfilter           → keiner — Farbfotografie
+     Fehler-Präfix        → „Bitte prüfen —" (Text + Fläche + Kante)
+
+   FUNKTION VOR GEOMETRIE: In diesen Bereichen gibt es keine freien Formen.
+   Geometrie erscheint nur als Nummernkreis, Rasterzelle oder Balken, und
+   nimmt von Information über Reference zu Interaction ab.
+   ========================================================================= */
+
+
+
+
+.wedding-site-wrapper[data-style='bauhaus'] :where(.tl, .dir, .acc, .wit, .faq, .abc) {
+  padding: 0;
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+  border-block-end: 1px solid var(--bh-ink);
+  text-align: start;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(*) {
+  border-radius: 0;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.styled-bg-editorial, .styled-bg-brutalist, .styled-bereich-bg) {
+  display: none;
+}
+
+.wedding-site-wrapper[data-style='bauhaus'] :where(.tl-head, .dir-head, .acc-head, .wit-head, .faq-head, .abc-head) {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  text-align: start;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.tl-head-ornament, .dir-head-ornament, .acc-head-ornament, .wit-head-ornament, .faq-head-ornament, .abc-head-ornament) {
+  display: none;
+}
+
+
+.wedding-site-wrapper[data-style='bauhaus'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.tl-eyebrow, .dir-eyebrow, .acc-eyebrow, .wit-eyebrow, .faq-eyebrow, .abc-eyebrow) {
+  display: block;
+  margin: 0;
+  padding: 12px var(--bh-pad-inline);
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  border-block-end: 1px solid var(--bh-ink);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: start;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.tl-title, .dir-title, .acc-title, .wit-title, .faq-title, .abc-title) {
+  margin: 0;
+  padding: clamp(20px, 2.4vw, 40px) var(--bh-pad-inline) 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(30px, 4.6vw, 68px);
+  line-height: 0.88;
+  letter-spacing: -0.035em;
+  text-transform: none;
+  color: var(--bh-ink);
+  text-align: start;
+  max-inline-size: none;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.tl-title, .dir-title, .acc-title, .wit-title, .faq-title, .abc-title) em {
+  font-style: normal;
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+  padding: 0 0.12em;
+  transform: none;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.tl-desc, .dir-desc, .acc-desc, .wit-desc, .faq-desc, .abc-desc, .tl-intro, .dir-intro, .acc-intro, .wit-intro, .faq-intro, .abc-intro) {
+  margin: 0;
+  padding: clamp(12px, 1.4vw, 20px) var(--bh-pad-inline) clamp(20px, 2.4vw, 36px);
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1vw, 16px);
+  line-height: 1.55;
+  color: var(--bh-ink);
+  max-inline-size: 62ch;
+  text-align: start;
+}
+
+.wedding-site-wrapper[data-style='bauhaus'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.tlA-time-badge, .tlB-event-time, .tlC-uhr, .dirB-num, .accC-num, .faqB-num, .faqC-num, .abcA-letter, .abcB-badge, .abcC-group-letter, .witC-photo-initials) {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--bh-red);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.dir-btn, .accB-cta, .accC-booklink, .witB-actions a, .witC-contacts a) {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding: 0 clamp(14px, 1.6vw, 22px);
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+  border: 1px solid var(--bh-ink);
+  box-shadow: none;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform var(--bh-dur) var(--bh-ease), background-color var(--bh-dur) var(--bh-ease),
+    box-shadow var(--bh-dur) var(--bh-ease);
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.dir-btn, .accB-cta, .accC-booklink, .witB-actions a, .witC-contacts a):hover {
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  transform: none;
+  box-shadow: none;
+}
+
+.wedding-site-wrapper[data-style='bauhaus'] :where(.acc, .wit, .dir) :where(img, .accA-photo, .accB-photo, .witA-photo, .witB-photo, .witC-photo) {
+  filter: none;
+  border-radius: 0;
+  border: 0;
+  object-fit: cover;
+}
+
+.wedding-site-wrapper[data-style='bauhaus'] :where(.dirA-map, .dirB-mapwrap, .dirC-mapwrap, .accC-mapwrap) {
+  border: 1px solid var(--bh-ink);
+  box-shadow: none;
+  filter: none;
+}
+
+
+
+
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+}
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-cards {
+  display: grid;
+  gap: 0;
+  padding: 0;
+  min-block-size: 0;
+  overflow: visible;
+  border-block-start: 1px solid var(--bh-ink);
+}
+
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-card,
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-card:hover,
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-card.is-active,
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-card.is-active:hover {
+  --r: 0deg;
+  flex: none;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 7fr) minmax(0, 4fr);
+  align-items: baseline;
+  gap: clamp(12px, 2vw, 32px);
+  padding: clamp(14px, 1.6vw, 22px) var(--bh-pad-inline);
+  margin: 0;
+  background: var(--bh-paper);
+  border: 0;
+  border-block-end: 1px solid var(--bh-ink);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+  transition: background-color var(--bh-dur) var(--bh-ease);
+}
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-card::after { display: none; }
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-card:hover { background: var(--bh-soft); }
+
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-card.is-active {
+  box-shadow: inset 6px 0 0 0 var(--bh-red);
+}
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-card:focus-visible {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: -4px;
+}
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-card-head {
+  margin: 0;
+  gap: 0;
+  align-items: baseline;
+}
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-time-badge {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: clamp(16px, 1.6vw, 22px);
+  letter-spacing: 0.02em;
+  color: var(--bh-ink);
+  background: none;
+  border: 0;
+  padding: 0;
+}
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-emoji-badge { display: none; }
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-title {
+  grid-column: 2;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(17px, 1.8vw, 26px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-desc {
+  grid-column: 2;
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.5;
+  color: var(--bh-ink);
+}
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-loc-inline {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-loc-inline .pin { color: var(--bh-red); }
+
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-rail,
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-rail-line,
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-rail-dot { display: none; }
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-hint {
+  margin: 0;
+  padding: 12px var(--bh-pad-inline);
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+  text-align: start;
+}
+
+
+.tl.tlB-section[data-style-tl='bauhaus'] .tlB-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  border-block-start: 1px solid var(--bh-ink);
+}
+.tl.tlB-section[data-style-tl='bauhaus'] .tlB-line,
+.tl.tlB-section[data-style-tl='bauhaus'] .tlB-knode { display: none; }
+.tl.tlB-section[data-style-tl='bauhaus'] .tlB-event {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+  gap: 0;
+  padding: 0;
+  margin: 0;
+  border-block-end: 1px solid var(--bh-ink);
+  background: none;
+}
+.tl.tlB-section[data-style-tl='bauhaus'] .tlB-event-time {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 6px;
+  padding: clamp(14px, 1.8vw, 24px) var(--bh-pad-inline);
+  border-inline-end: 1px solid var(--bh-ink);
+}
+.tl.tlB-section[data-style-tl='bauhaus'] .tlB-event-time .t {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: clamp(20px, 2.4vw, 34px);
+  letter-spacing: 0;
+  color: var(--bh-ink);
+}
+.tl.tlB-section[data-style-tl='bauhaus'] .tlB-event-time .u {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+
+.tl.tlB-section[data-style-tl='bauhaus'] .tlB-event.is-current .tlB-event-time {
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+}
+.tl.tlB-section[data-style-tl='bauhaus'] .tlB-event-content {
+  display: grid;
+  gap: 6px;
+  padding: clamp(14px, 1.8vw, 24px) var(--bh-pad-inline);
+}
+.tl.tlB-section[data-style-tl='bauhaus'] .tlB-event-content .ttl {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(18px, 2vw, 30px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.tl.tlB-section[data-style-tl='bauhaus'] .tlB-event-content .dsc {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.5;
+  color: var(--bh-ink);
+}
+.tl.tlB-section[data-style-tl='bauhaus'] .pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.tl.tlB-section[data-style-tl='bauhaus'] .tlB-event:nth-child(even) .tlB-event-content {
+  padding-inline-start: calc(var(--bh-pad-inline) + clamp(16px, 3vw, 64px));
+}
+
+
+.tl.tlC-section[data-style-tl='bauhaus'] .tlC-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  border-block-start: 1px solid var(--bh-ink);
+}
+.tl.tlC-section[data-style-tl='bauhaus'] .tlC-row {
+  display: flex;
+  gap: var(--bh-gap);
+  align-items: stretch;
+  min-block-size: clamp(340px, 42vw, 520px);
+  padding: var(--bh-gap) 0;
+  background: var(--bh-ink);
+}
+.tl.tlC-section[data-style-tl='bauhaus'] .tlC-card {
+  border-radius: 0;
+  border: 0;
+  box-shadow: none;
+  filter: none;
+}
+.tl.tlC-section[data-style-tl='bauhaus'] .tlC-card .tlC-img {
+  filter: none;
+}
+.tl.tlC-section[data-style-tl='bauhaus'] .tlC-card.is-active .tlC-img {
+  filter: none;
+}
+
+.tl.tlC-section[data-style-tl='bauhaus'] .tlC-card::after {
+  background: linear-gradient(to top, var(--bh-ink) 0 34%, transparent 62%);
+}
+.tl.tlC-section[data-style-tl='bauhaus'] .tlC-content {
+  text-align: start;
+  overflow: hidden;
+  padding: clamp(12px, 1.4vw, 20px);
+  color: var(--bh-paper);
+}
+.tl.tlC-section[data-style-tl='bauhaus'] .tlC-time {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.4vw, 34px);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  font-style: normal;
+  color: var(--bh-paper);
+}
+
+.tl.tlC-section[data-style-tl='bauhaus'] .tlC-card.is-active .tlC-time {
+  font-size: clamp(44px, 6vw, 96px);
+  font-style: normal;
+  font-weight: 800;
+  color: var(--bh-red);
+}
+.tl.tlC-section[data-style-tl='bauhaus'] .tlC-uhr {
+  font-family: var(--font-body);
+  font-size: 0.32em;
+  letter-spacing: 0.16em;
+  opacity: 1;
+  color: var(--bh-paper);
+}
+.tl.tlC-section[data-style-tl='bauhaus'] .tlC-card.is-active .tlC-uhr { color: var(--bh-red); }
+.tl.tlC-section[data-style-tl='bauhaus'] .tlC-titlelab,
+.tl.tlC-section[data-style-tl='bauhaus'] .tlC-loc {
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bh-paper);
+  opacity: 1;
+}
+.tl.tlC-section[data-style-tl='bauhaus'] .tlC-bigtitle {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(18px, 2.2vw, 30px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--bh-paper);
+}
+.tl.tlC-section[data-style-tl='bauhaus'] .tlC-descpill {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--bh-paper);
+}
+.tl.tlC-section[data-style-tl='bauhaus'] .tlC-now-row {
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+  border-radius: 0;
+}
+
+
+
+.dir[data-style-dir='bauhaus'] .dir-mapframe {
+  background: var(--bh-soft);
+  border: 1px solid var(--bh-ink);
+  border-radius: 0;
+  overflow: hidden;
+}
+.dir[data-style-dir='bauhaus'] .dir-mapframe iframe { filter: none; }
+.dir[data-style-dir='bauhaus'] .dir-map-missing {
+  font-family: var(--font-body);
+  color: var(--bh-ink);
+}
+.dir[data-style-dir='bauhaus'] .dir-label-chip {
+  display: inline-block;
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  border: 0;
+  border-radius: 0;
+  padding: 4px 8px;
+  font-family: var(--font-body);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.dir[data-style-dir='bauhaus'] .dir-transit,
+.dir[data-style-dir='bauhaus'] .dir-transit-item {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+
+
+.dir.dirA-section[data-style-dir='bauhaus'] .dirA-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  border-block-start: 1px solid var(--bh-ink);
+}
+.dir.dirA-section[data-style-dir='bauhaus'] .dirA-map {
+  block-size: clamp(260px, 30vw, 420px);
+  margin: 0;
+  border: 0;
+  border-block-end: 1px solid var(--bh-ink);
+}
+.dir.dirA-section[data-style-dir='bauhaus'] .dirA-grid,
+.dir.dirA-section[data-style-dir='bauhaus'] .dirA-grid.is-one {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  justify-content: stretch;
+  text-align: start;
+}
+.dir.dirA-section[data-style-dir='bauhaus'] .dirA-grid.is-one {
+  grid-template-columns: minmax(0, 1fr);
+}
+.dir.dirA-section[data-style-dir='bauhaus'] .dirA-card,
+.dir.dirA-section[data-style-dir='bauhaus'] .dirA-grid.is-one .dirA-card {
+  display: grid;
+  align-content: start;
+  gap: clamp(8px, 1vw, 14px);
+  padding: clamp(18px, 2.2vw, 32px) var(--bh-pad-inline);
+  border-inline-end: 1px solid var(--bh-ink);
+  text-align: start;
+}
+.dir.dirA-section[data-style-dir='bauhaus'] .dirA-card:last-child,
+.dir.dirA-section[data-style-dir='bauhaus'] .dirA-grid.is-one .dirA-card {
+  border-inline-end: 0;
+}
+.dir.dirA-section[data-style-dir='bauhaus'] .dir-name,
+.dir.dirA-section[data-style-dir='bauhaus'] .dirA-grid.is-one .dirA-card .dir-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.6vw, 38px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: none;
+  color: var(--bh-ink);
+  text-align: start;
+}
+.dir.dirA-section[data-style-dir='bauhaus'] .dir-address,
+.dir.dirA-section[data-style-dir='bauhaus'] .dirA-grid.is-one .dirA-card .dir-address,
+.dir.dirA-section[data-style-dir='bauhaus'] .dir-description {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.55;
+  color: var(--bh-ink);
+  text-align: start;
+}
+.dir.dirA-section[data-style-dir='bauhaus'] .dirA-card .dir-btn,
+.dir.dirA-section[data-style-dir='bauhaus'] .dirA-grid.is-one .dirA-card .dir-btn {
+  align-self: start;
+  justify-self: start;
+  margin-block-start: 6px;
+}
+
+
+.dir.dirB-section[data-style-dir='bauhaus'] .dirB-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  border-block-start: 1px solid var(--bh-ink);
+}
+.dir.dirB-section[data-style-dir='bauhaus'] .dirB-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0;
+  align-items: stretch;
+}
+.dir.dirB-section[data-style-dir='bauhaus'] .dirB-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-inline-end: 1px solid var(--bh-ink);
+}
+.dir.dirB-section[data-style-dir='bauhaus'] .dirB-row {
+  grid-template-columns: clamp(44px, 5vw, 72px) minmax(0, 1fr);
+  gap: clamp(10px, 1.4vw, 20px);
+  padding: clamp(14px, 1.8vw, 24px) var(--bh-pad-inline);
+  background: none;
+  border: 0;
+  border-block-end: 1px solid var(--bh-ink);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+  transition: background-color var(--bh-dur) var(--bh-ease);
+}
+.dir.dirB-section[data-style-dir='bauhaus'] .dirB-row:hover { background: var(--bh-soft); }
+
+.dir.dirB-section[data-style-dir='bauhaus'] .dirB-row.is-active {
+  background: var(--bh-blue);
+  border-color: var(--bh-ink);
+  box-shadow: none;
+  color: var(--bh-paper);
+}
+.dir.dirB-section[data-style-dir='bauhaus'] .dirB-row:focus-visible {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: -4px;
+}
+.dir.dirB-section[data-style-dir='bauhaus'] .dirB-num {
+  font-size: clamp(22px, 2.4vw, 36px);
+  line-height: 1;
+  color: var(--bh-ink);
+}
+.dir.dirB-section[data-style-dir='bauhaus'] .dirB-content { display: grid; gap: 6px; }
+.dir.dirB-section[data-style-dir='bauhaus'] .dirB-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(18px, 2vw, 28px);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.dir.dirB-section[data-style-dir='bauhaus'] .dirB-short-addr,
+.dir.dirB-section[data-style-dir='bauhaus'] .dirB-details,
+.dir.dirB-section[data-style-dir='bauhaus'] .dirB-details-inner {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.5;
+  color: var(--bh-ink);
+  background: none;
+  border: 0;
+}
+.dir.dirB-section[data-style-dir='bauhaus'] .dirB-mapwrap {
+  min-block-size: clamp(280px, 32vw, 480px);
+  position: sticky;
+  top: 0;
+  align-self: stretch;
+}
+.dir.dirB-section[data-style-dir='bauhaus'] .dirB-mapwrap .dir-mapframe {
+  block-size: 100%;
+  border: 0;
+}
+
+
+.dir.dirC-section[data-style-dir='bauhaus'] .dirC-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  border-block-start: 1px solid var(--bh-ink);
+}
+.dir.dirC-section[data-style-dir='bauhaus'] .dirC-block {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+  gap: 0;
+  align-items: stretch;
+  border-block-end: 1px solid var(--bh-ink);
+  padding: 0;
+  background: none;
+}
+
+.dir.dirC-section[data-style-dir='bauhaus'] .dirC-block:nth-child(even) .dirC-text { order: 2; border-inline: 1px solid var(--bh-ink) 0; }
+.dir.dirC-section[data-style-dir='bauhaus'] .dirC-block:nth-child(even) .dirC-mapwrap { order: 1; border-inline: 0; }
+.dir.dirC-section[data-style-dir='bauhaus'] .dirC-text {
+  display: grid;
+  align-content: center;
+  gap: clamp(8px, 1vw, 16px);
+  padding: clamp(24px, 3vw, 52px) var(--bh-pad-inline);
+  border-inline-end: 1px solid var(--bh-ink);
+}
+.dir.dirC-section[data-style-dir='bauhaus'] .dirC-mapwrap {
+  min-block-size: clamp(260px, 28vw, 440px);
+}
+.dir.dirC-section[data-style-dir='bauhaus'] .dirC-mapwrap .dir-mapframe {
+  block-size: 100%;
+  border: 0;
+}
+.dir.dirC-section[data-style-dir='bauhaus'] .dir-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(32px, 4.6vw, 80px);
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+  text-transform: none;
+  color: var(--bh-ink);
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+.dir.dirC-section[data-style-dir='bauhaus'] .dir-address,
+.dir.dirC-section[data-style-dir='bauhaus'] .dir-description {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.55;
+  max-inline-size: 46ch;
+  color: var(--bh-ink);
+}
+
+
+
+.acc[data-style-acc='bauhaus'] .acc-meta {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+.acc[data-style-acc='bauhaus'] .acc-meta .meta-item svg { color: var(--bh-red); }
+
+
+.acc.accA-section[data-style-acc='bauhaus'] .accA-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  border-block-start: 1px solid var(--bh-ink);
+}
+.acc.accA-section[data-style-acc='bauhaus'] .accA-grid,
+.acc.accA-section[data-style-acc='bauhaus'] .accA-grid.is-one,
+.acc.accA-section[data-style-acc='bauhaus'] .accA-grid.is-two {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  max-inline-size: none;
+  margin: 0;
+  justify-content: stretch;
+  counter-reset: stay;
+}
+.acc.accA-section[data-style-acc='bauhaus'] .accA-card,
+.acc.accA-section[data-style-acc='bauhaus'] .accA-card:hover {
+  counter-increment: stay;
+  display: grid;
+  grid-template-columns: clamp(44px, 4vw, 72px) clamp(110px, 13vw, 200px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 2vw, 28px);
+  padding: clamp(12px, 1.4vw, 20px) var(--bh-pad-inline);
+  background: var(--bh-paper);
+  border: 0;
+  border-block-end: 1px solid var(--bh-ink);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+  overflow: visible;
+}
+.acc.accA-section[data-style-acc='bauhaus'] .accA-card::before {
+  content: counter(stay, decimal-leading-zero);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 34px);
+  line-height: 1;
+  color: var(--bh-red);
+}
+.acc.accA-section[data-style-acc='bauhaus'] .accA-photo {
+  inline-size: 100%;
+  aspect-ratio: var(--ar-classic);
+  border: 0;
+  border-radius: 0;
+}
+
+.acc.accA-section[data-style-acc='bauhaus'] .accA-body {
+  display: grid;
+  gap: 6px;
+  align-content: center;
+  padding: 0;
+}
+.acc.accA-section[data-style-acc='bauhaus'] .accA-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(17px, 1.8vw, 26px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.acc.accA-section[data-style-acc='bauhaus'] .accA-desc {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.5;
+  color: var(--bh-ink);
+}
+.acc.accA-section[data-style-acc='bauhaus'] .accA-footer {
+  margin: 0;
+  justify-self: end;
+}
+.acc.accA-section[data-style-acc='bauhaus'] .accA-card .acc-btn { inline-size: auto; }
+
+
+.acc.accB-section[data-style-acc='bauhaus'] .accB-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  border-block-start: 1px solid var(--bh-ink);
+}
+.acc.accB-section[data-style-acc='bauhaus'] .accB-list {
+  display: grid;
+  gap: 0;
+  counter-reset: stayb;
+}
+.acc.accB-section[data-style-acc='bauhaus'] .accB-item,
+.acc.accB-section[data-style-acc='bauhaus'] .accB-item:hover,
+.acc.accB-section[data-style-acc='bauhaus'] .accB-item.no-photo {
+  counter-increment: stayb;
+  display: grid;
+  grid-template-columns: clamp(52px, 5vw, 88px) clamp(160px, 20vw, 320px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(14px, 2vw, 32px);
+  padding: clamp(14px, 1.8vw, 26px) var(--bh-pad-inline);
+  background: none;
+  border: 0;
+  border-block-end: 1px solid var(--bh-ink);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+}
+.acc.accB-section[data-style-acc='bauhaus'] .accB-item.no-photo {
+  grid-template-columns: clamp(52px, 5vw, 88px) minmax(0, 1fr) auto;
+}
+.acc.accB-section[data-style-acc='bauhaus'] .accB-item::before {
+  content: counter(stayb, decimal-leading-zero);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(26px, 3vw, 48px);
+  line-height: 1;
+  color: var(--bh-red);
+}
+.acc.accB-section[data-style-acc='bauhaus'] .accB-photo {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: var(--ar-wide);
+  border-radius: 0;
+  overflow: hidden;
+}
+.acc.accB-section[data-style-acc='bauhaus'] .accB-body { display: grid; gap: 6px; }
+.acc.accB-section[data-style-acc='bauhaus'] .accB-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 34px);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.acc.accB-section[data-style-acc='bauhaus'] .accB-desc {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.5;
+  color: var(--bh-ink);
+}
+.acc.accB-section[data-style-acc='bauhaus'] .accB-metaRow {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+
+.acc.accC-section[data-style-acc='bauhaus'] .accC-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  border-block-start: 1px solid var(--bh-ink);
+}
+.acc.accC-section[data-style-acc='bauhaus'] .accC-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 0;
+  align-items: stretch;
+  max-inline-size: none;
+}
+.acc.accC-section[data-style-acc='bauhaus'] .accC-list {
+  display: grid;
+  gap: 0;
+  border-inline-end: 1px solid var(--bh-ink);
+}
+.acc.accC-section[data-style-acc='bauhaus'] .accC-mapwrap {
+  min-block-size: clamp(260px, 28vw, 460px);
+  border: 0;
+  border-radius: 0;
+}
+.acc.accC-section[data-style-acc='bauhaus'] .accC-content {
+  display: grid;
+  gap: 8px;
+  padding: clamp(16px, 2vw, 28px) var(--bh-pad-inline);
+  border-block-end: 1px solid var(--bh-ink);
+  background: none;
+  border-inline: 0;
+}
+.acc.accC-section[data-style-acc='bauhaus'] .accC-num {
+  font-size: clamp(26px, 3vw, 46px);
+  line-height: 1;
+}
+.acc.accC-section[data-style-acc='bauhaus'] .accC-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.8vw, 44px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.acc.accC-section[data-style-acc='bauhaus'] .accC-bookline,
+.acc.accC-section[data-style-acc='bauhaus'] .accC-maplegend {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+
+.acc.accC-section[data-style-acc='bauhaus'] .accC-pin,
+.acc.accC-section[data-style-acc='bauhaus'] .accC-pin-bubble {
+  border-radius: 0;
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+  border: 1px solid var(--bh-ink);
+  box-shadow: none;
+}
+.acc.accC-section[data-style-acc='bauhaus'] .accC-pin-num {
+  font-family: var(--font-body);
+  font-weight: 700;
+  color: var(--bh-ink);
+}
+.acc.accC-section[data-style-acc='bauhaus'] .accC-pin.is-venue .accC-pin-bubble {
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+}
+.acc.accC-section[data-style-acc='bauhaus'] .heart { color: var(--bh-red); }
+
+
+
+
+.wit[data-style-wit='bauhaus'] .wit-photo {
+  border-radius: 0;
+  border: 0;
+  background: var(--bh-soft);
+  aspect-ratio: var(--ar-portrait);
+  inline-size: 100%;
+}
+.wit[data-style-wit='bauhaus'] .wit-photo img { filter: none; }
+.wit[data-style-wit='bauhaus'] .wit-photo-initials {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--bh-red);
+  background: var(--bh-ink);
+  font-size: clamp(28px, 5vw, 56px);
+}
+
+.wit[data-style-wit='bauhaus'] .wit-btn {
+  min-block-size: 44px;
+  padding: 0 14px;
+  border-radius: 0;
+  border: 1px solid var(--bh-ink);
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: background-color var(--bh-dur) var(--bh-ease), color var(--bh-dur) var(--bh-ease);
+}
+.wit[data-style-wit='bauhaus'] .wit-btn:hover,
+.wit[data-style-wit='bauhaus'] .wit-btn.is-revealed {
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+  border-color: var(--bh-ink);
+}
+.wit[data-style-wit='bauhaus'] .wit-btn:focus-visible {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: 2px;
+}
+.wit[data-style-wit='bauhaus'] .wit-btn.is-revealed::after {
+  border-radius: 0;
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+}
+.wit[data-style-wit='bauhaus'] .wit-contacts { justify-content: flex-start; gap: 8px; }
+.wit[data-style-wit='bauhaus'] .witA-wrap,
+.wit[data-style-wit='bauhaus'] .witB-wrap,
+.wit[data-style-wit='bauhaus'] .witC-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  border-block-start: 1px solid var(--bh-ink);
+}
+
+
+.wit.witA-section[data-style-wit='bauhaus'] .witA-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  counter-reset: person;
+}
+.wit.witA-section[data-style-wit='bauhaus'] .witA-card {
+  counter-increment: person;
+  display: grid;
+  grid-template-columns: clamp(44px, 4vw, 72px) clamp(90px, 10vw, 150px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 2vw, 28px);
+  padding: clamp(12px, 1.4vw, 20px) var(--bh-pad-inline);
+  background: none;
+  border: 0;
+  border-block-end: 1px solid var(--bh-ink);
+  border-radius: 0;
+  text-align: start;
+}
+.wit.witA-section[data-style-wit='bauhaus'] .witA-card::before {
+  content: counter(person, decimal-leading-zero);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 34px);
+  line-height: 1;
+  color: var(--bh-red);
+}
+.wit.witA-section[data-style-wit='bauhaus'] .witA-photo { inline-size: 100%; }
+.wit.witA-section[data-style-wit='bauhaus'] .witA-headings {
+  display: grid;
+  gap: 4px;
+  align-items: start;
+  text-align: start;
+}
+.wit.witA-section[data-style-wit='bauhaus'] .witA-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(18px, 2vw, 30px);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  text-transform: none;
+  color: var(--bh-ink);
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.wit.witA-section[data-style-wit='bauhaus'] .witA-role {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+.wit.witA-section[data-style-wit='bauhaus'] .wit-contacts { justify-content: flex-end; }
+
+
+.wit.witB-section[data-style-wit='bauhaus'] .witB-list {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+}
+.wit.witB-section[data-style-wit='bauhaus'] .witB-row {
+  grid-template-columns: clamp(140px, 16vw, 240px) minmax(0, 1fr) auto;
+  gap: clamp(14px, 2vw, 32px);
+  align-items: stretch;
+  padding: clamp(14px, 1.8vw, 26px) var(--bh-pad-inline);
+  border-block-end: 1px solid var(--bh-ink);
+}
+.wit.witB-section[data-style-wit='bauhaus'] .witB-row:last-child { border-block-end: 0; }
+.wit.witB-section[data-style-wit='bauhaus'] .witB-photo {
+  inline-size: 100%;
+  aspect-ratio: var(--ar-classic);
+}
+
+.wit.witB-section[data-style-wit='bauhaus'] .witB-row:nth-child(even) .witB-body {
+  padding-inline-start: clamp(12px, 3vw, 56px);
+}
+.wit.witB-section[data-style-wit='bauhaus'] .witB-body {
+  display: grid;
+  align-content: center;
+  gap: 6px;
+}
+.wit.witB-section[data-style-wit='bauhaus'] .witB-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.6vw, 42px);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.wit.witB-section[data-style-wit='bauhaus'] .witB-role {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+.wit.witB-section[data-style-wit='bauhaus'] .witB-actions {
+  align-items: center;
+  justify-content: flex-end;
+}
+
+
+.wit.witC-section[data-style-wit='bauhaus'] .witC-block {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  border-block-end: 1px solid var(--bh-ink);
+  background: none;
+}
+.wit.witC-section[data-style-wit='bauhaus'] .witC-block:nth-child(even) .witC-photo-wrap { order: 2; }
+
+.wit.witC-section[data-style-wit='bauhaus'] .witC-photo-wrap {
+  border: 0;
+  border-inline-end: 1px solid var(--bh-ink);
+  border-radius: 0;
+  background: none;
+  padding: 0;
+  box-shadow: none;
+  transform: none;
+}
+
+.wit.witC-section[data-style-wit='bauhaus'] .witC-photo-initials {
+  display: grid;
+  place-items: center;
+  inline-size: 100%;
+  block-size: 100%;
+  aspect-ratio: var(--ar-portrait);
+  background: var(--bh-ink);
+  color: var(--bh-red);
+  border-radius: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(36px, 6vw, 92px);
+  letter-spacing: -0.04em;
+}
+.wit.witC-section[data-style-wit='bauhaus'] .witC-block:nth-child(even) .witC-photo-wrap {
+  border-inline: 1px solid var(--bh-ink) 0;
+}
+.wit.witC-section[data-style-wit='bauhaus'] .witC-photo { inline-size: 100%; }
+.wit.witC-section[data-style-wit='bauhaus'] .witC-body {
+  display: grid;
+  align-content: center;
+  gap: clamp(8px, 1vw, 16px);
+  padding: clamp(20px, 2.6vw, 44px) var(--bh-pad-inline);
+}
+.wit.witC-section[data-style-wit='bauhaus'] .witC-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(30px, 4.4vw, 76px);
+  line-height: 0.88;
+  letter-spacing: -0.035em;
+  text-transform: none;
+  color: var(--bh-ink);
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+.wit.witC-section[data-style-wit='bauhaus'] .witC-role {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+.wit.witC-section[data-style-wit='bauhaus'] .witC-intro {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.55;
+  max-inline-size: 52ch;
+  color: var(--bh-ink);
+}
+
+
+
+.faq[data-style-faq='bauhaus'] .faqA-wrap,
+.faq[data-style-faq='bauhaus'] .faqB-wrap,
+.faq[data-style-faq='bauhaus'] .faqC-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+}
+
+
+.faq.faqA-section[data-style-faq='bauhaus'] .faqA-list {
+  border-block-start: 1px solid var(--bh-ink);
+}
+.faq.faqA-section[data-style-faq='bauhaus'] .faqA-item {
+  border-block-end: 1px solid var(--bh-ink);
+  background: none;
+}
+.faq.faqA-section[data-style-faq='bauhaus'] .faqA-q-btn {
+  inline-size: 100%;
+  min-block-size: 56px;
+  gap: var(--sp-4);
+  padding: clamp(12px, 1.4vw, 18px) var(--bh-pad-inline);
+  background: none;
+  border: 0;
+  text-align: start;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(16px, 1.7vw, 26px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--bh-ink);
+  transition: background-color var(--bh-dur) var(--bh-ease);
+}
+.faq.faqA-section[data-style-faq='bauhaus'] .faqA-q-btn:hover { color: var(--bh-ink); background: var(--bh-soft); }
+
+.faq.faqA-section[data-style-faq='bauhaus'] .faqA-item[data-open='true'] .faqA-q-btn {
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+}
+.faq.faqA-section[data-style-faq='bauhaus'] .faqA-q-btn .icon {
+  color: var(--bh-ink);
+  border: 1px solid var(--bh-ink);
+  inline-size: 28px;
+  block-size: 28px;
+  border-radius: 0;
+}
+.faq.faqA-section[data-style-faq='bauhaus'] .faqA-item[data-open='true'] .faqA-q-btn .icon { color: var(--bh-ink); }
+.faq.faqA-section[data-style-faq='bauhaus'] .faqA-q-btn:focus-visible {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: -4px;
+}
+.faq.faqA-section[data-style-faq='bauhaus'] .faqA-answer {
+  padding: clamp(12px, 1.4vw, 18px) var(--bh-pad-inline) clamp(16px, 1.8vw, 24px);
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1vw, 16px);
+  line-height: 1.55;
+  color: var(--bh-ink);
+  max-inline-size: 72ch;
+}
+
+
+.faq.faqB-section[data-style-faq='bauhaus'] .faqB-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  align-items: stretch;
+  border-block-start: 1px solid var(--bh-ink);
+}
+.faq.faqB-section[data-style-faq='bauhaus'] .faqB-card,
+.faq.faqB-section[data-style-faq='bauhaus'] .faqB-card:hover {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  padding: clamp(16px, 2vw, 28px) var(--bh-pad-inline);
+  background: none;
+  border: 0;
+  border-block-end: 1px solid var(--bh-ink);
+  border-inline-end: 1px solid var(--bh-ink);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+}
+.faq.faqB-section[data-style-faq='bauhaus'] .faqB-card:nth-child(2n) { border-inline-end: 0; }
+.faq.faqB-section[data-style-faq='bauhaus'] .faqB-num {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.4vw, 36px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--bh-red);
+  text-transform: none;
+}
+.faq.faqB-section[data-style-faq='bauhaus'] .faqB-q {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(17px, 1.8vw, 26px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.faq.faqB-section[data-style-faq='bauhaus'] .faqB-a {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.55;
+  color: var(--bh-ink);
+}
+
+
+.faq.faqC-section[data-style-faq='bauhaus'] .faqC-list {
+  display: grid;
+  gap: 0;
+  border-block-start: 1px solid var(--bh-ink);
+}
+.faq.faqC-section[data-style-faq='bauhaus'] .faqC-item {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: start;
+  gap: clamp(16px, 2.4vw, 40px);
+  padding: clamp(16px, 2vw, 30px) var(--bh-pad-inline);
+  border-block-end: 1px solid var(--bh-ink);
+  background: none;
+  border-inline: 0;
+}
+.faq.faqC-section[data-style-faq='bauhaus'] .faqC-q-col {
+  display: grid;
+  gap: 6px;
+}
+.faq.faqC-section[data-style-faq='bauhaus'] .faqC-num {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+.faq.faqC-section[data-style-faq='bauhaus'] .faqC-q {
+  font-family: var(--font-display);
+  font-weight: 800;
+  
+  font-size: clamp(22px, 3vw, 52px);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+
+.faq.faqC-section[data-style-faq='bauhaus'] .faqC-item:first-child {
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+}
+.faq.faqC-section[data-style-faq='bauhaus'] .faqC-item:first-child .faqC-q {
+  font-size: clamp(28px, 4vw, 72px);
+}
+.faq.faqC-section[data-style-faq='bauhaus'] .faqC-item:first-child .faqC-num { color: var(--bh-ink); }
+.faq.faqC-section[data-style-faq='bauhaus'] .faqC-a {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.55;
+  color: var(--bh-ink);
+  align-self: end;
+}
+
+
+
+.abc[data-style-abc='bauhaus'] .abcA-wrap,
+.abc[data-style-abc='bauhaus'] .abcB-wrap,
+.abc[data-style-abc='bauhaus'] .abcC-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+}
+
+
+.abc.abcA-section[data-style-abc='bauhaus'] .abcA-list {
+  display: grid;
+  gap: 0;
+  border-block-start: 1px solid var(--bh-ink);
+}
+.abc.abcA-section[data-style-abc='bauhaus'] .abcA-item {
+  display: grid;
+  grid-template-columns: clamp(56px, 6vw, 96px) minmax(0, 1fr);
+  align-items: baseline;
+  gap: clamp(12px, 2vw, 28px);
+  padding: clamp(12px, 1.4vw, 20px) var(--bh-pad-inline);
+  border: 0;
+  border-block-end: 1px solid var(--bh-ink);
+  background: none;
+}
+.abc.abcA-section[data-style-abc='bauhaus'] .abcA-letter {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(30px, 3.4vw, 56px);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--bh-red);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+.abc.abcA-section[data-style-abc='bauhaus'] .abcA-term {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(16px, 1.7vw, 24px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.abc.abcA-section[data-style-abc='bauhaus'] .abcA-item:hover .abcA-term { color: var(--bh-ink); }
+.abc.abcA-section[data-style-abc='bauhaus'] .abcA-text {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.55;
+  color: var(--bh-ink);
+  max-inline-size: 74ch;
+}
+
+
+.abc.abcB-section[data-style-abc='bauhaus'] .abcB-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  align-items: stretch;
+  border-block-start: 1px solid var(--bh-ink);
+}
+.abc.abcB-section[data-style-abc='bauhaus'] .abcB-card,
+.abc.abcB-section[data-style-abc='bauhaus'] .abcB-card:hover {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  padding: clamp(14px, 1.8vw, 24px) var(--bh-pad-inline);
+  background: none;
+  border: 0;
+  border-block-end: 1px solid var(--bh-ink);
+  border-inline-end: 1px solid var(--bh-ink);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+}
+.abc.abcB-section[data-style-abc='bauhaus'] .abcB-card:nth-child(3n) { border-inline-end: 0; }
+.abc.abcB-section[data-style-abc='bauhaus'] .abcB-badge {
+  margin: 0;
+  justify-self: start;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(26px, 3vw, 46px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--bh-red);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  text-transform: none;
+}
+.abc.abcB-section[data-style-abc='bauhaus'] .abcB-term {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(16px, 1.7vw, 24px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.abc.abcB-section[data-style-abc='bauhaus'] .abcB-text {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.55;
+  color: var(--bh-ink);
+}
+
+
+.abc.abcC-section[data-style-abc='bauhaus'] .abcC-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: clamp(10px, 1.2vw, 16px) var(--bh-pad-inline);
+  border-block: 1px solid var(--bh-ink);
+  background: none;
+  border-radius: 0;
+}
+.abc.abcC-section[data-style-abc='bauhaus'] .abcC-idx-btn {
+  min-inline-size: 36px;
+  min-block-size: 36px;
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: none;
+  color: color-mix(in srgb, var(--bh-ink) 45%, var(--bh-paper));
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: background-color var(--bh-dur) var(--bh-ease), color var(--bh-dur) var(--bh-ease);
+}
+
+.abc.abcC-section[data-style-abc='bauhaus'] .abcC-idx-btn.has {
+  color: var(--bh-ink);
+  border-color: var(--bh-ink);
+}
+.abc.abcC-section[data-style-abc='bauhaus'] .abcC-idx-btn.has:hover {
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+}
+.abc.abcC-section[data-style-abc='bauhaus'] .abcC-idx-btn:focus-visible {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: 2px;
+}
+.abc.abcC-section[data-style-abc='bauhaus'] .abcC-groups { display: grid; gap: 0; }
+.abc.abcC-section[data-style-abc='bauhaus'] .abcC-group {
+  display: grid;
+  grid-template-columns: clamp(96px, 11vw, 200px) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(12px, 2vw, 32px);
+  padding: clamp(14px, 1.8vw, 26px) var(--bh-pad-inline);
+  border-block-end: 1px solid var(--bh-ink);
+  background: none;
+}
+.abc.abcC-section[data-style-abc='bauhaus'] .abcC-group-letter {
+  font-family: var(--font-display);
+  font-weight: 800;
+  
+  font-size: clamp(56px, 9vw, 160px);
+  line-height: 0.78;
+  letter-spacing: -0.05em;
+  color: var(--bh-red);
+  background: none;
+  border: 0;
+  padding: 0;
+  -webkit-text-stroke: 0;
+}
+.abc.abcC-section[data-style-abc='bauhaus'] .abcC-entries { display: grid; gap: clamp(10px, 1.2vw, 18px); }
+.abc.abcC-section[data-style-abc='bauhaus'] .abcC-entry {
+  border: 0;
+  padding: 0;
+  background: none;
+}
+.abc.abcC-section[data-style-abc='bauhaus'] .abcC-term {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(16px, 1.7vw, 26px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.abc.abcC-section[data-style-abc='bauhaus'] .abcC-text {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.55;
+  color: var(--bh-ink);
+  max-inline-size: 74ch;
+}
+
+
+
+@media (max-width: 900px) {
+  .tl.tlA-section[data-style-tl='bauhaus'] .tlA-card,
+  .tl.tlA-section[data-style-tl='bauhaus'] .tlA-card.is-active,
+  .acc.accA-section[data-style-acc='bauhaus'] .accA-card,
+  .acc.accA-section[data-style-acc='bauhaus'] .accA-card:hover,
+  .acc.accB-section[data-style-acc='bauhaus'] .accB-item,
+  .acc.accB-section[data-style-acc='bauhaus'] .accB-item.no-photo,
+  .wit.witA-section[data-style-wit='bauhaus'] .witA-card,
+  .wit.witB-section[data-style-wit='bauhaus'] .witB-row,
+  .wit.witC-section[data-style-wit='bauhaus'] .witC-block,
+  .faq.faqC-section[data-style-faq='bauhaus'] .faqC-item {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  .wit.witB-section[data-style-wit='bauhaus'] .witB-row:nth-child(even) .witB-body,
+  .wit.witC-section[data-style-wit='bauhaus'] .witC-photo-wrap,
+  .wit.witC-section[data-style-wit='bauhaus'] .witC-block:nth-child(even) .witC-photo-wrap {
+    padding-inline-start: 0;
+    border-inline: 0;
+    order: 0;
+  }
+  .wit.witA-section[data-style-wit='bauhaus'] .witA-photo,
+  .wit.witB-section[data-style-wit='bauhaus'] .witB-photo { aspect-ratio: var(--ar-wide); }
+  .wit.witA-section[data-style-wit='bauhaus'] .wit-contacts { justify-content: flex-start; }
+  
+  .abc.abcC-section[data-style-abc='bauhaus'] .abcC-group {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+  .acc.accA-section[data-style-acc='bauhaus'] .accA-photo,
+  .acc.accB-section[data-style-acc='bauhaus'] .accB-photo,
+  .wit.witB-section[data-style-wit='bauhaus'] .witB-photo { aspect-ratio: var(--ar-wide); }
+  .acc.accA-section[data-style-acc='bauhaus'] .accA-footer { justify-self: start; }
+
+  .tl.tlB-section[data-style-tl='bauhaus'] .tlB-event { grid-template-columns: minmax(0, 1fr); }
+  .tl.tlB-section[data-style-tl='bauhaus'] .tlB-event-time {
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--bh-ink);
+  }
+  .tl.tlB-section[data-style-tl='bauhaus'] .tlB-event:nth-child(even) .tlB-event-content {
+    padding-inline-start: var(--bh-pad-inline);
+  }
+  .tl.tlC-section[data-style-tl='bauhaus'] .tlC-row { min-block-size: clamp(300px, 70vw, 420px); }
+
+  .dir.dirA-section[data-style-dir='bauhaus'] .dirA-wrap,
+  .dir.dirB-section[data-style-dir='bauhaus'] .dirB-grid,
+  .dir.dirC-section[data-style-dir='bauhaus'] .dirC-block,
+  .acc.accC-section[data-style-acc='bauhaus'] .accC-grid,
+  .wit.witC-section[data-style-wit='bauhaus'] .witC-block {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dir.dirA-section[data-style-dir='bauhaus'] .dirA-grid,
+  .dir.dirA-section[data-style-dir='bauhaus'] .dirA-grid.is-one { grid-template-columns: minmax(0, 1fr); }
+  .dir.dirA-section[data-style-dir='bauhaus'] .dirA-card { border-inline-end: 0; border-block-end: 1px solid var(--bh-ink); }
+  .dir.dirC-section[data-style-dir='bauhaus'] .dirC-text,
+  .dir.dirC-section[data-style-dir='bauhaus'] .dirC-block:nth-child(even) .dirC-text {
+    border-inline: 0;
+    border-block-end: 1px solid var(--bh-ink);
+    order: 0;
+  }
+  .dir.dirC-section[data-style-dir='bauhaus'] .dirC-block:nth-child(even) .dirC-mapwrap { order: 0; }
+  .dir.dirB-section[data-style-dir='bauhaus'] .dirB-list { border-inline-end: 0; border-block-end: 1px solid var(--bh-ink); }
+  .dir.dirB-section[data-style-dir='bauhaus'] .dirB-mapwrap { position: static; }
+  .dir.dirB-section[data-style-dir='bauhaus'] .dirB-list,
+  .dir.dirB-section[data-style-dir='bauhaus'] .dirB-mapwrap,
+  .dir.dirC-section[data-style-dir='bauhaus'] .dirC-text,
+  .dir.dirC-section[data-style-dir='bauhaus'] .dirC-mapwrap,
+  .acc.accC-section[data-style-acc='bauhaus'] .accC-list,
+  .acc.accC-section[data-style-acc='bauhaus'] .accC-mapwrap,
+  .wit.witC-section[data-style-wit='bauhaus'] .witC-photo-wrap,
+  .wit.witC-section[data-style-wit='bauhaus'] .witC-body {
+    grid-column: 1;
+    border-inline: 0;
+  }
+  .faq.faqB-section[data-style-faq='bauhaus'] .faqB-grid { grid-template-columns: minmax(0, 1fr); }
+  .faq.faqB-section[data-style-faq='bauhaus'] .faqB-card { border-inline-end: 0; }
+  .abc.abcB-section[data-style-abc='bauhaus'] .abcB-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .abc.abcB-section[data-style-abc='bauhaus'] .abcB-card:nth-child(3n) { border-inline-end: 1px solid var(--bh-ink); }
+  .abc.abcB-section[data-style-abc='bauhaus'] .abcB-card:nth-child(2n) { border-inline-end: 0; }
+}
+
+@media (max-width: 600px) {
+  .wedding-site-wrapper[data-style='bauhaus'] :where(.tl, .dir, .acc, .wit, .faq, .abc) :where(.tl-title, .dir-title, .acc-title, .wit-title, .faq-title, .abc-title) {
+    font-size: clamp(26px, 8.5vw, 40px);
+  }
+  .tl.tlC-section[data-style-tl='bauhaus'] .tlC-uhr,
+  .tl.tlC-section[data-style-tl='bauhaus'] .tlC-time { font-size: clamp(34px, 12vw, 60px); }
+  .dir.dirC-section[data-style-dir='bauhaus'] .dir-name { font-size: clamp(28px, 9.5vw, 48px); }
+  .wit.witC-section[data-style-wit='bauhaus'] .witC-name { font-size: clamp(24px, 8.5vw, 42px); }
+  .faq.faqC-section[data-style-faq='bauhaus'] .faqC-q { font-size: clamp(20px, 7vw, 32px); }
+  .abc.abcC-section[data-style-abc='bauhaus'] .abcC-group-letter { font-size: clamp(44px, 16vw, 80px); }
+  .faq.faqC-section[data-style-faq='bauhaus'] .faqC-item:first-child .faqC-q { font-size: clamp(24px, 8vw, 38px); }
+  .wit.witC-section[data-style-wit='bauhaus'] .witC-name { font-size: clamp(24px, 8.5vw, 42px); }
+  .abc.abcB-section[data-style-abc='bauhaus'] .abcB-grid { grid-template-columns: minmax(0, 1fr); }
+  .abc.abcB-section[data-style-abc='bauhaus'] .abcB-card { border-inline-end: 0; }
+}
+
+
+
+
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up) :where(*) {
+  border-radius: 0;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-input, .gb-input, .gb-textarea, .mw-input, .up-input, .rv-input, .rv-textarea, .rv-code) {
+  inline-size: 100%;
+  min-block-size: 48px;
+  padding: 10px 12px;
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+  border: 1px solid var(--bh-ink);
+  border-radius: 0;
+  box-shadow: none;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.3;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-input, .gb-input, .gb-textarea, .mw-input, .up-input, .rv-input, .rv-textarea, .rv-code):focus,
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-input, .gb-input, .gb-textarea, .mw-input, .up-input, .rv-input, .rv-textarea, .rv-code):focus-visible {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: 0;
+  border-color: var(--bh-ink);
+  box-shadow: none;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-field-label, .gb-field-label, .mw-field-label, .up-field-label, .rv-label) {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.rv-hint, .rv-optional, .rv-count, .mw-hint, .gb-mod-hint, .up-privacy) {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--bh-ink);
+  opacity: 1;
+}
+
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-modal-error, .gb-error, .mw-error, .up-error, .rv-error, .rv-alert) {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--bh-paper);
+  background: var(--bh-blue);
+  border: 0;
+  padding: 8px 12px;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-modal-error, .gb-error, .mw-error, .up-error, .rv-error, .rv-alert)::before {
+  content: 'Bitte prüfen — ';
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+}
+
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-btn, .gb-btn, .mw-btn, .up-btn, .rv-button--primary) {
+  min-block-size: 48px;
+  padding: 0 clamp(18px, 2vw, 28px);
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+  border: 1px solid var(--bh-ink);
+  border-radius: 0;
+  box-shadow: none;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transform: none;
+  transition: transform var(--bh-dur) var(--bh-ease), background-color var(--bh-dur) var(--bh-ease),
+    color var(--bh-dur) var(--bh-ease), box-shadow var(--bh-dur) var(--bh-ease);
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-btn, .gb-btn, .mw-btn, .up-btn, .rv-button--primary):hover:not(:disabled) {
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  transform: none;
+  box-shadow: none;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-btn, .gb-btn, .mw-btn, .up-btn, .rv-button--primary):disabled {
+  background: var(--bh-soft);
+  color: var(--bh-ink);
+  box-shadow: none;
+  opacity: 1;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-btn, .gb-btn, .mw-btn, .up-btn, .rv-button--primary, .gift-btn-out, .gift-iban-copy):focus-visible {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: 2px;
+}
+
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-btn-out, .gift-iban-copy, .rv-button--quiet, .gb-success-link, .up-success-link) {
+  min-block-size: 44px;
+  padding: 0 14px;
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+  border: 1px solid var(--bh-ink);
+  border-radius: 0;
+  box-shadow: none;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color var(--bh-dur) var(--bh-ease), color var(--bh-dur) var(--bh-ease);
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-btn-out, .gift-iban-copy, .rv-button--quiet):hover:not(:disabled) {
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-btn, .gb-btn, .mw-btn, .up-btn, .gift-btn-out, .gift-iban-copy) svg { display: none; }
+
+
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up) {
+  padding: 0;
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+  border-block-end: 1px solid var(--bh-ink);
+  text-align: start;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift-head, .gb-head, .mw-head, .up-head, .rv-head) {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  text-align: start;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift-eyebrow, .gb-eyebrow, .mw-eyebrow, .up-eyebrow, .rv-kicker) {
+  display: block;
+  margin: 0;
+  padding: 12px var(--bh-pad-inline);
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  border-block-end: 1px solid var(--bh-ink);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift-title, .gb-title, .mw-title, .up-title, .rv-title) {
+  margin: 0;
+  padding: clamp(20px, 2.4vw, 40px) var(--bh-pad-inline) 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(30px, 4.6vw, 68px);
+  line-height: 0.88;
+  letter-spacing: -0.035em;
+  text-transform: none;
+  color: var(--bh-ink);
+  max-inline-size: none;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift-title, .gb-title, .mw-title, .up-title, .rv-title) em {
+  font-style: normal;
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+  padding: 0 0.12em;
+  transform: none;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift-desc, .gb-desc, .mw-desc, .up-desc, .rv-lead) {
+  margin: 0;
+  padding: clamp(12px, 1.4vw, 20px) var(--bh-pad-inline) clamp(20px, 2.4vw, 36px);
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1vw, 16px);
+  line-height: 1.55;
+  color: var(--bh-ink);
+  max-inline-size: 66ch;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.styled-bg-editorial, .styled-bg-brutalist, .styled-bereich-bg, .gift-head-ornament, .gb-head-ornament, .mw-head-ornament, .up-head-ornament) {
+  display: none;
+}
+
+
+
+.gift[data-style-gift='bauhaus'] .gift-amount {
+  display: inline-block;
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+  border: 0;
+  border-radius: 0;
+  padding: 2px 8px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.gift[data-style-gift='bauhaus'] .gift-reserved-tag,
+.gift[data-style-gift='bauhaus'] .giftB-reserved-by {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+  background: var(--bh-soft);
+  padding: 4px 8px;
+}
+.gift[data-style-gift='bauhaus'] :where(.giftA-row, .giftB-card, .giftC-row).is-reserved { opacity: 1; }
+.gift[data-style-gift='bauhaus'] :where(.giftA-row, .giftB-card, .giftC-row).is-reserved :where(.giftA-title, .giftB-title, .giftC-title) {
+  text-decoration: line-through;
+  color: color-mix(in srgb, var(--bh-ink) 55%, var(--bh-paper));
+}
+
+.gift[data-style-gift='bauhaus'] .gift-iban {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 2vw, 32px);
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  border: 0;
+  border-radius: 0;
+  padding: clamp(16px, 2vw, 28px) var(--bh-pad-inline);
+}
+.gift[data-style-gift='bauhaus'] .gift-iban-label,
+.gift[data-style-gift='bauhaus'] .gift-iban-holder {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bh-paper);
+}
+.gift[data-style-gift='bauhaus'] .gift-iban-note {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(18px, 2vw, 30px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  font-style: normal;
+  color: var(--bh-paper);
+}
+.gift[data-style-gift='bauhaus'] .gift-iban-num {
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1.4vw, 20px);
+  letter-spacing: 0.12em;
+  color: var(--bh-red);
+}
+.gift[data-style-gift='bauhaus'] .gift-iban-copy {
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+  border-color: var(--bh-ink);
+}
+.gift[data-style-gift='bauhaus'] .gift-iban-copy:hover,
+.gift[data-style-gift='bauhaus'] .gift-iban-copy.is-copied {
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+}
+.gift[data-style-gift='bauhaus'] .gift-empty {
+  display: block;
+  margin: 0;
+  padding: clamp(20px, 2.4vw, 36px) var(--bh-pad-inline);
+  background: none;
+  border: 0;
+  border-block-start: 1px solid var(--bh-ink);
+  text-align: start;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(18px, 2vw, 28px);
+  line-height: 1.05;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.gift[data-style-gift='bauhaus'] .gift-empty-ornament,
+.gift[data-style-gift='bauhaus'] .gift-ornament { display: none; }
+
+.gift[data-style-gift='bauhaus'] .gift-modal {
+  background: var(--bh-paper);
+  border: 1px solid var(--bh-ink);
+  border-radius: 0;
+  box-shadow: none;
+  padding: clamp(20px, 2.4vw, 36px);
+}
+.gift[data-style-gift='bauhaus'] .gift-modal-eyebrow,
+.gift[data-style-gift='bauhaus'] .gift-modal-esc {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+  text-align: start;
+}
+.gift[data-style-gift='bauhaus'] .gift-modal-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.4vw, 34px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: none;
+}
+.gift[data-style-gift='bauhaus'] .gift-modal-sub {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+
+.gift.giftA-section[data-style-gift='bauhaus'] .giftA-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+}
+.gift.giftA-section[data-style-gift='bauhaus'] .giftA-list {
+  display: grid;
+  gap: 0;
+  background: none;
+  border: 0;
+  border-block-start: 1px solid var(--bh-ink);
+  padding: 0;
+  counter-reset: wish;
+}
+.gift.giftA-section[data-style-gift='bauhaus'] .giftA-row {
+  counter-increment: wish;
+  display: grid;
+  grid-template-columns: clamp(44px, 4vw, 72px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 2vw, 28px);
+  padding: clamp(12px, 1.4vw, 20px) var(--bh-pad-inline);
+  border: 0;
+  border-block-end: 1px solid var(--bh-ink);
+}
+.gift.giftA-section[data-style-gift='bauhaus'] .giftA-row::before {
+  content: counter(wish, decimal-leading-zero);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 34px);
+  line-height: 1;
+  color: var(--bh-red);
+}
+.gift.giftA-section[data-style-gift='bauhaus'] .giftA-body { display: grid; gap: 6px; }
+.gift.giftA-section[data-style-gift='bauhaus'] .giftA-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.gift.giftA-section[data-style-gift='bauhaus'] .giftA-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(17px, 1.8vw, 26px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.gift.giftA-section[data-style-gift='bauhaus'] .giftA-desc {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.5;
+  color: var(--bh-ink);
+  max-inline-size: 70ch;
+}
+.gift.giftA-section[data-style-gift='bauhaus'] .giftA-actions {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+}
+
+
+.gift.giftB-section[data-style-gift='bauhaus'] .giftB-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+}
+.gift.giftB-section[data-style-gift='bauhaus'] .giftB-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  border-block-start: 1px solid var(--bh-ink);
+  counter-reset: wishb;
+}
+.gift.giftB-section[data-style-gift='bauhaus'] .giftB-card,
+.gift.giftB-section[data-style-gift='bauhaus'] .giftB-card:hover {
+  counter-increment: wishb;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  padding: clamp(14px, 1.8vw, 26px) var(--bh-pad-inline);
+  background: none;
+  border: 0;
+  border-block-end: 1px solid var(--bh-ink);
+  border-inline-end: 1px solid var(--bh-ink);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+  overflow: visible;
+}
+.gift.giftB-section[data-style-gift='bauhaus'] .giftB-card:nth-child(3n) { border-inline-end: 0; }
+.gift.giftB-section[data-style-gift='bauhaus'] .giftB-card::before {
+  content: counter(wishb, decimal-leading-zero);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(28px, 3.2vw, 52px);
+  line-height: 1;
+  color: var(--bh-red);
+}
+.gift.giftB-section[data-style-gift='bauhaus'] .giftB-img {
+  aspect-ratio: var(--ar-classic);
+  background: var(--bh-soft);
+  border-radius: 0;
+  filter: none;
+}
+.gift.giftB-section[data-style-gift='bauhaus'] .giftB-img-placeholder { display: none; }
+.gift.giftB-section[data-style-gift='bauhaus'] .giftB-body { padding: 0; display: grid; gap: 6px; }
+.gift.giftB-section[data-style-gift='bauhaus'] .giftB-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(17px, 1.8vw, 26px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+.gift.giftB-section[data-style-gift='bauhaus'] .giftB-desc {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.5;
+  flex: none;
+}
+
+.gift.giftB-section[data-style-gift='bauhaus'] .giftB-iban-card {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 2vw, 32px);
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  border: 0;
+  border-block-end: 1px solid var(--bh-ink);
+  border-radius: 0;
+  padding: clamp(16px, 2vw, 28px) var(--bh-pad-inline);
+}
+.gift.giftB-section[data-style-gift='bauhaus'] .giftB-iban-card :where(.gift-iban-label, .gift-iban-holder, .gift-iban-note) {
+  color: var(--bh-paper);
+}
+.gift.giftB-section[data-style-gift='bauhaus'] .giftB-iban-card .gift-iban-num { color: var(--bh-red); }
+.gift.giftB-section[data-style-gift='bauhaus'] .giftB-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+
+.gift.giftC-section[data-style-gift='bauhaus'] .giftC-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+}
+.gift.giftC-section[data-style-gift='bauhaus'] .giftC-grid,
+.gift.giftC-section[data-style-gift='bauhaus'] .giftC-grid.is-no-collage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  max-inline-size: none;
+  margin: 0;
+}
+
+.gift.giftC-section[data-style-gift='bauhaus'] .giftC-collage {
+  position: static;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: var(--bh-gap);
+  aspect-ratio: var(--ar-band);
+  inline-size: 100%;
+  max-inline-size: none;
+  margin: 0;
+  background: var(--bh-ink);
+  border-block-start: 1px solid var(--bh-ink);
+}
+.gift.giftC-section[data-style-gift='bauhaus'] .giftC-coll-img {
+  position: static;
+  inline-size: 100%;
+  block-size: 100%;
+  aspect-ratio: auto;
+  transform: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  filter: none;
+}
+.gift.giftC-section[data-style-gift='bauhaus'] .giftC-list {
+  display: grid;
+  gap: 0;
+  border-block-start: 1px solid var(--bh-ink);
+  counter-reset: wishc;
+}
+.gift.giftC-section[data-style-gift='bauhaus'] .giftC-row {
+  counter-increment: wishc;
+  display: grid;
+  grid-template-columns: clamp(48px, 5vw, 80px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 2vw, 32px);
+  padding: clamp(14px, 1.8vw, 24px) var(--bh-pad-inline);
+  border: 0;
+  border-block-end: 1px solid var(--bh-ink);
+}
+.gift.giftC-section[data-style-gift='bauhaus'] .giftC-row::before {
+  content: counter(wishc, decimal-leading-zero);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.4vw, 38px);
+  line-height: 1;
+  color: var(--bh-red);
+}
+.gift.giftC-section[data-style-gift='bauhaus'] .giftC-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.gift.giftC-section[data-style-gift='bauhaus'] .giftC-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.4vw, 38px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: none;
+}
+.gift.giftC-section[data-style-gift='bauhaus'] .giftC-desc {
+  font-family: var(--font-body);
+  font-style: normal;
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 1.5;
+  margin: 0;
+}
+.gift.giftC-section[data-style-gift='bauhaus'] .giftC-actions {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+}
+
+@media (max-width: 900px) {
+  .gift.giftB-section[data-style-gift='bauhaus'] .giftB-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gift.giftB-section[data-style-gift='bauhaus'] .giftB-card:nth-child(3n) { border-inline-end: 1px solid var(--bh-ink); }
+  .gift.giftB-section[data-style-gift='bauhaus'] .giftB-card:nth-child(2n) { border-inline-end: 0; }
+}
+
+@media (max-width: 600px) {
+  .wedding-site-wrapper[data-style='bauhaus'] :where(.gift-title, .gb-title, .mw-title, .up-title, .rv-title) {
+    font-size: clamp(26px, 8.5vw, 40px);
+  }
+  .gift.giftA-section[data-style-gift='bauhaus'] .giftA-row,
+  .gift.giftC-section[data-style-gift='bauhaus'] .giftC-row {
+    grid-template-columns: clamp(38px, 11vw, 56px) minmax(0, 1fr);
+    row-gap: 10px;
+  }
+  .gift.giftA-section[data-style-gift='bauhaus'] .giftA-actions,
+  .gift.giftC-section[data-style-gift='bauhaus'] .giftC-actions {
+    grid-column: 2;
+    justify-items: start;
+  }
+  .gift.giftB-section[data-style-gift='bauhaus'] .giftB-grid { grid-template-columns: minmax(0, 1fr); }
+  .gift.giftB-section[data-style-gift='bauhaus'] .giftB-card,
+  .gift.giftB-section[data-style-gift='bauhaus'] .giftB-card:nth-child(2n) { border-inline-end: 0; }
+  .gift[data-style-gift='bauhaus'] .gift-iban { grid-template-columns: minmax(0, 1fr); }
+}
+
+
+
+.rsvp.rv[data-style-rsvp='bauhaus'] {
+  padding: 0;
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+  border-block-end: 1px solid var(--bh-ink);
+  text-align: start;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] :where(.styled-bg-editorial, .styled-bg-brutalist, .styled-bereich-bg) { display: none; }
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-frame {
+  max-inline-size: none;
+  margin: 0;
+}
+
+
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-head {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  text-align: start;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-kicker {
+  display: block;
+  margin: 0;
+  padding: 12px var(--bh-pad-inline);
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-title {
+  margin: 0;
+  padding: clamp(20px, 2.4vw, 40px) var(--bh-pad-inline) 0;
+  max-inline-size: none;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: normal;
+  font-size: clamp(30px, 4.6vw, 68px);
+  line-height: 0.88;
+  letter-spacing: -0.035em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-title em {
+  font-style: normal;
+  background: var(--bh-blue);
+  padding: 0 0.12em;
+  color: var(--bh-paper);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-lead {
+  margin: 0;
+  padding: clamp(12px, 1.4vw, 20px) var(--bh-pad-inline) 0;
+  max-inline-size: 66ch;
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1vw, 16px);
+  line-height: 1.55;
+  color: var(--bh-ink);
+}
+
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-deadline {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: clamp(14px, 1.6vw, 22px) var(--bh-pad-inline) clamp(20px, 2.4vw, 36px);
+  padding: 6px 10px;
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] :where(.rv-deadline-label, .rv-deadline-date) {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+
+
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-form,
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-gate {
+  gap: clamp(18px, 2vw, 28px);
+  padding: clamp(20px, 2.4vw, 36px) var(--bh-pad-inline) clamp(28px, 3vw, 48px);
+  border-block-start: 1px solid var(--bh-ink);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-optional {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+  opacity: 1;
+  color: var(--bh-ink);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-optional::before { content: '— '; }
+.rsvp.rv[data-style-rsvp='bauhaus'] :where(.rv-hint, .rv-count) {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--bh-ink);
+  opacity: 1;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-input {
+  min-block-size: 48px;
+  padding: 10px 12px;
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+  border: 1px solid var(--bh-ink);
+  border-radius: 0;
+  box-shadow: none;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.3;
+  transition: none;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-input::placeholder { color: var(--bh-grey); }
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-textarea { min-block-size: 132px; }
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-input:focus,
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-input:focus-visible {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: 0;
+  border-color: var(--bh-ink);
+  box-shadow: none;
+}
+
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-input[aria-invalid='true'],
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-textarea[aria-invalid='true'] {
+  border: 2px solid var(--bh-ink);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] :where(.rv-error, .rv-alert) {
+  margin: 0;
+  padding: 8px 12px;
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+  border: 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] :where(.rv-error, .rv-alert)::before {
+  content: 'Bitte prüfen — ';
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+}
+
+.rsvp.rv[data-style-rsvp='bauhaus'] :where(.rv-notice, .rv-aside) {
+  margin: 0;
+  padding: 10px 12px;
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  border: 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  max-inline-size: none;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-legend {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.4vw, 36px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-legend--sub {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+}
+
+
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-choice-options { gap: 0; }
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-option {
+  align-items: center;
+  gap: 14px;
+  min-block-size: 64px;
+  padding: 14px 18px;
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+  border: 1px solid var(--bh-ink);
+  border-radius: 0;
+  font-family: var(--font-body);
+  transition: background-color var(--bh-dur) var(--bh-ease);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-choice-options > .rv-option + .rv-option {
+  margin-inline-start: -1px;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-option:hover { background: var(--bh-soft); }
+
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-option[data-checked='true'] {
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+  outline: 1px solid var(--bh-ink);
+  outline-offset: calc(-1 * 2px);
+  position: relative;
+  z-index: 1;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-option-mark {
+  inline-size: 22px;
+  block-size: 22px;
+  border: 1px solid var(--bh-ink);
+  border-radius: 0;
+  background: var(--bh-paper);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] [data-checked='true'] > .rv-option-mark {
+  background: var(--bh-ink);
+  box-shadow: inset 0 0 0 4px var(--bh-paper);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-option:has(.rv-option-input:focus-visible) {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: 2px;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-option-label {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(18px, 2vw, 28px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-option-note {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--bh-ink);
+  opacity: 1;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-choice[data-invalid='true'] .rv-option {
+  border-width: 2px;
+}
+
+
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-pill {
+  min-block-size: 44px;
+  padding: 8px 14px;
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+  border: 1px solid var(--bh-ink);
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-pill[data-checked='true'] {
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-pill-mark {
+  inline-size: 14px;
+  block-size: 14px;
+  border-radius: 0;
+  border: 1px solid currentColor;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-question > .rv-label,
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-question > .rv-label .rv-label-text {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1.45;
+}
+
+
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-stepper { gap: 0; }
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-stepper-btn {
+  inline-size: 48px;
+  block-size: 48px;
+  border: 1px solid var(--bh-ink);
+  border-radius: 0;
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+  font-family: var(--font-body);
+  font-size: 20px;
+  font-weight: 700;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-stepper-btn:hover:not(:disabled) {
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-stepper-btn:disabled {
+  background: var(--bh-soft);
+  color: var(--bh-grey);
+  opacity: 1;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-stepper-value {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  min-inline-size: 8em;
+  min-block-size: 48px;
+  padding: 0 12px;
+  border-block: 1px solid var(--bh-ink);
+  margin-inline: -1px;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-stepper-num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 28px;
+  line-height: 44px;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-stepper-unit {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-companion-list {
+  gap: 0;
+  border-block-start: 1px solid var(--bh-ink);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-companion {
+  gap: 10px;
+  padding-block: 14px;
+  border-block-end: 1px solid var(--bh-ink);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-companion-toggle {
+  min-block-size: 48px;
+  padding: 0 12px;
+  border: 1px solid var(--bh-ink);
+  border-radius: 0;
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-companion-toggle[aria-expanded='true'] {
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-companion-toggle-mark {
+  border: 0;
+  inline-size: auto;
+  block-size: auto;
+  font-weight: 700;
+}
+
+
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-button--primary {
+  min-block-size: 52px;
+  padding: 0 clamp(20px, 2.4vw, 32px);
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+  border: 1px solid var(--bh-ink);
+  border-radius: 0;
+  box-shadow: none;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: transform var(--bh-dur) var(--bh-ease), background-color var(--bh-dur) var(--bh-ease),
+    color var(--bh-dur) var(--bh-ease), box-shadow var(--bh-dur) var(--bh-ease);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-button--primary:hover:not(:disabled) {
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  transform: none;
+  box-shadow: none;
+}
+
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-button--primary:disabled,
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-button--primary[data-loading='true'] {
+  background: var(--bh-soft);
+  color: var(--bh-ink);
+  box-shadow: none;
+  transform: none;
+  opacity: 1;
+  cursor: progress;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-button--primary:focus-visible,
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-button--quiet:focus-visible,
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-stepper-btn:focus-visible,
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-companion-toggle:focus-visible {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: 2px;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-button--quiet {
+  min-block-size: 44px;
+  padding: 0 14px;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-gate-heading {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.4vw, 36px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: none;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-gate-lead {
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1vw, 16px);
+  line-height: 1.55;
+  color: var(--bh-ink);
+  max-inline-size: 60ch;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-code {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  min-block-size: 56px;
+}
+@media (min-width: 600px) {
+  
+  .rsvp.rv[data-style-rsvp='bauhaus'] .rv-gate-row {
+    grid-template-columns: minmax(0, 26rem) auto;
+    justify-content: start;
+    gap: 0;
+  }
+  .rsvp.rv[data-style-rsvp='bauhaus'] .rv-gate-button {
+    min-block-size: 56px;
+    margin-block-start: calc(11px * 1.4 + 6px);
+    margin-inline-start: -1px;
+    box-shadow: none;
+  }
+}
+
+
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-done {
+  gap: clamp(12px, 1.4vw, 20px);
+  padding: clamp(24px, 3vw, 48px) var(--bh-pad-inline);
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  border: 0;
+  border-block-start: 1px solid var(--bh-ink);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-done-kicker {
+  display: inline-block;
+  justify-self: start;
+  padding: 4px 8px;
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-done-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(34px, 5vw, 84px);
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+  text-transform: none;
+  color: var(--bh-paper);
+  max-inline-size: none;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-done-text,
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-done-meta {
+  font-family: var(--font-body);
+  font-size: clamp(15px, 1.1vw, 18px);
+  line-height: 1.5;
+  color: var(--bh-paper);
+  max-inline-size: 60ch;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-done-meta {
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-summary {
+  gap: 0;
+  border-block-start: 1px solid var(--bh-paper);
+  max-inline-size: 44rem;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-summary-row {
+  padding-block: 10px;
+  border-block-end: 1px solid var(--bh-paper);
+  color: var(--bh-paper);
+  font-family: var(--font-body);
+  font-size: 15px;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-summary dt {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-signature {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: normal;
+  font-size: clamp(16px, 1.6vw, 22px);
+  text-transform: none;
+  letter-spacing: -0.01em;
+  color: var(--bh-paper);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-done .rv-notice {
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] :where(.rv-checking-text, .rv-closed-text) {
+  padding: clamp(20px, 2.4vw, 36px) var(--bh-pad-inline);
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-closed-title {
+  padding: clamp(20px, 2.4vw, 36px) var(--bh-pad-inline) 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.4vw, 36px);
+  text-transform: none;
+}
+
+
+.rsvp.rv-a[data-style-rsvp='bauhaus'] .rv-form,
+.rsvp.rv-a[data-style-rsvp='bauhaus'] .rv-gate {
+  max-inline-size: calc(64rem + 2 * var(--bh-pad-inline));
+}
+.rsvp.rv-a[data-style-rsvp='bauhaus'] .rv-choice-options {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.rsvp.rv-a[data-style-rsvp='bauhaus'] .rv-form,
+.rsvp.rv-a[data-style-rsvp='bauhaus'] .rv-gate { border-block-start: 0; }
+.rsvp.rv-a[data-style-rsvp='bauhaus'] .rv-head { border-block-end: 1px solid var(--bh-ink); }
+
+
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-head {
+  display: grid;
+  grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+  align-items: end;
+  gap: 0;
+}
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-head-main,
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-head-side { min-inline-size: 0; }
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-head-main .rv-kicker { margin: 0; }
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-head-side {
+  display: grid;
+  justify-items: end;
+  padding-inline-end: var(--bh-pad-inline);
+  text-align: end;
+}
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-head-side .rv-deadline { margin-inline: 0; }
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-head-couple {
+  margin: 0 0 clamp(20px, 2.4vw, 36px);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-style: normal;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-form {
+  gap: 0;
+  padding: 0;
+}
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-chapter {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: 0;
+  padding: 0;
+  border-block-end: 1px solid var(--bh-ink);
+}
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-chapter-side {
+  padding: clamp(18px, 2vw, 30px) var(--bh-pad-inline);
+  border-inline-end: 1px solid var(--bh-ink);
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-chapter-no {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: clamp(22px, 2.4vw, 34px);
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--bh-ink);
+}
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-chapter-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 32px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: none;
+  color: var(--bh-ink);
+  max-inline-size: none;
+}
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-chapter-note {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--bh-ink);
+  max-inline-size: 30ch;
+}
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-chapter-main {
+  gap: clamp(16px, 1.8vw, 24px);
+  padding: clamp(18px, 2vw, 30px) var(--bh-pad-inline);
+  
+  align-content: start;
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-field { align-content: start; }
+
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-chapter--attend .rv-chapter-side,
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-chapter--gate .rv-chapter-side {
+  box-shadow: inset 6px 0 0 0 var(--bh-red);
+}
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-chapter--gate { border-block-start: 1px solid var(--bh-ink); }
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-chapter--gate .rv-gate {
+  padding: 0;
+  border: 0;
+}
+
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-choice-options { grid-template-columns: minmax(0, 1fr); }
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-choice-options > .rv-option + .rv-option {
+  margin-inline-start: 0;
+  margin-block-start: -1px;
+}
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-option-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+  inline-size: 100%;
+}
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-done {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: 0;
+  padding: 0;
+}
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-done-side,
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-done-main {
+  padding: clamp(24px, 3vw, 44px) var(--bh-pad-inline);
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+.rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-done-side { border-inline-end: 1px solid var(--bh-paper); }
+
+
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0;
+  background: var(--bh-ink);
+}
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-title-kicker {
+  padding: 12px var(--bh-pad-inline);
+  background: none;
+  color: var(--bh-paper);
+  font-size: 11px;
+}
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-head .rv-deadline { margin: 8px var(--bh-pad-inline); }
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-form { gap: 0; padding: 0; border: 0; }
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-stage {
+  padding: clamp(20px, 2.6vw, 44px) var(--bh-pad-inline) 0;
+}
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-statement {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(44px, 8vw, 132px);
+  line-height: 0.84;
+  letter-spacing: -0.05em;
+  text-transform: none;
+  color: var(--bh-ink);
+  max-inline-size: none;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-choice > .rv-legend {
+  font-size: inherit;
+  margin-block-end: clamp(12px, 1.6vw, 24px);
+}
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-stage-lead {
+  padding: 0 0 clamp(16px, 2vw, 28px);
+}
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-choice-options {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-inline: calc(-1 * var(--bh-pad-inline));
+  border-block-start: 1px solid var(--bh-ink);
+}
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-option {
+  min-block-size: clamp(120px, 14vw, 200px);
+  align-items: flex-end;
+  padding: clamp(16px, 2vw, 28px) var(--bh-pad-inline);
+  border: 0;
+  border-inline-end: 1px solid var(--bh-ink);
+  margin: 0;
+}
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-option:last-child { border-inline-end: 0; }
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-choice-options > .rv-option + .rv-option { margin-inline-start: 0; }
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-option[data-checked='true'] { outline: 0; }
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-option-label {
+  font-size: clamp(30px, 4.6vw, 76px);
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+}
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-option-mark { align-self: flex-start; }
+
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-choice[data-decided='true'] .rv-option:not([data-checked='true']) .rv-option-label {
+  text-decoration: line-through;
+  text-decoration-thickness: 4px;
+}
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-details {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  border-block-start: 1px solid var(--bh-ink);
+}
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-details-lead {
+  margin: 0;
+  padding: clamp(18px, 2vw, 30px) var(--bh-pad-inline);
+  border-inline-end: 1px solid var(--bh-ink);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(18px, 2vw, 28px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-details-fields {
+  gap: clamp(16px, 1.8vw, 24px);
+  padding: clamp(18px, 2vw, 30px) var(--bh-pad-inline) clamp(28px, 3vw, 44px);
+}
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-form > .rv-notice {
+  margin: 0 var(--bh-pad-inline) clamp(20px, 2.4vw, 36px);
+}
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-stage--gate {
+  display: grid;
+  gap: clamp(12px, 1.6vw, 24px);
+  padding-block-end: 0;
+}
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-stage--gate .rv-gate {
+  margin-inline: calc(-1 * var(--bh-pad-inline));
+}
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-done {
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+}
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-done :where(.rv-done-title, .rv-done-text, .rv-done-meta, .rv-signature) {
+  color: var(--bh-ink);
+}
+.rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-done .rv-statement {
+  font-size: clamp(56px, 11vw, 180px);
+}
+
+
+@media (max-width: 900px) {
+  .rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-head,
+  .rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-chapter,
+  .rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-done,
+  .rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-head-side {
+    justify-items: start;
+    text-align: start;
+    padding-inline: var(--bh-pad-inline);
+  }
+  
+  .rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-chapter-side {
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--bh-ink);
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: baseline;
+    column-gap: 12px;
+  }
+  .rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-chapter-note { grid-column: 1 / -1; }
+  .rsvp.rv-b[data-style-rsvp='bauhaus'] .rv-done-side {
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--bh-paper);
+  }
+  .rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-details-lead {
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--bh-ink);
+  }
+}
+
+@media (max-width: 600px) {
+  .rsvp.rv[data-style-rsvp='bauhaus'] .rv-title { font-size: clamp(28px, 8.5vw, 40px); }
+  .rsvp.rv-a[data-style-rsvp='bauhaus'] .rv-choice-options,
+  .rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-choice-options {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rsvp.rv-a[data-style-rsvp='bauhaus'] .rv-choice-options > .rv-option + .rv-option {
+    margin-inline-start: 0;
+    margin-block-start: -1px;
+  }
+  .rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-statement { font-size: clamp(38px, 12vw, 60px); }
+  .rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-option {
+    min-block-size: 88px;
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--bh-ink);
+  }
+  .rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-option:last-child { border-block-end: 0; }
+  .rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-option-label { font-size: clamp(26px, 8.5vw, 40px); }
+  .rsvp.rv-c[data-style-rsvp='bauhaus'] .rv-done .rv-statement { font-size: clamp(44px, 14vw, 72px); }
+  .rsvp.rv[data-style-rsvp='bauhaus'] .rv-done-title { font-size: clamp(28px, 9vw, 44px); }
+  .rsvp.rv[data-style-rsvp='bauhaus'] .rv-button--primary { inline-size: 100%; }
+  .rsvp.rv[data-style-rsvp='bauhaus'] .rv-stepper-value { min-inline-size: 6em; }
+}
+
+
+
+.gb[data-style-guest='bauhaus'] .gb-success {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: clamp(18px, 2vw, 28px) var(--bh-pad-inline);
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  border: 0;
+  border-radius: 0;
+  text-align: start;
+}
+.gb[data-style-guest='bauhaus'] .gb-success-icon { display: none; }
+.gb[data-style-guest='bauhaus'] .gb-success-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.6vw, 38px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: none;
+  color: var(--bh-paper);
+}
+.gb[data-style-guest='bauhaus'] .gb-success-sub {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--bh-paper);
+}
+.gb[data-style-guest='bauhaus'] .gb-success-link {
+  justify-self: start;
+  color: var(--bh-paper);
+  border-color: var(--bh-paper);
+}
+.gb[data-style-guest='bauhaus'] .gb-empty {
+  display: block;
+  margin: 0;
+  padding: clamp(20px, 2.4vw, 36px) var(--bh-pad-inline);
+  background: none;
+  border: 0;
+  border-block-start: 1px solid var(--bh-ink);
+  border-radius: 0;
+  text-align: start;
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 800;
+  font-size: clamp(20px, 2.4vw, 34px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.gb[data-style-guest='bauhaus'] .gb-ornament { display: none; }
+.gb[data-style-guest='bauhaus'] .gb-textarea { min-block-size: 132px; resize: vertical; }
+
+.gb[data-style-guest='bauhaus'] :where(.gbA-msg, .gbB-msg, .gbC-msg) {
+  margin: 0;
+  font-family: var(--font-body);
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(16px, 1.25vw, 19px);
+  line-height: 1.55;
+  color: var(--bh-ink);
+  quotes: none;
+}
+.gb[data-style-guest='bauhaus'] :where(.gbA-name, .gbB-name, .gbC-name) {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+.gb[data-style-guest='bauhaus'] :where(.gbA-date, .gbB-date, .gbC-date) {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+
+
+.gb.gbA-section[data-style-guest='bauhaus'] .gbA-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+}
+.gb.gbA-section[data-style-guest='bauhaus'] .gbA-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  max-inline-size: calc(52rem + 2 * var(--bh-pad-inline));
+  margin: 0;
+  padding: clamp(20px, 2.4vw, 32px) var(--bh-pad-inline);
+  background: none;
+  border: 0;
+  border-block-start: 1px solid var(--bh-ink);
+  border-radius: 0;
+}
+.gb.gbA-section[data-style-guest='bauhaus'] .gbA-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+.gb.gbA-section[data-style-guest='bauhaus'] .gbA-form-success { margin: 0; }
+.gb.gbA-section[data-style-guest='bauhaus'] .gbA-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  border-block-start: 1px solid var(--bh-ink);
+}
+
+.gb.gbA-section[data-style-guest='bauhaus'] .gbA-card {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+  gap: clamp(12px, 2vw, 32px);
+  align-items: baseline;
+  min-block-size: 0;
+  padding: clamp(14px, 1.6vw, 22px) var(--bh-pad-inline);
+  background: none;
+  border: 0;
+  border-block-end: 1px solid var(--bh-ink);
+  border-radius: 0;
+  box-shadow: none;
+}
+.gb.gbA-section[data-style-guest='bauhaus'] .gbA-msg {
+  grid-column: 2;
+  grid-row: 1;
+  max-inline-size: 70ch;
+}
+.gb.gbA-section[data-style-guest='bauhaus'] .gbA-meta {
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  justify-content: start;
+}
+
+
+.gb.gbB-section[data-style-guest='bauhaus'] .gbB-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+}
+.gb.gbB-section[data-style-guest='bauhaus'] .gbB-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: 0;
+  align-items: stretch;
+  border-block-start: 1px solid var(--bh-ink);
+}
+.gb.gbB-section[data-style-guest='bauhaus'] .gbB-left {
+  position: static;
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding: clamp(18px, 2vw, 30px) var(--bh-pad-inline);
+  background: none;
+  border: 0;
+  border-inline-end: 1px solid var(--bh-ink);
+  border-radius: 0;
+}
+.gb.gbB-section[data-style-guest='bauhaus'] .gbB-form-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 32px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.gb.gbB-section[data-style-guest='bauhaus'] .gbB-form-sub {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--bh-ink);
+}
+.gb.gbB-section[data-style-guest='bauhaus'] .gbB-actions { display: grid; gap: 10px; justify-items: start; }
+.gb.gbB-section[data-style-guest='bauhaus'] .gbB-feed {
+  display: grid;
+  gap: 0;
+  border: 0;
+  counter-reset: voice;
+}
+.gb.gbB-section[data-style-guest='bauhaus'] .gbB-entry,
+.gb.gbB-section[data-style-guest='bauhaus'] .gbB-entry:last-child {
+  counter-increment: voice;
+  display: grid;
+  grid-template-columns: clamp(44px, 4vw, 72px) minmax(0, 1fr);
+  column-gap: clamp(12px, 1.6vw, 24px);
+  row-gap: 8px;
+  padding: clamp(16px, 1.8vw, 26px) var(--bh-pad-inline);
+  border: 0;
+  border-block-end: 1px solid var(--bh-ink);
+}
+.gb.gbB-section[data-style-guest='bauhaus'] .gbB-entry::before {
+  content: counter(voice, decimal-leading-zero);
+  grid-row: 1 / span 2;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.4vw, 36px);
+  line-height: 1;
+  color: var(--bh-red);
+}
+.gb.gbB-section[data-style-guest='bauhaus'] .gbB-msg { grid-column: 2; max-inline-size: 64ch; }
+
+.gb.gbB-section[data-style-guest='bauhaus'] .gbB-entry:first-child .gbB-msg {
+  font-size: clamp(18px, 1.6vw, 24px);
+  font-weight: 500;
+  line-height: 1.45;
+}
+.gb.gbB-section[data-style-guest='bauhaus'] .gbB-meta {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+}
+
+
+.gb.gbC-section[data-style-guest='bauhaus'] .gbC-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+}
+.gb.gbC-section[data-style-guest='bauhaus'] .gbC-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  padding: 10px var(--bh-pad-inline);
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  border: 0;
+}
+.gb.gbC-section[data-style-guest='bauhaus'] .gbC-count {
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bh-paper);
+}
+.gb.gbC-section[data-style-guest='bauhaus'] .gbC-count strong {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--bh-red);
+  margin-inline-end: 6px;
+}
+.gb.gbC-section[data-style-guest='bauhaus'] .gbC-bar .gb-btn { box-shadow: none; }
+.gb.gbC-section[data-style-guest='bauhaus'] .gbC-board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  column-count: auto;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+}
+.gb.gbC-section[data-style-guest='bauhaus'] .gbC-card,
+.gb.gbC-section[data-style-guest='bauhaus'] .gbC-card:hover {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  margin: 0;
+  inline-size: auto;
+  padding: clamp(14px, 1.6vw, 24px) var(--bh-pad-inline);
+  background: none;
+  border: 0;
+  border-block-end: 1px solid var(--bh-ink);
+  border-inline-end: 1px solid var(--bh-ink);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+  break-inside: auto;
+}
+.gb.gbC-section[data-style-guest='bauhaus'] .gbC-card::before { display: none; }
+.gb.gbC-section[data-style-guest='bauhaus'] .gbC-card:nth-child(3n + 1):not(:first-child) { border-inline-end: 1px solid var(--bh-ink); }
+
+.gb.gbC-section[data-style-guest='bauhaus'] .gbC-card:first-child {
+  grid-column: 1 / -1;
+  padding-block: clamp(22px, 2.6vw, 40px);
+  border-inline-end: 0;
+  border-block-end: 1px solid var(--bh-ink);
+}
+.gb.gbC-section[data-style-guest='bauhaus'] .gbC-card:first-child .gbC-msg {
+  font-weight: 600;
+  font-size: clamp(22px, 2.6vw, 40px);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  max-inline-size: 44ch;
+}
+.gb.gbC-section[data-style-guest='bauhaus'] .gbC-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  padding: 0;
+  border: 0;
+  justify-content: flex-start;
+}
+.gb.gbC-section[data-style-guest='bauhaus'] .gbC-dialog {
+  background: var(--bh-paper);
+  border: 1px solid var(--bh-ink);
+  border-radius: 0;
+  box-shadow: none;
+}
+.gb.gbC-section[data-style-guest='bauhaus'] .gbC-dialog-close {
+  inline-size: 44px;
+  block-size: 44px;
+  border: 1px solid var(--bh-ink);
+  border-radius: 0;
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+}
+
+
+
+.mw[data-style-music='bauhaus'] :where(.mwA-title, .mwB-title, .mwC-title) {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: none;
+  color: var(--bh-ink);
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: break-word;
+}
+.mw[data-style-music='bauhaus'] :where(.mwA-artist, .mwB-artist, .mwC-artist) {
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1.05vw, 16px);
+  line-height: 1.35;
+  color: var(--bh-ink);
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+.mw[data-style-music='bauhaus'] :where(.mwA-guest, .mwB-guest, .mwC-guest, .mwA-meta) {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+
+.mw[data-style-music='bauhaus'] :where(.mwA-row, .mwB-card, .mwC-item).is-fresh {
+  background: none;
+  box-shadow: inset 6px 0 0 0 var(--bh-red);
+  animation: none;
+}
+.mw[data-style-music='bauhaus'] :where(.mwA-row, .mwB-card, .mwC-item).is-fresh :where(.mwA-title, .mwB-title, .mwC-title)::after {
+  content: 'NEU';
+  display: inline-block;
+  margin-inline-start: 10px;
+  padding: 2px 6px;
+  vertical-align: middle;
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+.mw[data-style-music='bauhaus'] .mw-count {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+.mw[data-style-music='bauhaus'] .mw-hint svg { display: none; }
+.mw[data-style-music='bauhaus'] .mw-dup-hint {
+  margin: 0;
+  padding: 8px 12px;
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  border: 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.45;
+}
+.mw[data-style-music='bauhaus'] .mw-success {
+  display: block;
+  margin: 0;
+  padding: clamp(16px, 2vw, 26px) var(--bh-pad-inline);
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  border: 0;
+  border-radius: 0;
+}
+.mw[data-style-music='bauhaus'] .mw-success-icon { display: none; }
+.mw[data-style-music='bauhaus'] .mw-success-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 32px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--bh-paper);
+}
+.mw[data-style-music='bauhaus'] .mw-success-sub {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--bh-paper);
+}
+.mw[data-style-music='bauhaus'] .mw-empty {
+  display: block;
+  margin: 0;
+  padding: clamp(20px, 2.4vw, 36px) var(--bh-pad-inline);
+  background: none;
+  border: 0;
+  border-block-start: 1px solid var(--bh-ink);
+  border-radius: 0;
+  text-align: start;
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 800;
+  font-size: clamp(20px, 2.4vw, 34px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.mw[data-style-music='bauhaus'] .mw-ornament { display: none; }
+
+.mw[data-style-music='bauhaus'] :where(.mwA-form, .mwB-form) {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 4fr) minmax(0, 3fr) auto;
+  align-items: end;
+  gap: 12px;
+  max-inline-size: none;
+  margin: 0;
+  padding: clamp(18px, 2vw, 28px) var(--bh-pad-inline);
+  background: none;
+  border: 0;
+  border-block-start: 1px solid var(--bh-ink);
+  border-radius: 0;
+}
+.mw[data-style-music='bauhaus'] :where(.mwA-hint-row, .mwB-form-foot, .mwC-form-foot) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin: 0;
+  padding: 0 var(--bh-pad-inline) clamp(14px, 1.6vw, 20px);
+}
+.mw[data-style-music='bauhaus'] :where(.mwA-wrap, .mwB-wrap, .mwC-wrap) {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+}
+
+
+.mw.mwA-section[data-style-music='bauhaus'] .mwA-list {
+  display: grid;
+  gap: 0;
+  border-block-start: 1px solid var(--bh-ink);
+  counter-reset: track;
+}
+.mw.mwA-section[data-style-music='bauhaus'] .mwA-row {
+  counter-increment: track;
+  display: grid;
+  grid-template-columns: clamp(40px, 4vw, 64px) minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: clamp(12px, 2vw, 28px);
+  padding: 12px var(--bh-pad-inline);
+  border: 0;
+  border-block-end: 1px solid var(--bh-ink);
+  background: none;
+  transition: none;
+}
+.mw.mwA-section[data-style-music='bauhaus'] .mwA-row:hover { background: var(--bh-soft); }
+.mw.mwA-section[data-style-music='bauhaus'] .mwA-row::before {
+  content: counter(track, decimal-leading-zero);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--bh-ink);
+}
+.mw.mwA-section[data-style-music='bauhaus'] .mwA-note { display: none; }
+.mw.mwA-section[data-style-music='bauhaus'] .mwA-text {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 14px;
+  min-inline-size: 0;
+}
+.mw.mwA-section[data-style-music='bauhaus'] .mwA-title { font-size: clamp(17px, 1.7vw, 24px); }
+.mw.mwA-section[data-style-music='bauhaus'] .mwA-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  text-align: end;
+  white-space: nowrap;
+}
+
+
+.mw.mwB-section[data-style-music='bauhaus'] .mwB-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  border-block-start: 1px solid var(--bh-ink);
+  counter-reset: set;
+}
+.mw.mwB-section[data-style-music='bauhaus'] .mwB-card,
+.mw.mwB-section[data-style-music='bauhaus'] .mwB-card:hover {
+  counter-increment: set;
+  display: grid;
+  grid-template-columns: clamp(64px, 7vw, 120px) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(12px, 1.6vw, 24px);
+  padding: clamp(14px, 1.8vw, 24px) var(--bh-pad-inline);
+  background: none;
+  border: 0;
+  border-block-end: 1px solid var(--bh-ink);
+  border-inline-end: 1px solid var(--bh-ink);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+}
+.mw.mwB-section[data-style-music='bauhaus'] .mwB-card:nth-child(2n) { border-inline-end: 0; }
+.mw.mwB-section[data-style-music='bauhaus'] .mwB-card::before {
+  content: counter(set, decimal-leading-zero);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(40px, 5vw, 80px);
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  color: var(--bh-ink);
+}
+
+.mw.mwB-section[data-style-music='bauhaus'] .mwB-card:nth-child(4n + 3),
+.mw.mwB-section[data-style-music='bauhaus'] .mwB-card:nth-child(4n + 4) {
+  padding-inline-start: calc(var(--bh-pad-inline) + clamp(0px, 2vw, 32px));
+}
+.mw.mwB-section[data-style-music='bauhaus'] .mwB-cover { display: none; }
+.mw.mwB-section[data-style-music='bauhaus'] .mwB-info { display: grid; gap: 6px; min-inline-size: 0; }
+.mw.mwB-section[data-style-music='bauhaus'] .mwB-title { font-size: clamp(20px, 2.2vw, 34px); }
+
+
+.mw.mwC-section[data-style-music='bauhaus'] .mwC-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0;
+  padding: 10px var(--bh-pad-inline);
+  background: var(--bh-ink);
+  border: 0;
+  border-radius: 0;
+}
+.mw.mwC-section[data-style-music='bauhaus'] .mwC-bar-label,
+.mw.mwC-section[data-style-music='bauhaus'] .mwC-bar .mw-count {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bh-paper);
+}
+.mw.mwC-section[data-style-music='bauhaus'] .mwC-bar-label svg { display: none; }
+.mw.mwC-section[data-style-music='bauhaus'] .mwC-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  counter-reset: floor;
+}
+.mw.mwC-section[data-style-music='bauhaus'] .mwC-item {
+  counter-increment: floor;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  gap: 10px;
+  padding: 12px var(--bh-pad-inline);
+  text-align: start;
+  border-block-end: 1px solid var(--bh-ink);
+  border-inline-end: 1px solid var(--bh-ink);
+}
+.mw.mwC-section[data-style-music='bauhaus'] .mwC-item::before {
+  content: counter(floor, decimal-leading-zero);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--bh-ink);
+}
+.mw.mwC-section[data-style-music='bauhaus'] .mwC-vinyl { display: none; }
+.mw.mwC-section[data-style-music='bauhaus'] .mwC-info {
+  display: grid;
+  gap: 4px;
+  align-items: start;
+  max-inline-size: none;
+}
+.mw.mwC-section[data-style-music='bauhaus'] .mwC-title { font-size: clamp(16px, 1.5vw, 20px); max-inline-size: none; }
+
+.mw.mwC-section[data-style-music='bauhaus'] .mwC-item:first-child {
+  grid-column: 1 / -1;
+  padding-block: clamp(20px, 2.6vw, 40px);
+  background: var(--bh-blue);
+  border-inline-end: 0;
+  border-block-end: 1px solid var(--bh-ink);
+  color: var(--bh-paper);
+}
+.mw.mwC-section[data-style-music='bauhaus'] .mwC-item:first-child::before {
+  font-size: 14px;
+  align-self: start;
+}
+.mw.mwC-section[data-style-music='bauhaus'] .mwC-item:first-child .mwC-title {
+  font-size: clamp(34px, 6vw, 104px);
+  line-height: 0.86;
+  letter-spacing: -0.05em;
+}
+.mw.mwC-section[data-style-music='bauhaus'] .mwC-item:first-child .mwC-artist {
+  font-size: clamp(16px, 1.6vw, 22px);
+  font-weight: 600;
+}
+.mw.mwC-section[data-style-music='bauhaus'] .mwC-form {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 4fr) minmax(0, 3fr) auto;
+  align-items: end;
+  gap: 12px;
+  margin: 0;
+  padding: clamp(20px, 2.4vw, 32px) var(--bh-pad-inline);
+  background: none;
+  border: 0;
+  border-block-start: 1px solid var(--bh-ink);
+  border-radius: 0;
+}
+.mw.mwC-section[data-style-music='bauhaus'] .mwC-form .mw-field { grid-column: auto; }
+.mw.mwC-section[data-style-music='bauhaus'] .mwC-form .mw-btn { grid-column: auto; inline-size: auto; }
+.mw.mwC-section[data-style-music='bauhaus'] .mwC-form-foot { grid-column: 1 / -1; padding: 0; }
+
+
+@media (max-width: 900px) {
+  .gb.gbB-section[data-style-guest='bauhaus'] .gbB-grid { grid-template-columns: minmax(0, 1fr); }
+  .gb.gbB-section[data-style-guest='bauhaus'] .gbB-left {
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--bh-ink);
+  }
+  .gb.gbC-section[data-style-guest='bauhaus'] .gbC-board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mw[data-style-music='bauhaus'] :where(.mwA-form, .mwB-form),
+  .mw.mwC-section[data-style-music='bauhaus'] .mwC-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .mw.mwB-section[data-style-music='bauhaus'] .mwB-grid { grid-template-columns: minmax(0, 1fr); }
+  .mw.mwB-section[data-style-music='bauhaus'] .mwB-card { border-inline-end: 0; }
+  .mw.mwC-section[data-style-music='bauhaus'] .mwC-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 600px) {
+  .gb.gbA-section[data-style-guest='bauhaus'] .gbA-card { grid-template-columns: minmax(0, 1fr); row-gap: 8px; }
+  .gb.gbA-section[data-style-guest='bauhaus'] .gbA-msg { grid-column: 1; grid-row: 2; }
+  .gb.gbA-section[data-style-guest='bauhaus'] .gbA-meta { grid-column: 1; grid-row: 1; display: flex; flex-wrap: wrap; gap: 4px 12px; }
+  .gb.gbC-section[data-style-guest='bauhaus'] .gbC-board { grid-template-columns: minmax(0, 1fr); }
+  .gb.gbC-section[data-style-guest='bauhaus'] .gbC-card { border-inline-end: 0; }
+  .gb.gbC-section[data-style-guest='bauhaus'] .gbC-card:first-child .gbC-msg { font-size: clamp(19px, 5.6vw, 24px); }
+  .gb[data-style-guest='bauhaus'] .gb-btn,
+  .mw[data-style-music='bauhaus'] .mw-btn { inline-size: 100%; }
+  .mw[data-style-music='bauhaus'] :where(.mwA-form, .mwB-form),
+  .mw.mwC-section[data-style-music='bauhaus'] .mwC-form { grid-template-columns: minmax(0, 1fr); }
+  .mw.mwA-section[data-style-music='bauhaus'] .mwA-row { grid-template-columns: 32px minmax(0, 1fr); row-gap: 4px; }
+  .mw.mwA-section[data-style-music='bauhaus'] .mwA-meta {
+    grid-column: 2;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 10px;
+    text-align: start;
+    white-space: normal;
+  }
+  .mw.mwB-section[data-style-music='bauhaus'] .mwB-card,
+  .mw.mwB-section[data-style-music='bauhaus'] .mwB-card:nth-child(4n + 3),
+  .mw.mwB-section[data-style-music='bauhaus'] .mwB-card:nth-child(4n + 4) {
+    grid-template-columns: 56px minmax(0, 1fr);
+    padding-inline-start: var(--bh-pad-inline);
+  }
+  .mw.mwB-section[data-style-music='bauhaus'] .mwB-card::before { font-size: 40px; }
+  .mw.mwC-section[data-style-music='bauhaus'] .mwC-grid { grid-template-columns: minmax(0, 1fr); }
+  .mw.mwC-section[data-style-music='bauhaus'] .mwC-item { border-inline-end: 0; }
+  .mw.mwC-section[data-style-music='bauhaus'] .mwC-item:first-child .mwC-title { font-size: clamp(28px, 9vw, 44px); }
+}
+
+
+
+.gb[data-style-guest='bauhaus'] .gb-title em,
+.mw[data-style-music='bauhaus'] .mw-title em {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 800;
+  font-size: 1em;
+  color: var(--bh-paper);
+  background: var(--bh-blue);
+  padding: 0 0.12em;
+}
+
+.gb.gbA-section[data-style-guest='bauhaus'] .gbA-form { border-block-start: 0; }
+.gb.gbA-section[data-style-guest='bauhaus'] .gb-head { border-block-end: 1px solid var(--bh-ink); }
+
+.mw[data-style-music='bauhaus'] .mw-hint,
+.gb[data-style-guest='bauhaus'] .gb-mod-hint {
+  display: block;
+  padding: 0;
+  gap: 0;
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--bh-ink);
+}
+.gb[data-style-guest='bauhaus'] .gb-mod-hint svg { display: none; }
+
+.mw[data-style-music='bauhaus'] :where(.mwA-guest, .mwB-guest, .mwC-guest, .mwA-meta),
+.gb[data-style-guest='bauhaus'] :where(.gbA-date, .gbB-date, .gbC-date) {
+  opacity: 1;
+  color: var(--bh-ink);
+}
+
+.gb[data-style-guest='bauhaus'] .gb-empty,
+.mw[data-style-music='bauhaus'] .mw-empty {
+  max-inline-size: none;
+  inline-size: auto;
+}
+
+.gb[data-style-guest='bauhaus'] .gb-head:not(:has(.gb-desc)) .gb-title,
+.mw[data-style-music='bauhaus'] .mw-head:not(:has(.mw-desc)) .mw-title {
+  padding-block-end: clamp(18px, 2.2vw, 32px);
+}
+
+.gb[data-style-guest='bauhaus'] .gb-success .gb-success-link {
+  background: transparent;
+  color: var(--bh-paper);
+  border: 1px solid var(--bh-paper);
+}
+.gb[data-style-guest='bauhaus'] .gb-success .gb-success-link:hover {
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+}
+
+
+
+.mw.mwC-section[data-style-music='bauhaus'] .mwC-item:first-child.is-fresh .mwC-title::after {
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+}
+
+.gb[data-style-guest='bauhaus'] .gb-success .gb-success-link:focus-visible {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: 2px;
+}
+
+.gb.gbC-section[data-style-guest='bauhaus'] .gbC-dialog :where(h2, h3, h4, .gbB-form-title) {
+  padding-inline-end: 56px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 30px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.gb.gbC-section[data-style-guest='bauhaus'] .gbC-dialog-close:focus-visible {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: 2px;
+}
+
+.mw[data-style-music='bauhaus'] :where(.mwA-meta, .mwB-guest, .mwC-guest) * {
+  color: inherit;
+  opacity: 1;
+}
+
+.gb.gbB-section[data-style-guest='bauhaus'] .gbB-feed .gb-empty { border-block-start: 0; }
+
+.mw.mwB-section[data-style-music='bauhaus'] .mwB-guest {
+  --muted: var(--bh-ink);
+  color: var(--bh-ink);
+}
+
+
+
+.up[data-style-upload='bauhaus'] .up-btn { inline-size: auto; }
+.up[data-style-upload='bauhaus'] .up-privacy {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--bh-ink);
+  opacity: 1;
+}
+.up[data-style-upload='bauhaus'] .up-privacy svg { display: none; }
+.up[data-style-upload='bauhaus'] .up-success {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: clamp(20px, 2.6vw, 40px) var(--bh-pad-inline);
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  border: 0;
+  border-block-start: 1px solid var(--bh-ink);
+  border-radius: 0;
+  text-align: start;
+  max-inline-size: none;
+}
+.up[data-style-upload='bauhaus'] .up-success-icon { display: none; }
+.up[data-style-upload='bauhaus'] .up-success-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(26px, 3.6vw, 56px);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  text-transform: none;
+  color: var(--bh-paper);
+}
+.up[data-style-upload='bauhaus'] .up-success-sub {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--bh-paper);
+}
+.up[data-style-upload='bauhaus'] .up-success .up-success-link {
+  justify-self: start;
+  min-block-size: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14px;
+  background: transparent;
+  color: var(--bh-paper);
+  border: 1px solid var(--bh-paper);
+}
+.up[data-style-upload='bauhaus'] .up-success .up-success-link:hover {
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+}
+.up[data-style-upload='bauhaus'] .up-success .up-success-link:focus-visible {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: 2px;
+}
+
+.up[data-style-upload='bauhaus'] :where(.upA-drop, .upC-mini-drop) {
+  display: grid;
+  justify-items: start;
+  align-content: center;
+  gap: 8px;
+  padding: clamp(24px, 3vw, 44px) var(--bh-pad-inline);
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+  border: 1px solid var(--bh-ink);
+  border-radius: 0;
+  text-align: start;
+  cursor: pointer;
+  transition: background-color var(--bh-dur) var(--bh-ease);
+}
+.up[data-style-upload='bauhaus'] :where(.upA-drop, .upC-mini-drop):hover,
+.up[data-style-upload='bauhaus'] :where(.upA-drop, .upC-mini-drop).is-drag {
+  background: var(--bh-blue);
+  transform: none;
+  color: var(--bh-paper);
+}
+.up[data-style-upload='bauhaus'] :where(.upA-drop, .upC-mini-drop):focus-visible {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: 4px;
+}
+.up[data-style-upload='bauhaus'] :where(.upA-drop-icon, .upC-mini-drop-icon, .upB-icon) { display: none; }
+.up[data-style-upload='bauhaus'] :where(.upA-drop-title, .upC-mini-drop-title) {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(24px, 3.2vw, 48px);
+  line-height: 0.9;
+  letter-spacing: -0.035em;
+  text-transform: none;
+  color: var(--bh-ink);
+  max-inline-size: none;
+}
+.up[data-style-upload='bauhaus'] :where(.upA-drop-mono, .upC-mini-drop-sub) {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+  opacity: 1;
+}
+
+
+.up.upA-section[data-style-upload='bauhaus'] .upA-wrap {
+  max-inline-size: calc(60rem + 2 * var(--bh-pad-inline));
+  margin: 0;
+  padding: clamp(20px, 2.4vw, 32px) var(--bh-pad-inline) clamp(28px, 3vw, 44px);
+  display: grid;
+  gap: 18px;
+}
+.up.upA-section[data-style-upload='bauhaus'] .up-head { border-block-end: 1px solid var(--bh-ink); }
+.up.upA-section[data-style-upload='bauhaus'] .upA-selected { display: grid; gap: 0; margin: 0; }
+.up.upA-section[data-style-upload='bauhaus'] .upA-selected-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 0;
+  border-block-end: 1px solid var(--bh-ink);
+}
+.up.upA-section[data-style-upload='bauhaus'] .upA-selected-count {
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+.up.upA-section[data-style-upload='bauhaus'] .upA-selected-count strong {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  margin-inline-end: 6px;
+}
+
+.up.upA-section[data-style-upload='bauhaus'] .up-thumbs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  counter-reset: file;
+}
+.up.upA-section[data-style-upload='bauhaus'] .up-thumb {
+  counter-increment: file;
+  position: relative;
+  display: grid;
+  grid-template-columns: 36px 72px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 14px;
+  inline-size: auto;
+  block-size: auto;
+  padding: 10px 0;
+  background: none;
+  border: 0;
+  border-block-end: 1px solid var(--bh-ink);
+  border-radius: 0;
+  overflow: visible;
+}
+.up.upA-section[data-style-upload='bauhaus'] .up-thumb > * { grid-row: 1; }
+.up.upA-section[data-style-upload='bauhaus'] .up-thumb::before {
+  content: counter(file, decimal-leading-zero);
+  grid-column: 1;
+  grid-row: 1;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--bh-ink);
+}
+.up.upA-section[data-style-upload='bauhaus'] .up-thumb img {
+  grid-column: 2;
+  inline-size: 72px;
+  block-size: 54px;
+  object-fit: cover;
+  filter: none;
+  border-radius: 0;
+}
+.up.upA-section[data-style-upload='bauhaus'] .up-thumb-meta {
+  grid-column: 3;
+  position: static;
+  inset: auto;
+  padding: 0;
+  background: none;
+  color: var(--bh-ink);
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+}
+
+.up.upA-section[data-style-upload='bauhaus'] .upA-thumb-progress {
+  grid-column: 4;
+  position: static;
+  inset: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 44px;
+  block-size: 44px;
+  background: var(--bh-soft);
+  color: var(--bh-ink);
+  border-radius: 0;
+}
+.up.upA-section[data-style-upload='bauhaus'] .up-thumb.is-done .upA-thumb-progress {
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+}
+.up.upA-section[data-style-upload='bauhaus'] .upA-thumb-progress .ring {
+  inline-size: 16px;
+  block-size: 16px;
+  border-radius: 0;
+  border: 3px solid var(--bh-ink);
+  border-top-color: transparent;
+}
+.up.upA-section[data-style-upload='bauhaus'] .up-thumb-remove {
+  grid-column: 5;
+  position: static;
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: 0;
+  border: 1px solid var(--bh-ink);
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+}
+.up.upA-section[data-style-upload='bauhaus'] .up-thumb-remove:hover { background: var(--bh-ink); color: var(--bh-paper); }
+.up.upA-section[data-style-upload='bauhaus'] .up-thumb-remove:focus-visible {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: 2px;
+}
+.up.upA-section[data-style-upload='bauhaus'] .upA-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+}
+
+
+.up.upB-section[data-style-upload='bauhaus'] {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  align-items: stretch;
+  gap: 0;
+  max-inline-size: none;
+}
+.up.upB-section[data-style-upload='bauhaus'] .up-head {
+  border-inline-end: 1px solid var(--bh-ink);
+  padding-block-end: clamp(20px, 2.4vw, 36px);
+}
+.up.upB-section[data-style-upload='bauhaus'] .upB-wrap {
+  display: block;
+  margin: 0;
+  padding: 0;
+  min-inline-size: 0;
+}
+.up.upB-section[data-style-upload='bauhaus'] .upB-card {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+  max-inline-size: none;
+  margin: 0;
+  padding: clamp(20px, 2.6vw, 40px) var(--bh-pad-inline);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  text-align: start;
+}
+.up.upB-section[data-style-upload='bauhaus'] .upB-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.6vw, 38px);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  text-transform: none;
+  color: var(--bh-ink);
+  max-inline-size: none;
+}
+.up.upB-section[data-style-upload='bauhaus'] .upB-title em { font-style: normal; background: var(--bh-blue); padding: 0 0.1em;
+  color: var(--bh-paper);
+}
+.up.upB-section[data-style-upload='bauhaus'] .upB-sub {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--bh-ink);
+}
+
+.up.upB-section[data-style-upload='bauhaus'] .upB-thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin: 0;
+  padding: 2px;
+  background: var(--bh-ink);
+  justify-content: flex-start;
+  inline-size: max-content;
+  max-inline-size: 100%;
+}
+.up.upB-section[data-style-upload='bauhaus'] .upB-thumb-mini {
+  inline-size: 72px;
+  block-size: 54px;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  object-fit: cover;
+  filter: none;
+}
+.up.upB-section[data-style-upload='bauhaus'] .upB-count-pill {
+  inline-size: 72px;
+  block-size: 54px;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 0;
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+}
+.up.upB-section[data-style-upload='bauhaus'] .upB-name { margin: 0; }
+.up.upB-section[data-style-upload='bauhaus'] .upB-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  margin: 0;
+}
+.up.upB-section[data-style-upload='bauhaus'] .upB-actions .up-btn { inline-size: auto; max-inline-size: none; }
+
+
+.up.upC-section[data-style-upload='bauhaus'] .upC-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+}
+.up.upC-section[data-style-upload='bauhaus'] .up-title { font-size: clamp(34px, 6vw, 96px); }
+.up.upC-section[data-style-upload='bauhaus'] .upC-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: 0;
+  border-block-start: 1px solid var(--bh-ink);
+  padding: 0;
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-left {
+  grid-column: 1;
+  padding: clamp(20px, 2.4vw, 36px) var(--bh-pad-inline);
+  border-inline-end: 1px solid var(--bh-ink);
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-right {
+  grid-column: 2;
+  padding: clamp(20px, 2.4vw, 36px) var(--bh-pad-inline);
+  min-inline-size: 0;
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-kicker {
+  display: inline-block;
+  margin: 0 0 10px;
+  padding: 4px 8px;
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-h {
+  margin: 0 0 16px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 32px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: none;
+  color: var(--bh-ink);
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-h em { font-style: normal; background: var(--bh-blue); padding: 0 0.1em;
+  color: var(--bh-paper);
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-steps { gap: 0; border-block-start: 1px solid var(--bh-ink); }
+.up.upC-section[data-style-upload='bauhaus'] .upC-step {
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 12px;
+  padding: 12px 0;
+  border-block-end: 1px solid var(--bh-ink);
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-step-num {
+  inline-size: auto;
+  block-size: auto;
+  display: block;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--bh-ink);
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-step-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 16px;
+  text-transform: none;
+  letter-spacing: -0.01em;
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-step-desc {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--bh-ink);
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-box {
+  display: grid;
+  gap: 16px;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+}
+
+.up.upC-section[data-style-upload='bauhaus'] .upC-selected-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 2px;
+  padding: 2px;
+  background: var(--bh-ink);
+  counter-reset: proof;
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-selected-row {
+  counter-increment: proof;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  grid-template-rows: auto auto;
+  gap: 0;
+  padding: 0;
+  background: var(--bh-paper);
+  border: 0;
+  border-radius: 0;
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-mini-thumb {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  filter: none;
+  border-radius: 0;
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-selected-row::before {
+  content: counter(proof, decimal-leading-zero);
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  padding: 3px 7px;
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  z-index: 1;
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-selected-info {
+  grid-column: 1;
+  grid-row: 2;
+  padding: 8px 10px;
+  min-inline-size: 0;
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-selected-name {
+  font-family: var(--font-body);
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--bh-ink);
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-selected-size {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-remove {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: stretch;
+  inline-size: 44px;
+  min-block-size: 44px;
+  border: 0;
+  border-inline-start: 1px solid var(--bh-ink);
+  border-block-start: 0;
+  border-radius: 0;
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-remove:hover { background: var(--bh-ink); color: var(--bh-paper); }
+.up.upC-section[data-style-upload='bauhaus'] .upC-remove:focus-visible {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: -4px;
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-box .up-btn { inline-size: auto !important; justify-self: start; }
+
+
+@media (max-width: 900px) {
+  .up.upB-section[data-style-upload='bauhaus'],
+  .up.upC-section[data-style-upload='bauhaus'] .upC-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .up.upB-section[data-style-upload='bauhaus'] .up-head {
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--bh-ink);
+  }
+  
+  .up.upC-section[data-style-upload='bauhaus'] .upC-right { grid-column: 1; grid-row: 1; }
+  .up.upC-section[data-style-upload='bauhaus'] .upC-left {
+    grid-column: 1;
+    grid-row: 2;
+    border-inline-end: 0;
+    border-block-start: 1px solid var(--bh-ink);
+  }
+}
+@media (max-width: 600px) {
+  .up.upC-section[data-style-upload='bauhaus'] .up-title { font-size: clamp(30px, 10vw, 48px); }
+  .up.upA-section[data-style-upload='bauhaus'] .up-thumb {
+    grid-template-columns: 56px minmax(0, 1fr) 44px;
+    grid-template-rows: auto auto;
+    gap: 6px 10px;
+  }
+  .up.upA-section[data-style-upload='bauhaus'] .up-thumb::before { display: none; }
+  .up.upA-section[data-style-upload='bauhaus'] .up-thumb img { grid-column: 1; grid-row: 1 / span 2; inline-size: 56px; block-size: 56px; }
+  .up.upA-section[data-style-upload='bauhaus'] .up-thumb-meta { grid-column: 2; grid-row: 1; }
+  .up.upA-section[data-style-upload='bauhaus'] .upA-thumb-progress { grid-column: 2; grid-row: 2; inline-size: 32px; block-size: 32px; }
+  .up.upA-section[data-style-upload='bauhaus'] .up-thumb-remove { grid-column: 3; grid-row: 1 / span 2; }
+  .up.upC-section[data-style-upload='bauhaus'] .upC-selected-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .up[data-style-upload='bauhaus'] .up-btn,
+  .up.upC-section[data-style-upload='bauhaus'] .upC-box .up-btn { inline-size: 100% !important; }
+}
+
+.up[data-style-upload='bauhaus'] :where(.up-title, .upB-title, .upC-h) em {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 800;
+  color: var(--bh-paper);
+  background: var(--bh-blue);
+  padding: 0 0.1em;
+}
+.up[data-style-upload='bauhaus'] :where(.upA-drop-title, .upC-mini-drop-title) :where(span, em, small) {
+  color: var(--bh-ink);
+  opacity: 1;
+  font-weight: 800;
+}
+.up.upC-section[data-style-upload='bauhaus'] .upC-box,
+.up.upC-section[data-style-upload='bauhaus'] .upC-right { box-shadow: none; }
+
+.up.upA-section[data-style-upload='bauhaus'] .upA-selected-head {
+  --accent: var(--bh-ink);
+  --accent-deep: var(--bh-ink);
+}
+.up.upA-section[data-style-upload='bauhaus'] .upA-selected-head > * {
+  color: var(--bh-ink);
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+
+
+.acc.accB-section[data-style-acc='bauhaus'] .accB-cta,
+.acc.accB-section[data-style-acc='bauhaus'] .accB-cta:hover {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  min-block-size: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  transform: none;
+}
+.acc.accB-section[data-style-acc='bauhaus'] .accB-cta:empty { display: none; }
+.acc.accB-section[data-style-acc='bauhaus'] .accB-cta .acc-btn {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding: 0 16px;
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+  border: 1px solid var(--bh-ink);
+  border-radius: 0;
+  box-shadow: none;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform var(--bh-dur) var(--bh-ease), background-color var(--bh-dur) var(--bh-ease), box-shadow var(--bh-dur) var(--bh-ease);
+}
+.acc.accB-section[data-style-acc='bauhaus'] .accB-cta .acc-btn:hover {
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  transform: none;
+  box-shadow: none;
+}
+.acc.accB-section[data-style-acc='bauhaus'] .accB-cta .acc-btn:focus-visible {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: 2px;
+}
+@media (max-width: 900px) {
+  .acc.accB-section[data-style-acc='bauhaus'] .accB-cta { justify-content: flex-start; }
+}
+
+/* =========================================================================
+   7.9 · BAUHAUS-SPEZIFIKA FÜR DIE ELF BEREICHE
+   -------------------------------------------------------------------------
+   Kopfmuster (drei):
+     A  Kennung (Karla-Versalien) · Manrope-Headline
+     B  wie A — das Raster darunter trägt die Komposition
+     C  wie A, dazu ein roter Kreismarker vor der Kennung
+   Sektionsgrenzen: keine Balken, Weißraum trennt.
+   ========================================================================= */
+
+.wedding-site-wrapper[data-style='bauhaus'] :where(.tl, .dir, .acc, .wit, .faq, .abc, .gift, .gb, .mw, .up),
+.wedding-site-wrapper[data-style='bauhaus'] .rsvp.rv[data-style-rsvp='bauhaus'] {
+  border-block-end: 0;
+  padding-block: clamp(48px, 6vw, 96px) clamp(24px, 3vw, 48px);
+}
+/* Kennung: kein Ink-Band — Karla-Versalien in Ink. */
+.wedding-site-wrapper[data-style='bauhaus'] :where(.tl, .dir, .acc, .wit, .faq, .abc, .gift, .gb, .mw, .up)
+  :where(.tl-eyebrow, .dir-eyebrow, .acc-eyebrow, .wit-eyebrow, .faq-eyebrow, .abc-eyebrow, .gift-eyebrow, .gb-eyebrow, .mw-eyebrow, .up-eyebrow),
+.wedding-site-wrapper[data-style='bauhaus'] .rsvp.rv[data-style-rsvp='bauhaus'] .rv-kicker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  color: var(--bh-ink);
+  border: 0;
+  padding: 0 var(--bh-pad-inline);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+/* Kopfmuster C: ein roter Kreis als Marker vor der Kennung. */
+.wedding-site-wrapper[data-style='bauhaus'] :where(.tlC-section, .dirC-section, .accC-section, .witC-section, .faqC-section, .abcC-section, .giftC-section, .gbC-section, .mwC-section, .upC-section)
+  :where(.tl-eyebrow, .dir-eyebrow, .acc-eyebrow, .wit-eyebrow, .faq-eyebrow, .abc-eyebrow, .gift-eyebrow, .gb-eyebrow, .mw-eyebrow, .up-eyebrow)::before {
+  content: '';
+  inline-size: 14px;
+  block-size: 14px;
+  border-radius: 50%;
+  background: var(--bh-red);
+}
+/* Headlines wie die Anker: Manrope 800, Hervorhebung in Rot (Großschrift). */
+.wedding-site-wrapper[data-style='bauhaus'] :where(.tl, .dir, .acc, .wit, .faq, .abc, .gift, .gb, .mw, .up)
+  :where(.tl-title, .dir-title, .acc-title, .wit-title, .faq-title, .abc-title, .gift-title, .gb-title, .mw-title, .up-title),
+.wedding-site-wrapper[data-style='bauhaus'] .rsvp.rv[data-style-rsvp='bauhaus'] .rv-title,
+.gift[data-style-gift='bauhaus'] .gift-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  font-size: clamp(34px, 4.6vw, 68px);
+  padding-block-start: 12px;
+  color: var(--bh-ink);
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.tl, .dir, .acc, .wit, .faq, .abc, .gift, .gb, .mw, .up)
+  :where(.tl-title, .dir-title, .acc-title, .wit-title, .faq-title, .abc-title, .gift-title, .gb-title, .mw-title, .up-title, .upB-title, .upC-h) em,
+.wedding-site-wrapper[data-style='bauhaus'] .gb[data-style-guest='bauhaus'] .gb-title em,
+.wedding-site-wrapper[data-style='bauhaus'] .mw[data-style-music='bauhaus'] .mw-title em,
+.wedding-site-wrapper[data-style='bauhaus'] .up[data-style-upload='bauhaus'] :where(.up-title, .upB-title, .upC-h) em,
+.wedding-site-wrapper[data-style='bauhaus'] .rsvp.rv[data-style-rsvp='bauhaus'] .rv-title em {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 800;
+  background: none;
+  color: var(--bh-red);
+  padding: 0;
+  text-decoration: none;
+}
+/* Innere Listenlinien leise (18 % Ink) — Bauhaus strukturiert über Fläche. */
+.wedding-site-wrapper[data-style='bauhaus'] :where(.tlA-card, .tlB-event, .tlC-row, .dirB-row, .dirC-block, .accA-card, .accB-item, .accC-content,
+  .witA-card, .witB-row, .witC-block, .faqA-item, .faqB-card, .faqC-item, .abcA-item, .abcB-card, .abcC-group, .giftA-row, .giftB-card,
+  .giftC-row, .gbA-card, .gbB-entry, .gbC-card, .mwA-row, .mwB-card, .mwC-item, .rv-chapter, .up-thumb) {
+  border-color: color-mix(in srgb, var(--bh-ink) 18%, transparent);
+}
+/* Inverse Flächen (Blau): gesamter Inhalt auf Paper. */
+.wedding-site-wrapper[data-style='bauhaus'] :is(
+  .dirB-row.is-active, .tlB-event.is-current .tlB-event-time, .faqC-item:first-child,
+  .faqA-item[data-open='true'] .faqA-q-btn, .mwC-item:first-child,
+  .rv-option[data-checked='true'], .rv-pill[data-checked='true']
+),
+.wedding-site-wrapper[data-style='bauhaus'] :is(
+  .dirB-row.is-active, .tlB-event.is-current .tlB-event-time, .faqC-item:first-child,
+  .faqA-item[data-open='true'] .faqA-q-btn, .mwC-item:first-child,
+  .rv-option[data-checked='true'], .rv-pill[data-checked='true']
+) :where(*) {
+  color: var(--bh-paper);
+  border-color: var(--bh-paper);
+}
+/* Porträt-Initialen: Paper auf Blau. */
+.wit[data-style-wit='bauhaus'] :where(.wit-photo-initials, .witC-photo-initials) {
+  color: var(--bh-paper);
+  background: var(--bh-blue);
+}
+/* Kleine Marken (Betrag, Frist): Gelb mit Ink — Gelb = Licht/Meta. */
+.gift[data-style-gift='bauhaus'] .gift-amount,
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-deadline {
+  background: var(--bh-yellow);
+  color: var(--bh-ink);
+}
+/* Formularsystem: Felder 2px Ink, Fokus 3px Blau mit Abstand. */
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-input, .gb-input, .gb-textarea, .mw-input, .up-input, .rv-input, .rv-textarea, .rv-code) {
+  border: 2px solid var(--bh-ink);
+}
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-input { border: 2px solid var(--bh-ink); }
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-input, .gb-input, .gb-textarea, .mw-input, .up-input, .rv-input, .rv-textarea, .rv-code):focus-visible,
+.rsvp.rv[data-style-rsvp='bauhaus'] .rv-input:focus-visible {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: 2px;
+}
+/* Fehler: Ink-Fläche + rote Kante links + Textpräfix — nie Farbe allein. */
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gift, .rsvp, .gb, .mw, .up)
+  :where(.gift-modal-error, .gb-error, .mw-error, .up-error, .rv-error, .rv-alert),
+.rsvp.rv[data-style-rsvp='bauhaus'] :where(.rv-error, .rv-alert) {
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  box-shadow: inset 6px 0 0 0 var(--bh-red);
+  padding-inline-start: 16px;
+}
+/* ABC C: dieselbe Logik für jeden Buchstaben — großer Buchstabe auf einem
+   gelben Quadrat. */
+.abc.abcC-section[data-style-abc='bauhaus'] .abcC-group-letter {
+  display: grid;
+  place-items: center;
+  inline-size: 1.2em;
+  aspect-ratio: 1;
+  background: var(--bh-yellow);
+  color: var(--bh-ink);
+  font-style: normal;
+}
+.abc[data-style-abc='bauhaus'] :where(.abcA-letter, .abcB-badge, .abcC-group-letter) {
+  font-style: normal;
+  font-family: var(--font-display);
+  font-weight: 800;
+}
+/* Gästebuch C: die große Stimme in Manrope 700. */
+.gb.gbC-section[data-style-guest='bauhaus'] .gbC-card:first-child .gbC-msg {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+/* Touch-Ziele aus der Mono-Runde bekannt. */
+.tl[data-style-tl='bauhaus'] .loc-pill,
+.tl.tlA-section[data-style-tl='bauhaus'] .tlA-loc-inline {
+  min-block-size: 44px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 0;
+}
+.abc.abcC-section[data-style-abc='bauhaus'] .abcC-idx-btn { min-inline-size: 44px; min-block-size: 44px; }
+/* Die Seite setzt Graustufen der Bestandsfassung auch auf Service-Bilder
+   zurück: Farbe bleibt überall. */
+.wedding-site-wrapper[data-style='bauhaus'] :where(.tl, .dir, .acc, .wit, .gift, .up) :where(img, [class*='img'], [class*='photo'], [class*='image']) {
+  filter: none;
+  mix-blend-mode: normal;
+}
+/* Hintergrund-Deko der Bestandsfassung in den Service-Bereichen aus. */
+.wedding-site-wrapper[data-style='bauhaus'] [class*='styled-bg-bauhaus'] { display: none; }
+/* Porträt-Platzhalter: blaue Fläche mit Paper-Initialen statt Schwarz/Rot. */
+.wit[data-style-wit='bauhaus'] :where(*):has(> [class*='initials']) { background: var(--bh-blue); }
+.wit[data-style-wit='bauhaus'] [class*='initials'] { color: var(--bh-paper); background: transparent; }
+/* Ablauf C: die große Zeit liegt auf dem Foto — Gelb statt Rot für Lesbarkeit. */
+.tl.tlC-section[data-style-tl='bauhaus'] :where(.tlC-time, .tlC-uhr) { color: var(--bh-yellow); }
+/* IBAN auf Ink: Rot läge bei 3,8:1 — Gelb (9,8:1). */
+.gift[data-style-gift='bauhaus'] .gift-iban-num { color: var(--bh-yellow); }
