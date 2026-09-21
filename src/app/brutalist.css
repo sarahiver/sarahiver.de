@@ -5180,3 +5180,39 @@
   background: var(--br-paper);
   color: var(--br-ink);
 }
+
+/* --- Gästebuch/Musik: Final-QA ------------------------------------------ */
+/* Im Musik-C-Statement liegt der frische Song auf Signal — die NEU-Marke
+   (Signal) verschwände dort; auf dieser Fläche wird sie Ink. */
+.mw.mwC-section[data-style-music='brutalist'] .mwC-item:first-child.is-fresh .mwC-title::after {
+  background: var(--br-ink);
+  color: var(--br-paper);
+}
+/* Folge-Aktion im Gästebuch-Erfolg: sichtbarer Fokus auf Ink. */
+.gb[data-style-guest='brutalist'] .gb-success .gb-success-link:focus-visible {
+  outline: var(--br-line-thick) solid var(--br-signal);
+  outline-offset: 2px;
+}
+/* Dialogüberschrift im Gästebuch C: Syne-Versalien und Platz für den
+   Schließen-Knopf, damit der Titel nicht darunter läuft. */
+.gb.gbC-section[data-style-guest='brutalist'] .gbC-dialog :where(h2, h3, h4, .gbB-form-title) {
+  padding-inline-end: 56px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 30px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+.gb.gbC-section[data-style-guest='brutalist'] .gbC-dialog-close:focus-visible {
+  outline: var(--br-line-thick) solid var(--br-signal-deep);
+  outline-offset: 2px;
+}
+/* Datum in Setlist-Meta lief über ein inneres Element weiter blass (11px). */
+.mw[data-style-music='brutalist'] :where(.mwA-meta, .mwB-guest, .mwC-guest) * {
+  color: inherit;
+  opacity: 1;
+}
+/* Gästebuch B leer: Rasteroberkante und Leerzustand-Linie lagen doppelt. */
+.gb.gbB-section[data-style-guest='brutalist'] .gbB-feed .gb-empty { border-block-start: 0; }
