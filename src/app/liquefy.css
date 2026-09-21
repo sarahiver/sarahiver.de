@@ -113,10 +113,10 @@
   100% { transform: translate3d(calc(var(--lq-drift-sm) * -1), var(--lq-drift-md), 0) scale(1.02); }
 }
 @keyframes lq-morph {
-  0%   { border-radius: 46% 54% 58% 42% / 44% 38% 62% 56%; }
-  33%  { border-radius: 58% 42% 44% 56% / 54% 60% 40% 46%; }
-  66%  { border-radius: 40% 60% 54% 46% / 38% 52% 48% 62%; }
-  100% { border-radius: 46% 54% 58% 42% / 44% 38% 62% 56%; }
+  0%   { border-radius: 48% 52% 54% 46% / 46% 44% 56% 54%; }
+  33%  { border-radius: 53% 47% 48% 52% / 52% 55% 45% 48%; }
+  66%  { border-radius: 46% 54% 51% 49% / 44% 50% 50% 56%; }
+  100% { border-radius: 48% 52% 54% 46% / 46% 44% 56% 54%; }
 }
 @keyframes lq-glow {
   0%, 100% { opacity: 0.78; }
@@ -1170,3 +1170,143 @@
 .wedding-site-wrapper[data-style='liquefy'] :is(.hero-a, .hero-b, .hero-c, .cd, .ls, .gal) :is(h1, h2, h3, h4, p, span, em, div, li, figcaption, blockquote) {
   font-style: normal;
 }
+
+/* =========================================================================
+   12 · LIQUID MATERIAL SYSTEM (Foundation-Polish)
+   -------------------------------------------------------------------------
+   Fünf Materialrollen, mechanisch übertragbar auf die übrigen Bereiche:
+
+     LIQUID LIGHT  --lq-light   diffuse Farbwolke (mehrtonig, mit Alpha)
+     LIQUID LENS   --lq-lens    transluzente Fläche mit weichem Rand —
+                                eine Linse, keine Karte (kaum Kante, kein
+                                Schatten, stabile helle Mitte für Text)
+     LIQUID DEPTH  --lq-depth   großer Halo hinter scharfem Inhalt
+     LIQUID NIGHT  --lq-night-field  dunkle immersive Welt (C)
+     LIQUID GLOW   --lq-glow-field   lokaler Lichtakzent
+   Dazu die Kante: Bildformen lösen sich an ihrem Rand weich in die
+   Umgebung auf (Maske), statt als ausgeschnittene Form zu stehen.
+   ========================================================================= */
+
+.wedding-site-wrapper[data-style='liquefy'] {
+  --lq-light:
+    radial-gradient(42% 46% at 28% 34%, color-mix(in srgb, var(--lq-rosecloud) 62%, transparent), transparent 72%),
+    radial-gradient(40% 44% at 74% 30%, color-mix(in srgb, var(--lq-peach) 66%, transparent), transparent 72%),
+    radial-gradient(44% 42% at 58% 76%, color-mix(in srgb, var(--lq-lilac) 58%, transparent), transparent 74%);
+  --lq-lens:
+    radial-gradient(120% 110% at 30% 25%, color-mix(in srgb, #FFFFFF 80%, transparent) 0%, color-mix(in srgb, #FFFFFF 66%, transparent) 55%, color-mix(in srgb, var(--lq-blush) 42%, transparent) 100%);
+  --lq-depth:
+    radial-gradient(closest-side at 38% 42%, color-mix(in srgb, var(--lq-peach) 78%, transparent), transparent),
+    radial-gradient(closest-side at 66% 64%, color-mix(in srgb, var(--lq-rosecloud) 70%, transparent), transparent),
+    radial-gradient(closest-side at 52% 20%, color-mix(in srgb, var(--lq-lilac) 60%, transparent), transparent);
+  --lq-night-field:
+    radial-gradient(70% 55% at 15% 8%, color-mix(in srgb, var(--lq-wine) 85%, transparent), transparent 70%),
+    radial-gradient(60% 55% at 90% 60%, color-mix(in srgb, var(--lq-violet) 95%, transparent), transparent 72%),
+    radial-gradient(50% 40% at 40% 100%, color-mix(in srgb, var(--lq-berry) 30%, transparent), transparent 72%),
+    linear-gradient(180deg, var(--lq-night) 0%, color-mix(in srgb, var(--lq-night) 78%, var(--lq-violet)) 100%);
+  --lq-glow-field:
+    radial-gradient(34% 38% at 76% 24%, color-mix(in srgb, var(--lq-glow) 48%, transparent), transparent 72%),
+    radial-gradient(40% 42% at 20% 76%, color-mix(in srgb, var(--lq-berry) 40%, transparent), transparent 74%),
+    radial-gradient(30% 30% at 50% 50%, color-mix(in srgb, var(--lq-lilac) 16%, transparent), transparent 70%);
+  --lq-edge: radial-gradient(closest-side, #000 72%, transparent 100%);
+}
+
+/* Ambient World: mehr Farbtiefe (Blush, Pfirsich, Rosé, Flieder). */
+.wedding-site-wrapper[data-style='liquefy']::before {
+  background:
+    radial-gradient(40% 44% at 12% 18%, color-mix(in srgb, var(--lq-rosecloud) 85%, transparent), transparent 70%),
+    radial-gradient(36% 42% at 88% 34%, color-mix(in srgb, var(--lq-peach) 90%, transparent), transparent 70%),
+    radial-gradient(42% 38% at 70% 90%, color-mix(in srgb, var(--lq-lilac) 85%, transparent), transparent 72%),
+    radial-gradient(32% 32% at 24% 82%, color-mix(in srgb, var(--lq-peach) 65%, transparent), transparent 70%);
+}
+
+/* --- A/B: Bildformen lösen sich an der Kante auf; großer Depth-Halo --- */
+.wedding-site-wrapper[data-style='liquefy'] :is(.hero-a-liquefy-wrap, .hero-b-image-col) > div[style] {
+  -webkit-mask-image: var(--lq-edge);
+  mask-image: var(--lq-edge);
+}
+.hero-a[data-style-hero='liquefy'] .hero-a-liquefy-wrap::before {
+  inset: -34% -40%;
+  background: var(--lq-depth);
+  filter: blur(var(--lq-blur-md));
+}
+/* Die verbindende Wolke in Hero B läuft jetzt hinter Bild UND Text,
+   mehrtonig und transluzent; sie morpht nicht mehr, sie driftet. */
+.hero-b[data-style-hero='liquefy']::before {
+  inset: 0 -8% 0 -4%;
+  border-radius: 0;
+  background: var(--lq-light);
+  animation: lq-drift var(--lq-motion-slower) var(--lq-ease) infinite alternate;
+}
+/* Linse statt Karte: keine sichtbare Kante, kein Schatten, helle stabile
+   Mitte für den Text, weich auslaufender Rand. */
+.wedding-site-wrapper[data-style='liquefy'] :is(.hero-b-text, .ls.lsB .lsB-text) {
+  border: 0;
+  background: var(--lq-lens);
+  box-shadow: 0 0 60px 24px color-mix(in srgb, #FFFFFF 26%, transparent);
+  backdrop-filter: blur(16px) saturate(1.15);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15);
+}
+
+/* Love Story A/B: Bildkanten weich, Halo mehrtonig und größer. */
+.ls[data-style-ls='liquefy'] :is(.lsA-img, .lsB-img-wrap) :is(img) {
+  -webkit-mask-image: var(--lq-edge);
+  mask-image: var(--lq-edge);
+}
+.ls[data-style-ls='liquefy'] :is(.lsA-img--1, .lsB-img-wrap)::after {
+  inset: -30%;
+  background: var(--lq-depth);
+  filter: blur(var(--lq-blur-md));
+}
+.ls.lsA[data-style-ls='liquefy'] .lsA-img { overflow: visible; background: none; }
+.ls.lsA[data-style-ls='liquefy'] .lsA-img img { border-radius: inherit; }
+
+/* Gallery A: die bestehende Sektionswolke wird zum Licht-Feld hinter der
+   Gruppe (kein zusätzlicher Layer). */
+.gal.galA-wrap[data-style-gallery='liquefy']::before { background: var(--lq-light); }
+/* Gallery B: Fläche transluzenter, mehrtonig, ohne Morph-Körper. */
+.gal.galB-wrap[data-style-gallery='liquefy'] .galB::before {
+  background: var(--lq-light), color-mix(in srgb, var(--lq-blush) 30%, transparent);
+  filter: blur(var(--lq-blur-md));
+  border-radius: 12%;
+  animation: none;
+}
+
+/* --- C: Nacht räumlicher, Glow weniger punktuell --- */
+.wedding-site-wrapper[data-style='liquefy'] :is(.hero-c, .cd.cdC-wrap, .ls.lsC, .gal.galC-wrap) {
+  background: var(--lq-night-field);
+}
+.wedding-site-wrapper[data-style='liquefy'] :is(.cd.cdC-wrap, .ls.lsC, .gal.galC-wrap)::before {
+  background: var(--lq-glow-field);
+}
+
+/* --- Love Story C mobil: Bildformen liefen rechts aus dem Raster. Die
+   Form darf bis an die Kante reichen, aber als gewollte weiche Auflösung. */
+@media (max-width: 900px) {
+  .ls.lsC[data-style-ls='liquefy'] .lsC-img,
+  .ls.lsC[data-style-ls='liquefy'] .lsC-item:nth-child(even) .lsC-img {
+    inline-size: 100%;
+    max-inline-size: 100%;
+    margin: 0;
+    justify-self: stretch;
+    min-inline-size: 0;
+  }
+  .ls.lsC[data-style-ls='liquefy'] .lsC-card { min-inline-size: 0; }
+}
+/* Ambient World ohne filter: blur(). Die Radialverläufe laufen ohnehin
+   weich aus; der Blur brachte kaum sichtbaren Gewinn, kostete aber pro
+   Wrapper eine große Compositing-Fläche. Auf Seiten mit vielen Wrappern
+   (/allelements: 45) führte das nachweislich zu schwarz gerenderten
+   Bereichen. Ohne Blur rendert alles — und die Hochzeitsseite spart einen
+   großen Blur-Layer. */
+.wedding-site-wrapper[data-style='liquefy']::before {
+  filter: none;
+  background:
+    radial-gradient(46% 50% at 12% 18%, color-mix(in srgb, var(--lq-rosecloud) 80%, transparent), transparent 78%),
+    radial-gradient(42% 48% at 88% 34%, color-mix(in srgb, var(--lq-peach) 85%, transparent), transparent 78%),
+    radial-gradient(48% 44% at 70% 90%, color-mix(in srgb, var(--lq-lilac) 80%, transparent), transparent 80%),
+    radial-gradient(38% 38% at 24% 82%, color-mix(in srgb, var(--lq-peach) 60%, transparent), transparent 78%);
+}
+/* Namen absolut scharf: der weiche Textschatten der Bestandsfassung entfällt
+   in A und B (C behält einen dunklen Schatten nur für Lesbarkeit auf Bild). */
+.hero-a[data-style-hero='liquefy'] .hero-a-title,
+.hero-b[data-style-hero='liquefy'] .hero-b-title { text-shadow: none; }
