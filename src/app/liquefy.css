@@ -1,0 +1,1172 @@
+/* =========================================================================
+   DESIGN 05 — LIQUEFY · Architektur + Style Contract + Anker-Komponenten
+   -------------------------------------------------------------------------
+   North Star: die Liquefy-Mockups A/B/C — fließend, atmosphärisch, weich,
+   sinnlich, scharf gegen unscharf, Licht hinter Milchglas.
+
+   ARCHITEKTUR (reihenfolgeunabhängig, CSS-only)
+
+   Die Hochzeitsseite ist modular: Bereiche und Reihenfolge wählt der Kunde,
+   A/B/C wird je Bereich gewählt. Deshalb kennt keine Regel ihren Nachbarn.
+
+     EBENE 1 — AMBIENT WORLD
+       .wedding-site-wrapper[data-style='liquefy']::before
+       Ein einziger viewporthoher Layer, position: sticky am Anfang des
+       Wrappers (margin-bottom: -100vh). Er bleibt beim Scrollen im Bild
+       wie ein fester Hintergrund, bleibt aber an seinen Wrapper gebunden —
+       deshalb überdeckt er in /allelements (ein Wrapper pro Komponente)
+       nie fremde Komponenten. Drei große Lichtwolken, weich verlaufen,
+       langsamer Drift über transform. pointer-events: none.
+
+     EBENE 2 — COMPONENT LENS
+       Jede Sektion ist ein eigener Stapelkontext (isolation: isolate) mit
+       einer lokalen Farbwolke (::before, z-index -1). A und B sind
+       transparent und lassen die Ambient World durchscheinen; C bringt
+       seine Nachtwelt selbst mit. Die Wolke darf bis 80px über die
+       Sektionsgrenze fließen — horizontal per overflow-x: clip gesichert
+       (clip erzeugt keinen Scroll-Container, Sticky und Lightbox bleiben
+       intakt).
+
+     Z-INDEX
+       Ambient Layer    z 0 (im Wrapper)
+       Sektion          z 1, isolation: isolate
+         lokale Wolke   z -1 innerhalb der Sektion
+         Inhalt         z 1 innerhalb der Sektion
+       Dialoge/Lightbox bestehendes System, unberührt
+
+   STYLE CONTRACT
+     A AIR     hell, luftig, milchig; Blur mittel; Bewegung kaum spürbar
+     B FLOW    größere Flächen, Überlagerung, Morph; Blur stark
+     C DREAM   Nachtblau, Violett, Wein, Glow; scharfe Inhalte vor
+               unscharfer Tiefe; kein Dark Mode, sondern Traumwelt
+     Typografie  Cormorant Garamond 400 (weich, modern), Manrope für Text
+     Scharf/Unscharf  Text, Formulare und Bedienung bleiben immer scharf;
+                 unscharf sind nur eigene dekorative Layer.
+     Bewegung    nur Atmosphäre (Wolken, Morph, Bildatmung), nie UI.
+     Glas        sparsam: milchige Fläche + leichter Blur + helle Kante,
+                 nur für einzelne Panels.
+
+   Die erste Liquefy-Fassung (DecorationLiquefyBlob mit SVG-Verzerrung
+   url(#brutal-melt) und 6-s-Dauerbewegung, entsättigte Bilder, Bordeaux/
+   Fraunces-kursiv-Preset) wird hier zurückgenommen.
+   ========================================================================= */
+
+/* =========================================================================
+   1 · TOKENS
+   ========================================================================= */
+
+.wedding-site-wrapper[data-style='liquefy'] {
+  --lq-paper: var(--bg);
+  --lq-blush: var(--bg-soft);
+  --lq-ink: var(--ink);
+  --lq-plum: var(--accent-deep);
+  --lq-rose: var(--accent);
+  --lq-pearl: color-mix(in srgb, #FFFFFF 70%, var(--bg));
+  --lq-peach: #F6CDB6;
+  --lq-rosecloud: #F3B7C3;
+  --lq-lilac: #CFC2EE;
+  --lq-berry: #B45C86;
+  --lq-night: #0F1730;
+  --lq-violet: #2A2150;
+  --lq-wine: #4C1D3B;
+  --lq-glow: #E88AAB;
+  --lq-on-night: #F6EEF2;
+  --lq-on-night-soft: color-mix(in srgb, #F6EEF2 76%, #0F1730);
+
+  --lq-blur-sm: 18px;
+  --lq-blur-md: 40px;
+  --lq-blur-lg: 72px;
+
+  --lq-drift-sm: 2%;
+  --lq-drift-md: 4%;
+  --lq-drift-lg: 7%;
+
+  --lq-motion-slow: 28s;
+  --lq-motion-slower: 38s;
+  --lq-ease: cubic-bezier(0.45, 0.05, 0.35, 1);
+  --lq-ui: 240ms;
+
+  --lq-glass-alpha: 0.52;
+  --lq-surface-alpha: 0.72;
+  --lq-radius-soft: 28px;
+  --lq-radius-liquid: 46% 54% 58% 42% / 44% 38% 62% 56%;
+
+  --lq-pad-block: clamp(64px, 8vw, 128px);
+  --lq-pad-inline: clamp(20px, 5vw, 80px);
+
+  --font-mono: var(--font-body);
+  --font-body-style: normal;
+  position: relative;
+  background: var(--lq-paper);
+  color: var(--lq-ink);
+  font-family: var(--font-body);
+  font-style: normal;
+}
+
+/* =========================================================================
+   2 · MOTION — fünf Keyframes für die ganze Welt
+   ========================================================================= */
+
+@keyframes lq-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(var(--lq-drift-md), calc(var(--lq-drift-sm) * -1), 0) scale(1.06); }
+  100% { transform: translate3d(calc(var(--lq-drift-sm) * -1), var(--lq-drift-md), 0) scale(1.02); }
+}
+@keyframes lq-morph {
+  0%   { border-radius: 46% 54% 58% 42% / 44% 38% 62% 56%; }
+  33%  { border-radius: 58% 42% 44% 56% / 54% 60% 40% 46%; }
+  66%  { border-radius: 40% 60% 54% 46% / 38% 52% 48% 62%; }
+  100% { border-radius: 46% 54% 58% 42% / 44% 38% 62% 56%; }
+}
+@keyframes lq-glow {
+  0%, 100% { opacity: 0.78; }
+  50%      { opacity: 1; }
+}
+@keyframes lq-image-breathe {
+  0%, 100% { transform: scale(1.02); }
+  50%      { transform: scale(1.06); }
+}
+@keyframes lq-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* =========================================================================
+   3 · EBENE 1 — AMBIENT WORLD
+   ========================================================================= */
+
+.wedding-site-wrapper[data-style='liquefy']::before {
+  content: '';
+  position: sticky;
+  top: 0;
+  display: block;
+  block-size: 100vh;
+  block-size: 100lvh;
+  margin-block-end: -100vh;
+  margin-block-end: -100lvh;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 42% at 12% 18%, color-mix(in srgb, var(--lq-rosecloud) 75%, transparent), transparent 70%),
+    radial-gradient(34% 40% at 88% 36%, color-mix(in srgb, var(--lq-peach) 80%, transparent), transparent 70%),
+    radial-gradient(40% 36% at 70% 92%, color-mix(in srgb, var(--lq-lilac) 70%, transparent), transparent 72%),
+    radial-gradient(30% 30% at 22% 80%, color-mix(in srgb, var(--lq-peach) 55%, transparent), transparent 70%);
+  filter: blur(var(--lq-blur-md));
+  opacity: 0.9;
+  animation: lq-drift var(--lq-motion-slower) var(--lq-ease) infinite alternate;
+  will-change: transform;
+}
+.wedding-site-wrapper[data-style='liquefy'] {
+  overflow-x: clip;
+}
+
+/* =========================================================================
+   4 · EBENE 2 — COMPONENT LENS (gemeinsam für alle Sektionen)
+   ========================================================================= */
+
+.wedding-site-wrapper[data-style='liquefy'] :is(.hero-a, .hero-b, .hero-c, .cd, .ls, .gal) {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  overflow-x: clip;
+  overflow-y: visible;
+  background: transparent;
+  color: var(--lq-ink);
+}
+.wedding-site-wrapper[data-style='liquefy'] :is(.hero-a, .hero-b, .hero-c, .cd, .ls, .gal) > * {
+  position: relative;
+  z-index: 1;
+}
+/* Lokale Wolke: sitzt hinter dem Inhalt, darf 80px über die eigene Grenze
+   fließen, kennt keinen Nachbarn. */
+.wedding-site-wrapper[data-style='liquefy'] :is(.cd, .ls, .gal)::before {
+  content: '';
+  position: absolute;
+  inset: -80px 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(30% 34% at 85% 20%, color-mix(in srgb, var(--lq-peach) 55%, transparent), transparent 70%),
+    radial-gradient(28% 30% at 10% 75%, color-mix(in srgb, var(--lq-rosecloud) 50%, transparent), transparent 72%);
+  filter: blur(var(--lq-blur-md));
+}
+
+/* --- C: jede C-Sektion bringt ihre Nachtwelt selbst mit (autark) --- */
+.wedding-site-wrapper[data-style='liquefy'] :is(.hero-c, .cd.cdC-wrap, .ls.lsC, .gal.galC-wrap) {
+  background:
+    radial-gradient(60% 50% at 20% 10%, color-mix(in srgb, var(--lq-wine) 80%, transparent), transparent 70%),
+    radial-gradient(55% 45% at 85% 70%, color-mix(in srgb, var(--lq-violet) 90%, transparent), transparent 70%),
+    linear-gradient(180deg, var(--lq-night) 0%, color-mix(in srgb, var(--lq-night) 80%, var(--lq-violet)) 100%);
+  color: var(--lq-on-night);
+}
+.wedding-site-wrapper[data-style='liquefy'] :is(.cd.cdC-wrap, .ls.lsC, .gal.galC-wrap)::before {
+  inset: 0;
+  background:
+    radial-gradient(26% 30% at 78% 22%, color-mix(in srgb, var(--lq-glow) 55%, transparent), transparent 70%),
+    radial-gradient(30% 34% at 18% 78%, color-mix(in srgb, var(--lq-berry) 45%, transparent), transparent 72%);
+  filter: blur(var(--lq-blur-lg));
+  animation: lq-drift var(--lq-motion-slow) var(--lq-ease) infinite alternate;
+}
+
+/* =========================================================================
+   5 · TYPOGRAFIE + GEMEINSAMES
+   ========================================================================= */
+
+.wedding-site-wrapper[data-style='liquefy'] :where(.hero-a, .hero-b, .hero-c, .cd, .ls, .gal) :where(*) {
+  font-style: normal;
+}
+.wedding-site-wrapper[data-style='liquefy'] :is(.display, .h2-editorial, .ls-title, .gal-title) {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: -0.005em;
+  line-height: 1.04;
+  text-transform: none;
+}
+.wedding-site-wrapper[data-style='liquefy'] :is(.ls-title, .gal-title) em {
+  font-family: inherit;
+  font-style: normal;
+  font-weight: inherit;
+  color: inherit;
+  background: none;
+}
+.wedding-site-wrapper[data-style='liquefy'] :is(.ls-title, .gal-title) {
+  font-size: clamp(36px, 4.4vw, 64px);
+  margin: 0;
+  color: inherit;
+}
+.wedding-site-wrapper[data-style='liquefy'] :is(.ls-intro, .gal-intro) {
+  font-family: var(--font-body);
+  font-size: clamp(15px, 1.05vw, 16px);
+  line-height: 1.7;
+  max-inline-size: 56ch;
+  color: inherit;
+  opacity: 0.86;
+}
+.wedding-site-wrapper[data-style='liquefy'] :is(
+  .ls-eyebrow, .gal-eyebrow, .cd-eyebrow, .cd-label,
+  .hero-a-eyebrow, .hero-b-eyebrow, .hero-c-eyebrow
+) {
+  font-family: var(--font-body);
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--lq-plum);
+}
+.wedding-site-wrapper[data-style='liquefy'] :is(.hero-c, .cdC-wrap, .lsC, .galC-wrap) :is(.ls-eyebrow, .gal-eyebrow, .cd-eyebrow, .cd-label, .hero-c-eyebrow) {
+  color: var(--lq-on-night-soft);
+}
+.wedding-site-wrapper[data-style='liquefy'] :where(.ls-head-ornament, .gal-head-ornament, .styled-bg-editorial, [class*='styled-bg-liquefy']) {
+  display: none;
+}
+.wedding-site-wrapper[data-style='liquefy'] :is(.ls-head, .gal-head) {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  text-align: center;
+  margin-inline: auto;
+}
+/* Bilder klar — die Weichheit liegt in der Umgebung. */
+.wedding-site-wrapper[data-style='liquefy'] :is(.hero-a, .hero-b, .hero-c, .ls, .gal) img {
+  filter: none;
+  mix-blend-mode: normal;
+}
+/* Sekundäraktion als milchige Pille (Mockup): Glas, feine helle Kante. */
+.wedding-site-wrapper[data-style='liquefy'] .gal-showmore {
+  min-block-size: 44px;
+  padding: 0 24px;
+  border: 1px solid color-mix(in srgb, var(--lq-ink) 18%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, #FFFFFF var(--lq-glass-alpha-pct, 52%), transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--lq-ink);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  box-shadow: none;
+  transition: background-color var(--lq-ui) var(--lq-ease), color var(--lq-ui) var(--lq-ease);
+}
+.wedding-site-wrapper[data-style='liquefy'] .gal-showmore:hover { background: var(--lq-ink); color: var(--lq-paper); transform: none; }
+.wedding-site-wrapper[data-style='liquefy'] .gal-showmore:focus-visible { outline: 2px solid var(--lq-plum); outline-offset: 3px; }
+.wedding-site-wrapper[data-style='liquefy'] .gal.galC-wrap .gal-showmore {
+  background: color-mix(in srgb, #FFFFFF 10%, transparent);
+  color: var(--lq-on-night);
+  border-color: color-mix(in srgb, var(--lq-on-night) 45%, transparent);
+}
+.wedding-site-wrapper[data-style='liquefy'] .gal.galC-wrap .gal-showmore:focus-visible { outline-color: var(--lq-on-night); }
+.wedding-site-wrapper[data-style='liquefy'] .gal-more-count { color: inherit; font-family: inherit; }
+
+/* Die Blob-Hülle der Bestandsfassung setzt Inline-Stile (SVG-Verzerrung
+   url(#brutal-melt), 6-s-Dauerbewegung, Kreisform). Inline-Stile lassen
+   sich nur mit !important überschreiben — hier eng begrenzt auf diese
+   Hülle im Liquefy-Hero. */
+.wedding-site-wrapper[data-style='liquefy'] :is(.hero-a-liquefy-wrap, .hero-b-image-col) > div[style] {
+  filter: none !important;
+  animation: lq-morph var(--lq-motion-slower) var(--lq-ease) infinite !important;
+  border-radius: var(--lq-radius-liquid) !important;
+  overflow: hidden;
+}
+
+/* =========================================================================
+   6 · HERO
+   ========================================================================= */
+
+/* --- A: Soft Liquid Invitation — Namen zentriert, Bild in weicher
+   Farbwelt mit wandernder Lichtwolke --- */
+.hero-a[data-style-hero='liquefy'] {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: clamp(28px, 3.6vw, 52px);
+  min-height: min(96vh, 900px);
+  padding: var(--lq-pad-block) var(--lq-pad-inline);
+  text-align: center;
+  perspective: none;
+}
+.hero-a[data-style-hero='liquefy'] .hero-a-content {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  margin: 0;
+  max-width: 48rem;
+  width: auto;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  transform: none;
+  animation: none;
+  text-align: center;
+}
+.hero-a[data-style-hero='liquefy'] .hero-a-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(56px, 7.6vw, 128px);
+  line-height: 0.98;
+  letter-spacing: -0.01em;
+  color: var(--lq-ink);
+}
+.wedding-site-wrapper[data-style='liquefy'] :is(.hero-a-title, .hero-b-title, .hero-c-title) .amp {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 400;
+  color: inherit;
+  background: none;
+  animation: none;
+  transform: none;
+}
+.hero-a[data-style-hero='liquefy'] :is(.hero-a-date, .hero-a-location) {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--lq-ink);
+}
+.hero-a[data-style-hero='liquefy'] .hero-a-liquefy-wrap {
+  position: relative;
+  inline-size: min(100%, 560px);
+  aspect-ratio: 5 / 4;
+  margin: 0;
+  inset: auto;
+  transform: none;
+}
+/* Wandernde Lichtwolke hinter dem Bild — die Farbe läuft aus dem Bild in
+   die Fläche. */
+.hero-a[data-style-hero='liquefy'] .hero-a-liquefy-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -18% -22%;
+  z-index: -1;
+  border-radius: 50%;
+  background:
+    radial-gradient(45% 45% at 30% 40%, var(--lq-rosecloud), transparent 72%),
+    radial-gradient(40% 40% at 72% 62%, var(--lq-peach), transparent 72%);
+  filter: blur(var(--lq-blur-md));
+  animation: lq-drift var(--lq-motion-slow) var(--lq-ease) infinite alternate;
+  pointer-events: none;
+}
+.hero-a[data-style-hero='liquefy'] .hero-a-liquefy-wrap > div { inline-size: 100%; block-size: 100%; }
+.hero-a[data-style-hero='liquefy'] .hero-a-liquefy-img {
+  inline-size: 100%;
+  block-size: 100%;
+  background-image: var(--img-base, var(--img-square));
+  background-size: cover;
+  background-position: center;
+  filter: none;
+  border-radius: inherit;
+}
+
+/* --- B: Liquid Composition — Namen links auf milchiger Fläche, Bild in
+   morphender Form rechts, eine große Fläche verbindet beides --- */
+.hero-b[data-style-hero='liquefy'] {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+  align-items: center;
+  gap: 0;
+  min-height: min(96vh, 900px);
+  padding: var(--lq-pad-block) var(--lq-pad-inline);
+}
+/* Verbindende Fläche: eine große, weiche Wolke quer über Text und Bild. */
+.hero-b[data-style-hero='liquefy']::before {
+  content: '';
+  position: absolute;
+  inset: 8% -6% 4% 24%;
+  z-index: -1;
+  border-radius: var(--lq-radius-liquid);
+  background:
+    radial-gradient(50% 60% at 30% 40%, color-mix(in srgb, var(--lq-peach) 90%, transparent), transparent 70%),
+    radial-gradient(50% 60% at 70% 70%, color-mix(in srgb, var(--lq-lilac) 85%, transparent), transparent 70%),
+    radial-gradient(40% 50% at 55% 20%, color-mix(in srgb, var(--lq-rosecloud) 80%, transparent), transparent 70%);
+  filter: blur(var(--lq-blur-lg));
+  animation: lq-morph var(--lq-motion-slow) var(--lq-ease) infinite, lq-drift var(--lq-motion-slower) var(--lq-ease) infinite alternate;
+  pointer-events: none;
+}
+.hero-b[data-style-hero='liquefy'] .hero-b-text {
+  grid-column: 1;
+  grid-row: 1;
+  z-index: 2;
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  margin-inline-end: -12%;
+  padding: clamp(28px, 3.4vw, 52px);
+  border-radius: var(--lq-radius-soft);
+  background: color-mix(in srgb, #FFFFFF 46%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid color-mix(in srgb, #FFFFFF 70%, transparent);
+  text-align: left;
+}
+.hero-b[data-style-hero='liquefy'] .hero-b-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(52px, 6.4vw, 112px);
+  line-height: 0.98;
+  letter-spacing: -0.01em;
+  color: var(--lq-ink);
+}
+.hero-b[data-style-hero='liquefy'] .hero-b-rule { display: none; }
+.hero-b[data-style-hero='liquefy'] :is(.hero-b-date, .hero-b-venue) {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--lq-ink);
+  background: none;
+}
+.hero-b[data-style-hero='liquefy'] .hero-b-intro { font-size: 15px; line-height: 1.65; color: var(--lq-ink); max-inline-size: 36ch; }
+.hero-b[data-style-hero='liquefy'] .hero-b-image-col {
+  grid-column: 2;
+  grid-row: 1;
+  position: relative;
+  aspect-ratio: 1;
+  inline-size: 100%;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: 0;
+}
+.hero-b[data-style-hero='liquefy'] .hero-b-image-col > div { inline-size: 100%; block-size: 100%; }
+.hero-b[data-style-hero='liquefy'] .hero-b-liquefy-img {
+  inline-size: 100%;
+  block-size: 100%;
+  background-image: var(--img-base, var(--img-square));
+  background-size: cover;
+  background-position: center;
+  filter: none;
+  animation: lq-image-breathe var(--lq-motion-slow) var(--lq-ease) infinite;
+}
+
+/* --- C: Dreamscape — unscharfe Bildtiefe, scharfer Bildkern, Nachtlicht,
+   große klare Namen. Das Bild wird zweimal über Pseudo-Elemente gezeigt,
+   die background-image vom Element erben (kein zweiter Request): einmal
+   stark weichgezeichnet als Tiefe, einmal scharf mit weicher Maske. --- */
+.hero-c[data-style-hero='liquefy'] {
+  min-height: min(100vh, 960px);
+  overflow: hidden;
+}
+.hero-c[data-style-hero='liquefy'] .hero-c-image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: 0 0;
+  filter: none;
+  transform: none;
+  animation: none;
+}
+.hero-c[data-style-hero='liquefy'] .hero-c-image::before,
+.hero-c[data-style-hero='liquefy'] .hero-c-image::after {
+  content: '';
+  position: absolute;
+  background-image: inherit;
+  background-size: cover;
+  background-position: center;
+  pointer-events: none;
+}
+.hero-c[data-style-hero='liquefy'] .hero-c-image::before {
+  inset: -12%;
+  filter: blur(var(--lq-blur-lg)) saturate(1.2);
+  opacity: 0.7;
+  animation: lq-drift var(--lq-motion-slower) var(--lq-ease) infinite alternate;
+}
+.hero-c[data-style-hero='liquefy'] .hero-c-image::after {
+  inset: 12% 22% 18%;
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 40%, transparent 78%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 40%, transparent 78%);
+  opacity: 0.85;
+  animation: lq-image-breathe var(--lq-motion-slow) var(--lq-ease) infinite;
+}
+.hero-c[data-style-hero='liquefy'] :is(.hero-c-vignette, .hero-c-liquefy-overlay) {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(40% 40% at 80% 20%, color-mix(in srgb, var(--lq-glow) 40%, transparent), transparent 70%),
+    linear-gradient(180deg, color-mix(in srgb, var(--lq-night) 55%, transparent) 0%, transparent 35%, transparent 55%, color-mix(in srgb, var(--lq-night) 85%, transparent) 100%);
+  mix-blend-mode: normal;
+  filter: none;
+  animation: lq-glow var(--lq-motion-slow) var(--lq-ease) infinite;
+  pointer-events: none;
+}
+.hero-c[data-style-hero='liquefy'] :where(.hero-c-volume, .hero-c-mono-rule) { display: none; }
+.hero-c[data-style-hero='liquefy'] .hero-c-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  min-height: inherit;
+  padding: var(--lq-pad-block) var(--lq-pad-inline);
+  text-align: center;
+  color: var(--lq-on-night);
+}
+.hero-c[data-style-hero='liquefy'] :where(.hero-c-top, .hero-c-mid, .hero-c-bot) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 24px;
+  border: 0;
+  padding: 0;
+  inline-size: 100%;
+}
+.hero-c[data-style-hero='liquefy'] .hero-c-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(60px, 8.8vw, 156px);
+  line-height: 0.96;
+  letter-spacing: -0.01em;
+  color: var(--lq-on-night);
+  text-shadow: 0 2px 40px color-mix(in srgb, var(--lq-night) 60%, transparent);
+  background: none;
+}
+.hero-c[data-style-hero='liquefy'] :is(.hero-c-date, .hero-c-venue, .hero-c-eyebrow) {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--lq-on-night);
+  background: none;
+}
+
+/* =========================================================================
+   7 · COUNTDOWN
+   ========================================================================= */
+
+.cd[data-style-countdown='liquefy'] {
+  --cd-num-font: var(--font-display);
+  --cd-num-weight: 400;
+  padding: var(--lq-pad-block) var(--lq-pad-inline);
+  text-align: center;
+}
+.cd[data-style-countdown='liquefy'] :where([class*='marquee'], [class*='-star']) { display: none; }
+.cd[data-style-countdown='liquefy'] .cd-eyebrow { display: block; margin: 0 0 24px; }
+.cd[data-style-countdown='liquefy'] :is(.cd-footer, .cd-past) {
+  margin: 24px 0 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: inherit;
+  text-align: center;
+}
+
+/* --- A: Zahlen schweben auf einer milchigen gemeinsamen Fläche --- */
+.cd.cdA-wrap[data-style-countdown='liquefy'] .cdA-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 0;
+  max-inline-size: 60rem;
+  margin: 0 auto;
+  padding: clamp(20px, 2.4vw, 36px) clamp(16px, 2vw, 32px);
+  border-radius: 999px;
+  background: color-mix(in srgb, #FFFFFF 50%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid color-mix(in srgb, #FFFFFF 75%, transparent);
+}
+.cd.cdA-wrap[data-style-countdown='liquefy'] .cdA-unit {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: none;
+  border: 0;
+}
+.cd.cdA-wrap[data-style-countdown='liquefy'] .cdA-unit .cd-num {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(44px, 5vw, 84px);
+  line-height: 1;
+  color: var(--lq-ink);
+  background: none;
+}
+
+/* --- B: eine zusammenhängende dunkle Liquid-Fläche (Mockup B) --- */
+.cd.cdB-wrap[data-style-countdown='liquefy'] {
+  padding-block: clamp(48px, 6vw, 96px);
+}
+.cd.cdB-wrap[data-style-countdown='liquefy'] > :not(.styled-bg-editorial) { position: relative; z-index: 1; }
+.cd.cdB-wrap[data-style-countdown='liquefy']::after {
+  content: '';
+  position: absolute;
+  inset: 6% 4%;
+  z-index: 0;
+  border-radius: var(--lq-radius-liquid);
+  background:
+    radial-gradient(45% 55% at 25% 35%, color-mix(in srgb, var(--lq-violet) 95%, transparent), transparent 75%),
+    radial-gradient(40% 50% at 78% 65%, color-mix(in srgb, var(--lq-wine) 85%, transparent), transparent 75%),
+    var(--lq-night);
+  box-shadow: 0 30px 80px -30px color-mix(in srgb, var(--lq-night) 60%, transparent);
+  animation: lq-morph var(--lq-motion-slow) var(--lq-ease) infinite;
+  pointer-events: none;
+}
+.cd.cdB-wrap[data-style-countdown='liquefy'] :is(.cd-eyebrow, .cd-label, .cd-date-stamp, .cd-footer, .cd-past) { color: var(--lq-on-night); }
+.cd.cdB-wrap[data-style-countdown='liquefy'] .cd-date-stamp-wrap { justify-content: center; border: 0; }
+.cd.cdB-wrap[data-style-countdown='liquefy'] .cd-date-stamp { background: none; border: 0; font-family: var(--font-body); font-size: 11px; letter-spacing: 0.3em; }
+.cd.cdB-wrap[data-style-countdown='liquefy'] .cdB-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(8px, 2vw, 32px);
+  max-inline-size: 64rem;
+  margin: 0 auto;
+  padding: 16px 0;
+  background: none;
+  border: 0;
+}
+.cd.cdB-wrap[data-style-countdown='liquefy'] .cdB-unit {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: none;
+  border: 0;
+  color: var(--lq-on-night);
+  transform: none;
+}
+.cd.cdB-wrap[data-style-countdown='liquefy'] .cdB-cards { display: flex; gap: 0; }
+.cd.cdB-wrap[data-style-countdown='liquefy'] :where(.flip-card, .flip-top, .flip-bottom, .flip-anim-top, .flip-anim-bot, .flip-half) {
+  background-color: transparent;
+  background-image: none;
+  border: 0;
+  box-shadow: none;
+  color: inherit;
+  font-family: var(--font-display);
+}
+.cd.cdB-wrap[data-style-countdown='liquefy'] :where(.flip-top, .flip-bottom)::after { background: none; }
+.cd.cdB-wrap[data-style-countdown='liquefy'] .flip-mid { background: transparent; }
+.cd.cdB-wrap[data-style-countdown='liquefy'] .flip-digit {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(40px, 4.6vw, 76px);
+  color: var(--lq-on-night);
+}
+.cd.cdB-wrap[data-style-countdown='liquefy'] .cdB-unit:nth-child(2) .flip-digit { font-size: clamp(56px, 6.4vw, 104px); }
+
+/* --- C: eine riesige Zahl in einem Glasring, Lichtfläche dahinter --- */
+.cd.cdC-wrap[data-style-countdown='liquefy'] { padding-block: clamp(72px, 9vw, 140px); }
+.cd.cdC-wrap[data-style-countdown='liquefy'] .cd-date-stamp-wrap { justify-content: center; }
+.cd.cdC-wrap[data-style-countdown='liquefy'] .cd-date-stamp { background: none; border: 0; color: var(--lq-on-night-soft); font-family: var(--font-body); font-size: 11px; letter-spacing: 0.3em; }
+.cd.cdC-wrap[data-style-countdown='liquefy'] :is(.cd-footer, .cd-past) { color: var(--lq-on-night); }
+.cd.cdC-wrap[data-style-countdown='liquefy'] .cdC-bars {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 20px;
+  max-inline-size: 44rem;
+  margin: 0 auto;
+}
+.cd.cdC-wrap[data-style-countdown='liquefy'] .cdC-bar-row {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 12px 0 0;
+  border: 0;
+}
+.cd.cdC-wrap[data-style-countdown='liquefy'] .cdC-bar-row:first-child {
+  position: relative;
+  grid-column: 1 / -1;
+  justify-self: center;
+  display: grid;
+  place-items: center;
+  inline-size: clamp(220px, 24vw, 340px);
+  aspect-ratio: 1;
+  margin-block-end: 24px;
+  padding: 0;
+  border-radius: var(--lq-radius-liquid);
+  background: color-mix(in srgb, #FFFFFF 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--lq-on-night) 30%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: lq-morph var(--lq-motion-slower) var(--lq-ease) infinite;
+}
+.cd.cdC-wrap[data-style-countdown='liquefy'] .cdC-bar-row:first-child::before {
+  content: '';
+  position: absolute;
+  inset: -40%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--lq-glow) 55%, transparent), transparent);
+  filter: blur(var(--lq-blur-md));
+  animation: lq-glow var(--lq-motion-slow) var(--lq-ease) infinite;
+  pointer-events: none;
+}
+.cd.cdC-wrap[data-style-countdown='liquefy'] :where(.cdC-bar-num, .cdC-bar-num-value) {
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: var(--lq-on-night);
+  justify-self: center;
+  text-align: center;
+}
+.cd.cdC-wrap[data-style-countdown='liquefy'] .cdC-bar-row:first-child .cdC-bar-num-value { font-size: clamp(96px, 11vw, 168px); line-height: 1; }
+.cd.cdC-wrap[data-style-countdown='liquefy'] .cdC-bar-row:not(:first-child) .cdC-bar-num-value { font-size: clamp(22px, 2vw, 30px); }
+.cd.cdC-wrap[data-style-countdown='liquefy'] .cdC-bar-num-max { display: none; }
+.cd.cdC-wrap[data-style-countdown='liquefy'] .cdC-bar-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--lq-on-night-soft);
+}
+.cd.cdC-wrap[data-style-countdown='liquefy'] .cdC-bar-track { display: none; }
+
+/* =========================================================================
+   8 · LOVE STORY
+   ========================================================================= */
+
+.ls[data-style-ls='liquefy'] {
+  padding: var(--lq-pad-block) var(--lq-pad-inline);
+  text-align: center;
+}
+.ls[data-style-ls='liquefy'] :is(.ls-eyebrow, .ls-title, .ls-intro) { margin-inline: auto; text-align: center; }
+.ls[data-style-ls='liquefy'] :is(.lsA-eyebrow, .lsB-num, .lsC-eyebrow, .lsB-date) {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--lq-plum);
+  background: none;
+  border: 0;
+  padding: 0;
+}
+.ls[data-style-ls='liquefy'] :is(.lsA-moment-title, .lsB-title, .lsC-title) {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.05;
+  color: inherit;
+}
+.ls[data-style-ls='liquefy'] :is(.lsA-desc, .lsB-desc, .lsC-desc) {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  color: inherit;
+}
+/* Bildhalo: weiche Farbwolke hinter jedem Bildrahmen (Gradient, keine
+   Bildkopie). */
+.ls[data-style-ls='liquefy'] :is(.lsA-img, .lsB-img-wrap, .lsC-img) {
+  position: relative;
+  isolation: isolate;
+}
+.ls[data-style-ls='liquefy'] :is(.lsA-img--1, .lsB-img-wrap, .lsC-img)::after {
+  content: '';
+  position: absolute;
+  inset: -14%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--lq-rosecloud) 70%, transparent), transparent);
+  filter: blur(var(--lq-blur-sm));
+  pointer-events: none;
+}
+
+/* --- A: ruhige Bild-/Textfolge, weiche Rahmen --- */
+.ls.lsA[data-style-ls='liquefy'] .lsA-single {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: center;
+  max-inline-size: 1200px;
+  margin: clamp(48px, 5vw, 80px) auto 0;
+  text-align: left;
+}
+.ls.lsA[data-style-ls='liquefy'] .lsA-single > * { min-inline-size: 0; }
+.ls.lsA[data-style-ls='liquefy'] .lsA-images {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 16px;
+  padding: 0;
+  min-inline-size: 0;
+}
+.ls.lsA[data-style-ls='liquefy'] .lsA-images::before { display: none; }
+.ls.lsA[data-style-ls='liquefy'] .lsA-img {
+  inset: auto;
+  transform: none;
+  margin: 0;
+  width: auto;
+  inline-size: 100%;
+  border: 0;
+  box-shadow: none;
+  border-radius: 38% 38% 34% 34% / 26% 26% 30% 30%;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background: var(--lq-blush);
+}
+.ls.lsA[data-style-ls='liquefy'] .lsA-img:not(.lsA-img--1) { aspect-ratio: 3 / 5; }
+.ls.lsA[data-style-ls='liquefy'] .lsA-img:nth-child(n + 3) { display: none; }
+.ls.lsA[data-style-ls='liquefy'] .lsA-img img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.ls.lsA[data-style-ls='liquefy'] .lsA-text { display: grid; gap: 14px; justify-items: start; text-align: left; max-inline-size: 42ch; }
+.ls.lsA[data-style-ls='liquefy'] .lsA-moment-title { font-size: clamp(32px, 3vw, 46px); }
+.ls.lsA[data-style-ls='liquefy'] .lsA-sig { font-family: var(--font-body); font-size: 13px; font-weight: 500; color: var(--lq-ink); }
+
+/* --- B: Stationen überlagern sich räumlich — Bild in fließender Form,
+   Text auf milchiger Fläche, die ins Bild ragt --- */
+.ls.lsB[data-style-ls='liquefy'] .lsB-list {
+  display: grid;
+  gap: clamp(32px, 4vw, 64px);
+  max-inline-size: 1200px;
+  margin: clamp(48px, 5vw, 80px) auto 0;
+}
+.ls.lsB[data-style-ls='liquefy'] .lsB-item {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  border: 0;
+  text-align: left;
+}
+.ls.lsB[data-style-ls='liquefy'] .lsB-item:nth-child(even) { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+.ls.lsB[data-style-ls='liquefy'] .lsB-item:nth-child(even) .lsB-img-wrap { order: 2; }
+.ls.lsB[data-style-ls='liquefy'] .lsB-img-wrap {
+  border: 0;
+  border-radius: var(--lq-radius-liquid);
+  overflow: visible;
+  aspect-ratio: 16 / 11;
+  background: none;
+  animation: lq-morph var(--lq-motion-slower) var(--lq-ease) infinite;
+}
+.ls.lsB[data-style-ls='liquefy'] .lsB-img-wrap img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+.ls.lsB[data-style-ls='liquefy'] .lsB-img-wrap::after {
+  inset: -18%;
+  background:
+    radial-gradient(closest-side at 35% 40%, color-mix(in srgb, var(--lq-peach) 80%, transparent), transparent),
+    radial-gradient(closest-side at 70% 70%, color-mix(in srgb, var(--lq-lilac) 75%, transparent), transparent);
+  filter: blur(var(--lq-blur-md));
+}
+.ls.lsB[data-style-ls='liquefy'] .lsB-date {
+  position: absolute;
+  inset: auto auto 12% 8%;
+  inline-size: auto;
+  block-size: auto;
+  transform: none;
+  writing-mode: horizontal-tb;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, #FFFFFF 60%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--lq-ink);
+}
+.ls.lsB[data-style-ls='liquefy'] .lsB-text {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  margin-inline-start: -14%;
+  padding: clamp(24px, 3vw, 44px);
+  border-radius: var(--lq-radius-soft);
+  background: color-mix(in srgb, #FFFFFF 58%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid color-mix(in srgb, #FFFFFF 80%, transparent);
+}
+.ls.lsB[data-style-ls='liquefy'] .lsB-item:nth-child(even) .lsB-text { margin-inline: 0 -14%; }
+.ls.lsB[data-style-ls='liquefy'] .lsB-title { font-size: clamp(28px, 2.6vw, 40px); }
+
+/* --- C: Nachtwelt, wenige große Bilder, einzelne Stationen mit Glow --- */
+.ls.lsC[data-style-ls='liquefy'] .lsC-wrap {
+  display: grid;
+  gap: clamp(40px, 4.4vw, 72px);
+  max-inline-size: 1200px;
+  margin: clamp(48px, 5vw, 80px) auto 0;
+}
+.ls.lsC[data-style-ls='liquefy'] :is(.lsC-line) { display: none; }
+.ls.lsC[data-style-ls='liquefy'] .lsC-item { display: block; padding: 0; border: 0; }
+.ls.lsC[data-style-ls='liquefy'] .lsC-item::before,
+.ls.lsC[data-style-ls='liquefy'] .lsC-item::after { display: none; }
+.ls.lsC[data-style-ls='liquefy'] .lsC-card {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  grid-template-rows: auto auto 1fr;
+  column-gap: clamp(28px, 4vw, 64px);
+  row-gap: 12px;
+  align-items: start;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  text-align: left;
+}
+.ls.lsC[data-style-ls='liquefy'] .lsC-img {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  margin: 0;
+  border: 0;
+  border-radius: var(--lq-radius-liquid);
+  overflow: visible;
+  aspect-ratio: 16 / 10;
+  background: none;
+}
+.ls.lsC[data-style-ls='liquefy'] .lsC-img img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, #000 55%, transparent 100%);
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, #000 55%, transparent 100%);
+}
+.ls.lsC[data-style-ls='liquefy'] .lsC-img::after {
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--lq-glow) 45%, transparent), transparent);
+  filter: blur(var(--lq-blur-md));
+}
+.ls.lsC[data-style-ls='liquefy'] :is(.lsC-eyebrow, .lsC-title, .lsC-desc) { grid-column: 1; margin: 0; }
+.ls.lsC[data-style-ls='liquefy'] .lsC-eyebrow { grid-row: 1; padding-block-start: 12%; color: var(--lq-on-night-soft); }
+.ls.lsC[data-style-ls='liquefy'] .lsC-title { grid-row: 2; font-size: clamp(32px, 3.4vw, 54px); color: var(--lq-on-night); }
+.ls.lsC[data-style-ls='liquefy'] .lsC-desc { grid-row: 3; color: var(--lq-on-night); opacity: 0.86; display: block; overflow: visible; }
+.ls.lsC[data-style-ls='liquefy'] .lsC-item:nth-child(even) .lsC-card { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+.ls.lsC[data-style-ls='liquefy'] .lsC-item:nth-child(even) .lsC-img { grid-column: 1; }
+.ls.lsC[data-style-ls='liquefy'] .lsC-item:nth-child(even) :is(.lsC-eyebrow, .lsC-title, .lsC-desc) { grid-column: 2; }
+
+/* =========================================================================
+   9 · GALLERY
+   ========================================================================= */
+
+.gal[data-style-gallery='liquefy'] {
+  padding: var(--lq-pad-block) var(--lq-pad-inline);
+  text-align: center;
+}
+.gal[data-style-gallery='liquefy'] :is(.gal-eyebrow, .gal-title, .gal-intro) { margin-inline: auto; text-align: center; }
+.gal[data-style-gallery='liquefy'] .gal-showmore-row { justify-content: center; padding-block-start: 36px; }
+.gal[data-style-gallery='liquefy'] :is(.galA-cap, .galB-cap) { display: none; }
+.gal[data-style-gallery='liquefy'] :is(.galA-tile, .galB-item, .galC-tile) img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  transition: transform 700ms var(--lq-ease);
+}
+.gal[data-style-gallery='liquefy'] :is(.galA-tile, .galB-item, .galC-tile):hover img { transform: scale(1.03); }
+
+/* --- A: ruhiges Raster, weiche Ecken, Farbwelt hinter der Gruppe --- */
+.gal.galA-wrap[data-style-gallery='liquefy'] .galA {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 1.4vw, 20px);
+  max-inline-size: 1200px;
+  margin: clamp(48px, 5vw, 80px) auto 0;
+}
+.gal.galA-wrap[data-style-gallery='liquefy'] .galA-tile {
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 20px;
+  aspect-ratio: 4 / 3;
+  background: var(--lq-blush);
+}
+
+/* --- B: Liquid Collage — kontrolliertes Raster, Bilder schwimmen auf
+   einer großen verschmelzenden Fläche --- */
+.gal.galB-wrap[data-style-gallery='liquefy'] .galB {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: clamp(72px, 6.4vw, 108px);
+  grid-auto-flow: row dense;
+  gap: clamp(10px, 1.2vw, 18px);
+  max-inline-size: 1200px;
+  margin: clamp(48px, 5vw, 80px) auto 0;
+  padding: clamp(20px, 3vw, 44px);
+  isolation: isolate;
+}
+.gal.galB-wrap[data-style-gallery='liquefy'] .galB::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: var(--lq-radius-liquid);
+  background:
+    radial-gradient(50% 50% at 25% 30%, color-mix(in srgb, var(--lq-peach) 85%, transparent), transparent 72%),
+    radial-gradient(50% 55% at 78% 72%, color-mix(in srgb, var(--lq-lilac) 80%, transparent), transparent 72%),
+    color-mix(in srgb, var(--lq-blush) 60%, transparent);
+  filter: blur(var(--lq-blur-sm));
+  animation: lq-morph var(--lq-motion-slower) var(--lq-ease) infinite;
+  pointer-events: none;
+}
+.gal.galB-wrap[data-style-gallery='liquefy'] :is(.galB-group, .galB-grid) { display: contents; }
+.gal.galB-wrap[data-style-gallery='liquefy'] :is(.galB-item, .galB-group[data-layout='pair'] .galB-item, .galB-group[data-layout='triple'] .galB-item) {
+  grid-column: span 4;
+  grid-row: span 2;
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 18px;
+  aspect-ratio: auto;
+  background: var(--lq-blush);
+}
+.gal.galB-wrap[data-style-gallery='liquefy'] .galB-group[data-layout='full'] .galB-item {
+  grid-column: span 8;
+  grid-row: span 4;
+  border-radius: 28px;
+}
+.gal.galB-wrap[data-style-gallery='liquefy'] .galB-group[data-layout='full']:last-child .galB-item { grid-column: 1 / -1; grid-row: span 3; }
+.gal.galB-wrap[data-style-gallery='liquefy'] .galB-imgwrap { inline-size: 100%; block-size: 100%; border: 0; }
+
+/* --- C: Leitbild mit Glow-Rahmen, danach waagerechter Fluss (Nachtwelt) --- */
+.gal.galC-wrap[data-style-gallery='liquefy'] .galC {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(12px, 1.4vw, 20px);
+  max-inline-size: none;
+  margin: clamp(48px, 5vw, 80px) calc(-1 * var(--lq-pad-inline)) 0 0;
+  padding: 24px var(--lq-pad-inline) 24px 0;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+.gal.galC-wrap[data-style-gallery='liquefy'] .galC::-webkit-scrollbar { display: none; }
+.gal.galC-wrap[data-style-gallery='liquefy'] .galC-tile {
+  flex: 0 0 clamp(160px, 16vw, 240px);
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 18px;
+  aspect-ratio: 3 / 4;
+  scroll-snap-align: start;
+  background: color-mix(in srgb, var(--lq-on-night) 10%, transparent);
+}
+.gal.galC-wrap[data-style-gallery='liquefy'] .galC-tile:first-child {
+  flex-basis: clamp(280px, 44vw, 700px);
+  aspect-ratio: 4 / 3;
+  border-radius: 28px;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--lq-on-night) 25%, transparent), 0 30px 120px -20px color-mix(in srgb, var(--lq-glow) 55%, transparent);
+}
+
+/* =========================================================================
+   10 · MOBIL
+   ========================================================================= */
+
+@media (max-width: 900px) {
+  .hero-b[data-style-hero='liquefy'] { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .hero-b[data-style-hero='liquefy'] .hero-b-image-col { grid-column: 1; grid-row: 1; inline-size: 88%; justify-self: end; }
+  .hero-b[data-style-hero='liquefy'] .hero-b-text { grid-column: 1; grid-row: 2; margin: -18% 0 0; }
+  .hero-b[data-style-hero='liquefy']::before { inset: 0 -10% 20% 0; }
+  .cd.cdB-wrap[data-style-countdown='liquefy']::after { inset: 4% 0; border-radius: 44px; animation: none; }
+  .ls.lsA[data-style-ls='liquefy'] .lsA-single,
+  .ls.lsB[data-style-ls='liquefy'] .lsB-item,
+  .ls.lsB[data-style-ls='liquefy'] .lsB-item:nth-child(even),
+  .ls.lsC[data-style-ls='liquefy'] .lsC-card,
+  .ls.lsC[data-style-ls='liquefy'] .lsC-item:nth-child(even) .lsC-card {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+  }
+  .ls.lsB[data-style-ls='liquefy'] .lsB-item:nth-child(even) .lsB-img-wrap { order: 0; }
+  .ls.lsB[data-style-ls='liquefy'] :is(.lsB-text, .lsB-item:nth-child(even) .lsB-text) { margin: -12% 6% 0; }
+  .ls.lsC[data-style-ls='liquefy'] :is(.lsC-img, .lsC-item:nth-child(even) .lsC-img) { grid-column: 1; grid-row: 1; }
+  .ls.lsC[data-style-ls='liquefy'] :is(.lsC-eyebrow, .lsC-title, .lsC-desc, .lsC-item:nth-child(even) .lsC-eyebrow, .lsC-item:nth-child(even) .lsC-title, .lsC-item:nth-child(even) .lsC-desc) { grid-column: 1; grid-row: auto; }
+  .ls.lsC[data-style-ls='liquefy'] .lsC-eyebrow { padding-block-start: 8px; }
+  .gal.galA-wrap[data-style-gallery='liquefy'] .galA { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gal.galB-wrap[data-style-gallery='liquefy'] .galB { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: clamp(100px, 26vw, 160px); padding: 14px; }
+  .gal.galB-wrap[data-style-gallery='liquefy'] :is(.galB-item, .galB-group[data-layout='pair'] .galB-item, .galB-group[data-layout='triple'] .galB-item) { grid-column: span 1; grid-row: span 1; }
+  .gal.galB-wrap[data-style-gallery='liquefy'] :is(.galB-group[data-layout='full'] .galB-item, .galB-group[data-layout='full']:last-child .galB-item) { grid-column: 1 / -1; grid-row: span 2; }
+  .cd.cdC-wrap[data-style-countdown='liquefy'] .cdC-bars { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .wedding-site-wrapper[data-style='liquefy'] { --lq-pad-block: clamp(48px, 13vw, 76px); --lq-blur-lg: 48px; }
+  .hero-a[data-style-hero='liquefy'] { min-height: 0; }
+  .hero-a[data-style-hero='liquefy'] .hero-a-title { font-size: clamp(46px, 13vw, 72px); }
+  .hero-b[data-style-hero='liquefy'] .hero-b-title { font-size: clamp(44px, 12.5vw, 68px); }
+  .hero-c[data-style-hero='liquefy'] { min-height: 88vh; }
+  .hero-c[data-style-hero='liquefy'] .hero-c-title { font-size: clamp(48px, 14vw, 84px); }
+  .hero-c[data-style-hero='liquefy'] .hero-c-image::after { inset: 18% 6% 26%; }
+  .cd.cdA-wrap[data-style-countdown='liquefy'] .cdA-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); border-radius: 36px; row-gap: 12px; }
+  .ls[data-style-ls='liquefy'] .ls-title,
+  .gal[data-style-gallery='liquefy'] .gal-title { font-size: clamp(34px, 10.5vw, 48px); }
+  .gal.galC-wrap[data-style-gallery='liquefy'] .galC-tile { flex-basis: 52vw; }
+  .gal.galC-wrap[data-style-gallery='liquefy'] .galC-tile:first-child { flex-basis: 82vw; }
+}
+
+/* =========================================================================
+   11 · REDUCED MOTION — das Design bleibt, nur die Bewegung stoppt
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .wedding-site-wrapper[data-style='liquefy'],
+  .wedding-site-wrapper[data-style='liquefy'] *,
+  .wedding-site-wrapper[data-style='liquefy']::before,
+  .wedding-site-wrapper[data-style='liquefy'] *::before,
+  .wedding-site-wrapper[data-style='liquefy'] *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wedding-site-wrapper[data-style='liquefy'] :is(.hero-a-liquefy-wrap, .hero-b-image-col) > div[style] {
+    animation: none !important;
+  }
+}
+
+/* Blob-Hülle: feste Pixelgröße (Inline) und die 130%-Innenfläche, die nur
+   für die SVG-Verzerrung nötig war, werden auf die Rasterfläche gesetzt. */
+.wedding-site-wrapper[data-style='liquefy'] :is(.hero-a-liquefy-wrap, .hero-b-image-col) > div[style] {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+}
+.wedding-site-wrapper[data-style='liquefy'] :is(.hero-a-liquefy-wrap, .hero-b-image-col) > div[style] > div[style] {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+}
+/* Hero A: eine Spalte — Namen oben, Bild darunter (die Bestandsfassung
+   setzte zwei Spalten). */
+.hero-a[data-style-hero='liquefy'] { grid-template-columns: minmax(0, 1fr); grid-auto-flow: row; }
+.hero-a[data-style-hero='liquefy'] .hero-a-content { order: 1; grid-column: 1; }
+.hero-a[data-style-hero='liquefy'] .hero-a-liquefy-wrap { order: 2; grid-column: 1; justify-self: center; }
+/* Die Bestandsfassung setzt Titel und Fließtext kursiv (Fraunces-romantic-
+   Erbe). Liquefy ist aufrecht — in der Spezifität der Altregeln. */
+.wedding-site-wrapper[data-style='liquefy'] :is(.hero-a, .hero-b, .hero-c, .cd, .ls, .gal) :is(h1, h2, h3, h4, p, span, em, div, li, figcaption, blockquote) {
+  font-style: normal;
+}

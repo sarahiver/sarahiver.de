@@ -22,6 +22,12 @@ import './mono.css';
 // Ebene 2 — Design 07: Bauhaus. Eigener Style-Layer, greift nur über
 // [data-style='bauhaus'].
 import './bauhaus.css';
+// Ebene 2 — Design 06: Opulent. Eigener Style-Layer, greift nur über
+// [data-style='opulent'].
+import './opulent.css';
+// Ebene 2 — Design 05: Liquefy. Eigener Style-Layer, greift nur über
+// [data-style='liquefy'].
+import './liquefy.css';
 // Sarahiver Brand: Landing + Launch Gate.
 import './landing-v4.css';
 import './launch-gate.css';
