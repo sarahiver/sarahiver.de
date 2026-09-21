@@ -5216,3 +5216,608 @@
 }
 /* Gästebuch B leer: Rasteroberkante und Leerzustand-Linie lagen doppelt. */
 .gb.gbB-section[data-style-guest='brutalist'] .gbB-feed .gb-empty { border-block-start: 0; }
+/* Musik B: Wünsche ohne Gastnamen setzen das Datum per Inline-Stil auf
+   color: var(--muted) (45 % Ink, unter 4,5:1). Die Variable wird hier lokal
+   auf Ink gesetzt — ohne !important und ohne die Bestandsregel anzufassen. */
+.mw.mwB-section[data-style-music='brutalist'] .mwB-guest {
+  --muted: var(--br-ink);
+  color: var(--br-ink);
+}
+
+/* =========================================================================
+   8.5 · FOTO-UPLOAD — Abgabe
+   -------------------------------------------------------------------------
+   Struktur (gelesen):
+     gemeinsam  .up-head, HiddenFileInput (display:none, per .click()
+                ausgelöst — bleibt unberührt), .up-field-label, .up-input,
+                .up-btn, .up-privacy, .up-error, .up-success(.up-success-icon,
+                .up-success-title, .up-success-sub, .up-success-link)
+     A  .upA-wrap > .upA-drop[role=button][tabindex=0] (.upA-drop-icon,
+        .upA-drop-title, .upA-drop-mono), .upA-selected(.upA-selected-head >
+        .upA-selected-count, .up-thumbs > .up-thumb(.is-done) > img,
+        .upA-thumb-progress(.ring/.check), .up-thumb-remove, .up-thumb-meta),
+        .upA-field, .upA-actions
+     B  Sektion als Raster: .up-head + .upB-wrap > .upB-card(.upB-icon,
+        .upB-title, .upB-sub, .upB-thumbs(.upB-thumb-mini, .upB-count-pill),
+        .upB-name, .upB-actions)
+     C  .upC-grid > .upC-left(.upC-kicker, .upC-h, .upC-steps > .upC-step) +
+        .upC-right > .upC-box(.upC-mini-drop[role=button], .upC-selected-list
+        > .upC-selected-row(.upC-mini-thumb, .upC-selected-info, .upC-remove))
+   Der numerische Fortschritt liegt nur im State, nicht im DOM — deshalb keine
+   Prozentanzeige, sondern die vorhandenen Statusmarken.
+   ========================================================================= */
+
+.up[data-style-upload='brutalist'] .up-btn { inline-size: auto; }
+.up[data-style-upload='brutalist'] .up-privacy {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--br-ink);
+  opacity: 1;
+}
+.up[data-style-upload='brutalist'] .up-privacy svg { display: none; }
+.up[data-style-upload='brutalist'] .up-success {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: clamp(20px, 2.6vw, 40px) var(--br-pad-inline);
+  background: var(--br-ink);
+  color: var(--br-paper);
+  border: 0;
+  border-block-start: var(--br-border);
+  border-radius: 0;
+  text-align: start;
+  max-inline-size: none;
+}
+.up[data-style-upload='brutalist'] .up-success-icon { display: none; }
+.up[data-style-upload='brutalist'] .up-success-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(26px, 3.6vw, 56px);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--br-paper);
+}
+.up[data-style-upload='brutalist'] .up-success-sub {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--br-paper);
+}
+.up[data-style-upload='brutalist'] .up-success .up-success-link {
+  justify-self: start;
+  min-block-size: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14px;
+  background: transparent;
+  color: var(--br-paper);
+  border: var(--br-line) solid var(--br-paper);
+}
+.up[data-style-upload='brutalist'] .up-success .up-success-link:hover {
+  background: var(--br-paper);
+  color: var(--br-ink);
+}
+.up[data-style-upload='brutalist'] .up-success .up-success-link:focus-visible {
+  outline: var(--br-line-thick) solid var(--br-signal);
+  outline-offset: 2px;
+}
+/* Abgabeflächen: harte 4px-Kante, keine Strichelung, keine Icons. */
+.up[data-style-upload='brutalist'] :where(.upA-drop, .upC-mini-drop) {
+  display: grid;
+  justify-items: start;
+  align-content: center;
+  gap: 8px;
+  padding: clamp(24px, 3vw, 44px) var(--br-pad-inline);
+  background: var(--br-paper);
+  color: var(--br-ink);
+  border: var(--br-border-thick);
+  border-radius: 0;
+  text-align: start;
+  cursor: pointer;
+  transition: background-color var(--br-dur) var(--br-ease);
+}
+.up[data-style-upload='brutalist'] :where(.upA-drop, .upC-mini-drop):hover,
+.up[data-style-upload='brutalist'] :where(.upA-drop, .upC-mini-drop).is-drag {
+  background: var(--br-signal);
+  transform: none;
+}
+.up[data-style-upload='brutalist'] :where(.upA-drop, .upC-mini-drop):focus-visible {
+  outline: var(--br-line-thick) solid var(--br-signal-deep);
+  outline-offset: 4px;
+}
+.up[data-style-upload='brutalist'] :where(.upA-drop-icon, .upC-mini-drop-icon, .upB-icon) { display: none; }
+.up[data-style-upload='brutalist'] :where(.upA-drop-title, .upC-mini-drop-title) {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(24px, 3.2vw, 48px);
+  line-height: 0.9;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+  max-inline-size: none;
+}
+.up[data-style-upload='brutalist'] :where(.upA-drop-mono, .upC-mini-drop-sub) {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+  opacity: 1;
+}
+
+/* --- A: PHOTO DROP ------------------------------------------------------- */
+.up.upA-section[data-style-upload='brutalist'] .upA-wrap {
+  max-inline-size: calc(60rem + 2 * var(--br-pad-inline));
+  margin: 0;
+  padding: clamp(20px, 2.4vw, 32px) var(--br-pad-inline) clamp(28px, 3vw, 44px);
+  display: grid;
+  gap: 18px;
+}
+.up.upA-section[data-style-upload='brutalist'] .up-head { border-block-end: var(--br-border); }
+.up.upA-section[data-style-upload='brutalist'] .upA-selected { display: grid; gap: 0; margin: 0; }
+.up.upA-section[data-style-upload='brutalist'] .upA-selected-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 0;
+  border-block-end: var(--br-border);
+}
+.up.upA-section[data-style-upload='brutalist'] .upA-selected-count {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+.up.upA-section[data-style-upload='brutalist'] .upA-selected-count strong {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  margin-inline-end: 6px;
+}
+/* Dateien als Zeilen: Nummer | Vorschau | Name | Status | Entfernen. */
+.up.upA-section[data-style-upload='brutalist'] .up-thumbs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  counter-reset: file;
+}
+.up.upA-section[data-style-upload='brutalist'] .up-thumb {
+  counter-increment: file;
+  position: relative;
+  display: grid;
+  grid-template-columns: 36px 72px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 14px;
+  inline-size: auto;
+  block-size: auto;
+  padding: 10px 0;
+  background: none;
+  border: 0;
+  border-block-end: var(--br-border);
+  border-radius: 0;
+  overflow: visible;
+}
+.up.upA-section[data-style-upload='brutalist'] .up-thumb > * { grid-row: 1; }
+.up.upA-section[data-style-upload='brutalist'] .up-thumb::before {
+  content: counter(file, decimal-leading-zero);
+  grid-column: 1;
+  grid-row: 1;
+  font-family: var(--font-mono, monospace);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--br-ink);
+}
+.up.upA-section[data-style-upload='brutalist'] .up-thumb img {
+  grid-column: 2;
+  inline-size: 72px;
+  block-size: 54px;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.15);
+  border-radius: 0;
+}
+.up.upA-section[data-style-upload='brutalist'] .up-thumb-meta {
+  grid-column: 3;
+  position: static;
+  inset: auto;
+  padding: 0;
+  background: none;
+  color: var(--br-ink);
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+}
+/* Status: ein Ring (lädt) bzw. Haken (fertig) in fester Spur — kein
+   Overlay, keine erfundenen Prozente. */
+.up.upA-section[data-style-upload='brutalist'] .upA-thumb-progress {
+  grid-column: 4;
+  position: static;
+  inset: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 44px;
+  block-size: 44px;
+  background: var(--br-grey);
+  color: var(--br-ink);
+  border-radius: 0;
+}
+.up.upA-section[data-style-upload='brutalist'] .up-thumb.is-done .upA-thumb-progress {
+  background: var(--br-ink);
+  color: var(--br-paper);
+}
+.up.upA-section[data-style-upload='brutalist'] .upA-thumb-progress .ring {
+  inline-size: 16px;
+  block-size: 16px;
+  border-radius: 0;
+  border: 3px solid var(--br-ink);
+  border-top-color: transparent;
+}
+.up.upA-section[data-style-upload='brutalist'] .up-thumb-remove {
+  grid-column: 5;
+  position: static;
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: 0;
+  border: var(--br-border);
+  background: var(--br-paper);
+  color: var(--br-ink);
+}
+.up.upA-section[data-style-upload='brutalist'] .up-thumb-remove:hover { background: var(--br-ink); color: var(--br-paper); }
+.up.upA-section[data-style-upload='brutalist'] .up-thumb-remove:focus-visible {
+  outline: var(--br-line-thick) solid var(--br-signal-deep);
+  outline-offset: 2px;
+}
+.up.upA-section[data-style-upload='brutalist'] .upA-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+}
+
+/* --- B: UPLOAD DESK — Information links, Abgabe rechts ------------------ */
+.up.upB-section[data-style-upload='brutalist'] {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  align-items: stretch;
+  gap: 0;
+  max-inline-size: none;
+}
+.up.upB-section[data-style-upload='brutalist'] .up-head {
+  border-inline-end: var(--br-border);
+  padding-block-end: clamp(20px, 2.4vw, 36px);
+}
+.up.upB-section[data-style-upload='brutalist'] .upB-wrap {
+  display: block;
+  margin: 0;
+  padding: 0;
+  min-inline-size: 0;
+}
+.up.upB-section[data-style-upload='brutalist'] .upB-card {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+  max-inline-size: none;
+  margin: 0;
+  padding: clamp(20px, 2.6vw, 40px) var(--br-pad-inline);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  text-align: start;
+}
+.up.upB-section[data-style-upload='brutalist'] .upB-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.6vw, 38px);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+  max-inline-size: none;
+}
+.up.upB-section[data-style-upload='brutalist'] .upB-title em { font-style: normal; background: var(--br-signal); padding: 0 0.1em; }
+.up.upB-section[data-style-upload='brutalist'] .upB-sub {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--br-ink);
+}
+/* Ausgewählte Dateien als nummerierter Index statt überlappender Kreise. */
+.up.upB-section[data-style-upload='brutalist'] .upB-thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin: 0;
+  padding: 2px;
+  background: var(--br-ink);
+  justify-content: flex-start;
+  inline-size: max-content;
+  max-inline-size: 100%;
+}
+.up.upB-section[data-style-upload='brutalist'] .upB-thumb-mini {
+  inline-size: 72px;
+  block-size: 54px;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.15);
+}
+.up.upB-section[data-style-upload='brutalist'] .upB-count-pill {
+  inline-size: 72px;
+  block-size: 54px;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 0;
+  background: var(--br-signal);
+  color: var(--br-ink);
+  font-family: var(--font-mono, monospace);
+  font-size: 14px;
+  font-weight: 700;
+}
+.up.upB-section[data-style-upload='brutalist'] .upB-name { margin: 0; }
+.up.upB-section[data-style-upload='brutalist'] .upB-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  margin: 0;
+}
+.up.upB-section[data-style-upload='brutalist'] .upB-actions .up-btn { inline-size: auto; max-inline-size: none; }
+
+/* --- C: PHOTO PROOF SHEET ------------------------------------------------ */
+.up.upC-section[data-style-upload='brutalist'] .upC-wrap {
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+}
+.up.upC-section[data-style-upload='brutalist'] .up-title { font-size: clamp(34px, 6vw, 96px); }
+.up.upC-section[data-style-upload='brutalist'] .upC-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: 0;
+  border-block-start: var(--br-border);
+  padding: 0;
+}
+.up.upC-section[data-style-upload='brutalist'] .upC-left {
+  grid-column: 1;
+  padding: clamp(20px, 2.4vw, 36px) var(--br-pad-inline);
+  border-inline-end: var(--br-border);
+}
+.up.upC-section[data-style-upload='brutalist'] .upC-right {
+  grid-column: 2;
+  padding: clamp(20px, 2.4vw, 36px) var(--br-pad-inline);
+  min-inline-size: 0;
+}
+.up.upC-section[data-style-upload='brutalist'] .upC-kicker {
+  display: inline-block;
+  margin: 0 0 10px;
+  padding: 4px 8px;
+  background: var(--br-ink);
+  color: var(--br-paper);
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.up.upC-section[data-style-upload='brutalist'] .upC-h {
+  margin: 0 0 16px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 32px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+.up.upC-section[data-style-upload='brutalist'] .upC-h em { font-style: normal; background: var(--br-signal); padding: 0 0.1em; }
+.up.upC-section[data-style-upload='brutalist'] .upC-steps { gap: 0; border-block-start: var(--br-border); }
+.up.upC-section[data-style-upload='brutalist'] .upC-step {
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 12px;
+  padding: 12px 0;
+  border-block-end: var(--br-border);
+}
+.up.upC-section[data-style-upload='brutalist'] .upC-step-num {
+  inline-size: auto;
+  block-size: auto;
+  display: block;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--br-ink);
+}
+.up.upC-section[data-style-upload='brutalist'] .upC-step-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
+.up.upC-section[data-style-upload='brutalist'] .upC-step-desc {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--br-ink);
+}
+.up.upC-section[data-style-upload='brutalist'] .upC-box {
+  display: grid;
+  gap: 16px;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+}
+/* Proof Sheet: ausgewählte Fotos als nummerierte Kontaktabzüge. */
+.up.upC-section[data-style-upload='brutalist'] .upC-selected-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 2px;
+  padding: 2px;
+  background: var(--br-ink);
+  counter-reset: proof;
+}
+.up.upC-section[data-style-upload='brutalist'] .upC-selected-row {
+  counter-increment: proof;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  grid-template-rows: auto auto;
+  gap: 0;
+  padding: 0;
+  background: var(--br-paper);
+  border: 0;
+  border-radius: 0;
+}
+.up.upC-section[data-style-upload='brutalist'] .upC-mini-thumb {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.2);
+  border-radius: 0;
+}
+.up.upC-section[data-style-upload='brutalist'] .upC-selected-row::before {
+  content: counter(proof, decimal-leading-zero);
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  padding: 3px 7px;
+  background: var(--br-ink);
+  color: var(--br-paper);
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 700;
+  z-index: 1;
+}
+.up.upC-section[data-style-upload='brutalist'] .upC-selected-info {
+  grid-column: 1;
+  grid-row: 2;
+  padding: 8px 10px;
+  min-inline-size: 0;
+}
+.up.upC-section[data-style-upload='brutalist'] .upC-selected-name {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--br-ink);
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+}
+.up.upC-section[data-style-upload='brutalist'] .upC-selected-size {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+.up.upC-section[data-style-upload='brutalist'] .upC-remove {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: stretch;
+  inline-size: 44px;
+  min-block-size: 44px;
+  border: 0;
+  border-inline-start: var(--br-border);
+  border-block-start: 0;
+  border-radius: 0;
+  background: var(--br-paper);
+  color: var(--br-ink);
+}
+.up.upC-section[data-style-upload='brutalist'] .upC-remove:hover { background: var(--br-ink); color: var(--br-paper); }
+.up.upC-section[data-style-upload='brutalist'] .upC-remove:focus-visible {
+  outline: var(--br-line-thick) solid var(--br-signal-deep);
+  outline-offset: -4px;
+}
+.up.upC-section[data-style-upload='brutalist'] .upC-box .up-btn { inline-size: auto !important; justify-self: start; }
+
+/* =========================================================================
+   FOTO-UPLOAD — MOBIL
+   ========================================================================= */
+@media (max-width: 900px) {
+  .up.upB-section[data-style-upload='brutalist'],
+  .up.upC-section[data-style-upload='brutalist'] .upC-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .up.upB-section[data-style-upload='brutalist'] .up-head {
+    border-inline-end: 0;
+    border-block-end: var(--br-border);
+  }
+  /* C: die Abgabe vor den Ablaufschritten — der Weg zum Hochladen darf nicht
+     hinter drei Erklärungen liegen. Fokusreihenfolge ändert sich nicht, im
+     Schrittblock ist nichts fokussierbar. */
+  .up.upC-section[data-style-upload='brutalist'] .upC-right { grid-column: 1; grid-row: 1; }
+  .up.upC-section[data-style-upload='brutalist'] .upC-left {
+    grid-column: 1;
+    grid-row: 2;
+    border-inline-end: 0;
+    border-block-start: var(--br-border);
+  }
+}
+@media (max-width: 600px) {
+  .up.upC-section[data-style-upload='brutalist'] .up-title { font-size: clamp(30px, 10vw, 48px); }
+  .up.upA-section[data-style-upload='brutalist'] .up-thumb {
+    grid-template-columns: 56px minmax(0, 1fr) 44px;
+    grid-template-rows: auto auto;
+    gap: 6px 10px;
+  }
+  .up.upA-section[data-style-upload='brutalist'] .up-thumb::before { display: none; }
+  .up.upA-section[data-style-upload='brutalist'] .up-thumb img { grid-column: 1; grid-row: 1 / span 2; inline-size: 56px; block-size: 56px; }
+  .up.upA-section[data-style-upload='brutalist'] .up-thumb-meta { grid-column: 2; grid-row: 1; }
+  .up.upA-section[data-style-upload='brutalist'] .upA-thumb-progress { grid-column: 2; grid-row: 2; inline-size: 32px; block-size: 32px; }
+  .up.upA-section[data-style-upload='brutalist'] .up-thumb-remove { grid-column: 3; grid-row: 1 / span 2; }
+  .up.upC-section[data-style-upload='brutalist'] .upC-selected-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .up[data-style-upload='brutalist'] .up-btn,
+  .up.upC-section[data-style-upload='brutalist'] .upC-box .up-btn { inline-size: 100% !important; }
+}
+/* Foto-Upload, Sichtprüfung: hervorgehobene Wörter trugen Signal auf Signal
+   (unsichtbar) bzw. dünnen Schnitt; Nebenzeile der Abgabefläche war blass;
+   die C-Box hatte noch den farbigen Versatzschatten der Basis. */
+.up[data-style-upload='brutalist'] :where(.up-title, .upB-title, .upC-h) em {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 800;
+  color: var(--br-ink);
+  background: var(--br-signal);
+  padding: 0 0.1em;
+}
+.up[data-style-upload='brutalist'] :where(.upA-drop-title, .upC-mini-drop-title) :where(span, em, small) {
+  color: var(--br-ink);
+  opacity: 1;
+  font-weight: 800;
+}
+.up.upC-section[data-style-upload='brutalist'] .upC-box,
+.up.upC-section[data-style-upload='brutalist'] .upC-right { box-shadow: none; }
+/* A: Fortschrittszähler „0/9 hochgeladen" stand in Signal auf Paper (unter
+   4,5:1). Lokal auf Ink — auch falls der Wert inline über --accent kommt. */
+.up.upA-section[data-style-upload='brutalist'] .upA-selected-head {
+  --accent: var(--br-ink);
+  --accent-deep: var(--br-ink);
+}
+.up.upA-section[data-style-upload='brutalist'] .upA-selected-head > * {
+  color: var(--br-ink);
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
