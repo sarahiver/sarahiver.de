@@ -4174,7 +4174,12 @@
 .rsvp.rv-b[data-style-rsvp='brutalist'] .rv-chapter-main {
   gap: clamp(16px, 1.8vw, 24px);
   padding: clamp(18px, 2vw, 30px) var(--br-pad-inline);
+  /* Ist die Randspur höher als der Inhalt (Absage: nur Name und E-Mail),
+     dürfen die Felder die Resthöhe nicht auf Label und Eingabe verteilen —
+     das riss beide auseinander. */
+  align-content: start;
 }
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-field { align-content: start; }
 /* Das erste Kapitel (Teilnahme) trägt die Signalkante links. */
 .rsvp.rv-b[data-style-rsvp='brutalist'] .rv-chapter--attend .rv-chapter-side,
 .rsvp.rv-b[data-style-rsvp='brutalist'] .rv-chapter--gate .rv-chapter-side {
