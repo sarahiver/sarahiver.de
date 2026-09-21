@@ -1,0 +1,1019 @@
+/* =========================================================================
+   DESIGN 04 — MONO · Foundation + Anker-Komponenten
+   -------------------------------------------------------------------------
+   Hero, Countdown, Love Story, Gallery. Die übrigen elf Bereiche folgen
+   später in einem Batch nach denselben Regeln.
+
+   MONO-GRAMMATIK (Style Contract)
+   Mono ist nicht Editorial in Graustufen. Editorial ist redaktionell, warm,
+   feine Haarlinien, gesetzte Akzente. Mono ist objektiv und kühl: die
+   Gestaltung entsteht aus Kontrast, Fläche und Proportion, nicht aus
+   Ornament.
+
+     Farbe       Ink, Paper, drei Graustufen. Keine Akzentfarbe.
+     Fläche      Ganze Ink-Blöcke sind ein Baustein (nicht in Editorial).
+     Typografie  Serif aufrecht, kontrolliert, große Maßstabssprünge;
+                 hervorgehobene Wörter werden nicht kursiv, sondern
+                 dünner — der Kontrast liegt im Gewicht, nicht im Stil.
+                 Meta in kleiner Sans, Versalien, weit gesperrt.
+     Form        Radius 0. Linien 1px, in voller Tinte, sparsam; Raum und
+                 Kontrast übernehmen meist die Trennung.
+     Raster      Streng: Hälften, Drittel, 7/5. Keine freien Versätze.
+     Bild        Schwarzweiß, klare Rechteck-Crops, keine Rahmen.
+     Bewegung    Fast keine: 150 ms Opacity/Inversion bei Interaktion.
+
+   Diese Ebene liegt nach allen anderen Style-Layern und greift nur über
+   [data-style='mono'] bzw. [data-style-*='mono']. Die erste Mono-Fassung in
+   design-system-v2.css (Display 300, JetBrains-Meta) wird hier überschrieben,
+   wo sie dem Contract widerspricht.
+
+   Spezifität: Bestandsregeln stehen auf .hero-a[data-style-hero="mono"]
+   (0,2,0); hier dieselbe Stufe, die spätere Datei gewinnt. Mobilblöcke tragen
+   dieselbe Stufe.
+   ========================================================================= */
+
+/* =========================================================================
+   1 · FOUNDATION
+   ========================================================================= */
+
+.wedding-site-wrapper[data-style='mono'] {
+  /* --- Farbrollen: fünf Stufen, jede mit Aufgabe --- */
+  --mo-ink: var(--ink);
+  --mo-paper: var(--bg);
+  --mo-grey-1: color-mix(in srgb, var(--ink) 6%, var(--bg));   /* ruhige Fläche */
+  --mo-grey-2: color-mix(in srgb, var(--ink) 16%, var(--bg));  /* Linie, Bildgrund */
+  --mo-grey-3: color-mix(in srgb, var(--ink) 64%, var(--bg));  /* Meta, ≥ 4,5:1 */
+  --mo-dark: color-mix(in srgb, var(--ink) 92%, var(--bg));    /* dunkle Fläche */
+
+  /* --- Konstruktion --- */
+  --mo-line: 1px solid var(--mo-ink);
+  --mo-line-soft: 1px solid var(--mo-grey-2);
+  --mo-gap: 8px;
+
+  /* --- Raum: präziser negativer Raum, kein Luxus-Weißraum --- */
+  --mo-pad-block: clamp(56px, 7vw, 112px);
+  --mo-pad-inline: clamp(20px, 4vw, 64px);
+  --mo-col: repeat(12, minmax(0, 1fr));
+
+  /* --- Bild --- */
+  --mo-photo: grayscale(1) contrast(1.06);
+
+  /* --- Bewegung --- */
+  --mo-dur: 150ms;
+  --mo-ease: cubic-bezier(0.25, 0, 0.25, 1);
+
+  --font-mono: var(--font-body);
+  background: var(--mo-paper);
+  color: var(--mo-ink);
+  font-family: var(--font-body);
+}
+
+/* Radius 0 in den Bereichen dieser Phase. */
+.wedding-site-wrapper[data-style='mono'] :where(.hero-a, .hero-b, .hero-c, .cd, .ls, .gal) :where(*) {
+  border-radius: 0;
+}
+
+/* --- Typografie ----------------------------------------------------------
+   Serif aufrecht und ruhig; Hervorhebung über Gewicht statt Kursive. */
+.wedding-site-wrapper[data-style='mono'] :where(.display, .h2-editorial, .ls-title, .gal-title) {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-style: normal;
+  letter-spacing: -0.02em;
+  line-height: 0.98;
+  text-transform: none;
+}
+.wedding-site-wrapper[data-style='mono'] :where(.display, .ls-title, .gal-title) em {
+  font-style: normal;
+  font-weight: 300;
+  color: inherit;
+  background: none;
+  padding: 0;
+  font-family: inherit;
+}
+.wedding-site-wrapper[data-style='mono'] :where(.ls-title, .gal-title) {
+  font-size: clamp(36px, 5vw, 76px);
+  color: var(--mo-ink);
+  margin: 0;
+}
+.wedding-site-wrapper[data-style='mono'] :where(.ls-intro, .gal-intro) {
+  font-family: var(--font-body);
+  font-size: clamp(15px, 1.05vw, 17px);
+  line-height: 1.65;
+  color: var(--mo-ink);
+  max-inline-size: 56ch;
+}
+/* Meta: kleine Sans, Versalien, weit gesperrt, Grau 3 (≥ 4,5:1). */
+.wedding-site-wrapper[data-style='mono'] :where(
+  .ls-eyebrow, .gal-eyebrow, .cd-eyebrow, .cd-label,
+  .hero-a-eyebrow, .hero-b-eyebrow, .hero-c-eyebrow
+) {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mo-grey-3);
+}
+.wedding-site-wrapper[data-style='mono'] :where(.ls-head-ornament, .gal-head-ornament, .styled-bg-editorial, .styled-bg-mono) {
+  display: none;
+}
+
+/* --- Bild ----------------------------------------------------------------- */
+.wedding-site-wrapper[data-style='mono'] :where(.hero-a, .hero-b, .hero-c, .ls, .gal) img,
+.wedding-site-wrapper[data-style='mono'] :where(.hero-a-image, .hero-b-image, .hero-c-image) {
+  filter: var(--mo-photo);
+}
+
+/* --- Knöpfe ----------------------------------------------------------------
+   Primär Ink mit Paper-Text, sekundär 1px-Outline. Hover: Inversion. */
+.wedding-site-wrapper[data-style='mono'] :where(.gal-showmore) {
+  min-block-size: 44px;
+  padding: 0 22px;
+  border: var(--mo-line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--mo-ink);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  box-shadow: none;
+  transition: background-color var(--mo-dur) var(--mo-ease), color var(--mo-dur) var(--mo-ease);
+}
+.wedding-site-wrapper[data-style='mono'] :where(.gal-showmore):hover {
+  background: var(--mo-ink);
+  color: var(--mo-paper);
+  transform: none;
+}
+.wedding-site-wrapper[data-style='mono'] :where(.gal-showmore):focus-visible {
+  outline: 2px solid var(--mo-ink);
+  outline-offset: 3px;
+}
+.wedding-site-wrapper[data-style='mono'] .gal-more-count { color: inherit; font-family: inherit; }
+
+/* --- Bewegung ------------------------------------------------------------- */
+/* Dekorative Daueranimationen der Bestandsfassung aus — außer im Countdown:
+   die Flip-Ziffern brauchen ihre Umschlag-Animation, sonst bleiben sie auf
+   dem Ausgangswert stehen. */
+.wedding-site-wrapper[data-style='mono'] :where(.hero-a, .hero-b, .hero-c, .ls, .gal) :where(*) {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wedding-site-wrapper[data-style='mono'] *,
+  .wedding-site-wrapper[data-style='mono'] *::before,
+  .wedding-site-wrapper[data-style='mono'] *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* =========================================================================
+   2 · HERO
+     A  Hälften: Namen auf Paper, Bild als rechteckiger Gegenblock
+     B  Ink-Fläche mit Namen gegen das Bild, 5/7
+     C  nur Bild, Namen, eine Metazeile
+   ========================================================================= */
+
+/* --- A --- */
+.hero-a[data-style-hero='mono'] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
+  min-height: min(86vh, 760px);
+  padding: 0;
+  background: var(--mo-paper);
+  color: var(--mo-ink);
+  perspective: none;
+}
+.hero-a[data-style-hero='mono'] .hero-a-content {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 18px;
+  margin: 0;
+  padding: var(--mo-pad-block) var(--mo-pad-inline);
+  max-width: none;
+  text-align: left;
+}
+.hero-a[data-style-hero='mono'] .hero-a-content::before { display: none; }
+.hero-a[data-style-hero='mono'] .hero-a-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-style: normal;
+  font-size: clamp(48px, 6.6vw, 112px);
+  line-height: 0.92;
+  letter-spacing: -0.025em;
+  color: var(--mo-ink);
+  text-transform: none;
+}
+.hero-a[data-style-hero='mono'] .hero-a-title .amp,
+.hero-b[data-style-hero='mono'] .hero-b-title .amp,
+.hero-c[data-style-hero='mono'] .hero-c-title .amp {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 300;
+  color: inherit;
+  background: none;
+  padding: 0;
+  transform: none;
+  animation: none;
+}
+.hero-a[data-style-hero='mono'] .hero-a-date,
+.hero-a[data-style-hero='mono'] .hero-a-location {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mo-ink);
+}
+.hero-a[data-style-hero='mono'] .hero-a-date {
+  padding-block-start: 18px;
+  border-block-start: var(--mo-line);
+  min-inline-size: 16rem;
+}
+.hero-a[data-style-hero='mono'] .hero-a-image {
+  display: block;
+  position: relative;
+  inset: auto;
+  inline-size: 100%;
+  max-inline-size: none;
+  margin: 0;
+  justify-self: stretch;
+  transform: none;
+  grid-column: 2;
+  grid-row: 1;
+  min-block-size: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+/* --- B --- */
+.hero-b[data-style-hero='mono'] {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  align-items: stretch;
+  gap: 0;
+  min-height: min(86vh, 760px);
+  padding: 0;
+  background: var(--mo-paper);
+}
+.hero-b[data-style-hero='mono'] .hero-b-text {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--mo-pad-block) var(--mo-pad-inline);
+  background: var(--mo-ink);
+  color: var(--mo-paper);
+  border: 0;
+}
+.hero-b[data-style-hero='mono'] .hero-b-eyebrow { color: color-mix(in srgb, var(--mo-paper) 72%, var(--mo-ink)); }
+.hero-b[data-style-hero='mono'] .hero-b-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-style: normal;
+  font-size: clamp(44px, 5.6vw, 96px);
+  line-height: 0.92;
+  letter-spacing: -0.025em;
+  color: var(--mo-paper);
+  text-transform: none;
+}
+.hero-b[data-style-hero='mono'] .hero-b-rule {
+  inline-size: 48px;
+  block-size: 1px;
+  background: var(--mo-paper);
+  margin-block: 28px;
+}
+.hero-b[data-style-hero='mono'] .hero-b-date,
+.hero-b[data-style-hero='mono'] .hero-b-venue {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mo-paper);
+  background: none;
+  padding: 0;
+}
+.hero-b[data-style-hero='mono'] .hero-b-intro {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--mo-paper) 82%, var(--mo-ink));
+  max-inline-size: 38ch;
+}
+.hero-b[data-style-hero='mono'] .hero-b-image-col {
+  grid-column: 2;
+  grid-row: 1;
+  display: block;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: 0;
+  animation: none;
+}
+.hero-b[data-style-hero='mono'] .hero-b-image {
+  position: relative;
+  inset: auto;
+  inline-size: 100%;
+  block-size: 100%;
+  min-block-size: 420px;
+  margin: 0;
+  border: 0;
+  background-size: cover;
+  background-position: center;
+  animation: none;
+}
+.hero-b[data-style-hero='mono'] .hero-b-image-caption {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mo-grey-3);
+}
+
+/* --- C: weniger, aber größer --- */
+.hero-c[data-style-hero='mono'] { position: relative; overflow: hidden; }
+.hero-c[data-style-hero='mono'] .hero-c-image {
+  inset: 0;
+  inline-size: auto;
+  block-size: auto;
+  margin: 0;
+  border: 0;
+  transform: none;
+  filter: grayscale(1) contrast(1.08) brightness(0.66);
+  animation: none;
+}
+.hero-c[data-style-hero='mono'] .hero-c-vignette {
+  background: linear-gradient(0deg, color-mix(in srgb, var(--mo-ink) 55%, transparent) 0%, transparent 55%);
+}
+.hero-c[data-style-hero='mono'] :where(.hero-c-volume, .hero-c-eyebrow, .hero-c-mono-rule) { display: none; }
+.hero-c[data-style-hero='mono'] .hero-c-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 20px;
+  padding: var(--mo-pad-block) var(--mo-pad-inline);
+  text-align: left;
+  color: var(--mo-paper);
+}
+.hero-c[data-style-hero='mono'] :where(.hero-c-top, .hero-c-mid, .hero-c-bot) {
+  inline-size: 100%;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  text-align: left;
+}
+.hero-c[data-style-hero='mono'] .hero-c-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-style: normal;
+  font-size: clamp(52px, 9vw, 168px);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: var(--mo-paper);
+  text-transform: none;
+  background: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.2em;
+  max-inline-size: 100%;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.hero-c[data-style-hero='mono'] .hero-c-date,
+.hero-c[data-style-hero='mono'] .hero-c-venue {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mo-paper);
+  background: none;
+  padding: 0;
+  text-shadow: none;
+}
+.hero-c[data-style-hero='mono'] :where(.hero-c-top, .hero-c-bot) {
+  border-block-start: 1px solid color-mix(in srgb, var(--mo-paper) 45%, transparent);
+  padding-block-start: 14px;
+}
+
+/* =========================================================================
+   3 · COUNTDOWN
+     A  Zahl | Label, horizontal, 1px-Teiler
+     B  ein Balken: die Tage auf Ink, übrige Einheiten auf Paper
+     C  die Tage als Maßstab, der Rest eine Zeile
+   ========================================================================= */
+
+.cd[data-style-countdown='mono'] {
+  --cd-num-font: var(--font-display);
+  --cd-num-weight: 500;
+  padding: var(--mo-pad-block) var(--mo-pad-inline);
+  background: var(--mo-paper);
+  color: var(--mo-ink);
+  text-align: left;
+}
+.cd[data-style-countdown='mono'] :where([class*='marquee'], [class*='-star'], .styled-bg-editorial) { display: none; }
+.cd[data-style-countdown='mono'] .cd-eyebrow { display: block; margin: 0 0 28px; }
+.cd[data-style-countdown='mono'] :where(.cd-footer, .cd-past) {
+  margin: 28px 0 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--mo-grey-3);
+  text-align: left;
+}
+
+/* --- A --- */
+.cd.cdA-wrap[data-style-countdown='mono'] .cdA-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0;
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border-block: var(--mo-line);
+}
+.cd.cdA-wrap[data-style-countdown='mono'] .cdA-unit {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  padding: 24px 20px;
+  background: none;
+  border: 0;
+  border-inline-start: var(--mo-line-soft);
+}
+.cd.cdA-wrap[data-style-countdown='mono'] .cdA-unit:first-child { border-inline-start: 0; padding-inline-start: 0; }
+.cd.cdA-wrap[data-style-countdown='mono'] .cd-num {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(44px, 5.4vw, 88px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--mo-ink);
+}
+
+/* --- B: ein Element, geteilt --- */
+.cd.cdB-wrap[data-style-countdown='mono'] .cd-date-stamp-wrap {
+  justify-content: flex-start;
+  border: 0;
+  margin-block-end: 20px;
+}
+.cd.cdB-wrap[data-style-countdown='mono'] .cd-date-stamp {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mo-grey-3);
+  background: none;
+  border: 0;
+}
+.cd.cdB-wrap[data-style-countdown='mono'] .cdB-row {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) repeat(4, minmax(0, 2fr));
+  gap: 0;
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  border: var(--mo-line);
+  background: var(--mo-paper);
+}
+.cd.cdB-wrap[data-style-countdown='mono'] .cdB-unit {
+  display: grid;
+  align-content: end;
+  justify-items: start;
+  gap: 10px;
+  padding: 24px;
+  background: var(--mo-paper);
+  color: var(--mo-ink);
+  border: 0;
+  border-inline-start: var(--mo-line-soft);
+  transform: none;
+}
+/* Die Tage auf Ink — die geteilte Schwarz-/Weiß-Fläche. Die Reihenfolge
+   bleibt, nur die zweite Einheit bekommt die erste Spur. */
+.cd.cdB-wrap[data-style-countdown='mono'] .cdB-unit:nth-child(2) {
+  grid-column: 1;
+  grid-row: 1;
+  background: var(--mo-ink);
+  color: var(--mo-paper);
+  border-inline-start: 0;
+}
+.cd.cdB-wrap[data-style-countdown='mono'] .cdB-unit:nth-child(2) .cd-label { color: color-mix(in srgb, var(--mo-paper) 72%, var(--mo-ink)); }
+.cd.cdB-wrap[data-style-countdown='mono'] .cdB-cards { display: flex; gap: 0; }
+.cd.cdB-wrap[data-style-countdown='mono'] :where(.flip-card, .flip-top, .flip-bottom, .flip-anim-top, .flip-anim-bot) {
+  background-color: inherit;
+  background-image: none;
+  border: 0;
+  box-shadow: none;
+  color: inherit;
+}
+.cd.cdB-wrap[data-style-countdown='mono'] :where(.flip-top, .flip-bottom)::after { background: none; }
+.cd.cdB-wrap[data-style-countdown='mono'] .flip-mid { background: transparent; }
+.cd.cdB-wrap[data-style-countdown='mono'] .flip-digit {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(34px, 3.6vw, 60px);
+  color: inherit;
+}
+.cd.cdB-wrap[data-style-countdown='mono'] .cdB-unit:nth-child(2) .flip-digit { font-size: clamp(56px, 7vw, 120px); }
+
+/* --- C: Maßstab --- */
+.cd.cdC-wrap[data-style-countdown='mono'] .cdC-bars {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  max-inline-size: none;
+  margin: 0;
+}
+.cd.cdC-wrap[data-style-countdown='mono'] .cdC-bar-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 6px;
+  padding: 14px 0;
+  border: 0;
+  border-block-start: var(--mo-line-soft);
+}
+.cd.cdC-wrap[data-style-countdown='mono'] .cdC-bar-row:first-child {
+  grid-column: 1 / -1;
+  padding-block: 0 24px;
+  border: 0;
+}
+.cd.cdC-wrap[data-style-countdown='mono'] :where(.cdC-bar-num, .cdC-bar-num-value) {
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--mo-ink);
+  justify-self: start;
+  text-align: left;
+}
+.cd.cdC-wrap[data-style-countdown='mono'] .cdC-bar-row:first-child .cdC-bar-num-value {
+  font-size: clamp(120px, 20vw, 300px);
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+}
+.cd.cdC-wrap[data-style-countdown='mono'] .cdC-bar-row:not(:first-child) .cdC-bar-num-value { font-size: clamp(22px, 2.2vw, 32px); }
+.cd.cdC-wrap[data-style-countdown='mono'] .cdC-bar-num-max { display: none; }
+.cd.cdC-wrap[data-style-countdown='mono'] .cdC-bar-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mo-grey-3);
+}
+.cd.cdC-wrap[data-style-countdown='mono'] .cdC-bar-track {
+  block-size: 1px;
+  background: var(--mo-grey-2);
+  border: 0;
+}
+.cd.cdC-wrap[data-style-countdown='mono'] .cdC-bar-fill { background: var(--mo-ink); }
+.cd.cdC-wrap[data-style-countdown='mono'] .cdC-bar-row:first-child .cdC-bar-track { display: none; }
+
+/* =========================================================================
+   4 · LOVE STORY
+     A  Bildfolge | Text, Hälften
+     B  7/5-Wechsel mit festen Proportionen, Nummer als Meta
+     C  großes Bild (8 Spuren) + Serif-Aussage (4 Spuren), viel Ruhe
+   ========================================================================= */
+
+.ls[data-style-ls='mono'] {
+  padding: var(--mo-pad-block) var(--mo-pad-inline);
+  background: var(--mo-paper);
+  color: var(--mo-ink);
+  text-align: left;
+}
+.ls[data-style-ls='mono'] :where(.ls-eyebrow, .ls-title, .ls-intro) { margin-inline: 0; text-align: left; }
+.ls[data-style-ls='mono'] .ls-title { margin-block: 14px 0; }
+.ls[data-style-ls='mono'] .ls-intro { margin-block: 18px 0; }
+
+/* --- A --- */
+.ls.lsA[data-style-ls='mono'] .lsA-single {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: center;
+  max-inline-size: none;
+  margin: clamp(40px, 5vw, 72px) 0 0;
+}
+.ls.lsA[data-style-ls='mono'] .lsA-images {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--mo-gap);
+  padding: 0;
+}
+.ls.lsA[data-style-ls='mono'] .lsA-images::before { display: none; }
+.ls.lsA[data-style-ls='mono'] .lsA-img {
+  position: relative;
+  inset: auto;
+  transform: none;
+  margin: 0;
+  inline-size: 100%;
+  border: 0;
+  box-shadow: none;
+  overflow: hidden;
+  aspect-ratio: 1;
+  background: var(--mo-grey-2);
+}
+.ls.lsA[data-style-ls='mono'] .lsA-img--1 { grid-column: 1 / -1; aspect-ratio: 3 / 2; }
+.ls.lsA[data-style-ls='mono'] .lsA-img img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.ls.lsA[data-style-ls='mono'] .lsA-text {
+  display: grid;
+  gap: 16px;
+  justify-items: start;
+  text-align: left;
+  max-inline-size: 46ch;
+}
+.ls.lsA[data-style-ls='mono'] .lsA-eyebrow {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mo-grey-3);
+}
+.ls.lsA[data-style-ls='mono'] .lsA-moment-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(30px, 3vw, 46px);
+  line-height: 1;
+  letter-spacing: -0.015em;
+  color: var(--mo-ink);
+}
+.ls.lsA[data-style-ls='mono'] .lsA-desc {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--mo-ink);
+}
+.ls.lsA[data-style-ls='mono'] .lsA-sig {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mo-ink);
+}
+
+/* --- B --- */
+.ls.lsB[data-style-ls='mono'] .lsB-list {
+  display: grid;
+  gap: clamp(40px, 5vw, 80px);
+  max-inline-size: none;
+  margin: clamp(40px, 5vw, 72px) 0 0;
+}
+.ls.lsB[data-style-ls='mono'] .lsB-item {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: end;
+  gap: clamp(24px, 4vw, 64px);
+  padding: 0;
+  border: 0;
+}
+.ls.lsB[data-style-ls='mono'] .lsB-item:nth-child(even) { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+.ls.lsB[data-style-ls='mono'] .lsB-item:nth-child(even) .lsB-img-wrap { order: 2; }
+.ls.lsB[data-style-ls='mono'] .lsB-img-wrap {
+  position: relative;
+  overflow: hidden;
+  border: 0;
+  aspect-ratio: 3 / 2;
+  background: var(--mo-grey-2);
+}
+.ls.lsB[data-style-ls='mono'] .lsB-img-wrap img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.ls.lsB[data-style-ls='mono'] .lsB-date {
+  position: absolute;
+  inset: auto auto 0 0;
+  block-size: auto;
+  inline-size: auto;
+  writing-mode: horizontal-tb;
+  transform: none;
+  padding: 8px 12px;
+  background: var(--mo-ink);
+  color: var(--mo-paper);
+  border: 0;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.ls.lsB[data-style-ls='mono'] .lsB-text {
+  display: grid;
+  gap: 14px;
+  padding-block-end: 8px;
+  border-block-start: var(--mo-line);
+  padding-block-start: 18px;
+}
+.ls.lsB[data-style-ls='mono'] .lsB-num {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  color: var(--mo-grey-3);
+  background: none;
+  border: 0;
+  padding: 0;
+}
+.ls.lsB[data-style-ls='mono'] .lsB-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(28px, 2.8vw, 44px);
+  line-height: 1;
+  letter-spacing: -0.015em;
+  color: var(--mo-ink);
+}
+.ls.lsB[data-style-ls='mono'] .lsB-desc {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--mo-ink);
+  max-inline-size: 46ch;
+}
+
+/* --- C --- */
+.ls.lsC[data-style-ls='mono'] .lsC-wrap {
+  display: grid;
+  gap: clamp(48px, 6vw, 96px);
+  max-inline-size: none;
+  margin: clamp(40px, 5vw, 72px) 0 0;
+}
+.ls.lsC[data-style-ls='mono'] .lsC-line { display: none; }
+.ls.lsC[data-style-ls='mono'] .lsC-item {
+  display: block;
+  padding: 0;
+  border: 0;
+}
+.ls.lsC[data-style-ls='mono'] .lsC-item::before,
+.ls.lsC[data-style-ls='mono'] .lsC-item::after { display: none; }
+.ls.lsC[data-style-ls='mono'] .lsC-card {
+  display: grid;
+  grid-template-columns: var(--mo-col);
+  grid-template-rows: 1fr auto auto;
+  column-gap: clamp(24px, 3vw, 48px);
+  row-gap: 12px;
+  align-items: end;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+.ls.lsC[data-style-ls='mono'] .lsC-img {
+  grid-column: 1 / span 8;
+  grid-row: 1 / span 3;
+  margin: 0;
+  border: 0;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: var(--mo-grey-2);
+}
+.ls.lsC[data-style-ls='mono'] .lsC-img img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.ls.lsC[data-style-ls='mono'] :where(.lsC-eyebrow, .lsC-title, .lsC-desc) {
+  grid-column: 9 / -1;
+  margin: 0;
+}
+.ls.lsC[data-style-ls='mono'] .lsC-eyebrow {
+  grid-row: 1;
+  align-self: end;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mo-grey-3);
+}
+.ls.lsC[data-style-ls='mono'] .lsC-title {
+  grid-row: 2;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(30px, 3.4vw, 56px);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  color: var(--mo-ink);
+}
+.ls.lsC[data-style-ls='mono'] .lsC-desc {
+  grid-row: 3;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--mo-ink);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: visible;
+}
+
+/* =========================================================================
+   5 · GALLERY
+     A  gleiches Raster, 8px-Fugen
+     B  strenges Zwölferraster nach data-layout (full/pair/triple)
+     C  Leitbild + reduzierte Sequenz als waagerechter Fluss
+   Lightbox und „Mehr Bilder zeigen" unverändert.
+   ========================================================================= */
+
+.gal[data-style-gallery='mono'] {
+  padding: var(--mo-pad-block) var(--mo-pad-inline);
+  background: var(--mo-paper);
+  color: var(--mo-ink);
+  text-align: left;
+}
+.gal[data-style-gallery='mono'] :where(.gal-eyebrow, .gal-title, .gal-intro) { margin-inline: 0; text-align: left; }
+.gal[data-style-gallery='mono'] .gal-title { margin-block: 14px 0; }
+.gal[data-style-gallery='mono'] .gal-intro { margin-block: 18px 0; }
+.gal[data-style-gallery='mono'] .gal-showmore-row { justify-content: flex-start; padding-block-start: 32px; }
+.gal[data-style-gallery='mono'] :where(.galA-cap, .galB-cap) {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mo-grey-3);
+  padding-block-start: 8px;
+}
+
+/* --- A --- */
+.gal.galA-wrap[data-style-gallery='mono'] .galA {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--mo-gap);
+  max-inline-size: none;
+  margin: clamp(40px, 5vw, 72px) 0 0;
+}
+.gal.galA-wrap[data-style-gallery='mono'] .galA-tile {
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  aspect-ratio: 3 / 2;
+  background: var(--mo-grey-2);
+}
+.gal.galA-wrap[data-style-gallery='mono'] .galA-tile img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  transition: opacity var(--mo-dur) var(--mo-ease);
+}
+.gal.galA-wrap[data-style-gallery='mono'] .galA-tile:hover img { opacity: 0.86; transform: none; }
+
+/* --- B --- */
+.gal.galB-wrap[data-style-gallery='mono'] .galB {
+  display: grid;
+  grid-template-columns: var(--mo-col);
+  gap: var(--mo-gap);
+  max-inline-size: none;
+  margin: clamp(40px, 5vw, 72px) 0 0;
+}
+.gal.galB-wrap[data-style-gallery='mono'] .galB-group,
+.gal.galB-wrap[data-style-gallery='mono'] .galB-grid { display: contents; }
+.gal.galB-wrap[data-style-gallery='mono'] .galB-item {
+  grid-column: span 4;
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  aspect-ratio: 1;
+  background: var(--mo-grey-2);
+}
+.gal.galB-wrap[data-style-gallery='mono'] .galB-group[data-layout='full'] .galB-item {
+  grid-column: 1 / -1;
+  aspect-ratio: 3 / 1;
+}
+.gal.galB-wrap[data-style-gallery='mono'] .galB-group[data-layout='pair'] .galB-item {
+  grid-column: span 6;
+  aspect-ratio: 16 / 9;
+}
+.gal.galB-wrap[data-style-gallery='mono'] .galB-group[data-layout='triple'] .galB-item {
+  grid-column: span 4;
+  aspect-ratio: 4 / 3;
+}
+.gal.galB-wrap[data-style-gallery='mono'] :where(.galB-imgwrap, .galB-item img) {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  border: 0;
+}
+.gal.galB-wrap[data-style-gallery='mono'] .galB-cap { display: none; }
+
+/* --- C: Leitbild + Sequenz --- */
+.gal.galC-wrap[data-style-gallery='mono'] .galC {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--mo-gap);
+  max-inline-size: none;
+  margin: clamp(40px, 5vw, 72px) calc(-1 * var(--mo-pad-inline)) 0 0;
+  padding-inline-end: var(--mo-pad-inline);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+.gal.galC-wrap[data-style-gallery='mono'] .galC::-webkit-scrollbar { display: none; }
+.gal.galC-wrap[data-style-gallery='mono'] .galC-tile {
+  flex: 0 0 clamp(180px, 18vw, 280px);
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  aspect-ratio: 4 / 5;
+  scroll-snap-align: start;
+  background: var(--mo-grey-2);
+}
+.gal.galC-wrap[data-style-gallery='mono'] .galC-tile:first-child {
+  flex-basis: clamp(300px, 52vw, 820px);
+  aspect-ratio: 3 / 2;
+}
+.gal.galC-wrap[data-style-gallery='mono'] .galC-tile img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+
+/* =========================================================================
+   6 · MOBIL — ruhig, eine Spalte, keine erzwungene Asymmetrie
+   ========================================================================= */
+
+@media (max-width: 900px) {
+  .hero-a[data-style-hero='mono'],
+  .hero-b[data-style-hero='mono'] {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+  .hero-a[data-style-hero='mono'] .hero-a-content { grid-row: 1; }
+  .hero-a[data-style-hero='mono'] .hero-a-image {
+    grid-column: 1;
+    grid-row: 2;
+    min-block-size: clamp(280px, 70vw, 520px);
+  }
+  .hero-b[data-style-hero='mono'] .hero-b-text { grid-column: 1; grid-row: 1; }
+  .hero-b[data-style-hero='mono'] .hero-b-image-col { grid-column: 1; grid-row: 2; }
+  .hero-b[data-style-hero='mono'] .hero-b-image { min-block-size: clamp(280px, 70vw, 520px); }
+
+  .cd.cdB-wrap[data-style-countdown='mono'] .cdB-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cd.cdB-wrap[data-style-countdown='mono'] .cdB-unit:nth-child(2) { grid-column: 1 / -1; }
+  .cd.cdB-wrap[data-style-countdown='mono'] .cdB-unit { border-block-start: var(--mo-line-soft); }
+  .cd.cdC-wrap[data-style-countdown='mono'] .cdC-bars { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .ls.lsA[data-style-ls='mono'] .lsA-single,
+  .ls.lsB[data-style-ls='mono'] .lsB-item,
+  .ls.lsB[data-style-ls='mono'] .lsB-item:nth-child(even) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .ls.lsB[data-style-ls='mono'] .lsB-item:nth-child(even) .lsB-img-wrap { order: 0; }
+  .ls.lsC[data-style-ls='mono'] .lsC-card { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; }
+  .ls.lsC[data-style-ls='mono'] .lsC-img { grid-column: 1; grid-row: 1; }
+  .ls.lsC[data-style-ls='mono'] .lsC-eyebrow { grid-column: 1; grid-row: 2; padding-block-start: 12px; }
+  .ls.lsC[data-style-ls='mono'] .lsC-title { grid-column: 1; grid-row: 3; }
+  .ls.lsC[data-style-ls='mono'] .lsC-desc { grid-column: 1; grid-row: 4; }
+
+  .gal.galA-wrap[data-style-gallery='mono'] .galA { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gal.galB-wrap[data-style-gallery='mono'] .galB { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gal.galB-wrap[data-style-gallery='mono'] .galB-item,
+  .gal.galB-wrap[data-style-gallery='mono'] .galB-group[data-layout='triple'] .galB-item,
+  .gal.galB-wrap[data-style-gallery='mono'] .galB-group[data-layout='pair'] .galB-item { grid-column: span 1; aspect-ratio: 1; }
+  .gal.galB-wrap[data-style-gallery='mono'] .galB-group[data-layout='full'] .galB-item { grid-column: 1 / -1; aspect-ratio: 3 / 2; }
+}
+
+@media (max-width: 600px) {
+  .hero-a[data-style-hero='mono'] .hero-a-title { font-size: clamp(40px, 12vw, 64px); }
+  .hero-b[data-style-hero='mono'] .hero-b-title { font-size: clamp(38px, 11vw, 60px); }
+  .hero-c[data-style-hero='mono'] .hero-c-title { font-size: clamp(42px, 13vw, 72px); flex-direction: column; align-items: flex-start; }
+  .cd.cdA-wrap[data-style-countdown='mono'] .cdA-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cd.cdA-wrap[data-style-countdown='mono'] .cdA-unit { border-inline-start: 0; border-block-start: var(--mo-line-soft); padding-inline: 0; }
+  .cd.cdC-wrap[data-style-countdown='mono'] .cdC-bar-row:first-child .cdC-bar-num-value { font-size: clamp(96px, 34vw, 160px); }
+  .ls[data-style-ls='mono'] .ls-title,
+  .gal[data-style-gallery='mono'] .gal-title { font-size: clamp(32px, 10vw, 48px); }
+  .gal.galC-wrap[data-style-gallery='mono'] .galC-tile { flex-basis: 56vw; }
+  .gal.galC-wrap[data-style-gallery='mono'] .galC-tile:first-child { flex-basis: 84vw; }
+}
+
+/* Die erste Mono-Fassung setzt Hero-Bilder mit physischen Maßen (width,
+   height, top/left, Rahmen) und schiebt den Satz per margin-left/width zur
+   Seite. Diese Werte werden hier ausdrücklich zurückgenommen, damit das
+   Raster der Foundation greift. */
+.hero-a[data-style-hero='mono'] .hero-a-image {
+  top: auto;
+  left: auto;
+  width: 100%;
+  height: auto;
+  border: 0;
+}
+.hero-a[data-style-hero='mono'] .hero-a-content {
+  margin-left: 0;
+  margin-right: 0;
+  width: auto;
+}
+.hero-c[data-style-hero='mono'] .hero-c-image {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+@media (max-width: 900px) {
+  .hero-a[data-style-hero='mono'] .hero-a-image {
+    width: 100%;
+    height: auto;
+    top: auto;
+    left: auto;
+  }
+}
