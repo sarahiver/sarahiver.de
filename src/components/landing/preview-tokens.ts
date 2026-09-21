@@ -18,7 +18,7 @@ const IMAGE_FILTERS: Record<string, string> = {
   opulent: 'sepia(0.2) brightness(1.05) contrast(1.05)',
   liquefy: 'saturate(0.9) brightness(0.95)',
   kinetic: 'contrast(1.05) saturate(0.95)',
-  bauhaus: 'grayscale(1) contrast(1.3)',
+  bauhaus: 'none', // Bauhaus zeigt Farbfotografie (Kontrast zu Mono/Brutalist)
 };
 
 function imgVariants(url: string | null) {
@@ -85,6 +85,13 @@ export const FALLBACK_PALETTES: PalettePreset[] = [
   // Signal-Orange. Bewusst ohne Gold/Neon: Brutalist soll grafisch wirken,
   // nicht nach Acid-Design.
   { id: 'signal', name: 'Signal', color_bg: '#F2EFE6', color_bg_soft: '#DEDAD0', color_accent: '#FF4A17', color_accent_deep: '#D6350A', color_ink: '#111111', display_order: 5 },
+  // Mono — reines Schwarz/Weiß/Grau. Der "Akzent" ist bewusst ein Grau:
+  // Mono hat keine Akzentfarbe, die Rolle wird mit neutralen Stufen belegt.
+  { id: 'mono-ink', name: 'Mono', color_bg: '#F6F6F4', color_bg_soft: '#E7E7E4', color_accent: '#3A3A3A', color_accent_deep: '#1C1C1C', color_ink: '#141414', display_order: 6 },
+  // Bauhaus — Creme-Grund, Rot als accent, Blau als accent_deep. Das Gelb ist
+  // die dritte Primärfarbe und liegt als feste Konstante im Bauhaus-Layer,
+  // weil das Palettenschema nur zwei Akzente kennt.
+  { id: 'bauhaus-primary', name: 'Bauhaus', color_bg: '#F3EEE3', color_bg_soft: '#E7E0D1', color_accent: '#D6322B', color_accent_deep: '#1D4E9E', color_ink: '#161616', display_order: 7 },
 ];
 
 export const FALLBACK_FONTS: FontPreset[] = [
@@ -92,6 +99,12 @@ export const FALLBACK_FONTS: FontPreset[] = [
   { id: 'modern', name: 'Modern', font_display: "'Space Grotesk', sans-serif", font_body: "'Manrope', sans-serif", font_script: null, display_weight: 500, display_style: 'normal', display_order: 1 },
   // Brutal — fette Grotesk für Brutalist. Syne 800 ist bereits geladen.
   { id: 'brutal', name: 'Brutal', font_display: "'Syne', 'Arial Black', sans-serif", font_body: "'Space Grotesk', sans-serif", font_script: null, display_weight: 800, display_style: 'normal', display_order: 3 },
+  // Mono Serif — Cormorant Garamond aufrecht in 500, Manrope für Text und Meta.
+  // Beide Schriften sind bereits in design-system-v2.css geladen.
+  { id: 'mono-serif', name: 'Mono Serif', font_display: "'Cormorant Garamond', 'Times New Roman', serif", font_body: "'Manrope', sans-serif", font_script: null, display_weight: 500, display_style: 'normal', display_order: 4 },
+  // Bauhaus Sans — Manrope 800 als geometrische Display-Sans, Karla für Text.
+  // Beide bereits geladen; bewusst nicht Syne/Space Grotesk (Brutalist).
+  { id: 'bauhaus-sans', name: 'Bauhaus Sans', font_display: "'Manrope', 'Helvetica Neue', sans-serif", font_body: "'Karla', system-ui, sans-serif", font_script: null, display_weight: 800, display_style: 'normal', display_order: 5 },
   { id: 'romantic', name: 'Romantisch', font_display: "'Fraunces', serif", font_body: "'Crimson Pro', serif", font_script: "'Caveat', cursive", display_weight: 400, display_style: 'italic', display_order: 2 },
 ];
 
@@ -99,11 +112,11 @@ export const FALLBACK_STYLES: StartStylePreset[] = [
   { id: 'editorial', name: 'Editorial', meta: 'Redaktionell, ruhig', default_palette_id: 'rose', default_font_id: 'classic', dna_align: 'left', dna_spacing: 'airy', dna_decor: 'rule', dna_contrast: 'warm', display_order: 0 },
   { id: 'organic', name: 'Organic', meta: 'Weich, natürlich', default_palette_id: 'sage', default_font_id: 'classic', dna_align: 'center', dna_spacing: 'airy', dna_decor: 'sprig', dna_contrast: 'soft', display_order: 1 },
   { id: 'opulent', name: 'Opulent', meta: 'Edel, festlich', default_palette_id: 'bordeaux', default_font_id: 'romantic', dna_align: 'center', dna_spacing: 'wide', dna_decor: 'gold', dna_contrast: 'warm', display_order: 2 },
-  { id: 'mono', name: 'Mono', meta: 'Reduziert, klar', default_palette_id: 'sand', default_font_id: 'modern', dna_align: 'left', dna_spacing: 'regular', dna_decor: 'hairline', dna_contrast: 'clean', display_order: 3 },
+  { id: 'mono', name: 'Mono', meta: 'Reduziert, klar', default_palette_id: 'mono-ink', default_font_id: 'mono-serif', dna_align: 'left', dna_spacing: 'regular', dna_decor: 'hairline', dna_contrast: 'clean', display_order: 3 },
   { id: 'liquefy', name: 'Liquefy', meta: 'Fließend, verträumt', default_palette_id: 'rose', default_font_id: 'romantic', dna_align: 'center', dna_spacing: 'airy', dna_decor: 'none', dna_contrast: 'soft', display_order: 4 },
   { id: 'kinetic', name: 'Kinetic', meta: 'Dynamisch, modern', default_palette_id: 'midnight', default_font_id: 'modern', dna_align: 'left', dna_spacing: 'regular', dna_decor: 'none', dna_contrast: 'high', display_order: 5 },
   { id: 'brutalist', name: 'Brutalist', meta: 'Roh, kontrastreich', default_palette_id: 'signal', default_font_id: 'brutal', dna_align: 'left', dna_spacing: 'tight', dna_decor: 'none', dna_contrast: 'high', display_order: 6 },
-  { id: 'bauhaus', name: 'Bauhaus', meta: 'Geometrisch, grafisch', default_palette_id: 'sand', default_font_id: 'modern', dna_align: 'left', dna_spacing: 'regular', dna_decor: 'none', dna_contrast: 'clean', display_order: 7 },
+  { id: 'bauhaus', name: 'Bauhaus', meta: 'Geometrisch, grafisch', default_palette_id: 'bauhaus-primary', default_font_id: 'bauhaus-sans', dna_align: 'left', dna_spacing: 'regular', dna_decor: 'none', dna_contrast: 'clean', display_order: 7 },
 ];
 
 /* Demo-Stammdaten für die Vorschau */

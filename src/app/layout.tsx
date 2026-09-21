@@ -19,6 +19,9 @@ import './brutalist.css';
 // Ebene 2 — Design 04: Mono. Eigener Style-Layer, greift nur über
 // [data-style='mono']; steht nach allen anderen Design-Layern.
 import './mono.css';
+// Ebene 2 — Design 07: Bauhaus. Eigener Style-Layer, greift nur über
+// [data-style='bauhaus'].
+import './bauhaus.css';
 // Sarahiver Brand: Landing + Launch Gate.
 import './landing-v4.css';
 import './launch-gate.css';

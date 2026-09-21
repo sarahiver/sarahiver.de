@@ -1,0 +1,1207 @@
+/* =========================================================================
+   DESIGN 07 — BAUHAUS · Style Contract + Anker-Komponenten
+   -------------------------------------------------------------------------
+   Hero, Countdown, Love Story, Gallery. Die übrigen elf Bereiche folgen in
+   einem Batch nach denselben Regeln.
+
+   BAUHAUS-GRAMMATIK (verbindlich für alle 15 Bereiche)
+
+   Bauhaus ist nicht Brutalist mit Primärfarben. Brutalist baut mit Härte:
+   schwarze Konstruktion, dicke Linien, Schwarzweißfoto, Signalfläche.
+   Bauhaus baut mit Geometrie, Fläche und Proportion — ruhig, modular,
+   kontrolliert. Und es ist nicht Memphis: keine verstreute Deko.
+
+     Farbe       Creme-Grund, Ink, drei Primärfarben. Farbe ist Konstruktion,
+                 nicht Akzent — aber pro Sektion höchstens ein bis zwei
+                 Primärfarben.
+     Farbrollen  ROT     Fokus, Aktion, Energie (Ampersand, Primärknopf,
+                         aktive Einheit, Nummernträger)
+                 GELB    Licht, kleiner konstruktiver Block, Leerstelle
+                 BLAU    Gegenpol, ruhige Sekundärfläche, Textträger
+                 INK     Typografie und Kontrast
+     Form        Kreis, Halbkreis, Viertelkreis, Rechteck, Quadrat, Balken.
+                 Jede Form hat eine Aufgabe: sie trägt ein Bild, eine
+                 Nummer, bildet eine Rasterzelle oder setzt Gewicht. Pro
+                 Sektion höchstens drei dominante Formen.
+     Radius      0 — Kreise sind vollständig rund, alles andere eckig.
+     Linien      sparsam, 1px; Struktur entsteht aus Flächen.
+     Typografie  Manrope 800 als geometrische Display-Sans, Karla für Text,
+                 Meta in Karla-Versalien. Keine Serif, keine Kursive, kein
+                 Mono (das gehört zu Brutalist).
+     Raster      12 Spalten, Hälften, Drittel, Viertel. Asymmetrie nur als
+                 Rasterentscheidung, nie als Pixelversatz.
+     Bild        Farbfotografie, klare Rechteck-Crops, kein Filter. Das
+                 Zusammenspiel Primärfläche + natürliches Foto ist Kern des
+                 Stils und trennt ihn von Mono und Brutalist.
+     Bewegung    statisch; 180 ms Flächen- und Farbwechsel bei Interaktion.
+
+   FUNKTION VOR GEOMETRIE
+   Geometrie nimmt mit der Funktionalität ab: Hero trägt eine große Form,
+   Countdown ein Band, Story eine Gegenfläche, Gallery eine Rasterzelle.
+   Service- und Formularbereiche (spätere Runde) bekommen kaum Formen —
+   Content zuerst, kein Kreis an jeder FAQ-Zeile oder jedem Eingabefeld.
+
+   Diese Ebene liegt nach allen anderen Style-Layern und greift nur über
+   [data-style='bauhaus'] bzw. [data-style-*='bauhaus']. Die erste Fassung in
+   design-system-v2.css (Display 900, JetBrains-Meta, Graustufenbilder) wird
+   hier überschrieben, wo sie dem Contract widerspricht.
+   ========================================================================= */
+
+/* =========================================================================
+   1 · FOUNDATION
+   ========================================================================= */
+
+.wedding-site-wrapper[data-style='bauhaus'] {
+  --bh-paper: var(--bg);
+  --bh-ink: var(--ink);
+  --bh-red: var(--accent);
+  --bh-blue: var(--accent-deep);
+  /* Das Palettenschema kennt zwei Akzente; Gelb ist die feste dritte
+     Primärfarbe des Stils. */
+  --bh-yellow: #F2B51E;
+  --bh-grey: color-mix(in srgb, var(--ink) 66%, var(--bg));
+  --bh-soft: var(--bg-soft);
+  --bh-line: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+
+  --bh-pad-block: clamp(56px, 7vw, 112px);
+  --bh-pad-inline: clamp(20px, 4vw, 64px);
+  --bh-col: repeat(12, minmax(0, 1fr));
+  --bh-gap: clamp(8px, 1vw, 16px);
+
+  --bh-dur: 180ms;
+  --bh-ease: cubic-bezier(0.3, 0, 0.2, 1);
+
+  --font-mono: var(--font-body);
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+  font-family: var(--font-body);
+}
+
+.wedding-site-wrapper[data-style='bauhaus'] :where(.hero-a, .hero-b, .hero-c, .cd, .ls, .gal) :where(*) {
+  border-radius: 0;
+}
+/* Dekorative Daueranimationen der Bestandsfassung aus (außer Countdown-Flip). */
+.wedding-site-wrapper[data-style='bauhaus'] :where(.hero-a, .hero-b, .hero-c, .ls, .gal) :where(*) {
+  animation: none;
+}
+
+/* --- Typografie --- */
+.wedding-site-wrapper[data-style='bauhaus'] :where(.display, .h2-editorial, .ls-title, .gal-title) {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: normal;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  text-transform: none;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.display, .ls-title, .gal-title) em {
+  font-style: normal;
+  font-weight: 800;
+  color: var(--bh-red);
+  background: none;
+  padding: 0;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.ls-title, .gal-title) {
+  font-size: clamp(34px, 4.6vw, 68px);
+  color: var(--bh-ink);
+  margin: 0;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.ls-intro, .gal-intro) {
+  font-family: var(--font-body);
+  font-size: clamp(15px, 1.05vw, 17px);
+  line-height: 1.6;
+  color: var(--bh-ink);
+  max-inline-size: 56ch;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(
+  .ls-eyebrow, .gal-eyebrow, .cd-eyebrow, .cd-label,
+  .hero-a-eyebrow, .hero-b-eyebrow, .hero-c-eyebrow
+) {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.ls-head-ornament, .gal-head-ornament, .styled-bg-editorial, .styled-bg-bauhaus, [class*='marquee']) {
+  display: none;
+}
+
+/* --- Bild: Farbe bleibt --- */
+.wedding-site-wrapper[data-style='bauhaus'] :where(.hero-a, .hero-b, .hero-c, .ls, .gal) img,
+.wedding-site-wrapper[data-style='bauhaus'] :where(.hero-a-image, .hero-b-image, .hero-c-image) {
+  filter: none;
+}
+
+/* --- Knöpfe: rote Fläche mit Paper-Text (Großtext/Versalien 700), sekundär
+   Outline. Keine Schatten, keine Pillen. --- */
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gal-showmore) {
+  min-block-size: 44px;
+  padding: 0 22px;
+  border: 2px solid var(--bh-ink);
+  border-radius: 0;
+  background: transparent;
+  color: var(--bh-ink);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  box-shadow: none;
+  transition: background-color var(--bh-dur) var(--bh-ease), color var(--bh-dur) var(--bh-ease);
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gal-showmore):hover {
+  background: var(--bh-ink);
+  color: var(--bh-paper);
+  transform: none;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :where(.gal-showmore):focus-visible {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: 3px;
+}
+.wedding-site-wrapper[data-style='bauhaus'] .gal-more-count { color: inherit; font-family: inherit; }
+
+@media (prefers-reduced-motion: reduce) {
+  .wedding-site-wrapper[data-style='bauhaus'] *,
+  .wedding-site-wrapper[data-style='bauhaus'] *::before,
+  .wedding-site-wrapper[data-style='bauhaus'] *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* =========================================================================
+   2 · HERO — Hero trägt eine große Form
+   ========================================================================= */
+
+/* --- A: Namen links, Foto als Gegenblock, roter Halbkreis, gelber Block --- */
+.hero-a[data-style-hero='bauhaus'] {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--bh-col);
+  align-items: stretch;
+  min-height: min(84vh, 720px);
+  padding: 0;
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+  overflow: hidden;
+  perspective: none;
+}
+/* Roter Halbkreis: sitzt auf der Unterkante der Namenszone (Pseudo-Element
+   des Satzblocks) — auf dem Desktop links unten, mobil zwischen Namen und
+   Foto. Gelber Block: Quadrat an der oberen rechten Ecke des Fotos. */
+.hero-a[data-style-hero='bauhaus'] .hero-a-content::after {
+  content: '';
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: var(--bh-pad-inline);
+  inline-size: clamp(140px, 20vw, 300px);
+  aspect-ratio: 2 / 1;
+  background: var(--bh-red);
+  border-radius: 999px 999px 0 0;
+  z-index: -1;
+}
+.hero-a[data-style-hero='bauhaus'] .hero-a-image::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  inline-size: clamp(56px, 8vw, 128px);
+  aspect-ratio: 1;
+  background: var(--bh-yellow);
+}
+.hero-a[data-style-hero='bauhaus'] .hero-a-content {
+  position: relative;
+  z-index: 1;
+  grid-column: 1 / span 6;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 18px;
+  margin: 0;
+  width: auto;
+  max-width: none;
+  padding: var(--bh-pad-block) var(--bh-pad-inline) calc(var(--bh-pad-block) + clamp(80px, 11vw, 160px));
+  text-align: left;
+}
+.hero-a[data-style-hero='bauhaus'] .hero-a-content::before { display: none; }
+.hero-a[data-style-hero='bauhaus'] .hero-a-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: normal;
+  font-size: clamp(52px, 7vw, 120px);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--bh-ink);
+  text-transform: none;
+}
+.wedding-site-wrapper[data-style='bauhaus'] :is(.hero-a-title, .hero-b-title, .hero-c-title) .amp {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 800;
+  color: var(--bh-red);
+  background: none;
+  padding: 0;
+  transform: none;
+  animation: none;
+}
+.hero-a[data-style-hero='bauhaus'] :where(.hero-a-date, .hero-a-location) {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+.hero-a[data-style-hero='bauhaus'] .hero-a-image {
+  display: block;
+  position: relative;
+  inset: auto;
+  top: auto;
+  left: auto;
+  grid-column: 7 / -1;
+  grid-row: 1;
+  width: 100%;
+  height: auto;
+  min-block-size: 100%;
+  margin: 0;
+  border: 0;
+  transform: none;
+  background-size: cover;
+  background-position: center;
+  z-index: 1;
+}
+
+/* --- B: 12 Spuren, Namen über 7, Bild vertikal über 5, blauer Kreis an der
+   Bildkante, roter Balken unter den Namen --- */
+.hero-b[data-style-hero='bauhaus'] {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--bh-col);
+  align-items: stretch;
+  gap: 0;
+  min-height: min(84vh, 720px);
+  padding: 0;
+  background: var(--bh-paper);
+  overflow: hidden;
+}
+/* Blauer Kreis: sein Mittelpunkt liegt auf der Rasterkante zwischen Spur 7
+   und 8 — er schneidet bewusst in die Bildzone. */
+.hero-b[data-style-hero='bauhaus']::before {
+  content: '';
+  position: absolute;
+  inset-block-end: clamp(-120px, -8vw, -60px);
+  inset-inline-start: calc(100% / 12 * 7);
+  inline-size: clamp(220px, 26vw, 400px);
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  background: var(--bh-blue);
+  border-radius: 50%;
+  z-index: 2;
+}
+.hero-b[data-style-hero='bauhaus'] .hero-b-text {
+  position: relative;
+  z-index: 1;
+  grid-column: 1 / span 7;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  padding: var(--bh-pad-block) var(--bh-pad-inline);
+  background: none;
+  color: var(--bh-ink);
+  border: 0;
+}
+.hero-b[data-style-hero='bauhaus'] .hero-b-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: normal;
+  font-size: clamp(48px, 6.4vw, 112px);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--bh-ink);
+  text-transform: none;
+}
+.hero-b[data-style-hero='bauhaus'] .hero-b-rule {
+  inline-size: calc(100% / 7 * 2);
+  block-size: 14px;
+  background: var(--bh-red);
+  margin-block: 8px;
+}
+.hero-b[data-style-hero='bauhaus'] :where(.hero-b-date, .hero-b-venue) {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+  background: none;
+  padding: 0;
+}
+.hero-b[data-style-hero='bauhaus'] .hero-b-intro {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--bh-ink);
+  max-inline-size: 40ch;
+}
+.hero-b[data-style-hero='bauhaus'] .hero-b-image-col {
+  grid-column: 8 / -1;
+  grid-row: 1;
+  display: block;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: 0;
+}
+.hero-b[data-style-hero='bauhaus'] .hero-b-image {
+  position: relative;
+  inset: auto;
+  inline-size: 100%;
+  block-size: 100%;
+  min-block-size: 440px;
+  margin: 0;
+  border: 0;
+  background-size: cover;
+  background-position: center;
+}
+.hero-b[data-style-hero='bauhaus'] .hero-b-image-caption { display: none; }
+
+/* --- C: weniger, größer — riesiger Name, roter Kreis, Foto als vertikaler
+   Block. Das Vollbild der Basis wird zur rechten Rasterzone. --- */
+.hero-c[data-style-hero='bauhaus'] {
+  position: relative;
+  overflow: hidden;
+  background: var(--bh-paper);
+}
+.hero-c[data-style-hero='bauhaus'] .hero-c-image {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: auto;
+  inset-inline-start: auto;
+  inline-size: calc(100% / 12 * 4);
+  margin: 0;
+  border: 0;
+  transform: none;
+  filter: none;
+  animation: none;
+  z-index: 0;
+}
+.hero-c[data-style-hero='bauhaus'] .hero-c-vignette { display: none; }
+/* Roter Kreis: ein einziger großer Körper links, der Name läuft darüber. */
+.hero-c[data-style-hero='bauhaus']::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: calc(100% / 12 * 1);
+  inline-size: clamp(280px, 36vw, 560px);
+  aspect-ratio: 1;
+  transform: translateY(-50%);
+  background: var(--bh-red);
+  border-radius: 50%;
+  z-index: 0;
+}
+.hero-c[data-style-hero='bauhaus'] :where(.hero-c-volume, .hero-c-eyebrow, .hero-c-bauhaus-shape) { display: none; }
+.hero-c[data-style-hero='bauhaus'] .hero-c-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 24px;
+  inline-size: calc(100% / 12 * 8);
+  padding: var(--bh-pad-block) var(--bh-pad-inline);
+  text-align: left;
+  color: var(--bh-ink);
+}
+.hero-c[data-style-hero='bauhaus'] :where(.hero-c-top, .hero-c-mid, .hero-c-bot) {
+  inline-size: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 8px 24px;
+  text-align: left;
+}
+.hero-c[data-style-hero='bauhaus'] .hero-c-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: normal;
+  font-size: clamp(56px, 9vw, 168px);
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+  color: var(--bh-ink);
+  text-transform: none;
+  background: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-inline-size: 100%;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.hero-c[data-style-hero='bauhaus'] :where(.hero-c-date, .hero-c-venue) {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+  background: var(--bh-paper);
+  padding: 4px 8px;
+  text-shadow: none;
+}
+
+/* =========================================================================
+   3 · COUNTDOWN — ein Band
+   ========================================================================= */
+
+.cd[data-style-countdown='bauhaus'] {
+  --cd-num-font: var(--font-display);
+  --cd-num-weight: 800;
+  padding: var(--bh-pad-block) var(--bh-pad-inline);
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+  text-align: left;
+}
+.cd[data-style-countdown='bauhaus'] :where([class*='marquee'], [class*='-star'], .styled-bg-editorial) { display: none; }
+.cd[data-style-countdown='bauhaus'] .cd-eyebrow { display: block; margin: 0 0 24px; }
+.cd[data-style-countdown='bauhaus'] :where(.cd-footer, .cd-past) {
+  margin: 24px 0 0;
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--bh-ink);
+  text-align: left;
+}
+
+/* --- A: horizontale Leiste, Einheiten durch rote Quadrate getrennt --- */
+.cd.cdA-wrap[data-style-countdown='bauhaus'] .cdA-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0;
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+.cd.cdA-wrap[data-style-countdown='bauhaus'] .cdA-unit {
+  position: relative;
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  padding: 8px 24px;
+  background: none;
+  border: 0;
+}
+.cd.cdA-wrap[data-style-countdown='bauhaus'] .cdA-unit:first-child { padding-inline-start: 0; }
+.cd.cdA-wrap[data-style-countdown='bauhaus'] .cdA-unit + .cdA-unit::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: -5px;
+  inset-block-start: calc(50% - 5px);
+  inline-size: 10px;
+  block-size: 10px;
+  background: var(--bh-red);
+}
+.cd.cdA-wrap[data-style-countdown='bauhaus'] .cd-num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(48px, 6vw, 96px);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--bh-ink);
+}
+
+/* --- B: Rasterband — die Tage als dominante blaue Zelle --- */
+.cd.cdB-wrap[data-style-countdown='bauhaus'] .cd-date-stamp-wrap { justify-content: flex-start; border: 0; margin-block-end: 20px; }
+.cd.cdB-wrap[data-style-countdown='bauhaus'] .cd-date-stamp {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+  background: none;
+  border: 0;
+}
+.cd.cdB-wrap[data-style-countdown='bauhaus'] .cdB-row {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) repeat(4, minmax(0, 2fr));
+  gap: 0;
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  background: var(--bh-soft);
+}
+.cd.cdB-wrap[data-style-countdown='bauhaus'] .cdB-unit {
+  position: relative;
+  display: grid;
+  align-content: end;
+  justify-items: start;
+  gap: 10px;
+  padding: 24px;
+  background: var(--bh-soft);
+  color: var(--bh-ink);
+  border: 0;
+  transform: none;
+}
+.cd.cdB-wrap[data-style-countdown='bauhaus'] .cdB-unit:nth-child(2) {
+  grid-column: 1;
+  grid-row: 1;
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+}
+.cd.cdB-wrap[data-style-countdown='bauhaus'] .cdB-unit:nth-child(2) .cd-label { color: var(--bh-paper); }
+/* Ein rotes Quadrat markiert die dominante Einheit. */
+.cd.cdB-wrap[data-style-countdown='bauhaus'] .cdB-unit:nth-child(2)::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  inline-size: 28px;
+  block-size: 28px;
+  background: var(--bh-red);
+}
+.cd.cdB-wrap[data-style-countdown='bauhaus'] .cdB-cards { display: flex; gap: 0; }
+.cd.cdB-wrap[data-style-countdown='bauhaus'] :where(.flip-card, .flip-top, .flip-bottom, .flip-anim-top, .flip-anim-bot) {
+  background-color: inherit;
+  background-image: none;
+  border: 0;
+  box-shadow: none;
+  color: inherit;
+}
+.cd.cdB-wrap[data-style-countdown='bauhaus'] :where(.flip-top, .flip-bottom)::after { background: none; }
+.cd.cdB-wrap[data-style-countdown='bauhaus'] .flip-mid { background: transparent; }
+.cd.cdB-wrap[data-style-countdown='bauhaus'] .flip-digit {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(36px, 3.8vw, 64px);
+  letter-spacing: -0.03em;
+  color: inherit;
+}
+.cd.cdB-wrap[data-style-countdown='bauhaus'] .cdB-unit:nth-child(2) .flip-digit { font-size: clamp(60px, 7.4vw, 128px); }
+
+/* --- C: eine Zahl auf einem gelben Kreis, Rest klein --- */
+.cd.cdC-wrap[data-style-countdown='bauhaus'] .cdC-bars {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 24px;
+  max-inline-size: none;
+  margin: 0;
+}
+.cd.cdC-wrap[data-style-countdown='bauhaus'] .cdC-bar-row {
+  display: grid;
+  gap: 6px;
+  padding: 14px 0;
+  border: 0;
+  border-block-start: var(--bh-line);
+}
+.cd.cdC-wrap[data-style-countdown='bauhaus'] .cdC-bar-row:first-child {
+  position: relative;
+  grid-column: 1 / -1;
+  display: grid;
+  justify-items: start;
+  padding: clamp(24px, 3vw, 48px) 0;
+  border: 0;
+  isolation: isolate;
+}
+.cd.cdC-wrap[data-style-countdown='bauhaus'] .cdC-bar-row:first-child::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 0;
+  block-size: 100%;
+  aspect-ratio: 1;
+  transform: translateY(-50%);
+  background: var(--bh-yellow);
+  border-radius: 50%;
+  z-index: -1;
+}
+.cd.cdC-wrap[data-style-countdown='bauhaus'] :where(.cdC-bar-num, .cdC-bar-num-value) {
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--bh-ink);
+  justify-self: start;
+  text-align: left;
+  letter-spacing: -0.04em;
+}
+.cd.cdC-wrap[data-style-countdown='bauhaus'] .cdC-bar-row:first-child .cdC-bar-num-value {
+  font-size: clamp(120px, 18vw, 280px);
+  line-height: 0.8;
+  padding-inline-start: clamp(24px, 3vw, 48px);
+}
+.cd.cdC-wrap[data-style-countdown='bauhaus'] .cdC-bar-row:first-child .cdC-bar-label { padding-inline-start: clamp(24px, 3vw, 48px); }
+.cd.cdC-wrap[data-style-countdown='bauhaus'] .cdC-bar-row:not(:first-child) .cdC-bar-num-value { font-size: clamp(24px, 2.4vw, 36px); }
+.cd.cdC-wrap[data-style-countdown='bauhaus'] .cdC-bar-num-max { display: none; }
+.cd.cdC-wrap[data-style-countdown='bauhaus'] .cdC-bar-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+.cd.cdC-wrap[data-style-countdown='bauhaus'] .cdC-bar-track {
+  block-size: 6px;
+  background: var(--bh-soft);
+  border: 0;
+}
+.cd.cdC-wrap[data-style-countdown='bauhaus'] .cdC-bar-fill { background: var(--bh-ink); }
+.cd.cdC-wrap[data-style-countdown='bauhaus'] .cdC-bar-row:first-child .cdC-bar-track { display: none; }
+
+/* =========================================================================
+   4 · LOVE STORY — Form als Gegenfläche
+   ========================================================================= */
+
+.ls[data-style-ls='bauhaus'] {
+  padding: var(--bh-pad-block) var(--bh-pad-inline);
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+  text-align: left;
+}
+.ls[data-style-ls='bauhaus'] :where(.ls-eyebrow, .ls-title, .ls-intro) { margin-inline: 0; text-align: left; }
+.ls[data-style-ls='bauhaus'] .ls-title { margin-block: 12px 0; }
+.ls[data-style-ls='bauhaus'] .ls-intro { margin-block: 16px 0; }
+
+/* --- A: Bild | Text, ein roter Kreis als Marker --- */
+.ls.lsA[data-style-ls='bauhaus'] .lsA-single {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: center;
+  max-inline-size: 1360px;
+  margin: clamp(36px, 4.4vw, 64px) 0 0;
+}
+.ls.lsA[data-style-ls='bauhaus'] .lsA-images {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--bh-gap);
+  padding: 0;
+  min-inline-size: 0;
+}
+.ls.lsA[data-style-ls='bauhaus'] .lsA-images::before { display: none; }
+.ls.lsA[data-style-ls='bauhaus'] .lsA-img {
+  position: relative;
+  inset: auto;
+  transform: none;
+  margin: 0;
+  inline-size: 100%;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  width: auto;
+  border: 0;
+  box-shadow: none;
+  overflow: hidden;
+  aspect-ratio: 1;
+  background: var(--bh-soft);
+}
+.ls.lsA[data-style-ls='bauhaus'] .lsA-img--1 { grid-column: 1 / -1; aspect-ratio: 3 / 2; }
+.ls.lsA[data-style-ls='bauhaus'] .lsA-img img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.ls.lsA[data-style-ls='bauhaus'] .lsA-text {
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+  text-align: left;
+  max-inline-size: 46ch;
+}
+.ls.lsA[data-style-ls='bauhaus'] .lsA-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+.ls.lsA[data-style-ls='bauhaus'] .lsA-eyebrow::before {
+  content: '';
+  inline-size: 14px;
+  block-size: 14px;
+  border-radius: 50%;
+  background: var(--bh-red);
+}
+.ls.lsA[data-style-ls='bauhaus'] .lsA-moment-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(28px, 3vw, 44px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--bh-ink);
+}
+.ls.lsA[data-style-ls='bauhaus'] .lsA-desc {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--bh-ink);
+}
+.ls.lsA[data-style-ls='bauhaus'] .lsA-sig {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bh-ink);
+}
+
+/* --- B: Stationen im 7/5-Wechsel; die Nummer sitzt im roten Kreis auf der
+   Bildkante, ein gelber Balken trägt den Titel --- */
+.ls.lsB[data-style-ls='bauhaus'] .lsB-list {
+  display: grid;
+  gap: clamp(32px, 3.6vw, 56px);
+  max-inline-size: 1360px;
+  margin: clamp(36px, 4.4vw, 64px) 0 0;
+}
+.ls.lsB[data-style-ls='bauhaus'] .lsB-item {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 64px);
+  padding: 0;
+  border: 0;
+}
+.ls.lsB[data-style-ls='bauhaus'] .lsB-item:nth-child(even) { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+.ls.lsB[data-style-ls='bauhaus'] .lsB-item:nth-child(even) .lsB-img-wrap { order: 2; }
+.ls.lsB[data-style-ls='bauhaus'] .lsB-img-wrap {
+  position: relative;
+  overflow: visible;
+  border: 0;
+  aspect-ratio: 2 / 1;
+  background: var(--bh-soft);
+}
+.ls.lsB[data-style-ls='bauhaus'] .lsB-img-wrap img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.ls.lsB[data-style-ls='bauhaus'] .lsB-date {
+  position: absolute;
+  inset: auto auto 0 0;
+  block-size: auto;
+  inline-size: auto;
+  transform: none;
+  writing-mode: horizontal-tb;
+  padding: 6px 10px;
+  background: var(--bh-yellow);
+  color: var(--bh-ink);
+  border: 0;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.ls.lsB[data-style-ls='bauhaus'] .lsB-text { display: grid; gap: 12px; justify-items: start; }
+.ls.lsB[data-style-ls='bauhaus'] .lsB-num {
+  display: grid;
+  place-items: center;
+  inline-size: 56px;
+  block-size: 56px;
+  border-radius: 50%;
+  background: var(--bh-red);
+  color: var(--bh-paper);
+  border: 0;
+  padding: 0;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.ls.lsB[data-style-ls='bauhaus'] .lsB-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(24px, 2.4vw, 38px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--bh-ink);
+}
+.ls.lsB[data-style-ls='bauhaus'] .lsB-desc {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--bh-ink);
+  max-inline-size: 46ch;
+}
+
+/* --- C: großes Bild + blaue Textfläche (eine Form je Station) --- */
+.ls.lsC[data-style-ls='bauhaus'] .lsC-wrap {
+  display: grid;
+  gap: clamp(24px, 3vw, 48px);
+  max-inline-size: 1360px;
+  margin: clamp(36px, 4.4vw, 64px) 0 0;
+}
+.ls.lsC[data-style-ls='bauhaus'] .lsC-line { display: none; }
+.ls.lsC[data-style-ls='bauhaus'] .lsC-item { display: block; padding: 0; border: 0; }
+.ls.lsC[data-style-ls='bauhaus'] .lsC-item::before,
+.ls.lsC[data-style-ls='bauhaus'] .lsC-item::after { display: none; }
+.ls.lsC[data-style-ls='bauhaus'] .lsC-card {
+  display: grid;
+  grid-template-columns: var(--bh-col);
+  grid-template-rows: 1fr auto auto;
+  column-gap: 0;
+  row-gap: 0;
+  align-items: stretch;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+.ls.lsC[data-style-ls='bauhaus'] .lsC-img {
+  grid-column: 1 / span 8;
+  grid-row: 1 / span 3;
+  margin: 0;
+  border: 0;
+  overflow: hidden;
+  aspect-ratio: 2 / 1;
+  background: var(--bh-soft);
+}
+.ls.lsC[data-style-ls='bauhaus'] .lsC-img img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.ls.lsC[data-style-ls='bauhaus'] :where(.lsC-eyebrow, .lsC-title, .lsC-desc) {
+  grid-column: 9 / -1;
+  margin: 0;
+  padding-inline: clamp(20px, 2.4vw, 40px);
+  background: var(--bh-blue);
+  color: var(--bh-paper);
+}
+.ls.lsC[data-style-ls='bauhaus'] .lsC-eyebrow {
+  grid-row: 1;
+  align-self: stretch;
+  display: flex;
+  align-items: flex-end;
+  padding-block-start: 24px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.ls.lsC[data-style-ls='bauhaus'] .lsC-title {
+  grid-row: 2;
+  padding-block: 10px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(26px, 2.8vw, 48px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.ls.lsC[data-style-ls='bauhaus'] .lsC-desc {
+  grid-row: 3;
+  padding-block-end: 24px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.55;
+  display: block;
+  overflow: visible;
+}
+
+/* =========================================================================
+   5 · GALLERY — Form als Rasterzelle
+   ========================================================================= */
+
+.gal[data-style-gallery='bauhaus'] {
+  padding: var(--bh-pad-block) var(--bh-pad-inline);
+  background: var(--bh-paper);
+  color: var(--bh-ink);
+  text-align: left;
+}
+.gal[data-style-gallery='bauhaus'] :where(.gal-eyebrow, .gal-title, .gal-intro) { margin-inline: 0; text-align: left; }
+.gal[data-style-gallery='bauhaus'] .gal-title { margin-block: 12px 0; }
+.gal[data-style-gallery='bauhaus'] .gal-intro { margin-block: 16px 0; }
+.gal[data-style-gallery='bauhaus'] .gal-showmore-row { justify-content: flex-start; padding-block-start: 28px; }
+.gal[data-style-gallery='bauhaus'] :where(.galA-cap, .galB-cap) { display: none; }
+
+/* --- A: Dreierraster; eine gelbe Fläche ersetzt die freie Zelle --- */
+.gal.galA-wrap[data-style-gallery='bauhaus'] .galA {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--bh-gap);
+  max-inline-size: 1360px;
+  margin: clamp(36px, 4.4vw, 64px) 0 0;
+}
+.gal.galA-wrap[data-style-gallery='bauhaus'] .galA::after {
+  content: '';
+  aspect-ratio: 3 / 2;
+  background: var(--bh-yellow);
+}
+.gal.galA-wrap[data-style-gallery='bauhaus'] .galA-tile {
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  aspect-ratio: 3 / 2;
+  background: var(--bh-soft);
+}
+.gal.galA-wrap[data-style-gallery='bauhaus'] .galA-tile img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  transition: transform var(--bh-dur) var(--bh-ease);
+}
+.gal.galA-wrap[data-style-gallery='bauhaus'] .galA-tile:hover img { transform: scale(1.02); }
+
+/* --- B: Zwölferraster auf festen Zeilen; zwei Farbzellen (roter Kreis,
+   blaues Quadrat) sind Teil des Rasters, nicht Deko darüber --- */
+.gal.galB-wrap[data-style-gallery='bauhaus'] .galB {
+  display: grid;
+  grid-template-columns: var(--bh-col);
+  grid-auto-rows: clamp(72px, 6.4vw, 108px);
+  grid-auto-flow: row dense;
+  gap: var(--bh-gap);
+  max-inline-size: 1360px;
+  margin: clamp(36px, 4.4vw, 64px) 0 0;
+}
+.gal.galB-wrap[data-style-gallery='bauhaus'] .galB-group,
+.gal.galB-wrap[data-style-gallery='bauhaus'] .galB-grid { display: contents; }
+.gal.galB-wrap[data-style-gallery='bauhaus'] .galB::before {
+  content: '';
+  grid-column: 9 / span 4;
+  grid-row: 1 / span 2;
+  background:
+    radial-gradient(circle at 50% 100%, var(--bh-red) 0 49.5%, transparent 50%) center / 100% 100% no-repeat,
+    var(--bh-paper);
+}
+.gal.galB-wrap[data-style-gallery='bauhaus'] .galB::after {
+  content: '';
+  grid-column: span 4;
+  grid-row: span 2;
+  background: var(--bh-blue);
+}
+.gal.galB-wrap[data-style-gallery='bauhaus'] .galB-item,
+.gal.galB-wrap[data-style-gallery='bauhaus'] .galB-group[data-layout='pair'] .galB-item,
+.gal.galB-wrap[data-style-gallery='bauhaus'] .galB-group[data-layout='triple'] .galB-item {
+  grid-column: span 4;
+  grid-row: span 2;
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  aspect-ratio: auto;
+  background: var(--bh-soft);
+}
+.gal.galB-wrap[data-style-gallery='bauhaus'] .galB-group[data-layout='full'] .galB-item {
+  grid-column: span 8;
+  grid-row: span 4;
+}
+.gal.galB-wrap[data-style-gallery='bauhaus'] :where(.galB-imgwrap, .galB-item img) {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  border: 0;
+}
+
+/* --- C: Leitbild, dann ein blaues Quadrat als tragende Form, dann die Folge --- */
+.gal.galC-wrap[data-style-gallery='bauhaus'] .galC {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--bh-gap);
+  max-inline-size: none;
+  margin: clamp(36px, 4.4vw, 64px) calc(-1 * var(--bh-pad-inline)) 0 0;
+  padding-inline-end: var(--bh-pad-inline);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+.gal.galC-wrap[data-style-gallery='bauhaus'] .galC::-webkit-scrollbar { display: none; }
+.gal.galC-wrap[data-style-gallery='bauhaus'] .galC-tile {
+  order: 2;
+  flex: 0 0 clamp(180px, 18vw, 280px);
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  aspect-ratio: 4 / 5;
+  scroll-snap-align: start;
+  background: var(--bh-soft);
+}
+.gal.galC-wrap[data-style-gallery='bauhaus'] .galC-tile:first-child {
+  order: 0;
+  flex-basis: clamp(300px, 50vw, 800px);
+  aspect-ratio: 3 / 2;
+}
+.gal.galC-wrap[data-style-gallery='bauhaus'] .galC::before {
+  content: '';
+  order: 1;
+  flex: 0 0 clamp(140px, 14vw, 220px);
+  aspect-ratio: 1;
+  background:
+    radial-gradient(circle at 0% 100%, var(--bh-blue) 0 99%, transparent 100%) 0 0 / 100% 100% no-repeat,
+    var(--bh-paper);
+}
+.gal.galC-wrap[data-style-gallery='bauhaus'] .galC-tile img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+
+/* =========================================================================
+   6 · MOBIL — geometrisch, aber nicht überladen
+   ========================================================================= */
+
+@media (max-width: 900px) {
+  .hero-a[data-style-hero='bauhaus'],
+  .hero-b[data-style-hero='bauhaus'] {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+  .hero-a[data-style-hero='bauhaus'] .hero-a-content {
+    grid-column: 1;
+    padding-block-end: calc(var(--bh-pad-block) + 60px);
+  }
+  .hero-a[data-style-hero='bauhaus'] .hero-a-content::after { inline-size: clamp(110px, 32vw, 180px); }
+  .hero-a[data-style-hero='bauhaus'] .hero-a-image {
+    grid-column: 1;
+    grid-row: 2;
+    min-block-size: clamp(280px, 72vw, 520px);
+  }
+  .hero-b[data-style-hero='bauhaus'] .hero-b-text { grid-column: 1; }
+  .hero-b[data-style-hero='bauhaus'] .hero-b-image-col { grid-column: 1; grid-row: 2; }
+  .hero-b[data-style-hero='bauhaus'] .hero-b-image { min-block-size: clamp(280px, 72vw, 520px); }
+  .hero-b[data-style-hero='bauhaus']::before {
+    inline-size: clamp(120px, 34vw, 200px);
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+    inset-block-end: auto;
+    inset-block-start: 0;
+    transform: translate(35%, -35%);
+  }
+  .hero-c[data-style-hero='bauhaus'] .hero-c-image { inline-size: 38%; }
+  .hero-c[data-style-hero='bauhaus'] .hero-c-content { inline-size: 100%; }
+  .hero-c[data-style-hero='bauhaus']::before { inline-size: 60vw; inset-inline-start: -10vw; }
+
+  .cd.cdB-wrap[data-style-countdown='bauhaus'] .cdB-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cd.cdB-wrap[data-style-countdown='bauhaus'] .cdB-unit:nth-child(2) { grid-column: 1 / -1; }
+  .cd.cdC-wrap[data-style-countdown='bauhaus'] .cdC-bars { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .ls.lsA[data-style-ls='bauhaus'] .lsA-single,
+  .ls.lsB[data-style-ls='bauhaus'] .lsB-item,
+  .ls.lsB[data-style-ls='bauhaus'] .lsB-item:nth-child(even) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+  .ls.lsB[data-style-ls='bauhaus'] .lsB-item:nth-child(even) .lsB-img-wrap { order: 0; }
+  .ls.lsC[data-style-ls='bauhaus'] .lsC-card { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; }
+  .ls.lsC[data-style-ls='bauhaus'] .lsC-img { grid-column: 1; grid-row: 1; aspect-ratio: 16 / 9; }
+  .ls.lsC[data-style-ls='bauhaus'] .lsC-eyebrow { grid-column: 1; grid-row: 2; }
+  .ls.lsC[data-style-ls='bauhaus'] .lsC-title { grid-column: 1; grid-row: 3; }
+  .ls.lsC[data-style-ls='bauhaus'] .lsC-desc { grid-column: 1; grid-row: 4; }
+
+  .gal.galA-wrap[data-style-gallery='bauhaus'] .galA { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gal.galB-wrap[data-style-gallery='bauhaus'] .galB {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: clamp(90px, 24vw, 150px);
+  }
+  .gal.galB-wrap[data-style-gallery='bauhaus'] .galB::before { grid-column: 2; grid-row: 1; }
+  .gal.galB-wrap[data-style-gallery='bauhaus'] .galB::after { grid-column: span 1; grid-row: span 1; }
+  .gal.galB-wrap[data-style-gallery='bauhaus'] .galB-item,
+  .gal.galB-wrap[data-style-gallery='bauhaus'] .galB-group[data-layout='pair'] .galB-item,
+  .gal.galB-wrap[data-style-gallery='bauhaus'] .galB-group[data-layout='triple'] .galB-item { grid-column: span 1; grid-row: span 1; }
+  .gal.galB-wrap[data-style-gallery='bauhaus'] .galB-group[data-layout='full'] .galB-item { grid-column: 1 / -1; grid-row: span 2; }
+}
+
+@media (max-width: 600px) {
+  .hero-a[data-style-hero='bauhaus'] .hero-a-title { font-size: clamp(44px, 13vw, 68px); }
+  .hero-b[data-style-hero='bauhaus'] .hero-b-title { font-size: clamp(42px, 12vw, 64px); }
+  .hero-c[data-style-hero='bauhaus'] .hero-c-title { font-size: clamp(44px, 13vw, 76px); }
+  .hero-c[data-style-hero='bauhaus'] .hero-c-image { inline-size: 34%; }
+  .cd.cdA-wrap[data-style-countdown='bauhaus'] .cdA-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 16px; }
+  .cd.cdA-wrap[data-style-countdown='bauhaus'] .cdA-unit { padding-inline: 0 16px; }
+  .cd.cdA-wrap[data-style-countdown='bauhaus'] .cdA-unit + .cdA-unit::before { display: none; }
+  .cd.cdC-wrap[data-style-countdown='bauhaus'] .cdC-bar-row:first-child .cdC-bar-num-value { font-size: clamp(96px, 32vw, 160px); }
+  .ls[data-style-ls='bauhaus'] .ls-title,
+  .gal[data-style-gallery='bauhaus'] .gal-title { font-size: clamp(32px, 10vw, 46px); }
+  .gal.galC-wrap[data-style-gallery='bauhaus'] .galC-tile { flex-basis: 56vw; }
+  .gal.galC-wrap[data-style-gallery='bauhaus'] .galC-tile:first-child { flex-basis: 84vw; }
+  .gal.galC-wrap[data-style-gallery='bauhaus'] .galC::before { flex-basis: 40vw; }
+}
+
+/* =========================================================================
+   BESTAND ZURÜCKNEHMEN
+   -------------------------------------------------------------------------
+   Die erste Fassung streut in Hero A/B/C eine eigene Formenebene
+   (DecorationBauhausShapes: schwebender Kreis mit Multiply, gedrehter
+   Balken, Dauerbewegung) — genau die Shape-Suppe, die der Contract
+   ausschließt. Sie hat keine Klasse, nur Inline-Stile; erkannt wird sie am
+   aria-hidden-Wrapper ohne Pointer-Events. Die Formen dieser Ebene kommen
+   stattdessen aus dem Raster (siehe Abschnitt 2).
+   ========================================================================= */
+.wedding-site-wrapper[data-style='bauhaus'] :is(.hero-a, .hero-b, .hero-c) > div[aria-hidden='true'][style*='pointer-events'] {
+  display: none;
+}
+/* Hero C der Bestandsfassung zeigt das Foto als gerahmten Block
+   (.hero-c-bauhaus-img). Es wird zur rechten Rasterzone (4 von 12 Spuren). */
+.hero-c[data-style-hero='bauhaus'] .hero-c-bauhaus-img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: auto;
+  inline-size: calc(100% / 12 * 4);
+  block-size: auto;
+  margin: 0;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+  transform: none;
+  filter: none;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+.hero-c[data-style-hero='bauhaus'] .hero-c-title { font-size: clamp(56px, 8vw, 150px); }
+/* Countdown A: die Bestandsfassung färbt einzelne Ziffern-Kästen ein —
+   Farbe als Karte statt Konstruktion. Zurück auf Ink auf Paper. */
+.cd.cdA-wrap[data-style-countdown='bauhaus'] .cdA-unit:nth-child(n) .cd-num {
+  background: none;
+  color: var(--bh-ink);
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+}
+@media (max-width: 900px) {
+  .hero-c[data-style-hero='bauhaus'] .hero-c-bauhaus-img { inline-size: 38%; }
+}
+@media (max-width: 600px) {
+  .hero-c[data-style-hero='bauhaus'] .hero-c-bauhaus-img { inline-size: 34%; }
+}
+/* Die Bestandsfassung legte Graustufen und Luminosity-Blend über die Bilder —
+   Bauhaus zeigt Farbfotografie. */
+.wedding-site-wrapper[data-style='bauhaus'] :is(
+  .hero-a[data-style-hero='bauhaus'] .hero-a-image,
+  .hero-b[data-style-hero='bauhaus'] .hero-b-image,
+  .hero-c[data-style-hero='bauhaus'] .hero-c-bauhaus-img,
+  .ls[data-style-ls='bauhaus'] img,
+  .gal[data-style-gallery='bauhaus'] img
+) {
+  filter: none;
+  mix-blend-mode: normal;
+  opacity: 1;
+}
+/* Hero C: das Ampersand liegt auf dem roten Kreis — dort Ink statt Rot;
+   die Querlinien der Bestandsfassung entfallen. */
+.hero-c[data-style-hero='bauhaus'] .hero-c-title .amp { color: var(--bh-ink); }
+.hero-c[data-style-hero='bauhaus'] :where(.hero-c-top, .hero-c-mid, .hero-c-bot) {
+  border: 0;
+  padding-block: 0;
+}
+.cd.cdC-wrap[data-style-countdown='bauhaus'] .cd-date-stamp-wrap { justify-content: flex-start; }
+/* Gleiche Korrekturen in der Spezifität der Bestandsregeln (0,3,0). */
+.hero-c[data-style-hero='bauhaus'] .hero-c-top,
+.hero-c[data-style-hero='bauhaus'] .hero-c-mid,
+.hero-c[data-style-hero='bauhaus'] .hero-c-bot {
+  border: 0;
+  padding-block: 0;
+  background: none;
+}
+.hero-c[data-style-hero='bauhaus'] .hero-c-top::before,
+.hero-c[data-style-hero='bauhaus'] .hero-c-top::after,
+.hero-c[data-style-hero='bauhaus'] .hero-c-bot::before,
+.hero-c[data-style-hero='bauhaus'] .hero-c-bot::after { display: none; }
+.ls.lsB[data-style-ls='bauhaus'] .lsB-item .lsB-num { opacity: 1; }
+.ls.lsC[data-style-ls='bauhaus'] .lsC-card .lsC-eyebrow,
+.ls.lsC[data-style-ls='bauhaus'] .lsC-card .lsC-title,
+.ls.lsC[data-style-ls='bauhaus'] .lsC-card .lsC-desc {
+  margin: 0;
+  transform: none;
+  max-inline-size: none;
+  overflow-wrap: break-word;
+}
