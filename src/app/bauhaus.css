@@ -5793,3 +5793,131 @@
 .tl.tlC-section[data-style-tl='bauhaus'] :where(.tlC-time, .tlC-uhr) { color: var(--bh-yellow); }
 /* IBAN auf Ink: Rot läge bei 3,8:1 — Gelb (9,8:1). */
 .gift[data-style-gift='bauhaus'] .gift-iban-num { color: var(--bh-yellow); }
+
+/* =========================================================================
+   8 · FULL-PAGE-POLISH — Farbgewichtung, Formdichte, Übergänge
+   -------------------------------------------------------------------------
+   Vorher übernahm Blau in fast allen funktionalen Bereichen die gefüllte
+   Fläche; die untere Seitenhälfte wurde zu Creme + Blau + roter Meta. Jetzt
+   bekommt jede Familie ihre eigene Farbrolle:
+
+     Information  Paper + Ink. Gefüllte Zustände und Aktionen in Ink,
+                  Farbe nur als rote Nummer.
+     Reference    Gelb als texttragende Fläche (Ink auf Gelb 9,8:1), Rot für
+                  große Nummern und Buchstaben.
+     Interaction  Blau für Auswahl, Status, Aktion, Bestätigung — dort hat es
+                  jetzt wieder Bedeutung.
+
+   Umgesetzt über die Farbvariable der Sektion, nicht über neue Flächen.
+   ========================================================================= */
+
+/* Information: gefüllte Flächen (übersetzt als --bh-blue) werden Ink. */
+.wedding-site-wrapper[data-style='bauhaus'] :is(.tl, .dir, .acc, .wit) {
+  --bh-blue: var(--bh-ink);
+}
+/* Porträt-Platzhalter ohne Bild: definierte neutrale Fläche mit Ink-Initialen
+   — kein Block aus Alt-CSS, kein Schwarz. */
+.wit[data-style-wit='bauhaus'] :where(*):has(> [class*='initials']) { background: var(--bh-soft); }
+.wit[data-style-wit='bauhaus'] [class*='initials'] {
+  color: var(--bh-ink);
+  font-family: var(--font-display);
+  font-weight: 800;
+}
+
+/* Reference: Gelb trägt die aktive Frage, die Kopieraktion und den aktiven
+   Buchstaben — jeweils mit Ink-Text. */
+.wedding-site-wrapper[data-style='bauhaus'] :is(
+  .faq.faqC-section .faqC-item:first-child,
+  .faq.faqA-section .faqA-item[data-open='true'] .faqA-q-btn,
+  .gift .gift-iban-copy,
+  .abc.abcC-section .abcC-idx-btn.is-active,
+  .abc.abcC-section .abcC-idx-btn:hover
+),
+.wedding-site-wrapper[data-style='bauhaus'] :is(
+  .faq.faqC-section .faqC-item:first-child,
+  .faq.faqA-section .faqA-item[data-open='true'] .faqA-q-btn
+) :where(*) {
+  background-color: var(--bh-yellow);
+  color: var(--bh-ink);
+  border-color: var(--bh-ink);
+}
+.wedding-site-wrapper[data-style='bauhaus'] :is(
+  .faq.faqC-section .faqC-item:first-child,
+  .faq.faqA-section .faqA-item[data-open='true'] .faqA-q-btn
+) :where(*) { background-color: transparent; }
+
+/* C-Kopfmarker: nicht in jeder C-Sektion. Er bleibt dort, wo er die
+   Komposition trägt — Ablauf C (Übergang ins Bildband) und ABC C
+   (grafischer Abschluss). */
+.wedding-site-wrapper[data-style='bauhaus'] :where(.dirC-section, .accC-section, .witC-section, .faqC-section, .giftC-section, .gbC-section, .mwC-section, .upC-section)
+  :where(.dir-eyebrow, .acc-eyebrow, .wit-eyebrow, .faq-eyebrow, .gift-eyebrow, .gb-eyebrow, .mw-eyebrow, .up-eyebrow)::before {
+  display: none;
+}
+
+/* Übergänge (drei Typen):
+     OPEN        nur Raum — Standard
+     RULE        1px-Linie oben — zwischen den gleichartigen Service-
+                 Bereichen und im Mitmach-Block, damit sie sich absetzen
+     COLOR EDGE  die eigene Farbfläche einer Sektion trägt den Übergang
+                 (Countdown-Band, Hero) — keine zusätzliche Kante */
+.wedding-site-wrapper[data-style='bauhaus'] :is(
+  [data-bereich='directions'], [data-bereich='accommodations'], [data-bereich='witnesses'],
+  [data-bereich='faq'], [data-bereich='musicwishes']
+) > * {
+  border-block-start: var(--bh-line);
+}
+/* Service-Rhythmus: Anfahrt und Übernachtung kompakter, Trauzeugen wieder
+   mit mehr Raum — Wechsel der Dichte statt neuer Layouts. */
+.wedding-site-wrapper[data-style='bauhaus'] :is([data-bereich='directions'], [data-bereich='accommodations']) > * {
+  padding-block: clamp(36px, 4.4vw, 72px) clamp(20px, 2.4vw, 36px);
+}
+/* ABC C: Der Buchstabenindex ist absichtlich sticky. Mobil wächst er mit
+   44px-Zielen auf drei bis vier Zeilen (~200px) und legt sich beim Scrollen
+   über die Gruppen — dort daher im Fluss statt sticky. Desktop bleibt
+   sticky, mit deckendem Grund. */
+.abc.abcC-section[data-style-abc='bauhaus'] .abcC-index { background: var(--bh-paper); z-index: 2; }
+@media (max-width: 600px) {
+  .abc.abcC-section[data-style-abc='bauhaus'] .abcC-index { position: static; }
+}
+/* Ablauf C: die große Zeit auf dem Foto in Gelb (Spezifität der
+   übertragenen Regel). */
+.wedding-site-wrapper[data-style='bauhaus'] .tl.tlC-section[data-style-tl='bauhaus'] :is(.tlC-time, .tlC-uhr) {
+  color: var(--bh-yellow);
+}
+/* Reservierungsdialog: Namensfeld hatte keine sichtbare Kante, der
+   Schließen-Knopf lag bei 32px. */
+.gift[data-style-gift='bauhaus'] .gift-modal :where(input, textarea) {
+  min-block-size: 48px;
+  padding: 10px 12px;
+  border: 2px solid var(--bh-ink);
+  border-radius: 0;
+  background: var(--bh-paper);
+  font-size: 16px;
+}
+.gift[data-style-gift='bauhaus'] .gift-modal :where(input, textarea):focus-visible {
+  outline: 3px solid var(--bh-blue);
+  outline-offset: 2px;
+}
+.gift[data-style-gift='bauhaus'] .gift-modal button[aria-label] {
+  min-inline-size: 44px;
+  min-block-size: 44px;
+}
+/* Trauzeugen: Der dunkle Block war das Foto-Element selbst (Alt-Grund Ink,
+   Schatten), nicht der Initialen-Container. Ohne Bild: neutrale Fläche,
+   Ink-Initialen, kein Schatten — in A, B und C. */
+.wedding-site-wrapper[data-style='bauhaus'] .wit[data-style-wit='bauhaus'] [class*='photo']:not(img) {
+  background-color: var(--bh-soft);
+  box-shadow: none;
+}
+.wedding-site-wrapper[data-style='bauhaus'] .wit[data-style-wit='bauhaus'] [class*='initials'] {
+  background: transparent;
+  color: var(--bh-ink);
+}
+/* Love Story A bei 320: die Bildgruppe lief über (Mindestbreiten der
+   Bestandsfassung) — Rasterkinder dürfen schrumpfen. */
+.ls.lsA[data-style-ls='bauhaus'] .lsA-single > *,
+.ls.lsA[data-style-ls='bauhaus'] .lsA-images {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.ls.lsA[data-style-ls='bauhaus'] .lsA-images .lsA-img { width: auto; min-width: 0; }
