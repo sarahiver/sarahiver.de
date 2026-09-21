@@ -5946,3 +5946,60 @@
   letter-spacing: inherit;
   text-transform: inherit;
 }
+
+/* =========================================================================
+   CLOSEOUT — Übernachtung B: Buchungsaktion
+   -------------------------------------------------------------------------
+   Ursache: Die gemeinsame Aktionsregel der Service-Bereiche (Abschnitt 7)
+   nannte `.accB-cta` in ihrer Liste. `.accB-cta` ist aber kein Knopf,
+   sondern der Container um CopyCode und BookBtn (`a.acc-btn`, der ohne
+   Buchungslink `null` rendert). Der Container bekam deshalb Signalfläche,
+   Kante, Versatzschatten und 44px Mindesthöhe — mobil als volle Zeile ein
+   leerer Signalblock, sobald kein Link vorhanden ist. Hier wird der
+   Container neutralisiert und der echte Knopf gestaltet.
+   ========================================================================= */
+.acc.accB-section[data-style-acc='brutalist'] .accB-cta,
+.acc.accB-section[data-style-acc='brutalist'] .accB-cta:hover {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  min-block-size: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  transform: none;
+}
+.acc.accB-section[data-style-acc='brutalist'] .accB-cta:empty { display: none; }
+.acc.accB-section[data-style-acc='brutalist'] .accB-cta .acc-btn {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding: 0 16px;
+  background: var(--br-signal);
+  color: var(--br-ink);
+  border: var(--br-border);
+  border-radius: 0;
+  box-shadow: var(--br-shift) var(--br-shift) 0 0 var(--br-ink);
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform var(--br-dur) var(--br-ease), background-color var(--br-dur) var(--br-ease), box-shadow var(--br-dur) var(--br-ease);
+}
+.acc.accB-section[data-style-acc='brutalist'] .accB-cta .acc-btn:hover {
+  background: var(--br-ink);
+  color: var(--br-paper);
+  transform: translate(var(--br-shift), var(--br-shift));
+  box-shadow: 0 0 0 0 var(--br-ink);
+}
+.acc.accB-section[data-style-acc='brutalist'] .accB-cta .acc-btn:focus-visible {
+  outline: var(--br-line-thick) solid var(--br-signal-deep);
+  outline-offset: 2px;
+}
+@media (max-width: 900px) {
+  .acc.accB-section[data-style-acc='brutalist'] .accB-cta { justify-content: flex-start; }
+}
