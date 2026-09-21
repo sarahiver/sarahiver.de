@@ -3497,3 +3497,893 @@
   .gift.giftB-section[data-style-gift='brutalist'] .giftB-card:nth-child(2n) { border-inline-end: 0; }
   .gift[data-style-gift='brutalist'] .gift-iban { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* =========================================================================
+   8.2 · RSVP
+   -------------------------------------------------------------------------
+   Tatsächliche Struktur (gelesen, nicht vermutet):
+     Wrapper   .rsvp.rv.rv-a|b|c[data-style-rsvp][data-rsvp-view] > .rv-frame
+     Kopf      .rv-head (> .rv-kicker, .rv-title, .rv-lead, .rv-deadline;
+               in B zusätzlich .rv-head-main/.rv-head-side/.rv-head-couple;
+               in C .rv-title-kicker + .rv-deadline)
+     Gate      form.rv-gate > .rv-gate-heading?, .rv-gate-lead, .rv-notice--gate,
+               .rv-gate-row > .rv-gate-field(.rv-label, input.rv-code, .rv-hint,
+               .rv-error[role=alert]) + button.rv-gate-button[data-loading]
+     Formular  form.rv-form > fieldset.rv-choice[data-invalid][data-decided] >
+               legend.rv-legend, .rv-choice-options > label.rv-option
+               [data-checked] > input.rv-option-input(type=radio), .rv-option-mark,
+               .rv-option-body(.rv-option-label, .rv-option-note)
+               .rv-field[data-invalid] > .rv-label(.rv-label-text, .rv-optional),
+               .rv-hint, .rv-input|.rv-textarea[aria-invalid], .rv-error
+               .rv-persons > .rv-stepper(.rv-stepper-btn ×2, output
+               .rv-stepper-value) · fieldset.rv-companions > ol.rv-companion-list
+               > li.rv-companion(.rv-companion-row(.rv-companion-name,
+               button.rv-companion-toggle), .rv-companion-food)
+               fieldset.rv-food · .rv-questions > .rv-question(--choice) > .rv-pills
+               > label.rv-pill[data-checked] · .rv-message(.rv-count)
+               .rv-submit > .rv-notice[role=status], .rv-alert[role=alert],
+               button.rv-button--primary[data-loading][aria-busy]
+     Erfolg    section.rv-done (A linear, B .rv-done-side/-main, C Statement)
+     B         .rv-chapter.rv-chapter--attend|who|food|more|gate >
+               .rv-chapter-side(.rv-chapter-no, .rv-chapter-title,
+               .rv-chapter-note) + .rv-chapter-main
+     C         .rv-stage > .rv-choice--statement (legend h2.rv-statement),
+               .rv-details(.rv-details-lead, .rv-details-fields)
+
+   Sämtliche Logik (Gate, Access, Submit, Validierung, Fokusführung,
+   Conditional Fields) liegt in useRsvp und bleibt unberührt. Diese Ebene
+   gestaltet ausschließlich.
+
+   Spezifität: rsvp-base.css steht auf .rsvp.rv .x (0,3,0); hier durchgehend
+   .rsvp.rv[data-style-rsvp='brutalist'] .x (0,4,0), Varianten
+   .rsvp.rv-a[data-style-rsvp='brutalist'] .x (0,4,0) — später im Blatt.
+   ========================================================================= */
+
+.rsvp.rv[data-style-rsvp='brutalist'] {
+  padding: 0;
+  background: var(--br-paper);
+  color: var(--br-ink);
+  border-block-end: var(--br-border-thick);
+  text-align: start;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] :where(.styled-bg-editorial, .styled-bg-brutalist, .styled-bereich-bg) { display: none; }
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-frame {
+  max-inline-size: none;
+  margin: 0;
+}
+
+/* --- Kopf ---------------------------------------------------------------- */
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-head {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  text-align: start;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-kicker {
+  display: block;
+  margin: 0;
+  padding: 12px var(--br-pad-inline);
+  background: var(--br-ink);
+  color: var(--br-paper);
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-title {
+  margin: 0;
+  padding: clamp(20px, 2.4vw, 40px) var(--br-pad-inline) 0;
+  max-inline-size: none;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: normal;
+  font-size: clamp(30px, 4.6vw, 68px);
+  line-height: 0.88;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-title em {
+  font-style: normal;
+  background: var(--br-signal);
+  padding: 0 0.12em;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-lead {
+  margin: 0;
+  padding: clamp(12px, 1.4vw, 20px) var(--br-pad-inline) 0;
+  max-inline-size: 66ch;
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1vw, 16px);
+  line-height: 1.55;
+  color: var(--br-ink);
+}
+/* Die Frist ist Schlüsselinformation — Signalmarke mit Ink-Text. */
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-deadline {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: clamp(14px, 1.6vw, 22px) var(--br-pad-inline) clamp(20px, 2.4vw, 36px);
+  padding: 6px 10px;
+  background: var(--br-signal);
+  color: var(--br-ink);
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] :where(.rv-deadline-label, .rv-deadline-date) {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+
+/* --- Formularflächen ----------------------------------------------------- */
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-form,
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-gate {
+  gap: clamp(18px, 2vw, 28px);
+  padding: clamp(20px, 2.4vw, 36px) var(--br-pad-inline) clamp(28px, 3vw, 48px);
+  border-block-start: var(--br-border);
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-optional {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+  opacity: 1;
+  color: var(--br-ink);
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-optional::before { content: '— '; }
+.rsvp.rv[data-style-rsvp='brutalist'] :where(.rv-hint, .rv-count) {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--br-ink);
+  opacity: 1;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-input {
+  min-block-size: 48px;
+  padding: 10px 12px;
+  background: var(--br-paper);
+  color: var(--br-ink);
+  border: var(--br-line) solid var(--br-ink);
+  border-radius: 0;
+  box-shadow: none;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.3;
+  transition: none;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-input::placeholder { color: var(--br-grey-deep); }
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-textarea { min-block-size: 132px; }
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-input:focus,
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-input:focus-visible {
+  outline: var(--br-line-thick) solid var(--br-signal);
+  outline-offset: 0;
+  border-color: var(--br-ink);
+  box-shadow: none;
+}
+/* Fehler: dickere Kante am Feld UND ein Textblock darunter — nie nur Farbe. */
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-input[aria-invalid='true'],
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-textarea[aria-invalid='true'] {
+  border: var(--br-line-thick) solid var(--br-ink);
+}
+.rsvp.rv[data-style-rsvp='brutalist'] :where(.rv-error, .rv-alert) {
+  margin: 0;
+  padding: 8px 12px;
+  background: var(--br-signal);
+  color: var(--br-ink);
+  border: 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] :where(.rv-error, .rv-alert)::before {
+  content: 'ACHTUNG — ';
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+}
+/* Hinweise (Status, abgelaufene Freischaltung) auf Ink — damit sich Info und
+   Fehler auch ohne Farbe unterscheiden. */
+.rsvp.rv[data-style-rsvp='brutalist'] :where(.rv-notice, .rv-aside) {
+  margin: 0;
+  padding: 10px 12px;
+  background: var(--br-ink);
+  color: var(--br-paper);
+  border: 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  max-inline-size: none;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-legend {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.4vw, 36px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-legend--sub {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+}
+
+/* --- Teilnahme: große rechteckige Auswahlflächen ------------------------- */
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-choice-options { gap: 0; }
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-option {
+  align-items: center;
+  gap: 14px;
+  min-block-size: 64px;
+  padding: 14px 18px;
+  background: var(--br-paper);
+  color: var(--br-ink);
+  border: var(--br-line) solid var(--br-ink);
+  border-radius: 0;
+  font-family: var(--font-body);
+  transition: background-color var(--br-dur) var(--br-ease);
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-choice-options > .rv-option + .rv-option {
+  margin-inline-start: calc(-1 * var(--br-line));
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-option:hover { background: var(--br-grey); }
+/* Gewählt: Signalfläche, 4px-Kante und gefüllter Marker — drei Signale,
+   nicht eines. */
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-option[data-checked='true'] {
+  background: var(--br-signal);
+  color: var(--br-ink);
+  outline: var(--br-line) solid var(--br-ink);
+  outline-offset: calc(-1 * var(--br-line-thick));
+  position: relative;
+  z-index: 1;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-option-mark {
+  inline-size: 22px;
+  block-size: 22px;
+  border: var(--br-line) solid var(--br-ink);
+  border-radius: 0;
+  background: var(--br-paper);
+}
+.rsvp.rv[data-style-rsvp='brutalist'] [data-checked='true'] > .rv-option-mark {
+  background: var(--br-ink);
+  box-shadow: inset 0 0 0 4px var(--br-paper);
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-option:has(.rv-option-input:focus-visible) {
+  outline: var(--br-line-thick) solid var(--br-signal-deep);
+  outline-offset: 2px;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-option-label {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(18px, 2vw, 28px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-option-note {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--br-ink);
+  opacity: 1;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-choice[data-invalid='true'] .rv-option {
+  border-width: var(--br-line-thick);
+}
+
+/* --- Individuelle Fragen: eckige Schalter --------------------------------- */
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-pill {
+  min-block-size: 44px;
+  padding: 8px 14px;
+  background: var(--br-paper);
+  color: var(--br-ink);
+  border: var(--br-line) solid var(--br-ink);
+  border-radius: 0;
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-pill[data-checked='true'] {
+  background: var(--br-ink);
+  color: var(--br-paper);
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-pill-mark {
+  inline-size: 14px;
+  block-size: 14px;
+  border-radius: 0;
+  border: var(--br-line) solid currentColor;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-question > .rv-label,
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-question > .rv-label .rv-label-text {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1.45;
+}
+
+/* --- Personen-Stepper ---------------------------------------------------- */
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-stepper { gap: 0; }
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-stepper-btn {
+  inline-size: 48px;
+  block-size: 48px;
+  border: var(--br-line) solid var(--br-ink);
+  border-radius: 0;
+  background: var(--br-paper);
+  color: var(--br-ink);
+  font-family: var(--font-mono, monospace);
+  font-size: 20px;
+  font-weight: 700;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-stepper-btn:hover:not(:disabled) {
+  background: var(--br-ink);
+  color: var(--br-paper);
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-stepper-btn:disabled {
+  background: var(--br-grey);
+  color: var(--br-grey-deep);
+  opacity: 1;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-stepper-value {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  min-inline-size: 8em;
+  min-block-size: 48px;
+  padding: 0 12px;
+  border-block: var(--br-line) solid var(--br-ink);
+  margin-inline: calc(-1 * var(--br-line));
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-stepper-num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 28px;
+  line-height: 44px;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-stepper-unit {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* --- Begleitungen: Zeilen, keine Karten ---------------------------------- */
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-companion-list {
+  gap: 0;
+  border-block-start: var(--br-border);
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-companion {
+  gap: 10px;
+  padding-block: 14px;
+  border-block-end: var(--br-border);
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-companion-toggle {
+  min-block-size: 48px;
+  padding: 0 12px;
+  border: var(--br-line) solid var(--br-ink);
+  border-radius: 0;
+  background: var(--br-paper);
+  color: var(--br-ink);
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-companion-toggle[aria-expanded='true'] {
+  background: var(--br-ink);
+  color: var(--br-paper);
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-companion-toggle-mark {
+  border: 0;
+  inline-size: auto;
+  block-size: auto;
+  font-weight: 700;
+}
+
+/* --- Senden -------------------------------------------------------------- */
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-button--primary {
+  min-block-size: 52px;
+  padding: 0 clamp(20px, 2.4vw, 32px);
+  background: var(--br-signal);
+  color: var(--br-ink);
+  border: var(--br-line) solid var(--br-ink);
+  border-radius: 0;
+  box-shadow: var(--br-shift) var(--br-shift) 0 0 var(--br-ink);
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: transform var(--br-dur) var(--br-ease), background-color var(--br-dur) var(--br-ease),
+    color var(--br-dur) var(--br-ease), box-shadow var(--br-dur) var(--br-ease);
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-button--primary:hover:not(:disabled) {
+  background: var(--br-ink);
+  color: var(--br-paper);
+  transform: translate(var(--br-shift), var(--br-shift));
+  box-shadow: 0 0 0 0 var(--br-ink);
+}
+/* Senden läuft: grau, ohne Schatten, keine Größenänderung. */
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-button--primary:disabled,
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-button--primary[data-loading='true'] {
+  background: var(--br-grey);
+  color: var(--br-ink);
+  box-shadow: none;
+  transform: translate(var(--br-shift), var(--br-shift));
+  opacity: 1;
+  cursor: progress;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-button--primary:focus-visible,
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-button--quiet:focus-visible,
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-stepper-btn:focus-visible,
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-companion-toggle:focus-visible {
+  outline: var(--br-line-thick) solid var(--br-signal-deep);
+  outline-offset: 2px;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-button--quiet {
+  min-block-size: 44px;
+  padding: 0 14px;
+  border: var(--br-line) solid currentColor;
+  background: transparent;
+  color: inherit;
+  text-decoration: none;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* --- Gate ---------------------------------------------------------------- */
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-gate-heading {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.4vw, 36px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-gate-lead {
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1vw, 16px);
+  line-height: 1.55;
+  color: var(--br-ink);
+  max-inline-size: 60ch;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-code {
+  font-family: var(--font-mono, monospace);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  min-block-size: 56px;
+}
+@media (min-width: 600px) {
+  /* justify-content: start — sonst dehnt sich die auto-Spur und der Knopf
+     läuft über die ganze Restbreite. */
+  .rsvp.rv[data-style-rsvp='brutalist'] .rv-gate-row {
+    grid-template-columns: minmax(0, 26rem) auto;
+    justify-content: start;
+    gap: 0;
+  }
+  .rsvp.rv[data-style-rsvp='brutalist'] .rv-gate-button {
+    min-block-size: 56px;
+    margin-block-start: calc(11px * 1.4 + 6px);
+    margin-inline-start: calc(-1 * var(--br-line));
+    box-shadow: none;
+  }
+}
+
+/* --- Erfolg -------------------------------------------------------------- */
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-done {
+  gap: clamp(12px, 1.4vw, 20px);
+  padding: clamp(24px, 3vw, 48px) var(--br-pad-inline);
+  background: var(--br-ink);
+  color: var(--br-paper);
+  border: 0;
+  border-block-start: var(--br-border);
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-done-kicker {
+  display: inline-block;
+  justify-self: start;
+  padding: 4px 8px;
+  background: var(--br-signal);
+  color: var(--br-ink);
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-done-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(34px, 5vw, 84px);
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--br-paper);
+  max-inline-size: none;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-done-text,
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-done-meta {
+  font-family: var(--font-body);
+  font-size: clamp(15px, 1.1vw, 18px);
+  line-height: 1.5;
+  color: var(--br-paper);
+  max-inline-size: 60ch;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-done-meta {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-summary {
+  gap: 0;
+  border-block-start: var(--br-line) solid var(--br-paper);
+  max-inline-size: 44rem;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-summary-row {
+  padding-block: 10px;
+  border-block-end: var(--br-line) solid var(--br-paper);
+  color: var(--br-paper);
+  font-family: var(--font-body);
+  font-size: 15px;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-summary dt {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-signature {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: normal;
+  font-size: clamp(16px, 1.6vw, 22px);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--br-paper);
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-done .rv-notice {
+  background: var(--br-paper);
+  color: var(--br-ink);
+}
+.rsvp.rv[data-style-rsvp='brutalist'] :where(.rv-checking-text, .rv-closed-text) {
+  padding: clamp(20px, 2.4vw, 36px) var(--br-pad-inline);
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+.rsvp.rv[data-style-rsvp='brutalist'] .rv-closed-title {
+  padding: clamp(20px, 2.4vw, 36px) var(--br-pad-inline) 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(22px, 2.4vw, 36px);
+  text-transform: uppercase;
+}
+
+/* =========================================================================
+   A · HARD FORM — eine Achse, große Auswahl, direkt
+   ========================================================================= */
+.rsvp.rv-a[data-style-rsvp='brutalist'] .rv-form,
+.rsvp.rv-a[data-style-rsvp='brutalist'] .rv-gate {
+  max-inline-size: calc(64rem + 2 * var(--br-pad-inline));
+}
+.rsvp.rv-a[data-style-rsvp='brutalist'] .rv-choice-options {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+/* Die Trennlinie zwischen Kopf und Formular läuft über die volle Breite,
+   nicht nur über die begrenzte Formularspalte. */
+.rsvp.rv-a[data-style-rsvp='brutalist'] .rv-form,
+.rsvp.rv-a[data-style-rsvp='brutalist'] .rv-gate { border-block-start: 0; }
+.rsvp.rv-a[data-style-rsvp='brutalist'] .rv-head { border-block-end: var(--br-border); }
+
+/* =========================================================================
+   B · RESPONSE SHEET — Kapitel auf Linien, Randspur links
+   ========================================================================= */
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-head {
+  display: grid;
+  grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+  align-items: end;
+  gap: 0;
+}
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-head-main,
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-head-side { min-inline-size: 0; }
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-head-main .rv-kicker { margin: 0; }
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-head-side {
+  display: grid;
+  justify-items: end;
+  padding-inline-end: var(--br-pad-inline);
+  text-align: end;
+}
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-head-side .rv-deadline { margin-inline: 0; }
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-head-couple {
+  margin: 0 0 clamp(20px, 2.4vw, 36px);
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-style: normal;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-form {
+  gap: 0;
+  padding: 0;
+}
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-chapter {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: 0;
+  padding: 0;
+  border-block-end: var(--br-border);
+}
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-chapter-side {
+  padding: clamp(18px, 2vw, 30px) var(--br-pad-inline);
+  border-inline-end: var(--br-border);
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-chapter-no {
+  font-family: var(--font-mono, monospace);
+  font-weight: 700;
+  font-size: clamp(22px, 2.4vw, 34px);
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--br-ink);
+}
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-chapter-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 32px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+  max-inline-size: none;
+}
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-chapter-note {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--br-ink);
+  max-inline-size: 30ch;
+}
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-chapter-main {
+  gap: clamp(16px, 1.8vw, 24px);
+  padding: clamp(18px, 2vw, 30px) var(--br-pad-inline);
+}
+/* Das erste Kapitel (Teilnahme) trägt die Signalkante links. */
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-chapter--attend .rv-chapter-side,
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-chapter--gate .rv-chapter-side {
+  box-shadow: inset 6px 0 0 0 var(--br-signal);
+}
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-chapter--gate { border-block-start: var(--br-border); }
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-chapter--gate .rv-gate {
+  padding: 0;
+  border: 0;
+}
+/* In B steht die Auswahl als Liste untereinander, Notiz rechtsbündig. */
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-choice-options { grid-template-columns: minmax(0, 1fr); }
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-choice-options > .rv-option + .rv-option {
+  margin-inline-start: 0;
+  margin-block-start: calc(-1 * var(--br-line));
+}
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-option-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+  inline-size: 100%;
+}
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-done {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: 0;
+  padding: 0;
+}
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-done-side,
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-done-main {
+  padding: clamp(24px, 3vw, 44px) var(--br-pad-inline);
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+.rsvp.rv-b[data-style-rsvp='brutalist'] .rv-done-side { border-inline-end: var(--br-line) solid var(--br-paper); }
+
+/* =========================================================================
+   C · YES / NO STATEMENT — die Entscheidung als Plakat, Details leise
+   ========================================================================= */
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0;
+  background: var(--br-ink);
+}
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-title-kicker {
+  padding: 12px var(--br-pad-inline);
+  background: none;
+  color: var(--br-paper);
+  font-size: 11px;
+}
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-head .rv-deadline { margin: 8px var(--br-pad-inline); }
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-form { gap: 0; padding: 0; border: 0; }
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-stage {
+  padding: clamp(20px, 2.6vw, 44px) var(--br-pad-inline) 0;
+}
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-statement {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(44px, 8vw, 132px);
+  line-height: 0.84;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+  max-inline-size: none;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-choice > .rv-legend {
+  font-size: inherit;
+  margin-block-end: clamp(12px, 1.6vw, 24px);
+}
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-stage-lead {
+  padding: 0 0 clamp(16px, 2vw, 28px);
+}
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-choice-options {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-inline: calc(-1 * var(--br-pad-inline));
+  border-block-start: var(--br-border);
+}
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-option {
+  min-block-size: clamp(120px, 14vw, 200px);
+  align-items: flex-end;
+  padding: clamp(16px, 2vw, 28px) var(--br-pad-inline);
+  border: 0;
+  border-inline-end: var(--br-border);
+  margin: 0;
+}
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-option:last-child { border-inline-end: 0; }
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-choice-options > .rv-option + .rv-option { margin-inline-start: 0; }
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-option[data-checked='true'] { outline: 0; }
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-option-label {
+  font-size: clamp(30px, 4.6vw, 76px);
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+}
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-option-mark { align-self: flex-start; }
+/* Nicht gewählte Antwort tritt zurück — Durchstreichung statt Blässe, damit
+   der Zustand nicht an Farbe hängt. */
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-choice[data-decided='true'] .rv-option:not([data-checked='true']) .rv-option-label {
+  text-decoration: line-through;
+  text-decoration-thickness: 4px;
+}
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-details {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  border-block-start: var(--br-border);
+}
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-details-lead {
+  margin: 0;
+  padding: clamp(18px, 2vw, 30px) var(--br-pad-inline);
+  border-inline-end: var(--br-border);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(18px, 2vw, 28px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--br-ink);
+}
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-details-fields {
+  gap: clamp(16px, 1.8vw, 24px);
+  padding: clamp(18px, 2vw, 30px) var(--br-pad-inline) clamp(28px, 3vw, 44px);
+}
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-form > .rv-notice {
+  margin: 0 var(--br-pad-inline) clamp(20px, 2.4vw, 36px);
+}
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-stage--gate {
+  display: grid;
+  gap: clamp(12px, 1.6vw, 24px);
+  padding-block-end: 0;
+}
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-stage--gate .rv-gate {
+  margin-inline: calc(-1 * var(--br-pad-inline));
+}
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-done {
+  background: var(--br-signal);
+  color: var(--br-ink);
+}
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-done :where(.rv-done-title, .rv-done-text, .rv-done-meta, .rv-signature) {
+  color: var(--br-ink);
+}
+.rsvp.rv-c[data-style-rsvp='brutalist'] .rv-done .rv-statement {
+  font-size: clamp(56px, 11vw, 180px);
+}
+
+/* =========================================================================
+   RSVP — MOBIL
+   ========================================================================= */
+@media (max-width: 900px) {
+  .rsvp.rv-b[data-style-rsvp='brutalist'] .rv-head,
+  .rsvp.rv-b[data-style-rsvp='brutalist'] .rv-chapter,
+  .rsvp.rv-b[data-style-rsvp='brutalist'] .rv-done,
+  .rsvp.rv-c[data-style-rsvp='brutalist'] .rv-details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rsvp.rv-b[data-style-rsvp='brutalist'] .rv-head-side {
+    justify-items: start;
+    text-align: start;
+    padding-inline: var(--br-pad-inline);
+  }
+  /* Kapitelkopf wird eine Zeile über dem Inhalt: Nummer und Titel nebeneinander. */
+  .rsvp.rv-b[data-style-rsvp='brutalist'] .rv-chapter-side {
+    border-inline-end: 0;
+    border-block-end: var(--br-line) solid var(--br-ink);
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: baseline;
+    column-gap: 12px;
+  }
+  .rsvp.rv-b[data-style-rsvp='brutalist'] .rv-chapter-note { grid-column: 1 / -1; }
+  .rsvp.rv-b[data-style-rsvp='brutalist'] .rv-done-side {
+    border-inline-end: 0;
+    border-block-end: var(--br-line) solid var(--br-paper);
+  }
+  .rsvp.rv-c[data-style-rsvp='brutalist'] .rv-details-lead {
+    border-inline-end: 0;
+    border-block-end: var(--br-border);
+  }
+}
+
+@media (max-width: 600px) {
+  .rsvp.rv[data-style-rsvp='brutalist'] .rv-title { font-size: clamp(28px, 8.5vw, 40px); }
+  .rsvp.rv-a[data-style-rsvp='brutalist'] .rv-choice-options,
+  .rsvp.rv-c[data-style-rsvp='brutalist'] .rv-choice-options {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rsvp.rv-a[data-style-rsvp='brutalist'] .rv-choice-options > .rv-option + .rv-option {
+    margin-inline-start: 0;
+    margin-block-start: calc(-1 * var(--br-line));
+  }
+  .rsvp.rv-c[data-style-rsvp='brutalist'] .rv-statement { font-size: clamp(38px, 12vw, 60px); }
+  .rsvp.rv-c[data-style-rsvp='brutalist'] .rv-option {
+    min-block-size: 88px;
+    border-inline-end: 0;
+    border-block-end: var(--br-border);
+  }
+  .rsvp.rv-c[data-style-rsvp='brutalist'] .rv-option:last-child { border-block-end: 0; }
+  .rsvp.rv-c[data-style-rsvp='brutalist'] .rv-option-label { font-size: clamp(26px, 8.5vw, 40px); }
+  .rsvp.rv-c[data-style-rsvp='brutalist'] .rv-done .rv-statement { font-size: clamp(44px, 14vw, 72px); }
+  .rsvp.rv[data-style-rsvp='brutalist'] .rv-done-title { font-size: clamp(28px, 9vw, 44px); }
+  .rsvp.rv[data-style-rsvp='brutalist'] .rv-button--primary { inline-size: 100%; }
+  .rsvp.rv[data-style-rsvp='brutalist'] .rv-stepper-value { min-inline-size: 6em; }
+}
