@@ -5821,3 +5821,128 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
+
+/* =========================================================================
+   9 · FULL-PAGE-RHYTHMUS — finaler Pass
+   -------------------------------------------------------------------------
+   Bis hierher schloss jede Sektion mit derselben 4px-Ink-Kante ab, und fast
+   jede Überschrift trug ein Wort auf Signalfläche. Einzeln richtig, über
+   eine 12.000–17.000px lange Seite ein Maschinengewehr aus Balken und
+   Orange. Dieser Pass ändert keine Komponente, nur ihr Verhältnis
+   zueinander. Er greift über das data-bereich-Attribut der Sektionen, das
+   der BereichRenderer auf der Hochzeitsseite und in /allelements setzt.
+
+   BOUNDARY-SYSTEM
+     Stufe 1 — 4px Ink   echter Kapitelwechsel
+     Stufe 2 — 2px Ink   normaler Sektionswechsel
+     Stufe 3 — offen     keine Kante; die folgende Kennungsleiste (Ink-Band)
+                         trennt bereits
+   Kapitel: Ankommen (Hero, Countdown) · Geschichte (Love Story, Gallery) ·
+   Der Tag (Ablauf … Trauzeugen) · Mitmachen (Geschenke … Foto-Upload) ·
+   Abschluss (ABC).
+   ========================================================================= */
+
+.wedding-site-wrapper[data-style='brutalist'] [data-bereich] > * {
+  border-block-end-width: var(--br-line);
+  border-block-end-style: solid;
+  border-block-end-color: var(--br-ink);
+}
+/* Stufe 1: Kapitelenden. */
+.wedding-site-wrapper[data-style='brutalist'] :is(
+  [data-bereich='countdown'], [data-bereich='gallery'], [data-bereich='witnesses'],
+  [data-bereich='photoupload'], [data-bereich='weddingabc']
+) > * {
+  border-block-end-width: var(--br-line-thick);
+}
+/* Stufe 3: offen — der Hero geht direkt in den Countdown über (der
+   Countdown bringt seine eigene Kennungsleiste mit), Gästebuch und
+   Musikwünsche sind ein zusammenhängender Mitmach-Block. */
+.wedding-site-wrapper[data-style='brutalist'] :is(
+  [data-bereich='hero'], [data-bereich='guestbook']
+) > * {
+  border-block-end-width: 0;
+}
+
+/* --- Signal: eine Rolle pro Sektion ---------------------------------------
+   Das Überschriftenwort auf Signal bleibt nur in den erzählenden Sektionen
+   (Love Story, Gallery) und im Abschluss (ABC). In Service- und
+   Mitmach-Sektionen steht das Wort in Ink — Signal liegt dort auf Nummer,
+   aktivem Zustand oder Aktion. */
+.wedding-site-wrapper[data-style='brutalist'] :is(
+  [data-bereich='timeline'], [data-bereich='directions'], [data-bereich='accommodations'],
+  [data-bereich='witnesses'], [data-bereich='gifts'], [data-bereich='faq'], [data-bereich='rsvp'],
+  [data-bereich='guestbook'], [data-bereich='musicwishes'], [data-bereich='photoupload']
+) :is(.tl-title, .dir-title, .acc-title, .wit-title, .gift-title, .faq-title, .rv-title, .gb-title, .mw-title, .up-title, .upB-title, .upC-h) em {
+  background: none;
+  padding: 0;
+  color: var(--br-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.08em;
+}
+/* RSVP: Signal gehört der Entscheidung und dem Absenden — die Frist wird Ink. */
+.wedding-site-wrapper[data-style='brutalist'] [data-bereich='rsvp'] .rsvp.rv .rv-deadline {
+  background: var(--br-ink);
+  color: var(--br-paper);
+}
+/* Geschenke: Signal gehört den Nummern; Beträge werden Ink-Marken. */
+.wedding-site-wrapper[data-style='brutalist'] [data-bereich='gifts'] .gift .gift-amount {
+  background: var(--br-ink);
+  color: var(--br-paper);
+}
+
+/* --- Abstände nach Rhythmusgruppen ----------------------------------------
+   Erzählende Sektionen behalten ihren Raum. Service und Mitmachen werden im
+   Kopf enger — der Kopf ist dort Orientierung, nicht Auftritt. */
+.wedding-site-wrapper[data-style='brutalist'] :is(
+  [data-bereich='timeline'], [data-bereich='directions'], [data-bereich='accommodations'], [data-bereich='witnesses'],
+  [data-bereich='gifts'], [data-bereich='faq'], [data-bereich='guestbook'], [data-bereich='musicwishes'], [data-bereich='photoupload']
+) :is(.tl-title, .dir-title, .acc-title, .wit-title, .gift-title, .faq-title, .gb-title, .mw-title, .up-title) {
+  padding-block-start: clamp(16px, 1.8vw, 28px);
+  font-size: clamp(28px, 3.8vw, 56px);
+}
+.wedding-site-wrapper[data-style='brutalist'] :is(
+  [data-bereich='timeline'], [data-bereich='directions'], [data-bereich='accommodations'], [data-bereich='witnesses'],
+  [data-bereich='gifts'], [data-bereich='faq'], [data-bereich='guestbook'], [data-bereich='musicwishes'], [data-bereich='photoupload']
+) :is(.tl-desc, .dir-desc, .acc-desc, .wit-desc, .gift-desc, .faq-desc, .gb-desc, .mw-desc, .up-desc) {
+  padding-block: clamp(8px, 1vw, 14px) clamp(16px, 1.8vw, 26px);
+}
+.wedding-site-wrapper[data-style='brutalist'] [data-bereich='rsvp'] .rsvp.rv .rv-title {
+  padding-block-start: clamp(16px, 1.8vw, 28px);
+  font-size: clamp(28px, 3.8vw, 56px);
+}
+/* Abschluss: das ABC darf wieder groß auftreten. */
+.wedding-site-wrapper[data-style='brutalist'] [data-bereich='weddingabc'] .abc-title {
+  font-size: clamp(34px, 5.4vw, 84px);
+}
+
+@media (max-width: 600px) {
+  /* Mobil noch eine Stufe leiser: Kapitelenden 2px statt 4px, damit die
+     Kanten neben den Kennungsbändern nicht massiv werden. */
+  .wedding-site-wrapper[data-style='brutalist'] :is(
+    [data-bereich='countdown'], [data-bereich='gallery'], [data-bereich='witnesses'],
+    [data-bereich='photoupload']
+  ) > * {
+    border-block-end-width: var(--br-line);
+  }
+  .wedding-site-wrapper[data-style='brutalist'] :is(
+    [data-bereich='timeline'], [data-bereich='directions'], [data-bereich='accommodations'], [data-bereich='witnesses'],
+    [data-bereich='gifts'], [data-bereich='faq'], [data-bereich='guestbook'], [data-bereich='musicwishes'], [data-bereich='photoupload']
+  ) :is(.tl-title, .dir-title, .acc-title, .wit-title, .gift-title, .faq-title, .gb-title, .mw-title, .up-title) {
+    font-size: clamp(24px, 7.5vw, 34px);
+  }
+}
+/* Das unterstrichene Hervorhebungswort erbte in einigen Sektionen noch die
+   Serif der Bestandsfassung — hier ausdrücklich Syne. */
+.wedding-site-wrapper[data-style='brutalist'] :is(
+  [data-bereich='timeline'], [data-bereich='directions'], [data-bereich='accommodations'],
+  [data-bereich='witnesses'], [data-bereich='gifts'], [data-bereich='faq'], [data-bereich='rsvp'],
+  [data-bereich='guestbook'], [data-bereich='musicwishes'], [data-bereich='photoupload']
+) :is(.tl-title, .dir-title, .acc-title, .wit-title, .gift-title, .faq-title, .rv-title, .gb-title, .mw-title, .up-title, .upB-title, .upC-h) em {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: normal;
+  font-size: 1em;
+  letter-spacing: inherit;
+  text-transform: inherit;
+}
