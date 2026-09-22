@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { OPERATOR } from '@/lib/legal';
 
 export const metadata = { title: 'Datenschutz — sarahiver.de' };
 
@@ -18,8 +19,9 @@ export default function Datenschutz() {
         <section>
           <h2 className="text-xl font-medium mb-2">1. Verantwortlicher</h2>
           <p className="text-ink-soft leading-relaxed">
-            sarahiver UG (i. Gr.) — Anschrift siehe Impressum<br />
-            E-Mail: hallo@sarahiver.de
+            {OPERATOR.name}, {OPERATOR.person}<br />
+            {OPERATOR.street}, {OPERATOR.city}<br />
+            E-Mail: {OPERATOR.email}
           </p>
         </section>
 

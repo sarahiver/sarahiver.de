@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition } from 'react';
 import { startCheckout, type CheckoutInput } from './actions';
 import { ALL_BEREICH_KEYS, BEREICH_LABEL } from '@/lib/funnel';
 import { WEBSITE_PRICE_EUR, DOMAIN_SETUP_PRICE_EUR, ACCESS_MONTHS, CUSTOM_DOMAIN_ENABLED } from '@/lib/pricing';
+import { CONSENT_TEXT, VAT_NOTE } from '@/lib/legal';
 import { VALID_STYLE_IDS } from '@/lib/style-migration';
 import { isValidSlugFormat, isReservedSlug, hasReservedSlugPrefix } from '@/lib/slug-validation';
 
@@ -33,6 +34,10 @@ export default function SignupForm({ initialDomainWish, canceled }: Props) {
   const [style, setStyle] = useState<string>('editorial');
   const [domain, setDomain] = useState(Boolean(initialDomainWish));
   const [domainWish, setDomainWish] = useState(initialDomainWish);
+  // Pflicht-Zustimmungen — nie vorausgewählt, jede einzeln aktiv zu setzen.
+  const [consentTerms, setConsentTerms] = useState(false);
+  const [consentImmediate, setConsentImmediate] = useState(false);
+  const [consentAck, setConsentAck] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -48,8 +53,11 @@ export default function SignupForm({ initialDomainWish, canceled }: Props) {
       name2.trim() &&
       /^\d{4}-\d{2}-\d{2}$/.test(weddingDate) &&
       slug &&
-      slugFormatOk,
-    [email, name1, name2, weddingDate, slug, slugFormatOk],
+      slugFormatOk &&
+      consentTerms &&
+      consentImmediate &&
+      consentAck,
+    [email, name1, name2, weddingDate, slug, slugFormatOk, consentTerms, consentImmediate, consentAck],
   );
 
   const submit = () => {
@@ -63,6 +71,7 @@ export default function SignupForm({ initialDomainWish, canceled }: Props) {
       style,
       domain,
       domainWish: domain ? domainWish.trim().toLowerCase() : '',
+      consents: { terms: consentTerms, immediate: consentImmediate, acknowledge: consentAck },
     };
     startTransition(async () => {
       const res = await startCheckout(payload);
@@ -214,23 +223,43 @@ export default function SignupForm({ initialDomainWish, canceled }: Props) {
         </div>
         <div className="su-sum-note">
           Kein Abo, keine automatische Verlängerung. Eure Seite ist {ACCESS_MONTHS} Monate online.
+          <br />
+          {VAT_NOTE}
+        </div>
+        <div className="su-consents">
+          <label className="su-consent">
+            <input type="checkbox" checked={consentTerms} onChange={(e) => setConsentTerms(e.target.checked)} />
+            <span>
+              Ich akzeptiere die{' '}
+              <a href="/agb" target="_blank" rel="noopener">AGB</a> und habe die{' '}
+              <a href="/widerruf" target="_blank" rel="noopener">Widerrufsbelehrung</a> sowie die{' '}
+              <a href="/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a> zur Kenntnis genommen.
+            </span>
+          </label>
+          <label className="su-consent">
+            <input type="checkbox" checked={consentImmediate} onChange={(e) => setConsentImmediate(e.target.checked)} />
+            <span>{CONSENT_TEXT.immediate}</span>
+          </label>
+          <label className="su-consent">
+            <input type="checkbox" checked={consentAck} onChange={(e) => setConsentAck(e.target.checked)} />
+            <span>{CONSENT_TEXT.acknowledge}</span>
+          </label>
         </div>
         {error && <div className="su-error">{error}</div>}
         <button type="button" className="su-cta" onClick={submit} disabled={!canSubmit || pending}>
           {pending ? 'Weiter zu Stripe …' : `Zahlungspflichtig bestellen — ${total} €`}
         </button>
-        <p className="su-legal">
-          Sichere Zahlung über Stripe. Mit dem Bestellen akzeptiert ihr die{' '}
-          <a href="/agb" target="_blank" rel="noopener">AGB</a> und die{' '}
-          <a href="/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>.{' '}
-          <a href="/widerruf" target="_blank" rel="noopener">Hinweise zum Widerruf</a>.
-        </p>
+        <p className="su-legal">Sichere Zahlung über Stripe.</p>
       </section>
     </div>
   );
 }
 
 const styles = `
+.su-consents{display:grid;gap:10px;margin:16px 0 14px;text-align:left;}
+.su-consent{display:grid;grid-template-columns:20px 1fr;gap:10px;align-items:start;font-size:13px;line-height:1.5;color:#2D2520;cursor:pointer;}
+.su-consent input{width:18px;height:18px;margin-top:1px;accent-color:#8E574E;}
+.su-consent a{color:inherit;text-decoration:underline;}
 .su-wrap{max-width:760px;margin:0 auto;padding:48px 20px 80px;color:#2D2520;font-family:Inter,system-ui,sans-serif;}
 .su-head{margin-bottom:28px;}
 .su-eyebrow{font-family:Inter,system-ui,sans-serif;font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:#8E574E;}

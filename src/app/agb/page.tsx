@@ -1,9 +1,10 @@
 import Link from 'next/link';
+import LegalSections from '@/components/legal/LegalSections';
+import { AGB_SECTIONS, AGB_DRAFT_NOTICE, LEGAL_VERSION } from '@/lib/legal';
 
-// TODO: finaler Rechtstext vor Launch einsetzen.
-// Diese Seite ist nur die technische Grundlage (Route, Verlinkung aus Footer
-// und Bestellformular). Sie enthält bewusst KEINEN juristischen Text.
-export const metadata = { title: 'AGB — sarahiver.de', robots: { index: false, follow: false } };
+// Texte in lib/legal.ts (eine Quelle für Seite und Vertragsbestätigung).
+// ENTWURF — vor öffentlichem Launch rechtlich prüfen lassen.
+export const metadata = { title: 'AGB — sarahiver.de' };
 
 export default function Agb() {
   return (
@@ -12,14 +13,12 @@ export default function Agb() {
         ← Zurück
       </Link>
 
-      <h1 className="display mt-8 mb-12">Allgemeine Geschäftsbedingungen</h1>
+      <h1 className="display mt-8 mb-4">Allgemeine Geschäftsbedingungen</h1>
+      <p className="text-xs text-muted mb-12 italic">
+        {AGB_DRAFT_NOTICE} Stand: {LEGAL_VERSION}
+      </p>
 
-      <p className="text-ink-soft leading-relaxed">
-        Die Allgemeinen Geschäftsbedingungen werden vor dem Launch hier veröffentlicht.
-      </p>
-      <p className="text-ink-soft leading-relaxed mt-4">
-        Fragen vorab: <a className="underline" href="mailto:hallo@sarahiver.de">hallo@sarahiver.de</a>
-      </p>
+      <LegalSections sections={AGB_SECTIONS} />
     </main>
   );
 }

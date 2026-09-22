@@ -273,6 +273,7 @@ export default function LandingV4() {
                 {PRICING.card.price} {PRICING.card.currency}
               </p>
               <p className="sd-price-sub">{PRICING.card.sub}</p>
+              <p className="sd-note" style={{ marginTop: 6, fontSize: 12 }}>{PRICING.card.vatNote}</p>
               <a className="sd-btn sd-btn--primary sd-btn--block" href={PRICING.card.cta.href}>
                 {PRICING.card.cta.label}
                 <IconArrowRight size={14} />

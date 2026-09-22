@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { OPERATOR, VAT_NOTE } from '@/lib/legal';
 
 export const metadata = { title: 'Impressum — sarahiver.de' };
 
@@ -16,26 +17,38 @@ export default function Impressum() {
 
       <div className="space-y-6 text-ink">
         <section>
-          <h2 className="text-xl font-medium mb-2">Angaben gemäß § 5 TMG</h2>
+          <h2 className="text-xl font-medium mb-2">Angaben gemäß § 5 DDG</h2>
           <p className="text-ink-soft leading-relaxed">
-            [PLATZHALTER]<br />
-            sarahiver UG (i. Gr.)<br />
-            Iver Gentz<br />
-            [Straße + Hausnummer]<br />
-            [PLZ + Ort]<br />
-            Deutschland
+            {OPERATOR.name}
+            <br />
+            {OPERATOR.person}
+            <br />
+            {OPERATOR.street}
+            <br />
+            {OPERATOR.city}
+            <br />
+            {OPERATOR.country}
           </p>
         </section>
 
         <section>
           <h2 className="text-xl font-medium mb-2">Kontakt</h2>
-          <p className="text-ink-soft leading-relaxed">E-Mail: hallo@sarahiver.de</p>
+          <p className="text-ink-soft leading-relaxed">
+            E-Mail: <a className="underline" href={`mailto:${OPERATOR.email}`}>{OPERATOR.email}</a>
+          </p>
         </section>
 
-        <p className="text-xs text-muted mt-12 italic">
-          Hinweis: Dieses Impressum wird vor dem Launch durch ein vollständiges,
-          rechtssicheres Impressum ersetzt.
-        </p>
+        <section>
+          <h2 className="text-xl font-medium mb-2">Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
+          <p className="text-ink-soft leading-relaxed">
+            {OPERATOR.person}, {OPERATOR.street}, {OPERATOR.city}
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-medium mb-2">Umsatzsteuer</h2>
+          <p className="text-ink-soft leading-relaxed">{VAT_NOTE}</p>
+        </section>
       </div>
     </main>
   );

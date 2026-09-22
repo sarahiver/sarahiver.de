@@ -51,7 +51,7 @@ export type ProvisionStep =
   | 'site';
 
 export type ProvisionResult =
-  | { ok: true; siteId: string; userId: string; warnings: string[] }
+  | { ok: true; siteId: string; userId: string; warnings: string[]; created: boolean; accessUntil: string }
   | { ok: false; step: ProvisionStep; error: string };
 
 export async function provisionSite(input: ProvisionInput): Promise<ProvisionResult> {
@@ -135,7 +135,7 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
     await admin.from('wedding_sites').update(billing as never).eq('id', siteId);
     // Bereiche/Käufe nicht erneut anlegen (Unique-Index schützt zusätzlich).
     const mailed = await sendLoginMail(admin, input.email, nextPath);
-    return { ok: true, siteId, userId, warnings: mailed ? [] : ['login_mail'] };
+    return { ok: true, siteId, userId, warnings: mailed ? [] : ['login_mail'], created: false, accessUntil: accessUntil.toISOString() };
   }
 
   // --- 2a) Default-Palette + -Font des gewählten Stils auflösen -----------
@@ -232,7 +232,7 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
   const mailed = await sendLoginMail(admin, input.email, nextPath);
   if (!mailed) warnings.push('login_mail');
 
-  return { ok: true, siteId, userId, warnings };
+  return { ok: true, siteId, userId, warnings, created: true, accessUntil: accessUntil.toISOString() };
 }
 
 type AdminClient = NonNullable<ReturnType<typeof createSupabaseAdminClient>>;

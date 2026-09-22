@@ -4,6 +4,7 @@ import { getStripe } from '@/lib/stripe';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import { provisionSite } from '@/lib/provision';
 import { sendAdminAlert } from '@/lib/admin-alert';
+import { sendContractConfirmation } from '@/lib/contract-mail';
 
 /**
  * Stripe-Webhook — server-only, Service-Role.
@@ -198,6 +199,23 @@ async function handleCheckoutCompleted(admin: AdminClient, session: Stripe.Check
     });
     return;
   }
+  // Vertragsbestätigung (dauerhafter Datenträger) — nur beim ersten Anlegen,
+  // nicht bei Wiederholungen desselben Events/derselben Session.
+  if (res.created) {
+    const confirmed = await sendContractConfirmation({
+      email,
+      slug: m.slug,
+      name1: m.name1 || '',
+      name2: m.name2 || '',
+      paidAt,
+      accessUntil: res.accessUntil,
+      consentAt: m.consent_at || null,
+      legalVersion: m.legal_version || null,
+      sessionId: session.id,
+    });
+    if (!confirmed) res.warnings.push('contract_confirmation');
+  }
+
   if (res.warnings.length) {
     await sendAdminAlert({
       title: 'Seite angelegt, aber Nacharbeit nötig',
@@ -206,9 +224,14 @@ async function handleCheckoutCompleted(admin: AdminClient, session: Stripe.Check
         'Stripe-Session': session.id,
         'Kunden-E-Mail': email,
         Slug: m.slug,
-        Hinweis: res.warnings.includes('login_mail')
-          ? 'Login-Mail nicht zugestellt — Paar kann sich über /login per Magic Link anmelden.'
-          : null,
+        Hinweis: [
+          res.warnings.includes('login_mail')
+            ? 'Login-Mail nicht zugestellt — Paar kann sich über /login per Magic Link anmelden.'
+            : '',
+          res.warnings.includes('contract_confirmation')
+            ? 'Vertragsbestätigung NICHT zugestellt — manuell nachsenden (rechtlich erforderlich).'
+            : '',
+        ].filter(Boolean).join(' ') || null,
       },
     });
   }

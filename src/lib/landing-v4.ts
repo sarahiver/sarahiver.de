@@ -176,6 +176,7 @@ export const PRICING = {
     price: '69',
     currency: '€',
     sub: 'einmalig',
+    vatNote: 'Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.',
     cta: { label: 'Jetzt starten', href: '/signup' },
   },
   addon: {
@@ -227,7 +228,7 @@ export const FAQ = {
     },
     {
       q: 'Gibt es laufende Kosten?',
-      a: 'Nein. Ihr zahlt einmalig 69 € – kein Abo, keine automatische Verlängerung.',
+      a: 'Nein. Ihr zahlt einmalig 69 € – kein Abo, keine automatische Verlängerung. Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.',
     },
   ],
 };

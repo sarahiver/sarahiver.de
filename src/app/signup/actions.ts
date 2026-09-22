@@ -3,6 +3,7 @@
 import { getStripe } from '@/lib/stripe';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import { isReservedSlug, isValidSlugFormat, hasReservedSlugPrefix } from '@/lib/slug-validation';
+import { LEGAL_VERSION, VAT_NOTE } from '@/lib/legal';
 import { VALID_STYLE_IDS } from '@/lib/style-migration';
 import { PRICE_ENV_DOMAIN, PRICE_ENV_WEBSITE, CUSTOM_DOMAIN_ENABLED } from '@/lib/pricing';
 import { CHECKOUT_ENABLED, LAUNCH_DATE_LABEL } from '@/lib/launch';
@@ -26,6 +27,8 @@ export interface CheckoutInput {
   domain: boolean;
   /** Wunschdomain aus dem Domain-Check, z. B. "leaundben.de". */
   domainWish?: string;
+  /** Pflicht-Zustimmungen aus dem Bestellformular (serverseitig geprüft). */
+  consents?: { terms?: boolean; immediate?: boolean; acknowledge?: boolean };
 }
 
 export type CheckoutResult = { url: string } | { error: string };
@@ -48,6 +51,14 @@ export async function startCheckout(input: CheckoutInput): Promise<CheckoutResul
   const style = (input.style || '').trim();
   const weddingDate = (input.weddingDate || '').trim();
   const domainWish = (input.domainWish || '').trim().toLowerCase();
+
+  // --- Pflicht-Zustimmungen: ohne alle drei startet kein Checkout ---
+  // (nicht nur im Formular — ein manipulierter Request wird hier abgewiesen)
+  const c = input.consents || {};
+  if (c.terms !== true || c.immediate !== true || c.acknowledge !== true) {
+    return { error: 'Bitte bestätigt die AGB, den sofortigen Beginn der Bereitstellung und die Hinweise zum Widerruf.' };
+  }
+  const consentAt = new Date().toISOString();
 
   // --- Validierung ---
   if (!EMAIL_RE.test(email)) return { error: 'Bitte eine gültige E-Mail angeben.' };
@@ -125,6 +136,13 @@ export async function startCheckout(input: CheckoutInput): Promise<CheckoutResul
     style,
     domain: wantsDomain ? '1' : '0',
     domain_wish: wantsDomain ? domainWish : '',
+    // Nachweis der Zustimmungen (landet in der Stripe-Session und im
+    // gespeicherten Webhook-Event; Grundlage der Vertragsbestätigung).
+    consent_terms: '1',
+    consent_immediate: '1',
+    consent_acknowledge: '1',
+    consent_at: consentAt,
+    legal_version: LEGAL_VERSION,
   };
 
   try {
@@ -141,6 +159,7 @@ export async function startCheckout(input: CheckoutInput): Promise<CheckoutResul
       payment_intent_data: { metadata },
       success_url: `${appUrl}/signup/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/signup?canceled=1`,
+      custom_text: { submit: { message: VAT_NOTE } },
     });
 
     if (!session.url) {
