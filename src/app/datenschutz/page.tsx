@@ -1,53 +1,24 @@
 import Link from 'next/link';
-import { OPERATOR } from '@/lib/legal';
+import LegalSections from '@/components/legal/LegalSections';
+import { DATENSCHUTZ_SECTIONS, DATENSCHUTZ_DRAFT_NOTICE, LEGAL_VERSION } from '@/lib/legal';
 
+// Texte in lib/legal.ts — auf Basis des tatsächlichen Codes erstellt.
+// ENTWURF — vor öffentlichem Launch rechtlich prüfen lassen.
 export const metadata = { title: 'Datenschutz — sarahiver.de' };
 
 export default function Datenschutz() {
   return (
     <main className="px-6 md:px-12 lg:px-20 py-16 max-w-3xl mx-auto">
-      <Link
-        href="/"
-        className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted hover:text-ink"
-      >
+      <Link href="/" className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted hover:text-ink">
         ← Zurück
       </Link>
 
-      <h1 className="display mt-8 mb-12">Datenschutz</h1>
+      <h1 className="display mt-8 mb-4">Datenschutzerklärung</h1>
+      <p className="text-xs text-muted mb-12 italic">
+        {DATENSCHUTZ_DRAFT_NOTICE} Stand: {LEGAL_VERSION}
+      </p>
 
-      <div className="space-y-6 text-ink">
-        <section>
-          <h2 className="text-xl font-medium mb-2">1. Verantwortlicher</h2>
-          <p className="text-ink-soft leading-relaxed">
-            {OPERATOR.name}, {OPERATOR.person}<br />
-            {OPERATOR.street}, {OPERATOR.city}<br />
-            E-Mail: {OPERATOR.email}
-          </p>
-        </section>
-
-        <section>
-          <h2 className="text-xl font-medium mb-2">2. Warteliste-Anmeldung</h2>
-          <p className="text-ink-soft leading-relaxed">
-            Wenn ihr euch auf unsere Warteliste eintragt, verarbeiten wir eure E-Mail-Adresse,
-            um euch über den Launch von sarahiver.de zu informieren. Die Speicherung erfolgt
-            bei unserem Email-Dienstleister Brevo (Sendinblue GmbH, Köpenicker Straße 126,
-            10179 Berlin). Ihr könnt euch jederzeit über den Abmeldelink austragen.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="text-xl font-medium mb-2">3. Hosting</h2>
-          <p className="text-ink-soft leading-relaxed">
-            Diese Website wird bei Vercel Inc. gehostet. Vercel speichert Server-Logs mit
-            IP-Adresse zur Sicherheit für maximal 30 Tage.
-          </p>
-        </section>
-
-        <p className="text-xs text-muted mt-12 italic">
-          Hinweis: Diese Datenschutzerklärung wird vor dem Launch durch eine vollständige,
-          rechtssichere Version ersetzt.
-        </p>
-      </div>
+      <LegalSections sections={DATENSCHUTZ_SECTIONS} />
     </main>
   );
 }

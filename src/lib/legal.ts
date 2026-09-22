@@ -19,7 +19,7 @@
 
 export const OPERATOR = {
   name: 'S&I.',
-  person: 'Iver Gentz',
+  person: 'Iver Bohnes',
   street: 'Große Freiheit 82',
   city: '22767 Hamburg',
   country: 'Deutschland',
@@ -175,4 +175,186 @@ export const WIDERRUF_FORM_LINES: string[] = [
   'Unterschrift des/der Verbraucher(s) (nur bei Mitteilung auf Papier)',
   'Datum',
   '(*) Unzutreffendes streichen.',
+];
+
+// =============================================================================
+// DATENSCHUTZERKLÄRUNG — auf Basis des tatsächlichen Codes (Stand 2026-09).
+// ENTWURF — vor öffentlichem Launch rechtlich prüfen lassen. Offene Punkte
+// (Rollen bei Gästedaten, Speicherdauer, Drittlandübermittlung, Google Fonts,
+// Gesundheitsangaben im RSVP) sind im Launch-Bericht als LEGAL REVIEW markiert.
+// =============================================================================
+export const DATENSCHUTZ_DRAFT_NOTICE = 'Entwurf — vor öffentlichem Launch rechtlich prüfen lassen.';
+
+export const DATENSCHUTZ_SECTIONS: LegalSection[] = [
+  {
+    title: '1. Verantwortlicher',
+    paragraphs: [
+      `Verantwortlich für die Datenverarbeitung auf sarahiver.de ist ${OPERATOR_LINE}.`,
+      'Bei Fragen zum Datenschutz erreicht ihr uns unter dieser E-Mail-Adresse.',
+    ],
+  },
+  {
+    title: '2. Hosting und technische Bereitstellung',
+    paragraphs: [
+      'Die Website und die Hochzeitsseiten werden bei der Vercel Inc. gehostet. Beim Aufruf verarbeitet der Hoster technisch notwendige Daten wie IP-Adresse, Zeitpunkt, aufgerufene Adresse und Browserinformationen in Server-Logs. Vercel speichert Server-Logs zur Sicherheit nach eigenen Angaben für maximal 30 Tage.',
+      'Rechtsgrundlage ist unser berechtigtes Interesse an einem sicheren und stabilen Betrieb (Art. 6 Abs. 1 lit. f DSGVO).',
+    ],
+  },
+  {
+    title: '3. Schriften und Beispielbilder von Drittanbietern',
+    paragraphs: [
+      'Für die Darstellung einzelner Schriften binden wir Google Fonts (Google Ireland Limited / Google LLC) ein. Dabei stellt euer Browser eine Verbindung zu Servern von Google her; Google erhält dabei eure IP-Adresse.',
+      'In den Beispiel- und Demoseiten verwenden wir Beispielfotos, die von Servern des Dienstes Pexels geladen werden. Auch dabei wird eure IP-Adresse an den Anbieter übermittelt.',
+      'Rechtsgrundlage ist unser berechtigtes Interesse an einer einheitlichen und ansprechenden Darstellung (Art. 6 Abs. 1 lit. f DSGVO).',
+    ],
+  },
+  {
+    title: '4. Account und Anmeldung',
+    paragraphs: [
+      'Mit dem Kauf legen wir für euch einen Account an. Dafür verarbeiten wir eure E-Mail-Adresse und, falls ihr eines vergebt, ein Passwort (gespeichert nur als nicht umkehrbarer Hashwert). Die Anmeldung erfolgt per Login-Link oder Passwort. Für die Sitzung setzen wir technisch notwendige Cookies.',
+      'Die Authentifizierung erfolgt über den Dienst Supabase (Supabase Inc.).',
+      'Rechtsgrundlage ist die Erfüllung des Vertrags (Art. 6 Abs. 1 lit. b DSGVO).',
+    ],
+  },
+  {
+    title: '5. Bestellung, Kauf und Bereitstellung',
+    paragraphs: [
+      'Für die Bestellung verarbeiten wir eure E-Mail-Adresse, die Namen des Brautpaars, das Hochzeitsdatum, die gewünschte Adresse der Website und den gewählten Stil. Außerdem speichern wir eure Erklärungen im Bestellprozess (Zustimmung zu den AGB, Verlangen des sofortigen Beginns der Bereitstellung, Kenntnis der Widerrufsfolgen) mit Zeitpunkt, um sie nachweisen zu können.',
+      'Nach erfolgreicher Zahlung richten wir euren Account und eure Website automatisch ein und senden euch einen Login-Link sowie eine Vertragsbestätigung per E-Mail.',
+      'Rechtsgrundlagen sind die Vertragserfüllung und vorvertragliche Maßnahmen (Art. 6 Abs. 1 lit. b DSGVO) sowie gesetzliche Nachweis- und Aufbewahrungspflichten (Art. 6 Abs. 1 lit. c DSGVO).',
+    ],
+  },
+  {
+    title: '6. Zahlungsabwicklung über Stripe',
+    paragraphs: [
+      'Die Zahlung erfolgt über den Zahlungsdienstleister Stripe. Eure Zahlungsdaten (z. B. Karten- oder Kontodaten) gebt ihr direkt bei Stripe ein; wir erhalten sie nicht. Von Stripe erhalten wir Informationen zum Zahlungsstatus, eure E-Mail-Adresse, Referenznummern der Zahlung und die Angaben aus eurer Bestellung. Diese Informationen speichern wir, um die Zahlung zuzuordnen und die Bereitstellung auszulösen.',
+      'Rechtsgrundlage ist die Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO). Stripe verarbeitet Zahlungsdaten zudem in eigener Verantwortung, etwa zur Betrugsprävention; dazu gilt die Datenschutzerklärung von Stripe.',
+    ],
+  },
+  {
+    title: '7. E-Mail-Versand über Brevo',
+    paragraphs: [
+      'Transaktionale E-Mails (Login-Links, Passwort-Zurücksetzen, Vertragsbestätigung, Bestätigung der Warteliste, Weiterleitung von Kontaktanfragen) versenden wir über Brevo (Sendinblue GmbH, Köpenicker Straße 126, 10179 Berlin). Dafür übermitteln wir die Empfängeradresse und den Inhalt der jeweiligen E-Mail.',
+      'Rechtsgrundlage ist die Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO) bzw. eure Einwilligung bei der Warteliste (Art. 6 Abs. 1 lit. a DSGVO).',
+    ],
+  },
+  {
+    title: '8. Datenbank (Supabase)',
+    paragraphs: [
+      'Accounts, Inhalte der Hochzeitsseiten sowie die Angaben von Gästen (Abschnitte 10–14) speichern wir in einer Datenbank bei Supabase (Supabase Inc.). Der Zugriff ist durch Zugriffsregeln beschränkt: Nicht veröffentlichte Inhalte und Gästeangaben sind nur für das jeweilige Brautpaar im Dashboard sichtbar.',
+    ],
+  },
+  {
+    title: '9. Hochzeitswebsite und Inhalte des Brautpaars',
+    paragraphs: [
+      'Das Brautpaar pflegt die Inhalte seiner Website selbst, etwa Namen, Datum, Ort, Texte und Fotos. Veröffentlichte Inhalte sind für alle abrufbar, die die Adresse der Website kennen. Entwürfe sind nur für das Brautpaar sichtbar.',
+      'Bilder, die das Brautpaar im Dashboard hochlädt, speichern wir bei Cloudinary (siehe Abschnitt 14).',
+      'Rechtsgrundlage ist die Erfüllung des Vertrags mit dem Brautpaar (Art. 6 Abs. 1 lit. b DSGVO). Das Brautpaar ist dafür verantwortlich, nur Inhalte einzustellen, zu deren Veröffentlichung es berechtigt ist.',
+    ],
+  },
+  {
+    title: '10. Rückmeldungen zur Hochzeit (RSVP)',
+    paragraphs: [
+      'Gäste können über die Hochzeitswebsite zu- oder absagen. Dabei verarbeiten wir die Angaben aus dem Formular: Name, Teilnahme, Anzahl und Namen der Begleitpersonen sowie – je nach Einstellung des Brautpaars und sofern angegeben – E-Mail-Adresse, Essenswünsche, Unverträglichkeiten, eine Nachricht und Antworten auf weitere Fragen des Brautpaars.',
+      'Hat das Brautpaar die Rückmeldung mit einem Einladungscode geschützt, speichern wir zur Abwehr von Missbrauch fehlgeschlagene Code-Eingaben mit einem gekürzten, nicht rückrechenbaren Kennwert eures Anschlusses. Nach richtiger Code-Eingabe setzen wir ein technisch notwendiges Cookie für diese Website.',
+      'Die Rückmeldungen sind nur für das Brautpaar im Dashboard sichtbar; das Brautpaar kann sie dort auch selbst anlegen, ändern, löschen und exportieren. Das Brautpaar kann zudem eine Gästeliste mit Namen und E-Mail-Adressen seiner Gäste hochladen.',
+    ],
+  },
+  {
+    title: '11. Gästebuch',
+    paragraphs: [
+      'Gäste können einen Gästebucheintrag mit Name und Nachricht hinterlassen. Einträge erscheinen erst, nachdem das Brautpaar sie im Dashboard freigegeben hat; dann sind sie auf der Hochzeitswebsite öffentlich sichtbar.',
+    ],
+  },
+  {
+    title: '12. Musikwünsche',
+    paragraphs: [
+      'Gäste können Musikwünsche mit Titel, Interpret und optional ihrem Namen einreichen. Die Wünsche werden auf der Hochzeitswebsite angezeigt.',
+    ],
+  },
+  {
+    title: '13. Geschenkreservierungen',
+    paragraphs: [
+      'Gäste können ein Geschenk aus der Wunschliste reservieren und dabei ihren Namen angeben. Die Reservierung wird auf der Hochzeitswebsite als „reserviert" angezeigt, damit Geschenke nicht doppelt gekauft werden; der angegebene Name kann dort angezeigt werden.',
+    ],
+  },
+  {
+    title: '14. Foto-Upload und Cloudinary',
+    paragraphs: [
+      'Gäste können Fotos für das Brautpaar hochladen und optional ihren Namen angeben. Die Bilder werden direkt aus dem Browser an den Dienst Cloudinary übertragen und dort gespeichert; dabei werden auch technische Dateidaten und die IP-Adresse übermittelt. In unserer Datenbank speichern wir die Adresse des Bildes, den angegebenen Namen und den Zeitpunkt.',
+      'Hochgeladene Gästefotos werden nicht automatisch auf der Hochzeitswebsite veröffentlicht. Sie sind für das Brautpaar im Dashboard sichtbar.',
+      'Auch Bilder, die das Brautpaar selbst hochlädt, und die Bilder der Hochzeitsseiten werden über Cloudinary gespeichert und ausgeliefert.',
+    ],
+  },
+  {
+    title: 'Rechtsgrundlage für Angaben von Gästen (Abschnitte 10–14)',
+    paragraphs: [
+      'Wir verarbeiten die Angaben von Gästen, um dem Brautpaar die gebuchten Funktionen seiner Hochzeitswebsite bereitzustellen. Rechtsgrundlage ist unser berechtigtes Interesse und das des Brautpaars an der Organisation der Hochzeit (Art. 6 Abs. 1 lit. f DSGVO). Die Angaben sind freiwillig. Angaben zu Unverträglichkeiten macht ihr nur, wenn ihr das möchtet.',
+    ],
+  },
+  {
+    title: '15. Kontaktformular',
+    paragraphs: [
+      'Wenn ihr uns über das Kontaktformular schreibt, verarbeiten wir Name, E-Mail-Adresse, Betreff und Nachricht, um eure Anfrage zu beantworten. Die Anfrage wird per E-Mail (über Brevo) an uns weitergeleitet.',
+      'Rechtsgrundlage ist die Bearbeitung eurer Anfrage (Art. 6 Abs. 1 lit. b bzw. lit. f DSGVO).',
+    ],
+  },
+  {
+    title: '16. Warteliste',
+    paragraphs: [
+      'Wenn ihr euch für die Startbenachrichtigung eintragt, verarbeiten wir eure E-Mail-Adresse. Die Eintragung wird erst wirksam, wenn ihr den Link in unserer Bestätigungs-E-Mail anklickt. Wir informieren euch über den Start von sarahiver.de. Die Adresse speichern wir in unserer Datenbank; die E-Mails versenden wir über Brevo. Ihr könnt euch jederzeit austragen.',
+      'Rechtsgrundlage ist eure Einwilligung (Art. 6 Abs. 1 lit. a DSGVO), die ihr jederzeit mit Wirkung für die Zukunft widerrufen könnt.',
+    ],
+  },
+  {
+    title: '17. Sicherheit und Missbrauchsschutz',
+    paragraphs: [
+      'Zum Schutz vor Missbrauch begrenzen wir die Zahl der Anfragen an öffentliche Formulare. Dazu verarbeiten wir kurzzeitig einen gekürzten, nicht rückrechenbaren Kennwert der IP-Adresse im Arbeitsspeicher des Servers; dieser wird nicht dauerhaft gespeichert. Außerdem zählen wir, wie viele Einträge pro Hochzeitswebsite in kurzer Zeit eingehen.',
+      'Rechtsgrundlage ist unser berechtigtes Interesse an einem sicheren Betrieb (Art. 6 Abs. 1 lit. f DSGVO).',
+    ],
+  },
+  {
+    title: '18. Cookies',
+    paragraphs: [
+      'Wir setzen ausschließlich technisch notwendige Cookies: für die Anmeldung im Dashboard, für die Freischaltung einer per Code geschützten Rückmeldung und für die Testumgebung „Testen" (24 Stunden). Wir setzen keine Analyse- oder Werbe-Cookies.',
+    ],
+  },
+  {
+    title: '19. Speicherdauer',
+    paragraphs: [
+      'Wir speichern personenbezogene Daten, solange sie für den jeweiligen Zweck erforderlich sind. Die Hochzeitswebsite ist für die vereinbarte Laufzeit abrufbar (12 Monate ab Zahlung, mindestens bis drei Monate nach dem Hochzeitsdatum). Eine automatische Löschung der Inhalte und Gästeangaben zu diesem Zeitpunkt findet derzeit nicht statt; auf Anfrage löschen wir sie, soweit keine gesetzlichen Aufbewahrungspflichten entgegenstehen.',
+      'Daten zu Zahlungen und Bestellungen bewahren wir auf, solange handels- und steuerrechtliche Pflichten dies verlangen. Einträge der Testumgebung löschen wir automatisch nach etwa 24 Stunden.',
+    ],
+  },
+  {
+    title: '20. Empfänger und Auftragsverarbeiter',
+    paragraphs: [
+      'Wir setzen folgende Dienstleister ein: Vercel (Hosting), Supabase (Datenbank und Anmeldung), Stripe (Zahlungsabwicklung), Brevo (E-Mail-Versand) und Cloudinary (Bildspeicherung und -auslieferung). Die Dienstleister verarbeiten Daten nur, soweit dies für ihre Leistung erforderlich ist.',
+    ],
+  },
+  {
+    title: '21. Übermittlung in Drittländer',
+    paragraphs: [
+      'Einige Dienstleister (u. a. Vercel, Supabase, Cloudinary sowie Google für Google Fonts) haben ihren Sitz außerhalb der EU oder können Daten außerhalb der EU verarbeiten, insbesondere in den USA. Eine Übermittlung erfolgt nur auf Grundlage der dafür vorgesehenen Garantien der DSGVO, die sich aus den Vertrags- und Datenschutzbedingungen der jeweiligen Anbieter ergeben.',
+    ],
+  },
+  {
+    title: '22. Eure Rechte',
+    paragraphs: [
+      'Ihr habt das Recht auf Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20) und Widerspruch gegen Verarbeitungen auf Grundlage berechtigter Interessen (Art. 21). Eine erteilte Einwilligung könnt ihr jederzeit mit Wirkung für die Zukunft widerrufen.',
+      `Wendet euch dafür an ${OPERATOR.email}. Gäste können sich auch direkt an das jeweilige Brautpaar wenden.`,
+    ],
+  },
+  {
+    title: '23. Beschwerderecht',
+    paragraphs: [
+      'Ihr habt das Recht, euch bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Für uns zuständig ist der Hamburgische Beauftragte für Datenschutz und Informationsfreiheit.',
+    ],
+  },
+  {
+    title: '24. Änderungen',
+    paragraphs: [
+      'Wir passen diese Datenschutzerklärung an, wenn sich unser Angebot oder die rechtlichen Anforderungen ändern. Es gilt die jeweils hier veröffentlichte Fassung.',
+    ],
+  },
 ];
