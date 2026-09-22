@@ -31,19 +31,26 @@ export async function loadWeddingSite(
     return null;
   }
 
+  // Entwurfsdaten (content_draft, site_draft, pending-Einträge) sind für
+  // anon/authenticated per Spaltenrechten gesperrt (RLS-Härtung). Im
+  // Draft-Modus liest deshalb der Service-Role-Client. VORAUSSETZUNG: Der
+  // Aufrufer hat den Besitz geprüft — einziger Aufrufer ist /[slug] nach
+  // checkSiteOwner(). Published liest weiter mit dem normalen Client.
+  const draftClient = mode === 'draft' ? createSupabaseAdminClient() ?? supabase : supabase;
+
   // Nur die Bereiche DIESER Seite laden (früher: alle Kunden, dann im Code
   // gefiltert — falsch skalierend und unnötig datenbreit).
   const siteIdForBereiche = (tokensResult.data as { wedding_site_id: string }).wedding_site_id;
   const bereicheResult =
     mode === 'draft'
-      ? await supabase
+      ? await draftClient
           .from('wedding_bereiche')
           .select('*')
           .eq('wedding_site_id', siteIdForBereiche)
           .order('display_order', { ascending: true })
       : await supabase
           .from('wedding_bereiche')
-          .select('*')
+          .select('id, wedding_site_id, bereich_key, variant, display_order, is_active, content, content_published, created_at, updated_at, published_at')
           .eq('wedding_site_id', siteIdForBereiche)
           .eq('is_active', true)
           .order('display_order', { ascending: true });
@@ -52,7 +59,7 @@ export async function loadWeddingSite(
 
   if (mode === 'draft') {
     try {
-      const siteRes = await supabase
+      const siteRes = await draftClient
         .from('wedding_sites')
         .select('site_draft, nav_variant, hero_image_url, couple_name_1, couple_name_2, wedding_date, wedding_location')
         .eq('id', tokens.wedding_site_id)
@@ -171,9 +178,9 @@ export async function loadWeddingSite(
 
   let navVariant: string = 'a';
   try {
-    const navResult = await supabase
+    const navResult = await (mode === 'draft' ? draftClient : supabase)
       .from('wedding_sites')
-      .select('nav_variant, site_draft')
+      .select(mode === 'draft' ? 'nav_variant, site_draft' : 'nav_variant')
       .eq('id', tokens.wedding_site_id)
       .maybeSingle();
     const row = (navResult.data as { nav_variant?: string; site_draft?: Record<string, unknown> } | null) || {};
@@ -214,7 +221,9 @@ export async function loadWeddingSite(
   if (guestbookIdx !== -1) {
     try {
       const statusFilter = mode === 'draft' ? ['approved', 'pending'] : ['approved'];
-      const { data: entries } = await supabase
+      // Pending-Einträge sind per RLS nicht öffentlich lesbar; die
+      // Owner-Vorschau liest sie über den (nur im Draft gesetzten) Admin-Client.
+      const { data: entries } = await draftClient
         .from('wedding_guestbook_entries')
         .select('id, name, message, created_at, status')
         .eq('wedding_site_id', tokens.wedding_site_id)
