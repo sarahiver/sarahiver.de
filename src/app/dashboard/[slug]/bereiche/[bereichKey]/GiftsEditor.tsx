@@ -286,7 +286,7 @@ export default function GiftsEditor({ slug, initial, reservedItemIds, reservedCo
                 className="dash-input"
                 value={text.iban_holder}
                 onChange={onText('iban_holder')}
-                placeholder="Sarah & Iver Gentz"
+                placeholder="Anna & Ben"
               />
             </div>
             <div className="dash-form-field">

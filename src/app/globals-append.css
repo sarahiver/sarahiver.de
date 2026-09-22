@@ -6,7 +6,7 @@
    ============================================================ */
 
 /* --- 0. Google Fonts (alle 8 Stile auf einmal) --- */
-@import url('https://fonts.googleapis.com/css2?family=Alumni+Sans+Inline:ital,wght@0,900;1,900&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Cormorant+SC:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Caveat:wght@400..700&family=Karla:ital,wght@0,200..800;1,200..800&family=Manrope:wght@200..800&family=Italiana&family=Syne:wght@700;800&display=swap');
+/* Schriften: selbst gehostet, siehe src/app/fonts.css */
 
 /* --- 1. @property für animierbare Custom Properties (Opulent + Co.) --- */
 @property --shimmer-pos {

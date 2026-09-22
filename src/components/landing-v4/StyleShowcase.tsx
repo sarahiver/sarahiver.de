@@ -30,11 +30,10 @@ export default async function StyleShowcase() {
 
   if (!visible.length) return null;
 
-  const googleHref = buildGoogleFontsHref(visible.map((s) => fontById.get(s.default_font_id)));
 
   return (
     <section className="sd-styles" id="stile">
-      {googleHref ? <link rel="stylesheet" href={googleHref} /> : null}
+      {/* Schriften sind selbst gehostet (src/app/fonts.css) — kein Google-Abruf. */}
 
       <div className="sd-wrap">
         <p className="sd-eyebrow sd-center">{STYLES_SECTION.eyebrow}</p>
@@ -121,33 +120,3 @@ function cssFamily(stack: string | null | undefined): string | undefined {
   return stack || undefined;
 }
 
-/**
- * Baut einen Google-Fonts-Link aus allen verwendeten Familien. React hebt
- * <link rel="stylesheet"> automatisch in den <head>. Schlägt der Abruf fehl,
- * greifen die Fallbacks im Font-Stack — die Seite bleibt benutzbar.
- */
-function buildGoogleFontsHref(
-  fontRows: Array<{ font_display: string; font_body: string } | undefined>,
-): string | null {
-  const families = new Set<string>();
-
-  for (const row of fontRows) {
-    if (!row) continue;
-    for (const stack of [row.font_display, row.font_body]) {
-      const name = familyName(stack);
-      // Systemschriften nicht bei Google anfragen.
-      if (!name || name === '—') continue;
-      if (/^(system-ui|sans-serif|serif|monospace|ui-monospace|-apple-system)$/i.test(name)) continue;
-      families.add(name);
-    }
-  }
-
-  if (!families.size) return null;
-
-  const params = [...families]
-    .sort()
-    .map((n) => `family=${encodeURIComponent(n).replace(/%20/g, '+')}:wght@300;400;500;600;700`)
-    .join('&');
-
-  return `https://fonts.googleapis.com/css2?${params}&display=swap`;
-}

@@ -180,7 +180,7 @@ export const WIDERRUF_FORM_LINES: string[] = [
 // =============================================================================
 // DATENSCHUTZERKLÄRUNG — auf Basis des tatsächlichen Codes (Stand 2026-09).
 // ENTWURF — vor öffentlichem Launch rechtlich prüfen lassen. Offene Punkte
-// (Rollen bei Gästedaten, Speicherdauer, Drittlandübermittlung, Google Fonts,
+// (Rollen bei Gästedaten, Speicherdauer, Drittlandübermittlung, Google Maps,
 // Gesundheitsangaben im RSVP) sind im Launch-Bericht als LEGAL REVIEW markiert.
 // =============================================================================
 export const DATENSCHUTZ_DRAFT_NOTICE = 'Entwurf — vor öffentlichem Launch rechtlich prüfen lassen.';
@@ -201,11 +201,12 @@ export const DATENSCHUTZ_SECTIONS: LegalSection[] = [
     ],
   },
   {
-    title: '3. Schriften und Beispielbilder von Drittanbietern',
+    title: '3. Externe Inhalte: Karten und Bilder',
     paragraphs: [
-      'Für die Darstellung einzelner Schriften binden wir Google Fonts (Google Ireland Limited / Google LLC) ein. Dabei stellt euer Browser eine Verbindung zu Servern von Google her; Google erhält dabei eure IP-Adresse.',
-      'In den Beispiel- und Demoseiten verwenden wir Beispielfotos, die von Servern des Dienstes Pexels geladen werden. Auch dabei wird eure IP-Adresse an den Anbieter übermittelt.',
-      'Rechtsgrundlage ist unser berechtigtes Interesse an einer einheitlichen und ansprechenden Darstellung (Art. 6 Abs. 1 lit. f DSGVO).',
+      'Schriften liefern wir von unseren eigenen Servern aus; dabei werden keine Daten an Dritte übermittelt.',
+      'Hat ein Brautpaar in den Bereichen „Anfahrt" oder „Übernachtung" eine Adresse hinterlegt, zeigt die Hochzeitswebsite dort eine eingebettete Karte von Google Maps (Google Ireland Limited / Google LLC). Beim Anzeigen dieses Bereichs lädt euer Browser die Karte direkt von Google; Google erhält dabei insbesondere eure IP-Adresse und kann Cookies setzen. Links wie „Route planen" öffnen Google Maps erst, wenn ihr sie anklickt.',
+      'Auf unserer Startseite laden wir Stimmungsbilder vom Dienst Lorem Picsum (picsum.photos), in den Beispiel- und Demoseiten Beispielfotos vom Dienst Pexels. Dabei wird eure IP-Adresse an den jeweiligen Anbieter übermittelt.',
+      'Rechtsgrundlage ist unser berechtigtes Interesse an einer anschaulichen Darstellung und an der Anzeige von Anfahrtsinformationen (Art. 6 Abs. 1 lit. f DSGVO).',
     ],
   },
   {
@@ -335,7 +336,7 @@ export const DATENSCHUTZ_SECTIONS: LegalSection[] = [
   {
     title: '21. Übermittlung in Drittländer',
     paragraphs: [
-      'Einige Dienstleister (u. a. Vercel, Supabase, Cloudinary sowie Google für Google Fonts) haben ihren Sitz außerhalb der EU oder können Daten außerhalb der EU verarbeiten, insbesondere in den USA. Eine Übermittlung erfolgt nur auf Grundlage der dafür vorgesehenen Garantien der DSGVO, die sich aus den Vertrags- und Datenschutzbedingungen der jeweiligen Anbieter ergeben.',
+      'Einige Dienstleister (u. a. Vercel, Supabase, Cloudinary sowie Google für die eingebetteten Karten) haben ihren Sitz außerhalb der EU oder können Daten außerhalb der EU verarbeiten, insbesondere in den USA. Eine Übermittlung erfolgt nur auf Grundlage der dafür vorgesehenen Garantien der DSGVO, die sich aus den Vertrags- und Datenschutzbedingungen der jeweiligen Anbieter ergeben.',
     ],
   },
   {
