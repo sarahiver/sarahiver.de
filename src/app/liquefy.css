@@ -1310,3 +1310,95 @@
    in A und B (C behält einen dunklen Schatten nur für Lesbarkeit auf Bild). */
 .hero-a[data-style-hero='liquefy'] .hero-a-title,
 .hero-b[data-style-hero='liquefy'] .hero-b-title { text-shadow: none; }
+
+/* =========================================================================
+   13 · VARIANT COHESION — A/B/C frei mischbar
+   -------------------------------------------------------------------------
+   Ursache der Isolation: C bekam in jedem Anker die Nachtwelt als ganze
+   Sektionsfläche (--lq-night-field auf der Sektion). In einer gemischten
+   Seite (A, C, B, A, C …) schaltete die Seite dadurch zwischen hell und
+   dunkel wie zwischen zwei Themes.
+
+   Neu: GLOBAL = DESIGN, A/B/C = KOMPOSITION + INTENSITÄT. Alle Sektionen
+   stehen auf derselben Ambient World. Liquid Night ist ein lokaler
+   dramatischer Zustand — ein Kern, ein Leitbild, ein Moment —, nicht die
+   Grundfläche von C. Ausnahme: Hero C darf als ganzer Night-Moment bleiben
+   und läuft an seiner Unterkante in die Ambient World aus.
+   ========================================================================= */
+
+/* --- C-Sektionen außer Hero: gemeinsamer heller Grund, stärkere Lens --- */
+.wedding-site-wrapper[data-style='liquefy'] :is(.cd.cdC-wrap, .ls.lsC, .gal.galC-wrap) {
+  background: transparent;
+  color: var(--lq-ink);
+}
+.wedding-site-wrapper[data-style='liquefy'] :is(.cd.cdC-wrap, .ls.lsC, .gal.galC-wrap)::before {
+  /* C-Lens: dieselben Farben wie A/B, dazu mehr Violett und Wein als Licht */
+  background:
+    radial-gradient(34% 38% at 78% 22%, color-mix(in srgb, var(--lq-glow) 34%, transparent), transparent 72%),
+    radial-gradient(38% 40% at 16% 74%, color-mix(in srgb, var(--lq-lilac) 70%, transparent), transparent 74%),
+    radial-gradient(30% 30% at 55% 50%, color-mix(in srgb, var(--lq-violet) 12%, transparent), transparent 72%);
+}
+.wedding-site-wrapper[data-style='liquefy'] :is(.cdC-wrap, .lsC, .galC-wrap) :is(.ls-eyebrow, .gal-eyebrow, .cd-eyebrow, .cd-label, .lsC-eyebrow) {
+  color: var(--lq-plum);
+}
+
+/* --- Hero C: Night-Moment, läuft unten in die Ambient World aus --- */
+.hero-c[data-style-hero='liquefy']::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  block-size: 22%;
+  z-index: 1;
+  background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--lq-paper) 92%, transparent));
+  pointer-events: none;
+}
+
+/* --- Countdown C: heller Grund, dunkler Statement-Kern um die Zahl --- */
+.cd.cdC-wrap[data-style-countdown='liquefy'] .cd-date-stamp { color: var(--lq-plum); }
+.cd.cdC-wrap[data-style-countdown='liquefy'] :is(.cd-footer, .cd-past) { color: var(--lq-ink); }
+.cd.cdC-wrap[data-style-countdown='liquefy'] .cdC-bar-row:first-child {
+  background:
+    radial-gradient(60% 60% at 40% 35%, color-mix(in srgb, var(--lq-violet) 92%, transparent), transparent 100%),
+    var(--lq-night);
+  border-color: color-mix(in srgb, #FFFFFF 22%, transparent);
+}
+.cd.cdC-wrap[data-style-countdown='liquefy'] .cdC-bar-row:first-child :is(.cdC-bar-num-value, .cdC-bar-label) { color: var(--lq-on-night); }
+.cd.cdC-wrap[data-style-countdown='liquefy'] .cdC-bar-row:not(:first-child) :is(.cdC-bar-num-value) { color: var(--lq-ink); }
+.cd.cdC-wrap[data-style-countdown='liquefy'] .cdC-bar-row:not(:first-child) .cdC-bar-label { color: var(--lq-plum); }
+
+/* --- Love Story C: helle Ambient World, EIN Night-Moment (Station 2), die
+   übrigen Stationen mit Violett-/Wein-Glow als Licht --- */
+.ls.lsC[data-style-ls='liquefy'] :is(.lsC-title, .lsC-desc) { color: var(--lq-ink); }
+.ls.lsC[data-style-ls='liquefy'] .lsC-eyebrow { color: var(--lq-plum); }
+.ls.lsC[data-style-ls='liquefy'] .lsC-img::after {
+  background:
+    radial-gradient(closest-side at 40% 40%, color-mix(in srgb, var(--lq-glow) 40%, transparent), transparent),
+    radial-gradient(closest-side at 65% 65%, color-mix(in srgb, var(--lq-lilac) 60%, transparent), transparent);
+}
+.ls.lsC[data-style-ls='liquefy'] .lsC-item:nth-child(2) .lsC-card {
+  padding: clamp(24px, 3vw, 48px);
+  border-radius: 40px;
+  background: var(--lq-night-field);
+}
+.ls.lsC[data-style-ls='liquefy'] .lsC-item:nth-child(2) :is(.lsC-title, .lsC-desc) { color: var(--lq-on-night); }
+.ls.lsC[data-style-ls='liquefy'] .lsC-item:nth-child(2) .lsC-eyebrow { color: var(--lq-on-night-soft); }
+
+/* --- Gallery C: heller Einstieg, Night/Glow nur um das Leitbild --- */
+.gal.galC-wrap[data-style-gallery='liquefy'] :is(.gal-title, .gal-intro) { color: var(--lq-ink); }
+.gal.galC-wrap[data-style-gallery='liquefy'] .galC {
+  background:
+    radial-gradient(38% 70% at 22% 55%, color-mix(in srgb, var(--lq-night) 88%, transparent), transparent 72%),
+    radial-gradient(26% 50% at 34% 40%, color-mix(in srgb, var(--lq-wine) 55%, transparent), transparent 72%);
+}
+.gal.galC-wrap[data-style-gallery='liquefy'] .galC-tile { background: var(--lq-blush); }
+.gal.galC-wrap[data-style-gallery='liquefy'] .gal-showmore {
+  background: color-mix(in srgb, #FFFFFF 52%, transparent);
+  color: var(--lq-ink);
+  border-color: color-mix(in srgb, var(--lq-ink) 18%, transparent);
+}
+.gal.galC-wrap[data-style-gallery='liquefy'] .gal-showmore:focus-visible { outline-color: var(--lq-plum); }
+/* Hero A/B: die Bestandsfassung gab dem Hero eine eigene deckende Fläche —
+   an der Unterkante entstand eine sichtbare Stufe zur nächsten Sektion. */
+.wedding-site-wrapper[data-style='liquefy'] :is(.hero-a[data-style-hero='liquefy'], .hero-b[data-style-hero='liquefy']) {
+  background: transparent;
+}
