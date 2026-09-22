@@ -374,3 +374,901 @@
 @media (max-width: 800px) {
   .kn-review__grid2, .kn-review__grid3 { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* =========================================================================
+   RUN 2 · ANKER — Hero, Countdown, Love Story, Gallery
+   ========================================================================= */
+
+/* -------------------------------------------------------------------------
+   R2.0 · ALT-KINETIC ZURÜCKNEHMEN
+   Gelesen und wirksam waren:
+     design-system-v2.css  Wrapper-Variablen (Alumni Sans Inline, JetBrains
+                           Mono, weiße --ink-soft/--rule), .display-Regeln,
+                           Countdown (Syne, gedrehte cdA-Einheiten)
+     hero-v2.css           Hero A/B/C: Syne 900, Alumni-Ampersand kursiv,
+                           gedrehte Bilder mit gelbem/Gold-Versatzschatten
+     DecorationKineticBg   Laufschrift mit kin-marquee (Inline-Stil) in
+                           Hero A/B/C
+     StyledBereichBg       .styled-bg-kinetic mit kin-stripe-1/2
+   Alle Altregeln sind auf Kinetic begrenzt; andere Stile brauchen sie
+   nicht. Sie werden hier mit höherer Spezifität überschrieben statt
+   gelöscht — die Deko-Komponenten bleiben im Code, werden aber nicht
+   mehr gezeigt.
+   ------------------------------------------------------------------------- */
+.wedding-site-wrapper[data-style='kinetic'] {
+  --font-display-style: var(--kn-font);
+  --font-display-weight: 800;
+  --display-letter-spacing: -0.01em;
+  --display-line-height: 0.86;
+  --ink-soft: var(--kn-grey);
+  --rule: var(--kn-line);
+}
+.wedding-site-wrapper[data-style='kinetic'] :is(.hero-a, .hero-b, .hero-c) > div[aria-hidden='true'][style*='kin-marquee'],
+.wedding-site-wrapper[data-style='kinetic'] :is(.styled-bg-kinetic, .ls-head-ornament, .gal-head-ornament, [class*='marquee']) {
+  display: none;
+}
+
+/* Gemeinsame Anker-Basis */
+.wedding-site-wrapper[data-style='kinetic'] :is(.hero-a, .hero-b, .hero-c, .cd, .ls, .gal) {
+  position: relative;
+  overflow-x: clip;
+  font-style: normal;
+}
+.wedding-site-wrapper[data-style='kinetic'] :is(.hero-a, .hero-b, .hero-c, .cd, .ls, .gal) :is(h1, h2, h3, p, span, em, div) { font-style: normal; }
+.wedding-site-wrapper[data-style='kinetic'] :is(.hero-a, .hero-b, .hero-c, .ls, .gal) :is(img, [class*='image'], [class*='img']) { filter: var(--img-filter, none); }
+
+/* Kopf der Bildbereiche: blaue Marke + condensed Headline, linksbündig */
+.wedding-site-wrapper[data-style='kinetic'] :is(.ls, .gal) {
+  padding: var(--kn-pad-block) var(--kn-pad-inline);
+  background: var(--kn-paper);
+  color: var(--kn-ink);
+  text-align: left;
+}
+.wedding-site-wrapper[data-style='kinetic'] :is(.ls-head, .gal-head) { display: grid; justify-items: start; gap: 14px; text-align: left; margin: 0; max-inline-size: none; }
+.wedding-site-wrapper[data-style='kinetic'] :is(.ls-eyebrow, .gal-eyebrow, .cd-eyebrow) {
+  display: inline-block;
+  padding: 5px 10px 4px;
+  background: var(--kn-blue);
+  color: var(--kn-on-blue);
+  font-family: var(--kn-font-text);
+  font-stretch: 100%;
+  font-weight: 700;
+  font-size: var(--kn-meta);
+  letter-spacing: var(--kn-track-meta);
+  text-transform: uppercase;
+  margin: 0;
+}
+.wedding-site-wrapper[data-style='kinetic'] :is(.ls-title, .gal-title) {
+  font-family: var(--kn-font);
+  font-weight: 800;
+  font-stretch: var(--kn-cond);
+  font-size: var(--kn-display-l);
+  line-height: 0.86;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--kn-ink);
+  margin: 0;
+}
+.wedding-site-wrapper[data-style='kinetic'] :is(.ls-title, .gal-title) em { font-family: inherit; font-weight: inherit; color: var(--kn-blue); background: none; }
+.wedding-site-wrapper[data-style='kinetic'] :is(.ls-intro, .gal-intro) {
+  font-family: var(--kn-font-text);
+  font-stretch: 100%;
+  font-size: var(--kn-body);
+  line-height: 1.6;
+  color: var(--kn-ink);
+  max-inline-size: 60ch;
+  margin: 0;
+  text-align: left;
+}
+
+/* -------------------------------------------------------------------------
+   R2.1 · HERO
+   ------------------------------------------------------------------------- */
+.wedding-site-wrapper[data-style='kinetic'] :is(.hero-a-title, .hero-b-title, .hero-c-title) {
+  font-family: var(--kn-font);
+  font-weight: 900;
+  font-stretch: var(--kn-cond-tight);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 0.84;
+  margin: 0;
+}
+.wedding-site-wrapper[data-style='kinetic'] :is(.hero-a-title, .hero-b-title, .hero-c-title) .amp {
+  display: inline;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: inherit;
+  color: var(--kn-blue);
+  background: none;
+  transform: none;
+}
+.wedding-site-wrapper[data-style='kinetic'] :is(.hero-a-eyebrow, .hero-b-eyebrow, .hero-c-eyebrow, .hero-a-location, .hero-b-venue, .hero-c-venue) {
+  font-family: var(--kn-font-text);
+  font-stretch: 100%;
+  font-weight: 700;
+  font-size: var(--kn-meta);
+  letter-spacing: var(--kn-track-meta);
+  text-transform: uppercase;
+  color: inherit;
+  background: none;
+}
+/* Datum = die blaue Signalmarke des Hero */
+.wedding-site-wrapper[data-style='kinetic'] :is(.hero-a-date, .hero-b-date, .hero-c-date) {
+  display: inline-block;
+  justify-self: start;
+  padding: 7px 12px 6px;
+  background: var(--kn-blue);
+  color: var(--kn-on-blue);
+  font-family: var(--kn-font);
+  font-stretch: 85%;
+  font-weight: 800;
+  font-size: clamp(14px, 1.2vw, 18px);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* --- A · DRIVE: Namen über die ganze Breite, darunter Meta + Fotoframe --- */
+.wedding-site-wrapper[data-style='kinetic'] .hero-a[data-style-hero='kinetic'] {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: auto auto;
+  align-items: end;
+  gap: clamp(24px, 3vw, 48px) clamp(16px, 2vw, 32px);
+  min-height: 0;
+  padding: var(--kn-pad-block) var(--kn-pad-inline);
+  background: var(--kn-paper);
+  color: var(--kn-ink);
+}
+.wedding-site-wrapper[data-style='kinetic'] .hero-a[data-style-hero='kinetic'] .hero-a-content { display: contents; }
+.wedding-site-wrapper[data-style='kinetic'] .hero-a[data-style-hero='kinetic'] .hero-a-title {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  font-size: clamp(64px, 14vw, 260px);
+  color: var(--kn-ink);
+  animation: kn-enter var(--kn-enter) both;
+}
+.wedding-site-wrapper[data-style='kinetic'] .hero-a[data-style-hero='kinetic'] .hero-a-eyebrow { grid-column: 1 / span 5; grid-row: 2; align-self: start; }
+.wedding-site-wrapper[data-style='kinetic'] .hero-a[data-style-hero='kinetic'] .hero-a-date { grid-column: 1 / span 5; grid-row: 2; align-self: center; }
+.wedding-site-wrapper[data-style='kinetic'] .hero-a[data-style-hero='kinetic'] .hero-a-location { grid-column: 1 / span 5; grid-row: 2; align-self: end; }
+.wedding-site-wrapper[data-style='kinetic'] .hero-a[data-style-hero='kinetic'] .hero-a-image {
+  grid-column: 6 / -1;
+  grid-row: 2;
+  position: relative;
+  inset: auto;
+  inline-size: 100%;
+  block-size: auto;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  margin: 0;
+  border: var(--kn-frame) solid var(--kn-paper);
+  outline: 2px solid var(--kn-ink);
+  box-shadow: none;
+  transform: none;
+  transition: none;
+  background-size: cover;
+  background-position: center 30%;
+}
+.wedding-site-wrapper[data-style='kinetic'] .hero-a[data-style-hero='kinetic'] .hero-a-image:hover { transform: none; }
+
+/* --- B · SHIFT: gekipptes Foto links, Namen überlagern von rechts --- */
+.wedding-site-wrapper[data-style='kinetic'] .hero-b[data-style-hero='kinetic'] {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: center;
+  min-height: min(92vh, 860px);
+  padding: var(--kn-pad-block) var(--kn-pad-inline);
+  background: var(--kn-paper);
+}
+.wedding-site-wrapper[data-style='kinetic'] .hero-b[data-style-hero='kinetic'] .hero-b-image-col {
+  grid-column: 1 / span 7;
+  grid-row: 1;
+  position: relative;
+  inset: auto;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: 0;
+  aspect-ratio: 4 / 5;
+  max-block-size: 76vh;
+  inline-size: 100%;
+}
+.wedding-site-wrapper[data-style='kinetic'] .hero-b[data-style-hero='kinetic'] .hero-b-image {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  width: auto;
+  height: auto;
+  margin: 0;
+  border: var(--kn-frame) solid var(--kn-paper);
+  box-shadow: calc(var(--kn-offset) * 0.8) calc(var(--kn-offset) * 0.8) 0 0 var(--kn-blue);
+  transform: rotate(var(--kn-tilt-soft));
+  transition: none;
+  background-size: cover;
+  background-position: center 30%;
+}
+.wedding-site-wrapper[data-style='kinetic'] .hero-b[data-style-hero='kinetic'] .hero-b-image:hover { transform: rotate(var(--kn-tilt-soft)); }
+.wedding-site-wrapper[data-style='kinetic'] .hero-b[data-style-hero='kinetic'] .hero-b-image-caption { display: none; }
+.wedding-site-wrapper[data-style='kinetic'] .hero-b[data-style-hero='kinetic'] .hero-b-text {
+  grid-column: 6 / -1;
+  grid-row: 1;
+  position: relative;
+  z-index: 3;
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  padding: 0;
+  background: none;
+  color: var(--kn-ink);
+}
+.wedding-site-wrapper[data-style='kinetic'] .hero-b[data-style-hero='kinetic'] .hero-b-title {
+  font-size: clamp(60px, 10vw, 184px);
+  color: var(--kn-ink);
+  text-shadow: 0 0 0 transparent;
+  animation: kn-enter-x var(--kn-enter) both;
+}
+/* Namen liegen über der Bildkante: hinter den Buchstaben eine Paper-Kante */
+.wedding-site-wrapper[data-style='kinetic'] .hero-b[data-style-hero='kinetic'] .hero-b-title {
+  -webkit-text-stroke: 0;
+  paint-order: stroke fill;
+}
+.wedding-site-wrapper[data-style='kinetic'] .hero-b[data-style-hero='kinetic'] .hero-b-rule { display: none; }
+.wedding-site-wrapper[data-style='kinetic'] .hero-b[data-style-hero='kinetic'] .hero-b-date {
+  transform: rotate(var(--kn-tilt));
+  animation: kn-drift var(--kn-drift) ease-in-out infinite alternate;
+}
+.wedding-site-wrapper[data-style='kinetic'] .hero-b[data-style-hero='kinetic'] .hero-b-intro {
+  font-family: var(--kn-font-text);
+  font-stretch: 100%;
+  font-size: var(--kn-body);
+  line-height: 1.6;
+  max-inline-size: 38ch;
+  padding: 12px 14px;
+  background: var(--kn-paper);
+}
+
+/* --- C · IMPACT: großes gecropptes Foto, Namen als typografischer Eingriff --- */
+.wedding-site-wrapper[data-style='kinetic'] .hero-c[data-style-hero='kinetic'] {
+  min-height: min(100vh, 920px);
+  background: var(--kn-ink);
+  color: var(--kn-on-ink);
+  overflow: hidden;
+}
+.wedding-site-wrapper[data-style='kinetic'] .hero-c[data-style-hero='kinetic'] .hero-c-kinetic-img {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  transform: none;
+  box-shadow: none;
+  background-size: cover;
+  background-position: center 35%;
+}
+.wedding-site-wrapper[data-style='kinetic'] .hero-c[data-style-hero='kinetic'] .hero-c-kinetic-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 38%, color-mix(in srgb, var(--kn-ink) 82%, transparent) 100%);
+}
+.wedding-site-wrapper[data-style='kinetic'] .hero-c[data-style-hero='kinetic'] :is(.hero-c-vignette, .hero-c-volume) { display: none; }
+.wedding-site-wrapper[data-style='kinetic'] .hero-c[data-style-hero='kinetic'] .hero-c-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 16px;
+  min-height: inherit;
+  padding: var(--kn-pad-block) var(--kn-pad-inline) clamp(32px, 4vw, 64px);
+  color: var(--kn-on-ink);
+  text-align: left;
+}
+.wedding-site-wrapper[data-style='kinetic'] .hero-c[data-style-hero='kinetic'] :is(.hero-c-top, .hero-c-mid, .hero-c-bot) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px 20px;
+  inline-size: 100%;
+  border: 0;
+  padding: 0;
+}
+.wedding-site-wrapper[data-style='kinetic'] .hero-c[data-style-hero='kinetic'] .hero-c-title {
+  font-size: clamp(76px, 17vw, 320px);
+  line-height: 0.8;
+  color: var(--kn-on-ink);
+  margin-inline-start: -0.04em;
+  max-inline-size: 100%;
+  overflow-wrap: normal;
+  animation: kn-enter var(--kn-enter) both;
+}
+.wedding-site-wrapper[data-style='kinetic'] .hero-c[data-style-hero='kinetic'] .hero-c-title .amp { color: var(--kn-blue); }
+
+/* -------------------------------------------------------------------------
+   R2.2 · COUNTDOWN — Zahlen als grafisches Material
+   ------------------------------------------------------------------------- */
+.wedding-site-wrapper[data-style='kinetic'] .cd[data-style-countdown='kinetic'] {
+  --cd-num-font: var(--kn-font);
+  --cd-num-weight: 900;
+  --cd-label-font: var(--kn-font-text);
+  --cd-footer-font: var(--kn-font-text);
+  padding: var(--kn-pad-block) var(--kn-pad-inline);
+  background: var(--kn-paper);
+  color: var(--kn-ink);
+  text-align: left;
+}
+.wedding-site-wrapper[data-style='kinetic'] .cd[data-style-countdown='kinetic'] .cd-eyebrow { margin: 0 0 24px; }
+.wedding-site-wrapper[data-style='kinetic'] .cd[data-style-countdown='kinetic'] :is(.cd-label, .cdC-bar-label) {
+  font-family: var(--kn-font-text);
+  font-stretch: 100%;
+  font-weight: 700;
+  font-size: var(--kn-meta);
+  letter-spacing: var(--kn-track-meta);
+  text-transform: uppercase;
+  color: inherit;
+}
+.wedding-site-wrapper[data-style='kinetic'] .cd[data-style-countdown='kinetic'] :is(.cd-footer, .cd-past) {
+  margin: 24px 0 0;
+  font-family: var(--kn-font);
+  font-stretch: 85%;
+  font-weight: 800;
+  font-size: clamp(18px, 1.6vw, 24px);
+  text-transform: uppercase;
+  color: inherit;
+  text-align: left;
+}
+.wedding-site-wrapper[data-style='kinetic'] .cd[data-style-countdown='kinetic'] :is(.cd-num, .flip-digit, .cdC-bar-num-value) {
+  font-family: var(--kn-font);
+  font-weight: 900;
+  font-stretch: var(--kn-cond);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.wedding-site-wrapper[data-style='kinetic'] .cd[data-style-countdown='kinetic'] .cd-date-stamp-wrap { justify-content: flex-start; border: 0; margin-block-end: 20px; }
+.wedding-site-wrapper[data-style='kinetic'] .cd[data-style-countdown='kinetic'] .cd-date-stamp {
+  background: none;
+  border: 0;
+  color: inherit;
+  font-family: var(--kn-font-text);
+  font-weight: 700;
+  font-size: var(--kn-meta);
+  letter-spacing: var(--kn-track-meta);
+}
+
+/* --- A · DRIVE: eine Zeile, harte Teiler, Tage in Blau --- */
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdA-wrap[data-style-countdown='kinetic'] .cdA-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 0;
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  border-block: 2px solid var(--kn-ink);
+  background: none;
+}
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdA-wrap[data-style-countdown='kinetic'] .cdA-unit {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  padding: 18px 16px;
+  background: none;
+  border: 0;
+  border-inline-start: 2px solid var(--kn-ink);
+  transform: none;
+  animation: kn-enter var(--kn-enter) both;
+}
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdA-wrap[data-style-countdown='kinetic'] .cdA-unit:first-child { border-inline-start: 0; padding-inline-start: 0; }
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdA-wrap[data-style-countdown='kinetic'] .cdA-unit:nth-child(2) { animation-delay: 60ms; }
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdA-wrap[data-style-countdown='kinetic'] .cdA-unit:nth-child(3) { animation-delay: 120ms; }
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdA-wrap[data-style-countdown='kinetic'] .cdA-unit:nth-child(4) { animation-delay: 180ms; }
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdA-wrap[data-style-countdown='kinetic'] .cdA-unit:nth-child(5) { animation-delay: 240ms; }
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdA-wrap[data-style-countdown='kinetic'] .cdA-unit .cd-num {
+  font-size: var(--kn-number);
+  line-height: 0.82;
+  color: var(--kn-ink);
+  background: none;
+  padding: 0;
+}
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdA-wrap[data-style-countdown='kinetic'] .cdA-unit:nth-child(2) .cd-num { color: var(--kn-blue); }
+
+/* --- B · SHIFT: Blöcke gegeneinander versetzt, Tage als blauer Block --- */
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdB-wrap[data-style-countdown='kinetic'] .cdB-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0;
+  max-inline-size: none;
+  margin: 0;
+  padding: 0 0 var(--kn-offset);
+  background: none;
+  border: 0;
+}
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdB-wrap[data-style-countdown='kinetic'] .cdB-unit {
+  display: grid;
+  justify-items: start;
+  align-content: end;
+  gap: 10px;
+  padding: 18px;
+  margin-inline-start: -2px;
+  background: var(--kn-paper);
+  color: var(--kn-ink);
+  border: 2px solid var(--kn-ink);
+  transform: none;
+}
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdB-wrap[data-style-countdown='kinetic'] .cdB-unit:nth-child(even) { transform: translateY(var(--kn-offset)); }
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdB-wrap[data-style-countdown='kinetic'] .cdB-unit:nth-child(2) {
+  position: relative;
+  z-index: 2;
+  background: var(--kn-blue);
+  color: var(--kn-on-blue);
+  border-color: var(--kn-blue);
+}
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdB-wrap[data-style-countdown='kinetic'] .cdB-cards { display: flex; gap: 0; }
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdB-wrap[data-style-countdown='kinetic'] :where(.flip-card, .flip-top, .flip-bottom, .flip-anim-top, .flip-anim-bot, .flip-half) {
+  background-color: transparent;
+  background-image: none;
+  border: 0;
+  box-shadow: none;
+  color: inherit;
+}
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdB-wrap[data-style-countdown='kinetic'] :where(.flip-top, .flip-bottom)::after { background: none; }
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdB-wrap[data-style-countdown='kinetic'] .flip-mid { background: transparent; }
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdB-wrap[data-style-countdown='kinetic'] .flip-digit { font-size: clamp(40px, 5.6vw, 96px); color: inherit; }
+
+/* --- C · IMPACT: eine schwarze Fläche, eine extreme Zahl --- */
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdC-wrap[data-style-countdown='kinetic'] {
+  background: var(--kn-ink);
+  color: var(--kn-on-ink);
+}
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdC-wrap[data-style-countdown='kinetic'] .cdC-bars {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 20px;
+  max-inline-size: none;
+  margin: 0;
+}
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdC-wrap[data-style-countdown='kinetic'] .cdC-bar-row {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+  padding: 14px 0 0;
+  border: 0;
+  border-block-start: 2px solid color-mix(in srgb, var(--kn-on-ink) 30%, transparent);
+}
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdC-wrap[data-style-countdown='kinetic'] .cdC-bar-row:first-child {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 0 0 12px;
+  border: 0;
+}
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdC-wrap[data-style-countdown='kinetic'] .cdC-bar-row:first-child .cdC-bar-num-value {
+  font-size: clamp(160px, 30vw, 480px);
+  font-stretch: var(--kn-cond-tight);
+  line-height: 0.76;
+  color: var(--kn-on-ink);
+  margin-inline-start: -0.05em;
+  animation: kn-enter var(--kn-enter) both;
+}
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdC-wrap[data-style-countdown='kinetic'] .cdC-bar-row:first-child .cdC-bar-label {
+  padding: 5px 10px 4px;
+  background: var(--kn-blue);
+  color: var(--kn-on-blue);
+  margin-block-end: 0.8em;
+}
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdC-wrap[data-style-countdown='kinetic'] .cdC-bar-row:not(:first-child) .cdC-bar-num-value { font-size: clamp(28px, 2.6vw, 40px); color: var(--kn-on-ink); }
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdC-wrap[data-style-countdown='kinetic'] :is(.cdC-bar-num-max, .cdC-bar-track) { display: none; }
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdC-wrap[data-style-countdown='kinetic'] .cd-eyebrow { background: none; color: var(--kn-on-ink); padding: 0; }
+
+/* -------------------------------------------------------------------------
+   R2.3 · LOVE STORY — emotional, Kinetic über Nummer, Crop, Rhythmus
+   ------------------------------------------------------------------------- */
+.wedding-site-wrapper[data-style='kinetic'] .ls[data-style-ls='kinetic'] :is(.lsA-moment-title, .lsB-title, .lsC-title) {
+  font-family: var(--kn-font);
+  font-weight: 800;
+  font-stretch: var(--kn-cond);
+  text-transform: uppercase;
+  line-height: 0.9;
+  letter-spacing: -0.005em;
+  color: inherit;
+  margin: 0;
+}
+.wedding-site-wrapper[data-style='kinetic'] .ls[data-style-ls='kinetic'] :is(.lsA-desc, .lsB-desc, .lsC-desc) {
+  font-family: var(--kn-font-text);
+  font-stretch: 100%;
+  font-size: var(--kn-body);
+  line-height: 1.6;
+  color: inherit;
+  margin: 0;
+  display: block;
+  overflow: visible;
+}
+.wedding-site-wrapper[data-style='kinetic'] .ls[data-style-ls='kinetic'] :is(.lsA-eyebrow, .lsC-eyebrow, .lsB-date) {
+  font-family: var(--kn-font-text);
+  font-stretch: 100%;
+  font-weight: 700;
+  font-size: var(--kn-meta);
+  letter-spacing: var(--kn-track-meta);
+  text-transform: uppercase;
+  color: var(--kn-blue-deep);
+  background: none;
+  border: 0;
+  padding: 0;
+}
+.wedding-site-wrapper[data-style='kinetic'] .ls[data-style-ls='kinetic'] img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: center 30%; }
+
+/* --- A · DRIVE: großes Bild, ruhiger Text, starke Nummer --- */
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsA[data-style-ls='kinetic'] .lsA-single {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: clamp(28px, 4vw, 72px);
+  align-items: end;
+  margin: clamp(40px, 5vw, 72px) 0 0;
+  max-inline-size: none;
+}
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsA[data-style-ls='kinetic'] .lsA-single > * { min-inline-size: 0; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsA[data-style-ls='kinetic'] .lsA-images {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 12px;
+  padding: 0;
+}
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsA[data-style-ls='kinetic'] .lsA-images::before { display: none; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsA[data-style-ls='kinetic'] .lsA-img {
+  position: relative;
+  inset: auto;
+  transform: none;
+  margin: 0;
+  width: auto;
+  inline-size: 100%;
+  border: 0;
+  box-shadow: none;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  background: var(--kn-ice);
+}
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsA[data-style-ls='kinetic'] .lsA-img--1 { grid-row: span 2; aspect-ratio: 3 / 4; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsA[data-style-ls='kinetic'] .lsA-img:nth-child(n + 4) { display: none; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsA[data-style-ls='kinetic'] .lsA-text { display: grid; gap: 14px; justify-items: start; max-inline-size: 44ch; text-align: left; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsA[data-style-ls='kinetic'] .lsA-text::before {
+  content: '01';
+  font-family: var(--kn-font);
+  font-weight: 900;
+  font-stretch: var(--kn-cond);
+  font-size: var(--kn-number);
+  line-height: 0.8;
+  color: var(--kn-blue);
+}
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsA[data-style-ls='kinetic'] .lsA-moment-title { font-size: var(--kn-display-m); }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsA[data-style-ls='kinetic'] .lsA-sig { font-family: var(--kn-font-text); font-weight: 700; font-size: 13px; color: var(--kn-ink); }
+
+/* --- B · SHIFT: Kapitel im Wechsel, Text überlagert das Bild, eine Kippung --- */
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsB[data-style-ls='kinetic'] .lsB-list {
+  display: grid;
+  gap: clamp(40px, 5vw, 80px);
+  margin: clamp(40px, 5vw, 72px) 0 0;
+  max-inline-size: none;
+}
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsB[data-style-ls='kinetic'] .lsB-item {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  border: 0;
+  animation: kn-enter-x var(--kn-enter) both;
+}
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsB[data-style-ls='kinetic'] .lsB-img-wrap {
+  grid-column: 1 / span 7;
+  grid-row: 1;
+  position: relative;
+  overflow: hidden;
+  border: var(--kn-frame) solid var(--kn-paper);
+  outline: 2px solid var(--kn-ink);
+  aspect-ratio: 16 / 10;
+  background: var(--kn-ice);
+}
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsB[data-style-ls='kinetic'] .lsB-item:nth-child(even) .lsB-img-wrap { grid-column: 6 / -1; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsB[data-style-ls='kinetic'] .lsB-item:nth-child(2) .lsB-img-wrap { transform: rotate(var(--kn-tilt-soft)); }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsB[data-style-ls='kinetic'] .lsB-date {
+  position: absolute;
+  inset: auto auto 0 0;
+  inline-size: auto;
+  block-size: auto;
+  transform: none;
+  writing-mode: horizontal-tb;
+  padding: 6px 10px 5px;
+  background: var(--kn-ink);
+  color: var(--kn-on-ink);
+}
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsB[data-style-ls='kinetic'] .lsB-text {
+  grid-column: 7 / -1;
+  grid-row: 1;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  margin-block-start: calc(var(--kn-offset) * 3);
+  padding: clamp(20px, 2.6vw, 40px);
+  background: var(--kn-paper);
+  border: 2px solid var(--kn-ink);
+}
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsB[data-style-ls='kinetic'] .lsB-item:nth-child(even) .lsB-text { grid-column: 1 / span 6; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsB[data-style-ls='kinetic'] .lsB-num {
+  font-family: var(--kn-font);
+  font-weight: 900;
+  font-stretch: var(--kn-cond);
+  font-size: clamp(48px, 5vw, 88px);
+  line-height: 0.8;
+  color: var(--kn-blue);
+  background: none;
+  border: 0;
+  padding: 0;
+  inline-size: auto;
+  block-size: auto;
+}
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsB[data-style-ls='kinetic'] .lsB-title { font-size: clamp(26px, 2.8vw, 44px); }
+
+/* --- C · IMPACT: wenige große Momente, eine Station in Schwarz --- */
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-wrap {
+  display: grid;
+  gap: clamp(48px, 6vw, 96px);
+  margin: clamp(40px, 5vw, 72px) 0 0;
+  max-inline-size: none;
+}
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-line { display: none; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-item { display: block; padding: 0; border: 0; counter-increment: kn-station; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-wrap { counter-reset: kn-station; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-item::after { display: none; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-item::before {
+  content: counter(kn-station, decimal-leading-zero);
+  display: block;
+  font-family: var(--kn-font);
+  font-weight: 900;
+  font-stretch: var(--kn-cond-tight);
+  font-size: clamp(64px, 8vw, 140px);
+  line-height: 0.8;
+  color: var(--kn-blue);
+  margin-block-end: -0.28em;
+  position: relative;
+  z-index: 2;
+  background: none;
+  border: 0;
+  inline-size: auto;
+  block-size: auto;
+  inset: auto;
+}
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-card {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 16px clamp(16px, 2vw, 32px);
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-img {
+  grid-column: 1 / -1;
+  margin: 0;
+  border: 0;
+  overflow: hidden;
+  aspect-ratio: 21 / 8;
+  background: var(--kn-ice);
+}
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-eyebrow { grid-column: 1 / span 3; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-title { grid-column: 1 / span 6; font-size: var(--kn-display-m); }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-desc { grid-column: 7 / -1; grid-row: 3; max-inline-size: 60ch; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-item:nth-child(3 of .lsC-item) .lsC-card {
+  padding: clamp(20px, 3vw, 44px);
+  background: var(--kn-ink);
+  color: var(--kn-on-ink);
+}
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-item:nth-child(3 of .lsC-item) .lsC-eyebrow { color: var(--kn-on-ink); }
+
+/* -------------------------------------------------------------------------
+   R2.4 · GALLERY — Fotografie ist Hauptdarsteller
+   ------------------------------------------------------------------------- */
+.wedding-site-wrapper[data-style='kinetic'] .gal[data-style-gallery='kinetic'] :is(.galA-cap, .galB-cap) { display: none; }
+.wedding-site-wrapper[data-style='kinetic'] .gal[data-style-gallery='kinetic'] img { inline-size: 100%; block-size: 100%; object-fit: cover; transition: transform var(--kn-snap); }
+.wedding-site-wrapper[data-style='kinetic'] .gal[data-style-gallery='kinetic'] :is(.galA-tile, .galB-item, .galC-tile):hover img { transform: scale(1.04); }
+.wedding-site-wrapper[data-style='kinetic'] .gal[data-style-gallery='kinetic'] .gal-showmore-row { justify-content: flex-start; padding-block-start: 32px; }
+.wedding-site-wrapper[data-style='kinetic'] .gal[data-style-gallery='kinetic'] .gal-showmore {
+  min-block-size: 48px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: var(--kn-radius-ui);
+  background: var(--kn-ink);
+  color: var(--kn-on-ink);
+  font-family: var(--kn-font);
+  font-stretch: 85%;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 0 0 0 var(--kn-blue);
+  transition: transform var(--kn-snap), box-shadow var(--kn-snap);
+}
+.wedding-site-wrapper[data-style='kinetic'] .gal[data-style-gallery='kinetic'] .gal-showmore:hover { transform: translate(-3px, -3px); box-shadow: 3px 3px 0 0 var(--kn-blue); }
+.wedding-site-wrapper[data-style='kinetic'] .gal[data-style-gallery='kinetic'] .gal-showmore:focus-visible { outline: 3px solid var(--kn-blue); outline-offset: 3px; }
+.wedding-site-wrapper[data-style='kinetic'] .gal[data-style-gallery='kinetic'] .gal-more-count { color: inherit; font-family: inherit; }
+
+/* --- A · DRIVE: klares Raster, harte Crops, eine blaue Nummer --- */
+.wedding-site-wrapper[data-style='kinetic'] .gal.galA-wrap[data-style-gallery='kinetic'] .galA {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: clamp(40px, 5vw, 72px) 0 0;
+  max-inline-size: none;
+  counter-reset: kn-img;
+}
+.wedding-site-wrapper[data-style='kinetic'] .gal.galA-wrap[data-style-gallery='kinetic'] .galA-tile {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  aspect-ratio: 4 / 5;
+  background: var(--kn-ice);
+}
+.wedding-site-wrapper[data-style='kinetic'] .gal.galA-wrap[data-style-gallery='kinetic'] .galA-tile:first-child { grid-column: span 2; aspect-ratio: auto; }
+.wedding-site-wrapper[data-style='kinetic'] .gal.galA-wrap[data-style-gallery='kinetic'] .galA-tile:first-child::after {
+  content: '01';
+  position: absolute;
+  inset: auto auto 0 0;
+  padding: 6px 12px 4px;
+  background: var(--kn-blue);
+  color: var(--kn-on-blue);
+  font-family: var(--kn-font);
+  font-weight: 900;
+  font-stretch: var(--kn-cond);
+  font-size: 28px;
+  line-height: 1;
+}
+
+/* --- B · SHIFT: versetztes Raster, ein gekippter Frame --- */
+.wedding-site-wrapper[data-style='kinetic'] .gal.galB-wrap[data-style-gallery='kinetic'] .galB {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: clamp(64px, 6vw, 104px);
+  grid-auto-flow: row dense;
+  gap: clamp(10px, 1.2vw, 18px);
+  margin: clamp(40px, 5vw, 72px) 0 0;
+  padding-block-end: var(--kn-offset);
+  max-inline-size: none;
+}
+.wedding-site-wrapper[data-style='kinetic'] .gal.galB-wrap[data-style-gallery='kinetic'] :is(.galB-group, .galB-grid) { display: contents; }
+.wedding-site-wrapper[data-style='kinetic'] .gal.galB-wrap[data-style-gallery='kinetic'] :is(.galB-item, .galB-group[data-layout='pair'] .galB-item, .galB-group[data-layout='triple'] .galB-item) {
+  grid-column: span 4;
+  grid-row: span 3;
+  margin: 0;
+  overflow: hidden;
+  border: 4px solid var(--kn-paper);
+  outline: 2px solid var(--kn-ink);
+  aspect-ratio: auto;
+  background: var(--kn-ice);
+}
+.wedding-site-wrapper[data-style='kinetic'] .gal.galB-wrap[data-style-gallery='kinetic'] .galB-group[data-layout='full'] .galB-item { grid-column: span 7; grid-row: span 5; }
+.wedding-site-wrapper[data-style='kinetic'] .gal.galB-wrap[data-style-gallery='kinetic'] .galB-item:nth-child(3n + 2) { transform: translateY(var(--kn-offset)); }
+.wedding-site-wrapper[data-style='kinetic'] .gal.galB-wrap[data-style-gallery='kinetic'] .galB-group[data-layout='full']:first-child .galB-item {
+  transform: rotate(var(--kn-tilt-soft));
+  outline-color: var(--kn-blue);
+  outline-width: 3px;
+}
+.wedding-site-wrapper[data-style='kinetic'] .gal.galB-wrap[data-style-gallery='kinetic'] .galB-imgwrap { inline-size: 100%; block-size: 100%; border: 0; }
+
+/* --- C · IMPACT: ein großes Leitbild, eine schwarze Leiste mit wenigen Bildern --- */
+.wedding-site-wrapper[data-style='kinetic'] .gal.galC-wrap[data-style-gallery='kinetic'] .galC {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: clamp(40px, 5vw, 72px) calc(-1 * var(--kn-pad-inline)) 0;
+  padding: 0 var(--kn-pad-inline) 8px;
+  max-inline-size: none;
+  overflow: visible;
+  background: linear-gradient(180deg, transparent 0 62%, var(--kn-ink) 62% 100%);
+}
+.wedding-site-wrapper[data-style='kinetic'] .gal.galC-wrap[data-style-gallery='kinetic'] .galC-tile {
+  flex: none;
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  aspect-ratio: 1;
+  background: var(--kn-ice);
+}
+.wedding-site-wrapper[data-style='kinetic'] .gal.galC-wrap[data-style-gallery='kinetic'] .galC-tile:first-child { grid-column: 1 / -1; aspect-ratio: 21 / 9; }
+.wedding-site-wrapper[data-style='kinetic'] .gal.galC-wrap[data-style-gallery='kinetic'] .galC-tile:nth-child(n + 6) { display: none; }
+.wedding-site-wrapper[data-style='kinetic'] .gal.galC-wrap[data-style-gallery='kinetic'] .gal-title { font-size: var(--kn-display-xl); font-stretch: var(--kn-cond-tight); font-weight: 900; }
+
+/* -------------------------------------------------------------------------
+   R2.5 · MOBIL
+   ------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .wedding-site-wrapper[data-style='kinetic'] .hero-a[data-style-hero='kinetic'] .hero-a-image { grid-column: 1 / -1; grid-row: 3; }
+  .wedding-site-wrapper[data-style='kinetic'] .hero-a[data-style-hero='kinetic'] :is(.hero-a-eyebrow, .hero-a-date, .hero-a-location) { grid-column: 1 / -1; grid-row: auto; align-self: start; }
+  .wedding-site-wrapper[data-style='kinetic'] .hero-b[data-style-hero='kinetic'] { min-height: 0; }
+  .wedding-site-wrapper[data-style='kinetic'] .hero-b[data-style-hero='kinetic'] .hero-b-image-col { grid-column: 1 / span 11; }
+  .wedding-site-wrapper[data-style='kinetic'] .hero-b[data-style-hero='kinetic'] .hero-b-text { grid-column: 1 / -1; grid-row: 2; margin-block-start: calc(var(--kn-offset) * -3); }
+  .wedding-site-wrapper[data-style='kinetic'] .cd.cdB-wrap[data-style-countdown='kinetic'] .cdB-row { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 0; }
+  .wedding-site-wrapper[data-style='kinetic'] .cd.cdB-wrap[data-style-countdown='kinetic'] .cdB-unit:nth-child(2) { grid-column: 1 / -1; order: -1; }
+  .wedding-site-wrapper[data-style='kinetic'] .cd.cdB-wrap[data-style-countdown='kinetic'] .cdB-unit:nth-child(even) { transform: none; }
+  .wedding-site-wrapper[data-style='kinetic'] .cd.cdC-wrap[data-style-countdown='kinetic'] .cdC-bars { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wedding-site-wrapper[data-style='kinetic'] .ls.lsA[data-style-ls='kinetic'] .lsA-single { grid-template-columns: minmax(0, 1fr); }
+  .wedding-site-wrapper[data-style='kinetic'] .ls.lsB[data-style-ls='kinetic'] :is(.lsB-img-wrap, .lsB-item:nth-child(even) .lsB-img-wrap) { grid-column: 1 / span 11; }
+  .wedding-site-wrapper[data-style='kinetic'] .ls.lsB[data-style-ls='kinetic'] :is(.lsB-text, .lsB-item:nth-child(even) .lsB-text) { grid-column: 2 / -1; grid-row: 2; margin-block-start: calc(var(--kn-offset) * -2); }
+  .wedding-site-wrapper[data-style='kinetic'] .ls.lsB[data-style-ls='kinetic'] .lsB-item:nth-child(even) .lsB-img-wrap { grid-column: 2 / -1; }
+  .wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] :is(.lsC-eyebrow, .lsC-title, .lsC-desc) { grid-column: 1 / -1; grid-row: auto; }
+  .wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-img { aspect-ratio: 16 / 10; }
+  .wedding-site-wrapper[data-style='kinetic'] .gal.galA-wrap[data-style-gallery='kinetic'] .galA { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wedding-site-wrapper[data-style='kinetic'] .gal.galB-wrap[data-style-gallery='kinetic'] .galB { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: clamp(100px, 26vw, 160px); }
+  .wedding-site-wrapper[data-style='kinetic'] .gal.galB-wrap[data-style-gallery='kinetic'] :is(.galB-item, .galB-group[data-layout='pair'] .galB-item, .galB-group[data-layout='triple'] .galB-item) { grid-column: span 1; grid-row: span 1; }
+  .wedding-site-wrapper[data-style='kinetic'] .gal.galB-wrap[data-style-gallery='kinetic'] .galB-group[data-layout='full'] .galB-item { grid-column: 1 / -1; grid-row: span 2; }
+  .wedding-site-wrapper[data-style='kinetic'] .gal.galB-wrap[data-style-gallery='kinetic'] .galB-item:nth-child(3n + 2) { transform: none; }
+  .wedding-site-wrapper[data-style='kinetic'] .gal.galC-wrap[data-style-gallery='kinetic'] .galC { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wedding-site-wrapper[data-style='kinetic'] .gal.galC-wrap[data-style-gallery='kinetic'] .galC-tile:first-child { aspect-ratio: 4 / 3; }
+}
+@media (max-width: 600px) {
+  .wedding-site-wrapper[data-style='kinetic'] .hero-a[data-style-hero='kinetic'] .hero-a-title { font-size: clamp(56px, 19vw, 96px); }
+  .wedding-site-wrapper[data-style='kinetic'] .hero-b[data-style-hero='kinetic'] .hero-b-title { font-size: clamp(52px, 17vw, 88px); }
+  .wedding-site-wrapper[data-style='kinetic'] .hero-c[data-style-hero='kinetic'] .hero-c-title { font-size: clamp(64px, 22vw, 110px); }
+  .wedding-site-wrapper[data-style='kinetic'] .cd.cdA-wrap[data-style-countdown='kinetic'] .cdA-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .wedding-site-wrapper[data-style='kinetic'] .cd.cdA-wrap[data-style-countdown='kinetic'] .cdA-unit { border-inline-start: 0; padding-inline: 0; }
+  .wedding-site-wrapper[data-style='kinetic'] .cd.cdA-wrap[data-style-countdown='kinetic'] .cdA-unit .cd-num { font-size: clamp(44px, 14vw, 64px); }
+}
+
+/* R2 · QA-Korrekturen nach dem ersten Contact Sheet */
+/* Die Alt-Laufschrift (DecorationKineticBg, Inline-Stil mit kin-marquee)
+   sitzt nicht nur im Hero, sondern auch als Hintergrund in Countdown und
+   weiteren Bereichen. Überall ausblenden. */
+.wedding-site-wrapper[data-style='kinetic'] div[aria-hidden='true'][style*='kin-marquee'] { display: none; }
+
+/* Countdown B: die Flip-Hälften brauchen einen deckenden Grund, sonst
+   liegen alte und neue Ziffer übereinander (angezeigt wurde „00" statt
+   „25"). Grund = Farbe des jeweiligen Blocks. */
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdB-wrap[data-style-countdown='kinetic'] .cdB-unit { --kn-flip-bg: var(--kn-paper); }
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdB-wrap[data-style-countdown='kinetic'] .cdB-unit:nth-child(2) { --kn-flip-bg: var(--kn-blue); }
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdB-wrap[data-style-countdown='kinetic'] :is(.flip-card, .flip-half, .flip-top, .flip-bottom, .flip-anim-top, .flip-anim-bot) {
+  background-color: var(--kn-flip-bg);
+}
+
+/* Love Story C: Bildband flacher, Folge enger (war 4.900px) */
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-img { aspect-ratio: 3 / 1; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-wrap { gap: clamp(36px, 4vw, 64px); }
+
+/* Gallery A/B: kompaktere Raster (A 1.860px, B 2.950px) */
+.wedding-site-wrapper[data-style='kinetic'] .gal.galA-wrap[data-style-gallery='kinetic'] .galA-tile { aspect-ratio: 1; }
+.wedding-site-wrapper[data-style='kinetic'] .gal.galB-wrap[data-style-gallery='kinetic'] .galB { grid-auto-rows: clamp(56px, 5vw, 84px); }
+.wedding-site-wrapper[data-style='kinetic'] .gal.galB-wrap[data-style-gallery='kinetic'] :is(.galB-item, .galB-group[data-layout='pair'] .galB-item, .galB-group[data-layout='triple'] .galB-item) { grid-row: span 3; }
+.wedding-site-wrapper[data-style='kinetic'] .gal.galB-wrap[data-style-gallery='kinetic'] .galB-group[data-layout='full'] .galB-item { grid-row: span 6; }
+/* Love Story C: Bild und Text nebeneinander (8/4, im Wechsel) statt
+   gestapelt — gleiche Wirkung, rund 40 % weniger Höhe. */
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-card { grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: auto auto 1fr; align-items: start; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-img { grid-column: 1 / span 8; grid-row: 1 / span 3; aspect-ratio: 16 / 9; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] :is(.lsC-eyebrow, .lsC-title, .lsC-desc) { grid-column: 9 / -1; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-eyebrow { grid-row: 1; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-title { grid-row: 2; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-desc { grid-row: 3; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-item:nth-child(even of .lsC-item) .lsC-img { grid-column: 5 / -1; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-item:nth-child(even of .lsC-item) :is(.lsC-eyebrow, .lsC-title, .lsC-desc) { grid-column: 1 / span 4; }
+.wedding-site-wrapper[data-style='kinetic'] .gal.galB-wrap[data-style-gallery='kinetic'] :is(.galB-item, .galB-group[data-layout='pair'] .galB-item, .galB-group[data-layout='triple'] .galB-item) { grid-row: span 2; }
+.wedding-site-wrapper[data-style='kinetic'] .gal.galB-wrap[data-style-gallery='kinetic'] .galB-group[data-layout='full'] .galB-item { grid-row: span 4; }
+@media (max-width: 900px) {
+  .wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] :is(.lsC-img, .lsC-item:nth-child(even of .lsC-item) .lsC-img) { grid-column: 1 / -1; grid-row: auto; aspect-ratio: 16 / 10; }
+  .wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] :is(.lsC-eyebrow, .lsC-title, .lsC-desc, .lsC-item:nth-child(even of .lsC-item) .lsC-eyebrow, .lsC-item:nth-child(even of .lsC-item) .lsC-title, .lsC-item:nth-child(even of .lsC-item) .lsC-desc) { grid-column: 1 / -1; grid-row: auto; }
+}
+/* Love Story C: ein heller Bogen der Bestandsfassung lag über jeder
+   Bildkante (Pseudo-Elemente von Karte/Bild). */
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] :is(.lsC-card, .lsC-img)::before,
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] :is(.lsC-card, .lsC-img)::after { display: none; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-img { border-radius: 0; box-shadow: none; }
+@media (max-width: 900px) {
+  /* Love Story B mobil: die Textkarte ragt ins Bild — Datumsmarke nach oben */
+  .wedding-site-wrapper[data-style='kinetic'] .ls.lsB[data-style-ls='kinetic'] .lsB-date { inset: 0 auto auto 0; }
+}
+/* Ausgeblendete Alt-Deko zusätzlich ohne Animation (sauberer Zustand). */
+.wedding-site-wrapper[data-style='kinetic'] div[aria-hidden='true'][style*='kin-marquee'],
+.wedding-site-wrapper[data-style='kinetic'] :is(.styled-bg-kinetic, .styled-bg-kinetic *) { animation: none !important; }
+@media (max-width: 900px) {
+  /* Gallery A mobil: das Leitbild spannt die volle Zeile und hatte ohne
+     Nachbarn keine Höhe (24px). */
+  .wedding-site-wrapper[data-style='kinetic'] .gal.galA-wrap[data-style-gallery='kinetic'] .galA-tile:first-child { aspect-ratio: 16 / 10; }
+}

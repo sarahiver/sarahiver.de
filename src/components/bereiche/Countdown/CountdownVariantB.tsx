@@ -51,11 +51,17 @@ function FlipCard({ digit, isSeconds }: { digit: string; isSeconds: boolean }) {
     cleanupTimer.current = setTimeout(() => {
       setPrevious(null);
     }, totalDuration);
-
-    return () => {
-      if (cleanupTimer.current) clearTimeout(cleanupTimer.current);
-    };
+    // Kein Cleanup hier: setCurrent(digit) löst diesen Effekt sofort erneut
+    // aus (dann mit digit === current), und ein Cleanup an dieser Stelle hat
+    // den Timer dabei jedes Mal gelöscht. `previous` blieb dadurch dauerhaft
+    // gesetzt — die untere Hälfte zeigte die alte Ziffer, und bei reduzierter
+    // Bewegung blieben die Animationshälften sichtbar stehen.
   }, [digit, current, isSeconds]);
+
+  // Timer nur beim Unmount abräumen.
+  useEffect(() => () => {
+    if (cleanupTimer.current) clearTimeout(cleanupTimer.current);
+  }, []);
 
   return (
     <div className="flip-card">
