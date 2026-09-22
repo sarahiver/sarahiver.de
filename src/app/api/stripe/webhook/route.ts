@@ -3,6 +3,7 @@ import type Stripe from 'stripe';
 import { getStripe } from '@/lib/stripe';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import { provisionSite } from '@/lib/provision';
+import { sendAdminAlert } from '@/lib/admin-alert';
 
 /**
  * Stripe-Webhook — server-only, Service-Role.
@@ -151,7 +152,10 @@ async function handleCheckoutCompleted(admin: AdminClient, session: Stripe.Check
   const m = (session.metadata || {}) as Record<string, string>;
   const email = session.customer_email || session.customer_details?.email || '';
   if (!email || !m.slug) {
-    console.error('[webhook] checkout.completed ohne email/slug', session.id);
+    await sendAdminAlert({
+      title: 'Bezahlter Checkout ohne E-Mail oder Slug',
+      fields: { 'Stripe-Session': session.id, 'Kunden-E-Mail': email || null, Slug: m.slug || null },
+    });
     return;
   }
 
@@ -179,7 +183,35 @@ async function handleCheckoutCompleted(admin: AdminClient, session: Stripe.Check
     paidAt,
   });
 
-  if (!res.ok) console.error('[webhook] provisioning failed:', res.error, session.id);
+  // Zahlung ist erfolgreich — scheitert danach etwas, muss der Betreiber es
+  // erfahren (kein stilles Log). Stufen: ACCOUNT/SITE → LOGIN-MAIL.
+  if (!res.ok) {
+    await sendAdminAlert({
+      title: 'Provisionierung nach Zahlung fehlgeschlagen',
+      fields: {
+        Schritt: res.step,
+        Fehler: res.error,
+        'Stripe-Session': session.id,
+        'Kunden-E-Mail': email,
+        'Gewünschter Slug': m.slug,
+      },
+    });
+    return;
+  }
+  if (res.warnings.length) {
+    await sendAdminAlert({
+      title: 'Seite angelegt, aber Nacharbeit nötig',
+      fields: {
+        Unvollständig: res.warnings.join(', '),
+        'Stripe-Session': session.id,
+        'Kunden-E-Mail': email,
+        Slug: m.slug,
+        Hinweis: res.warnings.includes('login_mail')
+          ? 'Login-Mail nicht zugestellt — Paar kann sich über /login per Magic Link anmelden.'
+          : null,
+      },
+    });
+  }
 }
 
 async function updateBySubscription(

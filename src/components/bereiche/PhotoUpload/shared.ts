@@ -86,7 +86,8 @@ export function makeUploadItem(file: File): UploadItem {
 export function acceptFiles(files: FileList | File[]): File[] {
   const arr = Array.from(files);
   return arr.filter(
-    (f) => f.type.startsWith('image/') && f.size <= MAX_FILE_MB * 1024 * 1024,
+    // Nur die freigegebenen Formate (kein SVG, kein GIF) und Größenlimit.
+    (f) => ACCEPTED_TYPES.split(',').includes(f.type) && f.size <= MAX_FILE_MB * 1024 * 1024,
   );
 }
 

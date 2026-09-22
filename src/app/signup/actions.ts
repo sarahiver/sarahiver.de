@@ -2,7 +2,7 @@
 
 import { getStripe } from '@/lib/stripe';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
-import { isReservedSlug, isValidSlugFormat } from '@/lib/slug-validation';
+import { isReservedSlug, isValidSlugFormat, hasReservedSlugPrefix } from '@/lib/slug-validation';
 import { VALID_STYLE_IDS } from '@/lib/style-migration';
 import { PRICE_ENV_DOMAIN, PRICE_ENV_WEBSITE, CUSTOM_DOMAIN_ENABLED } from '@/lib/pricing';
 import { CHECKOUT_ENABLED, LAUNCH_DATE_LABEL } from '@/lib/launch';
@@ -59,6 +59,9 @@ export async function startCheckout(input: CheckoutInput): Promise<CheckoutResul
     return { error: 'Die Adresse darf nur Buchstaben, Zahlen und Bindestriche enthalten.' };
   }
   if (isReservedSlug(slug)) {
+    return { error: 'Diese Adresse ist reserviert — bitte eine andere wählen.' };
+  }
+  if (hasReservedSlugPrefix(slug)) {
     return { error: 'Diese Adresse ist reserviert — bitte eine andere wählen.' };
   }
   if (!VALID_STYLE_IDS.includes(style as (typeof VALID_STYLE_IDS)[number])) {

@@ -1,5 +1,6 @@
 import { renderTitleWithEm } from './shared';
 import { IconHeart, IconInfo } from './icons';
+import GuestPrivacyNote from '../GuestPrivacyNote';
 
 export function GbHeader({
   eyebrow,
@@ -63,12 +64,16 @@ export function GbSuccess({
 }
 
 export function GbModHint({ text }: { text: string }) {
-  if (!text) return null;
   return (
-    <div className="gb-mod-hint">
-      <IconInfo />
-      <span>{text}</span>
-    </div>
+    <>
+      {text ? (
+        <div className="gb-mod-hint">
+          <IconInfo />
+          <span>{text}</span>
+        </div>
+      ) : null}
+      <GuestPrivacyNote />
+    </>
   );
 }
 

@@ -1,6 +1,7 @@
 import type { ChangeEvent, RefObject } from 'react';
 import { renderTitleWithEm, ACCEPTED_TYPES } from './shared';
 import { IconHeart, IconLock } from './icons';
+import GuestPrivacyNote from '../GuestPrivacyNote';
 
 /**
  * Design System v2: alte <Decor />-Komponente raus, stattdessen ein
@@ -70,12 +71,16 @@ export function UpSuccess({
 }
 
 export function UpPrivacy({ text }: { text: string }) {
-  if (!text) return null;
   return (
-    <div className="up-privacy">
-      <IconLock />
-      <span>{text}</span>
-    </div>
+    <>
+      {text ? (
+        <div className="up-privacy">
+          <IconLock />
+          <span>{text}</span>
+        </div>
+      ) : null}
+      <GuestPrivacyNote />
+    </>
   );
 }
 

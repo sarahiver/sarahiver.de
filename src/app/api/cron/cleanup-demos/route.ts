@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
+import { ensureDemoOwner } from '@/lib/seed-demos';
 
 /**
  * Cleanup der Sandbox-Sites (`demo-%`), aelter als MAX_AGE_HOURS.
@@ -26,11 +27,20 @@ async function run() {
   const admin = createSupabaseAdminClient();
   if (!admin) return { ok: false, deleted: 0, error: 'admin client unavailable' };
 
+  // Defense in Depth: gelöscht wird nur, was ALLE Merkmale einer Sandbox hat —
+  // Slug demo-%, gehört dem Demo-Owner-Account und hat keine Stripe-Session
+  // (jede bezahlte Seite hat eine). Ohne auflösbaren Demo-Owner wird nichts
+  // gelöscht.
+  const demoOwnerId = await ensureDemoOwner(admin);
+  if (!demoOwnerId) return { ok: false, deleted: 0, error: 'demo owner unresolved — nothing deleted' };
+
   const cutoff = new Date(Date.now() - MAX_AGE_HOURS * 3600_000).toISOString();
   const { data, error } = await admin
     .from('wedding_sites')
     .select('id, slug')
     .like('slug', 'demo-%')
+    .eq('owner_user_id', demoOwnerId)
+    .is('stripe_checkout_session_id', null)
     .lt('created_at', cutoff);
   if (error) return { ok: false, deleted: 0, error: error.message };
 

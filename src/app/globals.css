@@ -7242,3 +7242,23 @@ html, body {
   .dash-rsvpcode-actions .dash-btn,
   .dash-rsvpcode-actions .dash-btn-out { flex: 1 1 auto; }
 }
+
+
+/* Datenschutzhinweis an Gastformularen (RSVP, Gästebuch, Foto-Upload).
+   Neutral: erbt Schrift und Farbe des jeweiligen Stils, klein und gedämpft. */
+.guest-privacy-note {
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  opacity: 0.78;
+  color: inherit;
+  font-family: inherit;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: normal;
+}
+.guest-privacy-note a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

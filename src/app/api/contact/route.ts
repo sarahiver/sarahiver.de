@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendBrevoMail, mailShell } from '@/lib/brevo';
+import { isClientLimited, tooManyRequests } from '@/lib/public-guard';
 
 /**
  * Kontakt-API — nimmt das Formular von /kontakt entgegen und stellt die
@@ -27,6 +28,8 @@ function escapeHtml(s: string): string {
 }
 
 export async function POST(req: NextRequest) {
+  // Missbrauchsschutz (best effort je Client, siehe lib/public-guard.ts).
+  if (isClientLimited(req.headers, { bucket: 'contact', max: 5, windowMs: 30 * 60_000 })) return tooManyRequests();
   let body: Record<string, unknown>;
   try {
     body = await req.json();

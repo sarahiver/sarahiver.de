@@ -3,6 +3,7 @@
 import { useState, type ReactNode } from 'react';
 import { RSVP_LIMITS, formatDeadline, renderTitleWithEm } from './shared';
 import { RSVP_COPY, type RsvpController } from './useRsvp';
+import GuestPrivacyNote from '../GuestPrivacyNote';
 
 /**
  * RSVP — stilneutrale Bausteine.
@@ -647,6 +648,7 @@ export function RsvpSubmit({
       >
         <span className="rv-button-label">{loading ? RSVP_COPY.submitPending : label}</span>
       </button>
+      <GuestPrivacyNote />
       <p className="rv-sr" aria-live="polite">
         {loading ? RSVP_COPY.submitPending : ''}
       </p>

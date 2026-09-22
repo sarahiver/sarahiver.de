@@ -5,7 +5,7 @@ import { startCheckout, type CheckoutInput } from './actions';
 import { ALL_BEREICH_KEYS, BEREICH_LABEL } from '@/lib/funnel';
 import { WEBSITE_PRICE_EUR, DOMAIN_SETUP_PRICE_EUR, ACCESS_MONTHS, CUSTOM_DOMAIN_ENABLED } from '@/lib/pricing';
 import { VALID_STYLE_IDS } from '@/lib/style-migration';
-import { isValidSlugFormat, isReservedSlug } from '@/lib/slug-validation';
+import { isValidSlugFormat, isReservedSlug, hasReservedSlugPrefix } from '@/lib/slug-validation';
 
 const STYLE_LABEL: Record<string, string> = {
   editorial: 'Editorial',
@@ -36,7 +36,8 @@ export default function SignupForm({ initialDomainWish, canceled }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  const slugFormatOk = slug === '' || (isValidSlugFormat(slug) && !isReservedSlug(slug));
+  const slugFormatOk =
+    slug === '' || (isValidSlugFormat(slug) && !isReservedSlug(slug) && !hasReservedSlugPrefix(slug));
   const withDomain = CUSTOM_DOMAIN_ENABLED && domain;
   const total = WEBSITE_PRICE_EUR + (withDomain ? DOMAIN_SETUP_PRICE_EUR : 0);
 

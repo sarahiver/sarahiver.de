@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
+import { isClientLimited, isSiteFlooded, tooManyRequests } from '@/lib/public-guard';
 
 /**
  * Public-Endpoint für Gäste-Submissions.
@@ -13,6 +14,8 @@ interface SubmitPayload {
 }
 
 export async function POST(request: Request) {
+  // Missbrauchsschutz (best effort je Client, siehe lib/public-guard.ts).
+  if (isClientLimited(request.headers, { bucket: 'guestbook', max: 10, windowMs: 10 * 60_000 })) return tooManyRequests();
   let body: SubmitPayload;
   try {
     body = await request.json();
@@ -56,6 +59,9 @@ export async function POST(request: Request) {
   }
 
   const siteId = (site as { id: string }).id;
+
+  // Flutschutz je Hochzeitsseite (DB-basiert, instanzübergreifend).
+  if (await isSiteFlooded({ table: 'wedding_guestbook_entries', siteId, max: 60, windowMin: 10 })) return tooManyRequests();
 
   const { error: insertErr } = await supabase
     .from('wedding_guestbook_entries')

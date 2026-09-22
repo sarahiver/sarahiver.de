@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
+import { isClientLimited, isSiteFlooded, tooManyRequests } from '@/lib/public-guard';
 
 /**
  * Public-Endpoint für Geschenk-Reservierungen.
@@ -17,6 +18,8 @@ interface SubmitPayload {
 }
 
 export async function POST(request: Request) {
+  // Missbrauchsschutz (best effort je Client, siehe lib/public-guard.ts).
+  if (isClientLimited(request.headers, { bucket: 'gifts', max: 10, windowMs: 10 * 60_000 })) return tooManyRequests();
   let body: SubmitPayload;
   try {
     body = await request.json();
@@ -56,6 +59,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: 'Hochzeitsseite nicht gefunden.' }, { status: 404 });
   }
   const siteId = (site as { id: string }).id;
+
+  // Flutschutz je Hochzeitsseite (DB-basiert, instanzübergreifend).
+  if (await isSiteFlooded({ table: 'wedding_gift_reservations', siteId, max: 40, windowMin: 10 })) return tooManyRequests();
 
   const { error: insertErr } = await supabase
     .from('wedding_gift_reservations')

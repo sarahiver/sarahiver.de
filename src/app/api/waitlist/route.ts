@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { isClientLimited, tooManyRequests } from '@/lib/public-guard';
 
 export async function POST(request: NextRequest) {
+  // Missbrauchsschutz (best effort je Client, siehe lib/public-guard.ts).
+  if (isClientLimited(request.headers, { bucket: 'waitlist', max: 5, windowMs: 30 * 60_000 })) return tooManyRequests();
   try {
     const body = await request.json();
     const { email } = body;

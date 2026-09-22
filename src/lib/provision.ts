@@ -1,6 +1,7 @@
 import { createSupabaseAdminClient } from './supabase-admin';
 import { ALL_BEREICH_KEYS } from './funnel';
 import { computeAccessUntil } from './pricing';
+import { hasReservedSlugPrefix } from './slug-validation';
 
 /**
  * Provisioning — vom Stripe-Webhook aufgerufen, nachdem die Einmalzahlung
@@ -34,11 +35,34 @@ export interface ProvisionInput {
   paidAt: string;
 }
 
-export type ProvisionResult = { ok: true; siteId: string; userId: string } | { ok: false; error: string };
+/**
+ * Ergebnis der Provisionierung. Getrennt nach Stufen:
+ *   PAYMENT (Stripe, vorher erledigt) → ACCOUNT/SITE → LOGIN-MAIL.
+ * Scheitert ACCOUNT/SITE, ist `ok: false` mit dem Schritt. Scheitern nur
+ * Nacharbeiten (Bereiche, Käufe, Login-Mail), existiert die bezahlte Seite —
+ * dann `ok: true` mit `warnings`, damit der Webhook einen Alert schicken kann.
+ */
+export type ProvisionStep =
+  | 'admin_client'
+  | 'reserved_slug'
+  | 'user'
+  | 'slug_conflict'
+  | 'style'
+  | 'site';
+
+export type ProvisionResult =
+  | { ok: true; siteId: string; userId: string; warnings: string[] }
+  | { ok: false; step: ProvisionStep; error: string };
 
 export async function provisionSite(input: ProvisionInput): Promise<ProvisionResult> {
   const admin = createSupabaseAdminClient();
-  if (!admin) return { ok: false, error: 'admin client unavailable' };
+  if (!admin) return { ok: false, step: 'admin_client', error: 'admin client unavailable' };
+
+  // Letzte Absicherung: reservierte Präfixe (z. B. demo- für die Sandbox, die
+  // per Cron gelöscht wird) dürfen nie an zahlende Kunden gehen.
+  if (hasReservedSlugPrefix(input.slug)) {
+    return { ok: false, step: 'reserved_slug', error: 'slug uses reserved prefix' };
+  }
 
   const nextPath = `/dashboard/${input.slug}`;
 
@@ -63,7 +87,7 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
 
   if (!userId) {
     console.error('[provision] could not create/resolve user for', input.email, created.error);
-    return { ok: false, error: 'user provisioning failed' };
+    return { ok: false, step: 'user', error: 'user provisioning failed' };
   }
 
   // --- 2) Site idempotent anlegen / Billing aktualisieren -----------------
@@ -91,18 +115,27 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
 
   const { data: existing } = await admin
     .from('wedding_sites')
-    .select('id')
+    .select('id, stripe_checkout_session_id')
     .eq('slug', input.slug)
     .maybeSingle();
 
   let siteId: string;
 
   if (existing) {
-    siteId = (existing as { id: string }).id;
+    const ex = existing as { id: string; stripe_checkout_session_id: string | null };
+    // Nur eine Wiederholung DERSELBEN Zahlung darf die Site erneut anfassen.
+    // Früher wurde jede bestehende Site mit diesem Slug übernommen — bei einem
+    // Slug-Race hätte ein zweiter Käufer die fremde Seite (inkl. Eigentümer)
+    // überschrieben.
+    if (!input.stripeCheckoutSessionId || ex.stripe_checkout_session_id !== input.stripeCheckoutSessionId) {
+      console.error('[provision] slug conflict — slug belongs to another site', input.slug);
+      return { ok: false, step: 'slug_conflict', error: 'slug already taken by another site' };
+    }
+    siteId = ex.id;
     await admin.from('wedding_sites').update(billing as never).eq('id', siteId);
     // Bereiche/Käufe nicht erneut anlegen (Unique-Index schützt zusätzlich).
-    await sendLoginMail(admin, input.email, nextPath);
-    return { ok: true, siteId, userId };
+    const mailed = await sendLoginMail(admin, input.email, nextPath);
+    return { ok: true, siteId, userId, warnings: mailed ? [] : ['login_mail'] };
   }
 
   // --- 2a) Default-Palette + -Font des gewählten Stils auflösen -----------
@@ -119,7 +152,7 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
 
   if (styleErr || !styleRow) {
     console.error('[provision] start_styles lookup failed for style', input.style, styleErr);
-    return { ok: false, error: 'style preset lookup failed' };
+    return { ok: false, step: 'style', error: 'style preset lookup failed' };
   }
 
   const { default_palette_id, default_font_id } = styleRow as {
@@ -145,7 +178,11 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
 
   if (siteErr || !site) {
     console.error('[provision] site insert failed:', siteErr);
-    return { ok: false, error: 'site insert failed' };
+    // Unique-Verletzung auf slug = Race zwischen Prüfung und Anlage.
+    if ((siteErr as { code?: string } | null)?.code === '23505') {
+      return { ok: false, step: 'slug_conflict', error: 'slug already taken (unique violation)' };
+    }
+    return { ok: false, step: 'site', error: 'site insert failed' };
   }
   siteId = (site as { id: string }).id;
 
@@ -163,8 +200,12 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
     content_published: {},
   }));
 
+  const warnings: string[] = [];
   const { error: bErr } = await admin.from('wedding_bereiche').insert(bereicheRows as never);
-  if (bErr) console.error('[provision] bereiche insert failed:', bErr);
+  if (bErr) {
+    console.error('[provision] bereiche insert failed:', bErr);
+    warnings.push('bereiche');
+  }
 
   // --- 4) Käufe freischalten (Gating in tokens.ts greift hierauf) ---------
   // Alle Bereiche, weil es keine Pakete mehr gibt.
@@ -173,12 +214,18 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
     bereich_key: key,
   }));
   const { error: pErr } = await admin.from('wedding_purchases').insert(purchaseRows as never);
-  if (pErr) console.error('[provision] purchases insert failed:', pErr);
+  if (pErr) {
+    console.error('[provision] purchases insert failed:', pErr);
+    warnings.push('purchases');
+  }
 
   // --- 5) Login-Mail senden -----------------------------------------------
-  await sendLoginMail(admin, input.email, nextPath);
+  // Eine gescheiterte Mail macht die bezahlte Seite nicht ungültig: Das Paar
+  // kann sich jederzeit über /login per Magic Link anmelden. Nur Warnung.
+  const mailed = await sendLoginMail(admin, input.email, nextPath);
+  if (!mailed) warnings.push('login_mail');
 
-  return { ok: true, siteId, userId };
+  return { ok: true, siteId, userId, warnings };
 }
 
 type AdminClient = NonNullable<ReturnType<typeof createSupabaseAdminClient>>;
@@ -193,15 +240,15 @@ type AdminClient = NonNullable<ReturnType<typeof createSupabaseAdminClient>>;
  * kein Site-URL-Fallback auf localhost.
  *
  * Env: BREVO_API_KEY, BREVO_SENDER_EMAIL (verifiziert), BREVO_SENDER_NAME (opt.).
- * Wirft nie — Fehler werden geloggt, der Webhook bleibt 200.
+ * Wirft nie — liefert false bei Fehler (wird geloggt), der Webhook bleibt 200.
  */
-async function sendLoginMail(admin: AdminClient, email: string, nextPath: string): Promise<void> {
+async function sendLoginMail(admin: AdminClient, email: string, nextPath: string): Promise<boolean> {
   try {
     // 1) Token erzeugen (kein Mailversand durch Supabase)
     const { data, error } = await admin.auth.admin.generateLink({ type: 'magiclink', email });
     if (error || !data?.properties?.hashed_token) {
       console.error('[provision] generateLink failed:', error);
-      return;
+      return false;
     }
 
     // 2) Link auf unsere /auth/confirm-Route bauen
@@ -218,7 +265,7 @@ async function sendLoginMail(admin: AdminClient, email: string, nextPath: string
     const senderName = process.env.BREVO_SENDER_NAME || 'S&I. Wedding';
     if (!apiKey) {
       console.error('[provision] BREVO_API_KEY fehlt — Login-Mail nicht gesendet');
-      return;
+      return false;
     }
 
     const res = await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -239,9 +286,12 @@ async function sendLoginMail(admin: AdminClient, email: string, nextPath: string
     if (!res.ok) {
       const detail = await res.text().catch(() => '');
       console.error('[provision] Brevo send failed:', res.status, detail);
+      return false;
     }
+    return true;
   } catch (err) {
     console.error('[provision] login mail threw:', err);
+    return false;
   }
 }
 

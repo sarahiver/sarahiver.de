@@ -10,6 +10,7 @@ import { loadSiteAccess } from '@/lib/access';
 import { loadSitePhase, loadPhaseBereiche, STD_KEYS, ARCHIV_KEYS, type SitePhase } from '@/lib/phases';
 import SiteUnavailable from '@/components/layout/SiteUnavailable';
 import { isOwnerPreview } from '@/lib/rsvp-preview';
+import { checkSiteOwner } from '@/lib/site-owner';
 import type { RsvpRuntime } from '@/components/bereiche/RSVP/shared';
 import type { WeddingBereich, Variant } from '@/types/supabase';
 import type { Metadata } from 'next';
@@ -50,9 +51,13 @@ export default async function WeddingSitePage({ params, searchParams }: PageProp
   const resolved = await params;
   const slug = resolved?.slug;
   const sp = await searchParams;
-  const mode: 'draft' | 'published' = sp?.preview === 'draft' ? 'draft' : 'published';
-
   if (!slug || isReservedSlug(slug) || !isValidSlugFormat(slug)) notFound();
+
+  // Entwürfe sieht nur der Eigentümer (bzw. die eigene Sandbox). Alle anderen
+  // bekommen bei ?preview=draft stillschweigend die veröffentlichte Fassung —
+  // kein Hinweis, ob die Seite existiert oder wem sie gehört.
+  const mode: 'draft' | 'published' =
+    sp?.preview === 'draft' && (await checkSiteOwner(slug)).ok ? 'draft' : 'published';
 
   // Abo-Gating: gekündigte Seiten nicht ausliefern (nur published).
   if (mode === 'published') {

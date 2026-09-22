@@ -31,3 +31,20 @@ export function isValidSlugFormat(slug: string | undefined | null): boolean {
   if (!slug || typeof slug !== 'string') return false;
   return /^[a-z0-9](?:[a-z0-9-]{1,61}[a-z0-9])?$/i.test(slug);
 }
+
+/**
+ * Reservierte Präfixe. `demo-` gehört der Sandbox (/testen): Diese Seiten
+ * werden per Cron nach 24 h gelöscht — ein zahlender Kunde darf so einen
+ * Slug deshalb nie bekommen. Geprüft im Bestellformular, in startCheckout
+ * und als letzte Absicherung in der Provisionierung.
+ *
+ * Bewusst NICHT Teil von isReservedSlug: die öffentliche Route /[slug] muss
+ * Sandbox-Seiten (demo-…) weiterhin ausliefern.
+ */
+export const RESERVED_SLUG_PREFIXES = ['demo-'] as const;
+
+export function hasReservedSlugPrefix(slug: string | undefined | null): boolean {
+  if (!slug || typeof slug !== 'string') return false;
+  const s = slug.toLowerCase();
+  return RESERVED_SLUG_PREFIXES.some((p) => s.startsWith(p));
+}

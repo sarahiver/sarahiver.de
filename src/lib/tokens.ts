@@ -20,28 +20,33 @@ export async function loadWeddingSite(
 } | null> {
   const supabase = await createSupabaseServerClient();
 
-  const [tokensResult, bereicheResult] = await Promise.all([
-    supabase
-      .from('v_effective_tokens')
-      .select('*')
-      .eq('slug', slug)
-      .maybeSingle(),
-    mode === 'draft'
-      ? supabase
-          .from('wedding_bereiche')
-          .select('*')
-          .order('display_order', { ascending: true })
-      : supabase
-          .from('wedding_bereiche')
-          .select('*')
-          .eq('is_active', true)
-          .order('display_order', { ascending: true }),
-  ]);
+  const tokensResult = await supabase
+    .from('v_effective_tokens')
+    .select('*')
+    .eq('slug', slug)
+    .maybeSingle();
 
   if (tokensResult.error || !tokensResult.data) {
     console.error('Failed to load tokens for slug:', slug, tokensResult.error);
     return null;
   }
+
+  // Nur die Bereiche DIESER Seite laden (früher: alle Kunden, dann im Code
+  // gefiltert — falsch skalierend und unnötig datenbreit).
+  const siteIdForBereiche = (tokensResult.data as { wedding_site_id: string }).wedding_site_id;
+  const bereicheResult =
+    mode === 'draft'
+      ? await supabase
+          .from('wedding_bereiche')
+          .select('*')
+          .eq('wedding_site_id', siteIdForBereiche)
+          .order('display_order', { ascending: true })
+      : await supabase
+          .from('wedding_bereiche')
+          .select('*')
+          .eq('wedding_site_id', siteIdForBereiche)
+          .eq('is_active', true)
+          .order('display_order', { ascending: true });
 
   const tokens = tokensResult.data as EffectiveTokens;
 
