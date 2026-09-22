@@ -6223,11 +6223,9 @@
   font-family: inherit;
   font-weight: inherit;
 }
-/* Mix-390: Ablauf B stand mobil rechtsbündig (Bestandsausrichtung der
-   Zeitspalte) — mobil linksbündig lesbar. */
-@media (max-width: 600px) {
-  .tl.tlB-section[data-style-tl='liquefy'] :is(.tlB-event, .tlB-event *) { text-align: start; justify-content: flex-start; justify-items: start; }
-}
+/* Ablauf B: der versetzte Rhythmus der Stationen ist Teil der B-Komposition
+   (jede zweite Station eingerückt, auf Desktop und abgeschwächt mobil) —
+   bewusst unverändert. */
 
 /* =========================================================================
    BUGFIX — Dialoge dürfen nie von Liquefy überdeckt werden
@@ -6248,4 +6246,17 @@
   position: fixed;
   inset: 0;
   z-index: 1000;
+}
+/* Musik: der Duplikat-Hinweis war aus der Übertragung ein dunkler Streifen
+   über die volle Breite. Er ist ein freundlicher Hinweis, kein Fehler —
+   im Formsystem als helle Linse mit Pflaume-Kante. */
+.mw[data-style-music='liquefy'] .mw-dup-hint {
+  margin: 0 var(--lq-pad-inline) 12px;
+  padding: 10px 14px;
+  background: var(--lq-lens);
+  color: var(--lq-ink);
+  border: 0;
+  border-radius: var(--lq-radius-ui);
+  box-shadow: inset 3px 0 0 0 var(--lq-plum);
+  font-size: 14px;
 }
