@@ -17,7 +17,7 @@ const IMAGE_FILTERS: Record<string, string> = {
   mono: 'grayscale(0.4) contrast(1.02)',
   opulent: 'saturate(1.04) contrast(1.03)', // warme Farbfotografie, kein Sepia
   liquefy: 'none', // Liquefy zeigt Fotos klar; die Weichheit liegt in der Umgebung
-  kinetic: 'contrast(1.05) saturate(0.95)',
+  kinetic: 'contrast(1.08) saturate(1.02)', // fotografisch, klar, leicht knackig
   bauhaus: 'none', // Bauhaus zeigt Farbfotografie (Kontrast zu Mono/Brutalist)
 };
 
@@ -100,6 +100,9 @@ export const FALLBACK_PALETTES: PalettePreset[] = [
   // accent_deep = Pflaume für kleinen Text, ink = tiefes Violett-Grau. Die
   // Nachtfarben (Blau, Violett, Wein, Glow) liegen als Konstanten im Layer.
   { id: 'liquefy-pearl', name: 'Liquefy', color_bg: '#FBF4EF', color_bg_soft: '#F3E3DE', color_accent: '#C9788A', color_accent_deep: '#6B4A73', color_ink: '#2A2230', display_order: 9 },
+  // Kinetic — Schwarz, Paper, Electric Blue, Ice. accent = Electric Blue (Weiß
+  // darauf ≈ 6,7:1), accent_deep = Tiefblau für kleine blaue Schrift auf Paper.
+  { id: 'kinetic-electric', name: 'Kinetic', color_bg: '#F4F4F1', color_bg_soft: '#DCE5FF', color_accent: '#1F3BFF', color_accent_deep: '#1426B8', color_ink: '#0B0B0C', display_order: 10 },
 ];
 
 export const FALLBACK_FONTS: FontPreset[] = [
@@ -119,6 +122,9 @@ export const FALLBACK_FONTS: FontPreset[] = [
   // Liquefy Serif — Cormorant Garamond 400 als weiche, moderne Serif, Manrope
   // für Text. Beide geladen; keine Script-Schrift.
   { id: 'liquefy-serif', name: 'Liquefy Serif', font_display: "'Cormorant Garamond', 'Times New Roman', serif", font_body: "'Manrope', system-ui, sans-serif", font_script: null, display_weight: 400, display_style: 'normal', display_order: 7 },
+  // Kinetic Grotesk — Archivo als eine Familie mit Breitenachse: Display
+  // condensed und schwer, Text in normaler Breite. Keine Serif, kein Script.
+  { id: 'kinetic-archivo', name: 'Kinetic Grotesk', font_display: "'Archivo', 'Arial Narrow', sans-serif", font_body: "'Archivo', system-ui, sans-serif", font_script: null, display_weight: 800, display_style: 'normal', display_order: 8 },
   { id: 'romantic', name: 'Romantisch', font_display: "'Fraunces', serif", font_body: "'Crimson Pro', serif", font_script: "'Caveat', cursive", display_weight: 400, display_style: 'italic', display_order: 2 },
 ];
 
@@ -128,7 +134,7 @@ export const FALLBACK_STYLES: StartStylePreset[] = [
   { id: 'opulent', name: 'Opulent', meta: 'Edel, festlich', default_palette_id: 'opulent-ivory', default_font_id: 'opulent-serif', dna_align: 'center', dna_spacing: 'wide', dna_decor: 'gold', dna_contrast: 'warm', display_order: 2 },
   { id: 'mono', name: 'Mono', meta: 'Reduziert, klar', default_palette_id: 'mono-ink', default_font_id: 'mono-serif', dna_align: 'left', dna_spacing: 'regular', dna_decor: 'hairline', dna_contrast: 'clean', display_order: 3 },
   { id: 'liquefy', name: 'Liquefy', meta: 'Fließend, verträumt', default_palette_id: 'liquefy-pearl', default_font_id: 'liquefy-serif', dna_align: 'center', dna_spacing: 'airy', dna_decor: 'none', dna_contrast: 'soft', display_order: 4 },
-  { id: 'kinetic', name: 'Kinetic', meta: 'Dynamisch, modern', default_palette_id: 'midnight', default_font_id: 'modern', dna_align: 'left', dna_spacing: 'regular', dna_decor: 'none', dna_contrast: 'high', display_order: 5 },
+  { id: 'kinetic', name: 'Kinetic', meta: 'Dynamisch, modern', default_palette_id: 'kinetic-electric', default_font_id: 'kinetic-archivo', dna_align: 'left', dna_spacing: 'regular', dna_decor: 'none', dna_contrast: 'high', display_order: 5 },
   { id: 'brutalist', name: 'Brutalist', meta: 'Roh, kontrastreich', default_palette_id: 'signal', default_font_id: 'brutal', dna_align: 'left', dna_spacing: 'tight', dna_decor: 'none', dna_contrast: 'high', display_order: 6 },
   { id: 'bauhaus', name: 'Bauhaus', meta: 'Geometrisch, grafisch', default_palette_id: 'bauhaus-primary', default_font_id: 'bauhaus-sans', dna_align: 'left', dna_spacing: 'regular', dna_decor: 'none', dna_contrast: 'clean', display_order: 7 },
 ];

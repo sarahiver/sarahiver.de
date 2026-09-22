@@ -28,6 +28,9 @@ import './opulent.css';
 // Ebene 2 — Design 05: Liquefy. Eigener Style-Layer, greift nur über
 // [data-style='liquefy'].
 import './liquefy.css';
+// Ebene 2 — Design 08: Kinetic. Eigener Style-Layer, greift nur über
+// [data-style='kinetic'].
+import './kinetic.css';
 // Sarahiver Brand: Landing + Launch Gate.
 import './landing-v4.css';
 import './launch-gate.css';

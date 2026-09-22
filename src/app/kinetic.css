@@ -1,0 +1,376 @@
+/* =========================================================================
+   DESIGN 08 — KINETIC · RUN 1 FOUNDATION
+   -------------------------------------------------------------------------
+   Energie: dynamisch, jung, expressiv, fotografisch, plakativ — und
+   trotzdem eine hochwertige Hochzeitsseite. Bewegungsgefühl entsteht durch
+   KOMPOSITION (Scale, Crop, Tilt, Offset, Overlap), nicht dadurch, dass
+   alles animiert ist.
+
+   ABGRENZUNG
+     Brutalist  Schwarz/Paper/Orange, harte Raster, Syne, mechanisch
+     Bauhaus    Primärfarben, geometrische Formen, statisch
+     Liquefy    Blur/Glow/Lens, atmosphärisch
+     Kinetic    EINE Signalfarbe (Electric Blue) + Schwarz/Paper,
+                condensed Grotesk in extremer Skalierung, Schnitt und Winkel
+                als Bewegung, harte Fotorahmen. Keine Blur-Flächen, keine
+                Formenwelt, keine zweite Akzentfarbe.
+
+   ARCHITEKTUR
+     Alles liegt unter .wedding-site-wrapper[data-style='kinetic'].
+     Keine Regel kennt die Nachbarsektion; jede [data-bereich]-Sektion ist
+     autark, die Reihenfolge bleibt frei.
+     Diese Datei definiert Tokens, Typografie, Motion-Primitive, Helfer
+     (.kn-*) und das Formsystem. Die Anker folgen in Run 2.
+   ========================================================================= */
+
+/* Archivo, selbst gehostet (SIL Open Font License, Quelle: Fontsource).
+   Variable Schrift mit Gewichts- (100–900) und Breitenachse (62–125 %):
+   eine Familie für condensed Display und normal breiten Text. Keine andere
+   geladene Schrift bietet eine Condensed-Grotesk. */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  src: url('/fonts/archivo-latin-wdth-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  src: url('/fonts/archivo-latin-ext-wdth-normal.woff2') format('woff2-variations');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* =========================================================================
+   1 · TOKENS
+   ========================================================================= */
+
+.wedding-site-wrapper[data-style='kinetic'] {
+  /* Farbe — Palette `kinetic-electric` */
+  --kn-paper: var(--bg);                 /* #F4F4F1 */
+  --kn-ink: var(--ink);                  /* #0B0B0C */
+  --kn-blue: var(--accent);              /* #1F3BFF — Signal */
+  --kn-blue-deep: var(--accent-deep);    /* #1426B8 — blaue Kleinschrift */
+  --kn-ice: var(--bg-soft);              /* #DCE5FF — ruhige Fläche */
+  --kn-grey: color-mix(in srgb, var(--ink) 58%, var(--bg));  /* Meta, ≥ 4,5:1 */
+  --kn-line: color-mix(in srgb, var(--ink) 16%, transparent);
+  --kn-on-blue: #FFFFFF;
+  --kn-on-ink: var(--bg);
+
+  /* Typografie — Archivo mit Breitenachse (62–125 %) */
+  --kn-font: var(--font-display, 'Archivo'), 'Arial Narrow', sans-serif;
+  --kn-font-text: var(--font-body, 'Archivo'), system-ui, sans-serif;
+  --kn-cond: 68%;            /* Display: condensed */
+  --kn-cond-tight: 62%;      /* Statements: maximal eng */
+  --kn-display-xxl: clamp(72px, 13vw, 240px);
+  --kn-display-xl: clamp(56px, 9vw, 168px);
+  --kn-display-l: clamp(40px, 6vw, 104px);
+  --kn-display-m: clamp(28px, 3.6vw, 56px);
+  --kn-number: clamp(56px, 8vw, 144px);
+  --kn-body: clamp(15px, 1.05vw, 17px);
+  --kn-meta: 12px;
+  --kn-track-meta: 0.18em;
+
+  /* Komposition */
+  --kn-tilt: -3deg;          /* Akzent-Winkel, nie auf UI */
+  --kn-tilt-soft: -1.5deg;
+  --kn-offset: clamp(12px, 2vw, 32px);
+  --kn-frame: 6px;           /* harter Fotorahmen in Paper */
+  --kn-radius: 0;
+  --kn-radius-ui: 4px;
+  --kn-pad-block: clamp(56px, 7vw, 120px);
+  --kn-pad-inline: clamp(20px, 4.5vw, 72px);
+
+  /* Motion */
+  --kn-snap: 160ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  --kn-enter: 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  --kn-drift: 14s;
+  --kn-track-speed: 38s;
+
+  --font-mono: var(--kn-font-text);
+  background: var(--kn-paper);
+  color: var(--kn-ink);
+  font-family: var(--kn-font-text);
+  font-style: normal;
+  overflow-x: clip;
+}
+
+/* =========================================================================
+   2 · A/B/C-VERTRAG (Variantentokens — gleiche Welt, andere Komposition)
+   -------------------------------------------------------------------------
+     A DRIVE   klar, schnell, typografisch. Große Schrift, Blau als Signal,
+               kaum Overlap, kein Winkel. Die funktionalste Variante.
+     B SHIFT   versetzt und räumlich: Offset, Layering, Crop, leichte Winkel.
+               Die dynamischste Mischvariante.
+     C IMPACT  plakativ: extreme Scale, EINE große Blau- oder Schwarzfläche
+               pro Sektion, starker Crop, wenige dominante Elemente — nicht
+               jede C-Sektion vollflächig blau oder schwarz.
+   Anwendung ab Run 2 über die Sektionsklassen (…A/…B/…C-section) bzw.
+   data-variant — hier nur die Werte.
+   ========================================================================= */
+.wedding-site-wrapper[data-style='kinetic'] [data-variant='a'] { --kn-v-tilt: 0deg; --kn-v-offset: 0px; --kn-v-scale: var(--kn-display-l); }
+.wedding-site-wrapper[data-style='kinetic'] [data-variant='b'] { --kn-v-tilt: var(--kn-tilt-soft); --kn-v-offset: var(--kn-offset); --kn-v-scale: var(--kn-display-xl); }
+.wedding-site-wrapper[data-style='kinetic'] [data-variant='c'] { --kn-v-tilt: var(--kn-tilt); --kn-v-offset: calc(var(--kn-offset) * 1.5); --kn-v-scale: var(--kn-display-xxl); }
+
+/* =========================================================================
+   3 · MOTION — vier Keyframes für den ganzen Stil
+   ========================================================================= */
+@keyframes kn-enter {
+  from { opacity: 0; transform: translate3d(0, 28px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes kn-enter-x {
+  from { opacity: 0; transform: translate3d(-40px, 0, 0); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes kn-drift {
+  from { transform: translate3d(-1.5%, 0, 0) rotate(var(--kn-tilt, -3deg)); }
+  to   { transform: translate3d(1.5%, 0, 0) rotate(var(--kn-tilt, -3deg)); }
+}
+@keyframes kn-track {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+/* SNAP ist keine Animation, sondern eine kurze Transition (--kn-snap). */
+
+/* =========================================================================
+   4 · HELFER (.kn-*) — die DNA als wiederverwendbare Bausteine
+   ========================================================================= */
+
+/* Typografie */
+.wedding-site-wrapper[data-style='kinetic'] .kn-display {
+  font-family: var(--kn-font);
+  font-weight: 800;
+  font-stretch: var(--kn-cond);
+  font-style: normal;
+  text-transform: uppercase;
+  line-height: 0.86;
+  letter-spacing: -0.01em;
+  color: var(--kn-ink);
+  margin: 0;
+}
+.wedding-site-wrapper[data-style='kinetic'] .kn-display--xxl { font-size: var(--kn-display-xxl); font-stretch: var(--kn-cond-tight); font-weight: 900; }
+.wedding-site-wrapper[data-style='kinetic'] .kn-display--xl { font-size: var(--kn-display-xl); }
+.wedding-site-wrapper[data-style='kinetic'] .kn-display--l { font-size: var(--kn-display-l); }
+.wedding-site-wrapper[data-style='kinetic'] .kn-display--m { font-size: var(--kn-display-m); line-height: 0.92; }
+.wedding-site-wrapper[data-style='kinetic'] .kn-number {
+  font-family: var(--kn-font);
+  font-weight: 900;
+  font-stretch: var(--kn-cond);
+  font-size: var(--kn-number);
+  line-height: 0.82;
+  font-variant-numeric: tabular-nums;
+  color: var(--kn-blue);
+}
+.wedding-site-wrapper[data-style='kinetic'] .kn-body {
+  font-family: var(--kn-font-text);
+  font-stretch: 100%;
+  font-weight: 400;
+  font-size: var(--kn-body);
+  line-height: 1.6;
+  color: var(--kn-ink);
+  max-inline-size: 60ch;
+}
+.wedding-site-wrapper[data-style='kinetic'] .kn-meta {
+  font-family: var(--kn-font-text);
+  font-stretch: 100%;
+  font-weight: 700;
+  font-size: var(--kn-meta);
+  letter-spacing: var(--kn-track-meta);
+  text-transform: uppercase;
+  color: var(--kn-ink);
+}
+/* Label: kleine Signalmarke */
+.wedding-site-wrapper[data-style='kinetic'] .kn-label {
+  display: inline-block;
+  padding: 5px 10px 4px;
+  background: var(--kn-blue);
+  color: var(--kn-on-blue);
+  font-family: var(--kn-font-text);
+  font-weight: 700;
+  font-size: var(--kn-meta);
+  letter-spacing: var(--kn-track-meta);
+  text-transform: uppercase;
+}
+
+/* Signalflächen */
+.wedding-site-wrapper[data-style='kinetic'] .kn-signal-blue { background: var(--kn-blue); color: var(--kn-on-blue); }
+.wedding-site-wrapper[data-style='kinetic'] .kn-signal-black { background: var(--kn-ink); color: var(--kn-on-ink); }
+.wedding-site-wrapper[data-style='kinetic'] :is(.kn-signal-blue, .kn-signal-black) :is(.kn-display, .kn-body, .kn-meta) { color: inherit; }
+.wedding-site-wrapper[data-style='kinetic'] .kn-hl {
+  color: var(--kn-blue);
+}
+.wedding-site-wrapper[data-style='kinetic'] .kn-signal-blue .kn-hl { color: var(--kn-ink); }
+
+/* Fotorahmen: harter Crop, Paper-Rahmen, blauer Versatz dahinter */
+.wedding-site-wrapper[data-style='kinetic'] .kn-frame {
+  position: relative;
+  border: var(--kn-frame) solid var(--kn-paper);
+  box-shadow: calc(var(--kn-offset) * 0.6) calc(var(--kn-offset) * 0.6) 0 0 var(--kn-blue);
+  overflow: hidden;
+  background: var(--kn-ice);
+}
+.wedding-site-wrapper[data-style='kinetic'] .kn-frame > img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  filter: var(--img-filter, none);
+}
+
+/* Winkel, Versatz, Anschnitt, Überlagerung — nie auf Formularen */
+.wedding-site-wrapper[data-style='kinetic'] .kn-tilt { transform: rotate(var(--kn-tilt)); }
+.wedding-site-wrapper[data-style='kinetic'] .kn-tilt-soft { transform: rotate(var(--kn-tilt-soft)); }
+.wedding-site-wrapper[data-style='kinetic'] .kn-offset { transform: translate(var(--kn-offset), calc(var(--kn-offset) * -0.5)); }
+.wedding-site-wrapper[data-style='kinetic'] .kn-crop {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  max-inline-size: 100%;
+}
+.wedding-site-wrapper[data-style='kinetic'] .kn-crop > * { margin-inline-start: -0.06em; }
+.wedding-site-wrapper[data-style='kinetic'] .kn-overlap { position: relative; z-index: 2; margin-block-start: calc(var(--kn-display-m) * -0.9); }
+
+/* Laufband (TRACK) — nur für geeignete Bereiche, nie mehrfach pro Sektion */
+.wedding-site-wrapper[data-style='kinetic'] .kn-track {
+  overflow: hidden;
+  white-space: nowrap;
+}
+.wedding-site-wrapper[data-style='kinetic'] .kn-track__inner {
+  display: inline-flex;
+  gap: 0.6em;
+  animation: kn-track var(--kn-track-speed) linear infinite;
+}
+
+/* Motion-Helfer */
+.wedding-site-wrapper[data-style='kinetic'] .kn-enter { animation: kn-enter var(--kn-enter) both; }
+.wedding-site-wrapper[data-style='kinetic'] .kn-enter-x { animation: kn-enter-x var(--kn-enter) both; }
+.wedding-site-wrapper[data-style='kinetic'] .kn-drift { animation: kn-drift var(--kn-drift) ease-in-out infinite alternate; }
+
+/* =========================================================================
+   5 · FORMSYSTEM — UI bleibt gerade und stabil
+   -------------------------------------------------------------------------
+   Für RSVP, Gästebuch, Musik, Upload und den Geschenk-Dialog. Felder
+   rotieren nie, bewegen sich nie; Kinetic passiert um das Formular herum.
+   Hier als Helfer definiert; in Run 3 auf die Produktionsklassen gelegt.
+   ========================================================================= */
+.wedding-site-wrapper[data-style='kinetic'] .kn-field { display: grid; gap: 8px; }
+.wedding-site-wrapper[data-style='kinetic'] .kn-field-label {
+  font-family: var(--kn-font-text);
+  font-weight: 700;
+  font-size: var(--kn-meta);
+  letter-spacing: var(--kn-track-meta);
+  text-transform: uppercase;
+  color: var(--kn-ink);
+}
+.wedding-site-wrapper[data-style='kinetic'] .kn-input {
+  min-block-size: 48px;
+  inline-size: 100%;
+  padding: 10px 14px;
+  font-family: var(--kn-font-text);
+  font-stretch: 100%;
+  font-size: 16px;
+  color: var(--kn-ink);
+  background: #FFFFFF;
+  border: 2px solid var(--kn-ink);
+  border-radius: var(--kn-radius-ui);
+  transform: none;
+  transition: border-color var(--kn-snap), box-shadow var(--kn-snap);
+}
+.wedding-site-wrapper[data-style='kinetic'] .kn-input:focus-visible {
+  outline: 3px solid var(--kn-blue);
+  outline-offset: 2px;
+  border-color: var(--kn-blue);
+}
+.wedding-site-wrapper[data-style='kinetic'] .kn-input[aria-invalid='true'] {
+  border-color: var(--kn-ink);
+  box-shadow: inset 4px 0 0 0 var(--kn-blue);
+}
+.wedding-site-wrapper[data-style='kinetic'] .kn-error {
+  padding: 8px 12px;
+  background: var(--kn-ink);
+  color: var(--kn-on-ink);
+  font-weight: 600;
+  font-size: 14px;
+}
+.wedding-site-wrapper[data-style='kinetic'] .kn-error::before { content: 'Bitte prüfen — '; font-weight: 800; }
+
+/* Knöpfe: Blau = Aktion, Schwarz = sekundär; SNAP beim Hover */
+.wedding-site-wrapper[data-style='kinetic'] .kn-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-block-size: 48px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: var(--kn-radius-ui);
+  background: var(--kn-blue);
+  color: var(--kn-on-blue);
+  font-family: var(--kn-font);
+  font-stretch: 85%;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform var(--kn-snap), background-color var(--kn-snap), box-shadow var(--kn-snap);
+  box-shadow: 0 0 0 0 var(--kn-ink);
+}
+.wedding-site-wrapper[data-style='kinetic'] .kn-button:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 3px 3px 0 0 var(--kn-ink);
+}
+.wedding-site-wrapper[data-style='kinetic'] .kn-button:focus-visible { outline: 3px solid var(--kn-ink); outline-offset: 3px; }
+.wedding-site-wrapper[data-style='kinetic'] .kn-button--secondary {
+  background: transparent;
+  color: var(--kn-ink);
+  box-shadow: inset 0 0 0 2px var(--kn-ink);
+}
+.wedding-site-wrapper[data-style='kinetic'] .kn-button--secondary:hover { background: var(--kn-ink); color: var(--kn-on-ink); box-shadow: 3px 3px 0 0 var(--kn-blue); }
+.wedding-site-wrapper[data-style='kinetic'] .kn-button:disabled {
+  background: color-mix(in srgb, var(--kn-ink) 18%, var(--kn-paper));
+  color: var(--kn-ink);
+  transform: none;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* =========================================================================
+   6 · REDUCED MOTION — Inhalte bleiben, Bewegung stoppt
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .wedding-site-wrapper[data-style='kinetic'] :is(.kn-enter, .kn-enter-x, .kn-drift, .kn-track__inner),
+  .wedding-site-wrapper[data-style='kinetic'] *,
+  .wedding-site-wrapper[data-style='kinetic'] *::before,
+  .wedding-site-wrapper[data-style='kinetic'] *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+  .wedding-site-wrapper[data-style='kinetic'] :is(.kn-enter, .kn-enter-x) { opacity: 1; transform: none; }
+}
+
+/* =========================================================================
+   7 · FOUNDATION-REVIEW (/allelements/kinetic) — nur Layout der Übersicht
+   ========================================================================= */
+.kn-review { padding: var(--kn-pad-block) var(--kn-pad-inline); display: grid; gap: clamp(56px, 7vw, 112px); }
+.kn-review__block { display: grid; gap: 20px; }
+.kn-review__row { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; }
+.kn-review__swatch { inline-size: 150px; display: grid; gap: 8px; }
+.kn-review__chip { block-size: 96px; border: 1px solid var(--kn-line); }
+.kn-review__grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 3vw, 48px); }
+.kn-review__grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 3vw, 48px); }
+.kn-review__tile { padding: 24px; min-block-size: 220px; display: grid; align-content: space-between; gap: 16px; border: 1px solid var(--kn-line); overflow: hidden; }
+.kn-review__photo {
+  aspect-ratio: 4 / 5;
+  background:
+    linear-gradient(180deg, transparent 55%, rgba(11, 11, 12, 0.35)),
+    linear-gradient(160deg, #9FB4FF 0%, #F2C9A0 55%, #3B3F5C 100%);
+}
+@media (max-width: 800px) {
+  .kn-review__grid2, .kn-review__grid3 { grid-template-columns: minmax(0, 1fr); }
+}
