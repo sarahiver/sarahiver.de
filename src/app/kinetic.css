@@ -6022,3 +6022,63 @@
   font-size: 14px;
   font-weight: 600;
 }
+
+/* =========================================================================
+   R4 · FINAL FULL-PAGE POLISH
+   -------------------------------------------------------------------------
+   Befund: Auf der C-Seite folgten im unteren Drittel vier große
+   Signalflächen dicht aufeinander (Geschenke schwarz → FAQ schwarz →
+   Gästebuch schwarz → Musik blau). Je Sektion regelkonform, auf der Seite
+   aber eine Schwarz-/Blau-Themenstrecke. Außerdem trugen Love Story B/C
+   Leerhöhe und Gallery B zu viele gleichzeitige Versätze.
+   ========================================================================= */
+
+/* C-Dichte: FAQ C und Gästebuch C tragen ihr Statement über Typografie
+   statt über eine Schwarzfläche. Schwarz bleibt bei der Reisekasse
+   (Geschenke C), Blau beim aktuellen Song (Musik C). */
+.wedding-site-wrapper[data-style='kinetic'] .faq.faqC-section .faqC-item:first-child,
+.wedding-site-wrapper[data-style='kinetic'] .gb.gbC-section .gbC-card:first-child {
+  background: var(--kn-ice);
+  color: var(--kn-ink);
+  box-shadow: inset 6px 0 0 0 var(--kn-blue);
+  border-color: var(--kn-line);
+}
+.wedding-site-wrapper[data-style='kinetic'] :is(.faq.faqC-section .faqC-item:first-child, .gb.gbC-section .gbC-card:first-child) :where(*) {
+  color: var(--kn-ink);
+  border-color: var(--kn-line);
+}
+.wedding-site-wrapper[data-style='kinetic'] .faq.faqC-section .faqC-item:first-child .faqC-q {
+  font-size: clamp(32px, 4vw, 64px);
+  line-height: 0.9;
+}
+.wedding-site-wrapper[data-style='kinetic'] .gb.gbC-section .gbC-card:first-child .gbC-msg { color: var(--kn-ink); }
+.wedding-site-wrapper[data-style='kinetic'] .gb.gbC-section .gbC-card:first-child :is(.gbC-name, .gbC-date) { color: var(--kn-blue-deep); }
+
+/* Love Story B/C: engere Kapitelabstände, weniger Leerhöhe */
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsB[data-style-ls='kinetic'] .lsB-list { gap: clamp(28px, 3.4vw, 56px); }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsB[data-style-ls='kinetic'] .lsB-text { margin-block-start: calc(var(--kn-offset) * 2); }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsB[data-style-ls='kinetic'] .lsB-img-wrap { aspect-ratio: 16 / 9; }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-wrap { gap: clamp(28px, 3vw, 48px); }
+.wedding-site-wrapper[data-style='kinetic'] .ls.lsC[data-style-ls='kinetic'] .lsC-item::before { font-size: clamp(56px, 6.4vw, 112px); }
+
+/* Gallery B: Versätze nur noch am gekippten Leitbild — die übrigen Frames
+   stehen ruhig im Raster, etwas mehr Luft. */
+.wedding-site-wrapper[data-style='kinetic'] .gal.galB-wrap[data-style-gallery='kinetic'] .galB-item:nth-child(3n + 2) { transform: none; }
+.wedding-site-wrapper[data-style='kinetic'] .gal.galB-wrap[data-style-gallery='kinetic'] .galB { gap: clamp(12px, 1.6vw, 24px); }
+/* Countdown C: Schwarz nur noch als Kern um die Zahlen, nicht als ganze
+   Sektion — direkt nach einem dunklen Hero C entstand sonst eine
+   durchgehende Schwarzstrecke. Kopf und Schlusszeile stehen auf Paper. */
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdC-wrap[data-style-countdown='kinetic'] {
+  background: var(--kn-paper);
+  color: var(--kn-ink);
+}
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdC-wrap[data-style-countdown='kinetic'] .cd-eyebrow {
+  background: var(--kn-blue);
+  color: var(--kn-on-blue);
+  padding: 5px 10px 4px;
+}
+.wedding-site-wrapper[data-style='kinetic'] .cd.cdC-wrap[data-style-countdown='kinetic'] .cdC-bars {
+  padding: clamp(24px, 3vw, 48px);
+  background: var(--kn-ink);
+  color: var(--kn-on-ink);
+}
