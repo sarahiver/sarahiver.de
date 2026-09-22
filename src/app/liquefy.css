@@ -6213,3 +6213,39 @@
 .wedding-site-wrapper[data-style='liquefy'] :is(.loc-pill, [class*='stamp'], [class*='date-stamp']) { font-family: var(--font-body); }
 .wedding-site-wrapper[data-style='liquefy'] .acc .accC-maplegend { box-shadow: none; border-radius: var(--lq-radius-ui); }
 .wedding-site-wrapper[data-style='liquefy'] .gal-lightbox button { min-inline-size: 44px; min-block-size: 44px; }
+/* State-QA: die Hervorhebung in den Upload-Titeln B/C blieb eine dunkle
+   Fläche (übersetzte Regel mit höherer Spezifität). */
+.wedding-site-wrapper[data-style='liquefy'] .up.upB-section[data-style-upload='liquefy'] .upB-title em,
+.wedding-site-wrapper[data-style='liquefy'] .up.upC-section[data-style-upload='liquefy'] .upC-h em {
+  background: none;
+  color: inherit;
+  padding: 0;
+  font-family: inherit;
+  font-weight: inherit;
+}
+/* Mix-390: Ablauf B stand mobil rechtsbündig (Bestandsausrichtung der
+   Zeitspalte) — mobil linksbündig lesbar. */
+@media (max-width: 600px) {
+  .tl.tlB-section[data-style-tl='liquefy'] :is(.tlB-event, .tlB-event *) { text-align: start; justify-content: flex-start; justify-items: start; }
+}
+
+/* =========================================================================
+   BUGFIX — Dialoge dürfen nie von Liquefy überdeckt werden
+   Jede Liquefy-Sektion ist ein eigener Stapelkontext (position: relative,
+   z-index: 1, isolation). Ein Dialog innerhalb einer Sektion (Geschenk-
+   Reservierung, Gästebuch-C, Lightbox) war dadurch in diese Sektion
+   eingesperrt: spätere Sektionen im DOM malten über ihn. Solange ein
+   Dialog offen ist, hebt die Sektion ihn über die übrigen.
+   ========================================================================= */
+.wedding-site-wrapper[data-style='liquefy'] :is(.gift, .gb, .gal):has(.gift-modal-layer, .gbC-overlay, .gal-lightbox.is-open) {
+  z-index: 1000;
+}
+/* Die Overlays selbst blieben durch Liquefy-Stapelregeln (z. B. „Kinder der
+   Anker-Sektion relativ positioniert") nicht am Viewport verankert —
+   Reservierungsdialog, Gästebuch-Dialog und Lightbox lagen im Seitenfluss
+   statt über dem Bildschirm. Hier wieder fix, wie in der Basis. */
+.wedding-site-wrapper[data-style='liquefy'] :is(.gift, .gb, .gal) :is(.gift-modal-layer, .gbC-overlay, .gal-lightbox) {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}

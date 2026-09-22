@@ -238,3 +238,33 @@
 }
 .ae-export-one:hover { background: #2A241F; }
 .ae-group-label { align-self: center; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ae-mut); padding-inline: 4px 2px; }
+
+/* =========================================================================
+   REVIEW-MODUS LIQUEFY (nur /allelements, Komponentenansicht)
+   -------------------------------------------------------------------------
+   Die Komponentenansicht rendert jede Variante in einem eigenen
+   .wedding-site-wrapper — für Liquefy entstehen dadurch 45 getrennte
+   Ambient Worlds, jede ein eigener sticky Layer über 100vh. Auf der echten
+   Hochzeitsseite gibt es genau einen. Die vielen Layer führten bei
+   Aufnahmen zu schwarz gerenderten Bereichen.
+
+   Hier wird die Ambient World je Wrapper als statischer Hintergrund des
+   Wrappers gemalt statt als eigener sticky Layer — gleiche Farben, keine
+   zusätzliche Ebene, keine Bewegung. Gilt nur innerhalb von .ae-stage;
+   Produktion und die Full-Page-Ansicht bleiben unverändert.
+   ========================================================================= */
+.ae-stage .wedding-site-wrapper[data-style='liquefy']::before {
+  display: none;
+}
+.ae-stage .wedding-site-wrapper[data-style='liquefy'] {
+  background:
+    radial-gradient(46% 50% at 12% 18%, color-mix(in srgb, var(--lq-rosecloud) 80%, transparent), transparent 78%),
+    radial-gradient(42% 48% at 88% 34%, color-mix(in srgb, var(--lq-peach) 85%, transparent), transparent 78%),
+    radial-gradient(48% 44% at 70% 90%, color-mix(in srgb, var(--lq-lilac) 80%, transparent), transparent 80%),
+    var(--lq-paper);
+}
+/* Die Komponentenansicht gibt jeder Sektion inline einen deckenden
+   Hintergrund (var(--bg)); in Liquefy verdeckt er die Welt. */
+.ae-stage .wedding-site-wrapper[data-style='liquefy'] > * > section[data-bereich] {
+  background: transparent !important;
+}
