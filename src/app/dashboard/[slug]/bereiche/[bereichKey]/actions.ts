@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import type { BereichKey } from '@/types/supabase';
+import { checkSiteOwner } from '@/lib/site-owner';
 
 /**
  * Server Actions für Bereich-Editoren — Draft-aware.
@@ -33,6 +34,9 @@ export interface UpdateHeroImagePayload {
 }
 
 export async function updateHeroImage(p: UpdateHeroImagePayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!p.slug) return { ok: false, error: 'Slug fehlt.' };
 
   const supabase = createSupabaseAdminClient();
@@ -86,6 +90,9 @@ export interface UpdateBereichContentPayload {
 }
 
 export async function updateBereichContent(p: UpdateBereichContentPayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!p.slug || !p.bereich_key) return { ok: false, error: 'Slug oder Bereich fehlt.' };
 
   const supabase = createSupabaseAdminClient();

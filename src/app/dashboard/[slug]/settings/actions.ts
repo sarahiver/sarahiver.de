@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { checkSiteOwner } from '@/lib/site-owner';
 
 /**
  * Server Actions für den Settings-Editor.
@@ -36,6 +37,9 @@ export interface StammdatenPayload {
 }
 
 export async function updateStammdaten(p: StammdatenPayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!p.slug) return { ok: false, error: 'Slug fehlt.' };
   if (!p.couple_name_1.trim() || !p.couple_name_2.trim()) {
     return { ok: false, error: 'Beide Vornamen sind erforderlich.' };
@@ -110,6 +114,9 @@ export interface StilPayload {
 }
 
 export async function updateStil(p: StilPayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   console.log('[updateStil] payload received:', JSON.stringify({
     slug: p.slug,
     start_style_id: p.start_style_id,
@@ -225,6 +232,9 @@ export interface NavPayload {
 }
 
 export async function updateNavigation(p: NavPayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!p.slug) return { ok: false, error: 'Slug fehlt.' };
   if (!['a', 'b', 'c', 'none'].includes(p.nav_variant)) {
     return { ok: false, error: 'Ungültige Nav-Variante.' };

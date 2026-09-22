@@ -6,14 +6,14 @@ import { NextResponse, type NextRequest } from 'next/server';
  * Drei Routing-Modi:
  *
  *   1. PRODUCTION mit Subdomain:
- *      sarah-und-iver.sarahiver.de → /site/sarah-und-iver
+ *      sarah-und-iver.sarahiver.de → /sarah-und-iver (interner Rewrite)
  *
  *   2. PREVIEW/STAGING auf Vercel (vercel.app oder andere Test-Domain):
- *      sarahiver-de.vercel.app?slug=sarah-und-iver-demo → /site/sarah-und-iver-demo
+ *      sarahiver-de.vercel.app?slug=sarah-und-iver-demo → /sarah-und-iver-demo
  *      → funktioniert solange echte Domain noch nicht eingebunden ist
  *
  *   3. LOCAL DEV:
- *      localhost:3000?slug=sarah-und-iver-demo → /site/sarah-und-iver-demo
+ *      localhost:3000?slug=sarah-und-iver-demo → /sarah-und-iver-demo
  */
 export function middleware(request: NextRequest) {
   const url = request.nextUrl;
@@ -34,8 +34,10 @@ export function middleware(request: NextRequest) {
 
   if (isTestHost) {
     const slugParam = url.searchParams.get('slug');
-    if (slugParam && !url.pathname.startsWith('/site/')) {
-      const newPath = `/site/${slugParam}${url.pathname === '/' ? '' : url.pathname}`;
+    if (slugParam) {
+      // Auf die aktuelle Hochzeitsseiten-Route (/[slug]) — dieselbe Logik wie
+      // in Produktion (Laufzeit, Rückerstattung, Navigation, Phasen).
+      const newPath = `/${slugParam}${url.pathname === '/' ? '' : url.pathname}`;
       url.pathname = newPath;
       url.searchParams.delete('slug');
       return NextResponse.rewrite(url);
@@ -57,13 +59,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Bereits unter /site/ → keine doppelte Rewrite
-  if (url.pathname.startsWith('/site/')) {
-    return NextResponse.next();
-  }
-
-  // Rewrite zu /site/{subdomain}{path}
-  const internalPath = `/site/${subdomain}${url.pathname === '/' ? '' : url.pathname}`;
+  // Rewrite zu /{subdomain}{path} — die aktuelle Hochzeitsseiten-Route mit
+  // Laufzeit-/Rückerstattungsprüfung, Navigation und Phasenlogik. Die frühere
+  // Zielroute /site/[slug] delegiert nur noch hierher.
+  const internalPath = `/${subdomain}${url.pathname === '/' ? '' : url.pathname}`;
   url.pathname = internalPath;
 
   return NextResponse.rewrite(url);

@@ -154,7 +154,7 @@ export interface SeedResult { ok: boolean; created: string[]; errors: string[] }
 
 type AdminClient = NonNullable<ReturnType<typeof createSupabaseAdminClient>>;
 
-const DEMO_OWNER_EMAIL = 'demo-owner@sarahiver.de';
+export const DEMO_OWNER_EMAIL = 'demo-owner@sarahiver.de';
 
 /** Demo-Owner (auth user) sicherstellen — Eigentuemer aller Demo-/Sandbox-Seiten. */
 export async function ensureDemoOwner(admin: AdminClient): Promise<string | null> {

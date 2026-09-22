@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import { requireSiteOwnerPage } from '@/lib/site-owner';
 
 /**
  * /dashboard/[slug]/upgrade — stillgelegt.
@@ -12,5 +13,7 @@ import { redirect } from 'next/navigation';
  */
 export default async function UpgradePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  // Besitzprüfung VOR dem Laden sensibler Daten (Service-Role-Client).
+  await requireSiteOwnerPage(slug);
   redirect(`/dashboard/${slug}`);
 }

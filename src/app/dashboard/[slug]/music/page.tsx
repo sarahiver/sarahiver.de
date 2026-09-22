@@ -3,6 +3,7 @@ import DashboardSection from '@/components/dashboard/DashboardSection';
 import { loadDashboardData } from '@/lib/dashboard-data';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import MusicWishesList, { type MusicWishRecord } from './MusicWishesList';
+import { requireSiteOwnerPage } from '@/lib/site-owner';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -12,6 +13,8 @@ export const dynamic = 'force-dynamic';
 
 export default async function MusicWishesPage({ params }: PageProps) {
   const { slug } = await params;
+  // Besitzprüfung VOR dem Laden sensibler Daten (Service-Role-Client).
+  await requireSiteOwnerPage(slug);
   const data = await loadDashboardData(slug);
   if (!data) notFound();
 

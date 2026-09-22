@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
+import { checkSiteOwner } from '@/lib/site-owner';
 
 /**
  * Moderations-Actions für Gästebuch-Einträge.
@@ -63,14 +64,23 @@ async function performStatusUpdate(p: BasePayload, status: 'approved' | 'rejecte
 }
 
 export async function approveEntry(p: BasePayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   return performStatusUpdate(p, 'approved');
 }
 
 export async function rejectEntry(p: BasePayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   return performStatusUpdate(p, 'rejected');
 }
 
 export async function deleteEntry(p: BasePayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!p.slug || !p.entryId) return { ok: false, error: 'Slug oder Eintrag fehlt.' };
 
   const supabase = createSupabaseAdminClient();

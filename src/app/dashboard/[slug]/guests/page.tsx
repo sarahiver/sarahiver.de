@@ -4,6 +4,7 @@ import { loadDashboardData } from '@/lib/dashboard-data';
 import { loadGuestList } from '@/lib/guest-list-data';
 import { loadRsvps } from '@/lib/rsvp-data';
 import { notFound, redirect } from 'next/navigation';
+import { requireSiteOwnerPage } from '@/lib/site-owner';
 
 /**
  * /dashboard/[slug]/guests
@@ -18,6 +19,8 @@ export default async function GuestsPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  // Besitzprüfung VOR dem Laden sensibler Daten (Service-Role-Client).
+  await requireSiteOwnerPage(slug);
   const data = await loadDashboardData(slug);
   if (!data) notFound();
   if (!data.purchasedKeys.includes('rsvp')) {

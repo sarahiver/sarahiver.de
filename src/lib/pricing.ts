@@ -15,6 +15,15 @@
 export const WEBSITE_PRICE_EUR = 69;
 export const DOMAIN_SETUP_PRICE_EUR = 39;
 
+/**
+ * Custom Domain (+39 €) ist im MVP NICHT kaufbar: Routing, DNS-Einrichtung und
+ * Statusverwaltung sind noch nicht gebaut. Der Backend-Code (Speicherung,
+ * Webhook, Provisionierung) bleibt erhalten; bestehende Datensätze mit
+ * custom_domain werden nicht angefasst. Auf true stellen, sobald das
+ * Domain-System End-to-End funktioniert.
+ */
+export const CUSTOM_DOMAIN_ENABLED = false;
+
 /** Stripe-Price-IDs kommen aus diesen Environment-Variablen. */
 export const PRICE_ENV_WEBSITE = 'STRIPE_PRICE_WEBSITE';
 export const PRICE_ENV_DOMAIN = 'STRIPE_PRICE_DOMAIN_SETUP';

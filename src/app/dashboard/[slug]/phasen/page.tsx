@@ -3,6 +3,7 @@ import { loadDashboardData } from '@/lib/dashboard-data';
 import { notFound } from 'next/navigation';
 import PhasenForm from './PhasenForm';
 import type { Variant } from '@/types/supabase';
+import { requireSiteOwnerPage } from '@/lib/site-owner';
 
 /**
  * /dashboard/[slug]/phasen
@@ -18,6 +19,8 @@ const asV = (v: unknown): Variant => (v === 'b' || v === 'c' ? v : 'a');
 
 export default async function PhasenPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  // Besitzprüfung VOR dem Laden sensibler Daten (Service-Role-Client).
+  await requireSiteOwnerPage(slug);
   const data = await loadDashboardData(slug);
   if (!data) notFound();
 

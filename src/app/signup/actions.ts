@@ -4,7 +4,7 @@ import { getStripe } from '@/lib/stripe';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import { isReservedSlug, isValidSlugFormat } from '@/lib/slug-validation';
 import { VALID_STYLE_IDS } from '@/lib/style-migration';
-import { PRICE_ENV_DOMAIN, PRICE_ENV_WEBSITE } from '@/lib/pricing';
+import { PRICE_ENV_DOMAIN, PRICE_ENV_WEBSITE, CUSTOM_DOMAIN_ENABLED } from '@/lib/pricing';
 import { CHECKOUT_ENABLED, LAUNCH_DATE_LABEL } from '@/lib/launch';
 
 /**
@@ -98,7 +98,11 @@ export async function startCheckout(input: CheckoutInput): Promise<CheckoutResul
     { price: websitePriceId, quantity: 1 },
   ];
 
-  if (input.domain) {
+  // Custom Domain ist im MVP gesperrt — ein manipulierter Request mit
+  // domain=true darf keine Domain-Position in den Checkout bringen.
+  const wantsDomain = CUSTOM_DOMAIN_ENABLED && !!input.domain;
+
+  if (wantsDomain) {
     const domainPriceId = process.env[PRICE_ENV_DOMAIN];
     if (!domainPriceId) {
       console.error(`[startCheckout] Missing env ${PRICE_ENV_DOMAIN}`);
@@ -116,8 +120,8 @@ export async function startCheckout(input: CheckoutInput): Promise<CheckoutResul
     name2,
     wedding_date: weddingDate,
     style,
-    domain: input.domain ? '1' : '0',
-    domain_wish: input.domain ? domainWish : '',
+    domain: wantsDomain ? '1' : '0',
+    domain_wish: wantsDomain ? domainWish : '',
   };
 
   try {

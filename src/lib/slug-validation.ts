@@ -1,5 +1,5 @@
 export const RESERVED_SLUGS = [
-  'impressum', 'datenschutz', 'agb', 'av-vertrag', 'kontakt',
+  'impressum', 'datenschutz', 'agb', 'widerruf', 'av-vertrag', 'kontakt',
   'api', 'admin', 'dashboard', 'login', 'logout', 'signup', 'register',
   'auth', 'callback', 'auth-callback',
   'static', '_next', 'public', 'favicon', 'robots', 'sitemap', 'manifest',

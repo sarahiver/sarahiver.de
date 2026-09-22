@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import type { RsvpGuest } from '@/lib/rsvp-data';
+import { checkSiteOwner } from '@/lib/site-owner';
 
 /**
  * Server Actions für die RSVP-Verwaltung im Dashboard.
@@ -41,6 +42,9 @@ export interface UpdateRsvpPayload {
 }
 
 export async function updateRsvp(p: UpdateRsvpPayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!p.slug || !p.id) return { ok: false, error: 'Slug oder ID fehlt.' };
   if (!p.name.trim()) return { ok: false, error: 'Name ist erforderlich.' };
 
@@ -76,6 +80,9 @@ export async function updateRsvp(p: UpdateRsvpPayload): Promise<ActionResult> {
 // ====================================================================
 
 export async function deleteRsvp(slug: string, id: string): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!slug || !id) return { ok: false, error: 'Slug oder ID fehlt.' };
 
   const supabase = createSupabaseAdminClient();
@@ -111,6 +118,9 @@ export interface AddRsvpPayload {
 }
 
 export async function addRsvp(p: AddRsvpPayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!p.slug) return { ok: false, error: 'Slug fehlt.' };
   if (!p.name.trim()) return { ok: false, error: 'Name ist erforderlich.' };
 

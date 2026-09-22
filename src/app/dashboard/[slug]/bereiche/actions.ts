@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import type { BereichKey } from '@/types/supabase';
+import { checkSiteOwner } from '@/lib/site-owner';
 
 /**
  * Server Actions für die Bereiche-Verwaltung.
@@ -42,6 +43,9 @@ export interface ReorderPayload {
 }
 
 export async function reorderBereiche(p: ReorderPayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!p.slug) return { ok: false, error: 'Slug fehlt.' };
   if (!Array.isArray(p.orderedKeys) || p.orderedKeys.length === 0) {
     return { ok: false, error: 'Reihenfolge leer.' };
@@ -98,6 +102,9 @@ export interface SetVariantPayload {
 }
 
 export async function setBereichVariant(p: SetVariantPayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!p.slug) return { ok: false, error: 'Slug fehlt.' };
   if (!KNOWN_VARIANTS.includes(p.variant)) {
     return { ok: false, error: `Ungültige Variante: ${p.variant}` };
@@ -143,6 +150,9 @@ export interface ToggleActivePayload {
 }
 
 export async function toggleBereichActive(p: ToggleActivePayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!p.slug) return { ok: false, error: 'Slug fehlt.' };
 
   if (FIXED_KEYS.includes(p.bereich_key) && !p.is_active) {

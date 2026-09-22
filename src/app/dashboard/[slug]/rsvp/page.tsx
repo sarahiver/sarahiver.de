@@ -5,6 +5,7 @@ import { loadDashboardData } from '@/lib/dashboard-data';
 import { loadRsvps } from '@/lib/rsvp-data';
 import { loadRsvpCodeStatus } from '@/lib/rsvp-server';
 import { notFound, redirect } from 'next/navigation';
+import { requireSiteOwnerPage } from '@/lib/site-owner';
 
 /**
  * /dashboard/[slug]/rsvp
@@ -25,6 +26,8 @@ export default async function RsvpPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  // Besitzprüfung VOR dem Laden sensibler Daten (Service-Role-Client).
+  await requireSiteOwnerPage(slug);
   const data = await loadDashboardData(slug);
   if (!data) notFound();
 

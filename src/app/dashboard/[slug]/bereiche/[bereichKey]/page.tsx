@@ -22,6 +22,7 @@ import { loadDashboardData, findBereich } from '@/lib/dashboard-data';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import type { BereichKey } from '@/types/supabase';
 import { notFound, redirect } from 'next/navigation';
+import { requireSiteOwnerPage } from '@/lib/site-owner';
 
 /**
  * Dynamische Editor-Route pro Bereich:
@@ -50,6 +51,8 @@ export default async function BereichEditorPage({
 }) {
   const { slug, bereichKey } = await params;
 
+  // Besitzprüfung VOR dem Laden sensibler Daten (Service-Role-Client).
+  await requireSiteOwnerPage(slug);
   if (!KNOWN_KEYS.includes(bereichKey as BereichKey)) {
     notFound();
   }

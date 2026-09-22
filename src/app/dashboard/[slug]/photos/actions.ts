@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import { deleteCloudinaryImage } from '@/lib/cloudinary-server';
+import { checkSiteOwner } from '@/lib/site-owner';
 
 /**
  * Server Actions für das Photo-Dashboard.
@@ -19,6 +20,9 @@ export interface ActionResult {
 }
 
 export async function deletePhotos(slug: string, ids: string[]): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!slug) return { ok: false, error: 'Slug fehlt.' };
   if (!Array.isArray(ids) || ids.length === 0) {
     return { ok: false, error: 'Keine IDs übergeben.' };

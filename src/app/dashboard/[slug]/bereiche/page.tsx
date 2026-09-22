@@ -4,6 +4,7 @@ import BereicheListe from './BereicheListe';
 import { loadDashboardData } from '@/lib/dashboard-data';
 import type { BereichKey } from '@/types/supabase';
 import { notFound } from 'next/navigation';
+import { requireSiteOwnerPage } from '@/lib/site-owner';
 
 /**
  * /dashboard/[slug]/bereiche
@@ -20,6 +21,8 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  // Besitzprüfung VOR dem Laden sensibler Daten (Service-Role-Client).
+  await requireSiteOwnerPage(slug);
   const data = await loadDashboardData(slug);
   if (!data) notFound();
 

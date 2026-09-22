@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
+import { checkSiteOwner } from '@/lib/site-owner';
 
 /**
  * Delete-Action für Musikwünsche. Hard-Delete — kein Soft-Delete-Pattern,
@@ -19,6 +20,9 @@ interface DeletePayload {
 }
 
 export async function deleteWish(p: DeletePayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!p.slug || !p.wishId) return { ok: false, error: 'Slug oder Wunsch fehlt.' };
 
   const supabase = createSupabaseAdminClient();

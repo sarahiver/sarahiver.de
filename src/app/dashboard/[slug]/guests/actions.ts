@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
+import { checkSiteOwner } from '@/lib/site-owner';
 
 /**
  * Server Actions für die Gästeliste.
@@ -35,6 +36,9 @@ export async function uploadGuestList(
   slug: string,
   guests: UploadGuest[],
 ): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!slug) return { ok: false, error: 'Slug fehlt.' };
   if (!Array.isArray(guests) || guests.length === 0) {
     return { ok: false, error: 'Keine Gäste im Upload.' };
@@ -101,6 +105,9 @@ export async function uploadGuestList(
 // ====================================================================
 
 export async function deleteGuestEntry(slug: string, id: string): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!slug || !id) return { ok: false, error: 'Slug oder ID fehlt.' };
 
   const supabase = createSupabaseAdminClient();
@@ -121,6 +128,9 @@ export async function deleteGuestEntry(slug: string, id: string): Promise<Action
 // ====================================================================
 
 export async function clearGuestList(slug: string): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!slug) return { ok: false, error: 'Slug fehlt.' };
 
   const supabase = createSupabaseAdminClient();
@@ -165,6 +175,9 @@ export interface SendRemindersPayload {
 }
 
 export async function sendReminders(p: SendRemindersPayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!p.slug) return { ok: false, error: 'Slug fehlt.' };
   if (!Array.isArray(p.guestIds) || p.guestIds.length === 0) {
     return { ok: false, error: 'Keine Empfänger ausgewählt.' };

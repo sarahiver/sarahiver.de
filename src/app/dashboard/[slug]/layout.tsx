@@ -7,6 +7,7 @@ import DashboardErrorBoundary from '@/components/dashboard/DashboardErrorBoundar
 import { DashboardDataProvider } from '@/components/dashboard/DashboardDataProvider';
 import AccessBanner from '@/components/dashboard/AccessBanner';
 import DemoBanner from '@/components/dashboard/DemoBanner';
+import { requireSiteOwnerPage } from '@/lib/site-owner';
 
 /**
  * Layout für /dashboard/[slug]/*
@@ -28,6 +29,8 @@ export default async function DashboardLayout({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  // Besitzprüfung VOR dem Laden sensibler Daten (Service-Role-Client).
+  await requireSiteOwnerPage(slug);
   const data = await loadDashboardData(slug);
   if (!data) {
     return (

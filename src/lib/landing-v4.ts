@@ -244,6 +244,7 @@ export const FOOTER = {
     { label: 'Impressum', href: '/impressum' },
     { label: 'Datenschutz', href: '/datenschutz' },
     { label: 'AGB', href: '/agb' },
+    { label: 'Widerruf', href: '/widerruf' },
     { label: 'Kontakt', href: '/kontakt' },
   ],
   social: [

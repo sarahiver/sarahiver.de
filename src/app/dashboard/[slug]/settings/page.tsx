@@ -7,6 +7,7 @@ import { loadDashboardData } from '@/lib/dashboard-data';
 import { loadAllPresets } from '@/lib/presets';
 import { resolveStyleId } from '@/lib/style-migration';
 import { notFound } from 'next/navigation';
+import { requireSiteOwnerPage } from '@/lib/site-owner';
 
 /**
  * /dashboard/[slug]/settings
@@ -24,6 +25,8 @@ export default async function SettingsPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  // Besitzprüfung VOR dem Laden sensibler Daten (Service-Role-Client).
+  await requireSiteOwnerPage(slug);
   const [data, presets] = await Promise.all([loadDashboardData(slug), loadAllPresets()]);
   if (!data) notFound();
 

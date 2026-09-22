@@ -3,7 +3,7 @@
 import { useMemo, useState, useTransition } from 'react';
 import { startCheckout, type CheckoutInput } from './actions';
 import { ALL_BEREICH_KEYS, BEREICH_LABEL } from '@/lib/funnel';
-import { WEBSITE_PRICE_EUR, DOMAIN_SETUP_PRICE_EUR, ACCESS_MONTHS } from '@/lib/pricing';
+import { WEBSITE_PRICE_EUR, DOMAIN_SETUP_PRICE_EUR, ACCESS_MONTHS, CUSTOM_DOMAIN_ENABLED } from '@/lib/pricing';
 import { VALID_STYLE_IDS } from '@/lib/style-migration';
 import { isValidSlugFormat, isReservedSlug } from '@/lib/slug-validation';
 
@@ -37,7 +37,8 @@ export default function SignupForm({ initialDomainWish, canceled }: Props) {
   const [pending, startTransition] = useTransition();
 
   const slugFormatOk = slug === '' || (isValidSlugFormat(slug) && !isReservedSlug(slug));
-  const total = WEBSITE_PRICE_EUR + (domain ? DOMAIN_SETUP_PRICE_EUR : 0);
+  const withDomain = CUSTOM_DOMAIN_ENABLED && domain;
+  const total = WEBSITE_PRICE_EUR + (withDomain ? DOMAIN_SETUP_PRICE_EUR : 0);
 
   const canSubmit = useMemo(
     () =>
@@ -176,7 +177,8 @@ export default function SignupForm({ initialDomainWish, canceled }: Props) {
         </div>
       </section>
 
-      {/* Eigene Domain */}
+      {/* Eigene Domain — im MVP nicht kaufbar (siehe CUSTOM_DOMAIN_ENABLED) */}
+      {CUSTOM_DOMAIN_ENABLED && (
       <section className="su-card">
         <label className="su-domain">
           <input type="checkbox" checked={domain} onChange={(e) => setDomain(e.target.checked)} />
@@ -199,11 +201,12 @@ export default function SignupForm({ initialDomainWish, canceled }: Props) {
           </div>
         )}
       </section>
+      )}
 
       {/* Zusammenfassung + CTA */}
       <section className="su-summary">
         <div className="su-sum-row">
-          <span>Hochzeitswebsite{domain ? ' + eigene Domain' : ''}</span>
+          <span>Hochzeitswebsite{withDomain ? ' + eigene Domain' : ''}</span>
           <strong>
             {total} €<small> einmalig</small>
           </strong>
@@ -216,7 +219,10 @@ export default function SignupForm({ initialDomainWish, canceled }: Props) {
           {pending ? 'Weiter zu Stripe …' : `Zahlungspflichtig bestellen — ${total} €`}
         </button>
         <p className="su-legal">
-          Sichere Zahlung über Stripe. Mit dem Bestellen akzeptiert ihr AGB &amp; Datenschutz.
+          Sichere Zahlung über Stripe. Mit dem Bestellen akzeptiert ihr die{' '}
+          <a href="/agb" target="_blank" rel="noopener">AGB</a> und die{' '}
+          <a href="/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>.{' '}
+          <a href="/widerruf" target="_blank" rel="noopener">Hinweise zum Widerruf</a>.
         </p>
       </section>
     </div>

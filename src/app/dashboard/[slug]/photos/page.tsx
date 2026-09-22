@@ -3,6 +3,7 @@ import PhotosSection from './PhotosSection';
 import { loadDashboardData } from '@/lib/dashboard-data';
 import { loadPhotoUploads } from '@/lib/photo-uploads-data';
 import { notFound, redirect } from 'next/navigation';
+import { requireSiteOwnerPage } from '@/lib/site-owner';
 
 /**
  * /dashboard/[slug]/photos
@@ -16,6 +17,8 @@ export default async function PhotosPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  // Besitzprüfung VOR dem Laden sensibler Daten (Service-Role-Client).
+  await requireSiteOwnerPage(slug);
   const data = await loadDashboardData(slug);
   if (!data) notFound();
 

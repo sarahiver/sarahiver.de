@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createSupabaseAdminClient } from '@/lib/supabase-admin';
+import { checkSiteOwner } from '@/lib/site-owner';
 
 /**
  * Storno-Action für Geschenk-Reservierungen.
@@ -21,6 +22,9 @@ interface CancelPayload {
 }
 
 export async function cancelReservation(p: CancelPayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!p.slug || !p.reservationId) return { ok: false, error: 'Slug oder Reservierung fehlt.' };
 
   const supabase = createSupabaseAdminClient();

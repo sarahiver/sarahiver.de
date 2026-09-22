@@ -5,6 +5,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import { deleteCloudinaryImage } from '@/lib/cloudinary-server';
 import { extractPublicId } from '@/lib/cloudinary';
 import type { BereichKey } from '@/types/supabase';
+import { checkSiteOwner } from '@/lib/site-owner';
 
 /**
  * Publish-Pfad: Kopiert Draft → Published, setzt Dirty zurück, räumt
@@ -84,6 +85,9 @@ export interface PublishBereichPayload {
 }
 
 export async function publishBereich(p: PublishBereichPayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!p.slug || !p.bereich_key) return { ok: false, error: 'Slug oder Bereich fehlt.' };
 
   const supabase = createSupabaseAdminClient();
@@ -191,6 +195,9 @@ const SITE_DRAFT_FIELDS = [
 ] as const;
 
 export async function publishSite(p: PublishSitePayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!p.slug) return { ok: false, error: 'Slug fehlt.' };
 
   const supabase = createSupabaseAdminClient();
@@ -256,6 +263,9 @@ export async function publishSite(p: PublishSitePayload): Promise<ActionResult> 
 // ====================================================================
 
 export async function publishAll(slug: string): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!slug) return { ok: false, error: 'Slug fehlt.' };
 
   const supabase = createSupabaseAdminClient();
@@ -320,6 +330,9 @@ export interface DirtyState {
 }
 
 export async function loadDirtyState(slug: string): Promise<DirtyState> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(slug);
+  if (!own.ok) return { siteDirty: false, dirtyBereiche: [], totalDirty: 0, bereichDetails: {}, siteDetails: [] };
   const empty: DirtyState = {
     siteDirty: false,
     dirtyBereiche: [],
@@ -430,6 +443,9 @@ function urlsOnlyInDraft(draft: unknown, published: unknown): string[] {
 }
 
 export async function discardBereich(p: PublishBereichPayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!p.slug || !p.bereich_key) return { ok: false, error: 'Slug oder Bereich fehlt.' };
 
   const supabase = createSupabaseAdminClient();
@@ -490,6 +506,9 @@ export async function discardBereich(p: PublishBereichPayload): Promise<ActionRe
 }
 
 export async function discardSite(p: PublishSitePayload): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(p.slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!p.slug) return { ok: false, error: 'Slug fehlt.' };
 
   const supabase = createSupabaseAdminClient();
@@ -550,6 +569,9 @@ export async function discardSite(p: PublishSitePayload): Promise<ActionResult> 
 }
 
 export async function discardAll(slug: string): Promise<ActionResult> {
+  // Besitzprüfung vor jedem Zugriff (Service-Role-Client, RLS-frei).
+  const own = await checkSiteOwner(slug);
+  if (!own.ok) return { ok: false, error: own.error };
   if (!slug) return { ok: false, error: 'Slug fehlt.' };
 
   const supabase = createSupabaseAdminClient();

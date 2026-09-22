@@ -3,6 +3,7 @@ import EditorShell from '@/components/dashboard/EditorShell';
 import NavigationForm from './NavigationForm';
 import { loadDashboardData } from '@/lib/dashboard-data';
 import { notFound } from 'next/navigation';
+import { requireSiteOwnerPage } from '@/lib/site-owner';
 
 /**
  * /dashboard/[slug]/navigation
@@ -19,6 +20,8 @@ export default async function NavigationPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  // Besitzprüfung VOR dem Laden sensibler Daten (Service-Role-Client).
+  await requireSiteOwnerPage(slug);
   const data = await loadDashboardData(slug);
   if (!data) notFound();
 

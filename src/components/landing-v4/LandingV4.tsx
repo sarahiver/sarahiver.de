@@ -14,7 +14,7 @@ import {
   STEPS,
 } from '@/lib/landing-v4';
 import { DEMO_TEMPLATES } from '@/lib/seed-demos';
-import { formatDateDe } from '@/lib/pricing';
+import { formatDateDe, CUSTOM_DOMAIN_ENABLED } from '@/lib/pricing';
 import DemoCarousel, { type DemoItem } from './DemoCarousel';
 import DeviceMockup from './DeviceMockup';
 import DomainCheck from './DomainCheck';
@@ -223,7 +223,9 @@ export default function LandingV4() {
           </div>
         </section>
 
-        {/* ----------------------------------------------------- Domain-Check */}
+        {/* ----------------------------------------------------- Domain-Check
+            Im MVP ausgeblendet, solange Custom Domains nicht kaufbar sind. */}
+        {CUSTOM_DOMAIN_ENABLED && (
         <section
           className="sd-domain"
           id="domain"
@@ -247,6 +249,7 @@ export default function LandingV4() {
             </p>
           </div>
         </section>
+        )}
 
         {/* ----------------------------------------------------------- Preise */}
         <section className="sd-pricing" id="preise">
@@ -276,6 +279,7 @@ export default function LandingV4() {
               </a>
             </div>
 
+            {CUSTOM_DOMAIN_ENABLED && (
             <aside className="sd-addon-card">
               <p className="sd-eyebrow">{PRICING.addon.eyebrow}</p>
               <div className="sd-addon-head">
@@ -290,6 +294,7 @@ export default function LandingV4() {
                 {PRICING.addon.cta.label}
               </a>
             </aside>
+            )}
           </div>
         </section>
 
@@ -335,7 +340,9 @@ export default function LandingV4() {
               </a>
             </div>
 
-            <FaqAccordion items={FAQ.items} />
+            <FaqAccordion
+              items={CUSTOM_DOMAIN_ENABLED ? FAQ.items : FAQ.items.filter((f) => !/eigene Domain/i.test(f.q))}
+            />
           </div>
         </section>
 
