@@ -178,9 +178,16 @@ export async function provisionSite(input: ProvisionInput): Promise<ProvisionRes
 
   if (siteErr || !site) {
     console.error('[provision] site insert failed:', siteErr);
-    // Unique-Verletzung auf slug = Race zwischen Prüfung und Anlage.
-    if ((siteErr as { code?: string } | null)?.code === '23505') {
-      return { ok: false, step: 'slug_conflict', error: 'slug already taken (unique violation)' };
+    // Unique-Verletzung: nur der Slug-Constraint ist ein Slug-Race (Production
+    // hat UNIQUE (slug) als wedding_sites_slug_key). Andere Unique-Indizes auf
+    // wedding_sites (z. B. stripe_customer_id) sind echte Anlagefehler.
+    const e = siteErr as { code?: string; message?: string; details?: string } | null;
+    if (e?.code === '23505') {
+      const text = `${e.message ?? ''} ${e.details ?? ''}`;
+      if (text.includes('wedding_sites_slug_key') || text.includes('(slug)')) {
+        return { ok: false, step: 'slug_conflict', error: 'slug already taken (unique violation)' };
+      }
+      return { ok: false, step: 'site', error: `unique violation: ${e.message ?? 'unknown'}` };
     }
     return { ok: false, step: 'site', error: 'site insert failed' };
   }
