@@ -1,10 +1,11 @@
 'use client';
 
-import { useMemo, useState, useTransition } from 'react';
+import { useMemo, useState, useTransition, useEffect } from 'react';
 import { startCheckout, type CheckoutInput } from './actions';
 import { ALL_BEREICH_KEYS, BEREICH_LABEL } from '@/lib/funnel';
 import { WEBSITE_PRICE_EUR, DOMAIN_SETUP_PRICE_EUR, ACCESS_MONTHS, CUSTOM_DOMAIN_ENABLED } from '@/lib/pricing';
 import { CONSENT_TEXT, VAT_NOTE } from '@/lib/legal';
+import { EVENTS, trackEvent, trackOnce } from '@/lib/analytics';
 import { VALID_STYLE_IDS } from '@/lib/style-migration';
 import { isValidSlugFormat, isReservedSlug, hasReservedSlugPrefix } from '@/lib/slug-validation';
 
@@ -41,6 +42,11 @@ export default function SignupForm({ initialDomainWish, canceled, initialStyle }
   const [consentImmediate, setConsentImmediate] = useState(false);
   const [consentAck, setConsentAck] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Funnel: Aufruf des Bestellformulars (einmal je Sitzung).
+  useEffect(() => {
+    trackOnce('signup', EVENTS.signupStart, { preselected_style: initialStyle || 'none' });
+  }, [initialStyle]);
   const [pending, startTransition] = useTransition();
 
   const slugFormatOk =
@@ -76,6 +82,7 @@ export default function SignupForm({ initialDomainWish, canceled, initialStyle }
       consents: { terms: consentTerms, immediate: consentImmediate, acknowledge: consentAck },
     };
     startTransition(async () => {
+      trackEvent(EVENTS.checkoutStart, { style, amount: WEBSITE_PRICE_EUR, currency: 'EUR' });
       const res = await startCheckout(payload);
       if ('error' in res) {
         setError(res.error);
@@ -128,7 +135,10 @@ export default function SignupForm({ initialDomainWish, canceled, initialStyle }
             <button
               key={s}
               type="button"
-              onClick={() => setStyle(s)}
+              onClick={() => {
+                setStyle(s);
+                trackEvent(EVENTS.styleSelected, { style: s });
+              }}
               className={`su-style${style === s ? ' is-active' : ''}`}
               aria-pressed={style === s}
             >

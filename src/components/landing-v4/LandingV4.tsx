@@ -36,6 +36,8 @@ import {
   IconUpload,
   IconUser,
 } from './icons';
+import { TrackView } from '@/components/analytics/Track';
+import { EVENTS } from '@/lib/analytics';
 
 const FEATURE_ICONS: Record<string, ComponentType<{ size?: number }>> = {
   sparkle: IconSparkle,
@@ -86,6 +88,8 @@ export default function LandingV4() {
 
   return (
     <div className="sdv4">
+      <TrackView event={EVENTS.landingView} onceKey="landing" />
+
       {/* ---------------------------------------------------------------- Header */}
       <header className="sd-header">
         <div className="sd-wrap sd-header-in">

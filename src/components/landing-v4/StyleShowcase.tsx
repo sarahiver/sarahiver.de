@@ -3,6 +3,8 @@ import { VALID_STYLE_IDS } from '@/lib/style-migration';
 import StylePreview from './StylePreview';
 import { DEMOS, STYLES_SECTION } from '@/lib/landing-v4';
 import { IconArrowRight } from './icons';
+import { TrackedLink } from '@/components/analytics/Track';
+import { EVENTS } from '@/lib/analytics';
 
 /**
  * Stil-Übersicht ("Acht Designs").
@@ -48,7 +50,12 @@ export default async function StyleShowcase() {
 
             return (
               <li className="sd-style" key={s.id}>
-                <a className="sd-style-link" href={`/demo/${encodeURIComponent(s.id)}`}>
+                <TrackedLink
+                  className="sd-style-link"
+                  href={`/demo/${encodeURIComponent(s.id)}`}
+                  event={EVENTS.designPreviewClick}
+                  params={{ style: s.id }}
+                >
                   <div className="sd-style-preview">
                     <StylePreview
                       styleId={s.id}
@@ -82,7 +89,7 @@ export default async function StyleShowcase() {
                     </span>
                     <span className="sd-style-more">Beispielseite ansehen →</span>
                   </div>
-                </a>
+                </TrackedLink>
               </li>
             );
           })}

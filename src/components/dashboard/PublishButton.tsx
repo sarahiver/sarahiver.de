@@ -17,6 +17,7 @@ import {
 import { bereichLabel } from '@/lib/dashboard-nav';
 import type { DiffEntry } from '@/lib/content-diff';
 import type { BereichKey } from '@/types/supabase';
+import { EVENTS, trackEvent } from '@/lib/analytics';
 
 /**
  * Publish-Button in der Topbar mit Modal.
@@ -93,6 +94,7 @@ export default function PublishButton({ slug, initialState }: Props) {
   const handlePublishAll = () => {
     startTransition(async () => {
       const res = await publishAll(slug);
+      if (res.ok) trackEvent(EVENTS.publishSuccess, { scope: 'all' });
       if (res.ok) {
         notify('ok', `${res.published ?? 0} Änderung(en) veröffentlicht.`);
         setShowModal(false);
@@ -107,6 +109,7 @@ export default function PublishButton({ slug, initialState }: Props) {
   const handlePublishBereich = (key: BereichKey) => {
     startTransition(async () => {
       const res = await publishBereich({ slug, bereich_key: key });
+      if (res.ok) trackEvent(EVENTS.publishSuccess, { scope: 'bereich' });
       if (res.ok) {
         notify('ok', `${bereichLabel(key)} veröffentlicht.`);
         setState((s) => {
@@ -129,6 +132,7 @@ export default function PublishButton({ slug, initialState }: Props) {
   const handlePublishSite = () => {
     startTransition(async () => {
       const res = await publishSite({ slug });
+      if (res.ok) trackEvent(EVENTS.publishSuccess, { scope: 'site' });
       if (res.ok) {
         notify('ok', 'Stammdaten/Stil veröffentlicht.');
         setState((s) => ({ ...s, siteDirty: false, totalDirty: s.totalDirty - 1, siteDetails: [] }));

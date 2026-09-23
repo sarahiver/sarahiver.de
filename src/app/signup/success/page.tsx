@@ -1,3 +1,7 @@
+import { createSupabaseAdminClient } from '@/lib/supabase-admin';
+import { TrackView } from '@/components/analytics/Track';
+import { EVENTS } from '@/lib/analytics';
+import { WEBSITE_PRICE_EUR } from '@/lib/pricing';
 /**
  * /signup/success — Landung nach erfolgreichem Stripe-Checkout.
  *
@@ -5,6 +9,9 @@
  * passiert serverseitig im Stripe-Webhook (nächste Bau-Scheibe). Diese Seite
  * bestätigt nur die Zahlung und verweist auf die Login-Mail.
  */
+
+// Immer frisch prüfen, ob der Webhook die Seite schon angelegt hat.
+export const dynamic = 'force-dynamic';
 
 export const metadata = {
   title: 'Zahlung erfolgreich — sarahiver.de',
@@ -16,10 +23,44 @@ export default async function SuccessPage({
 }: {
   searchParams: Promise<{ session_id?: string }>;
 }) {
-  await searchParams; // session_id wird später (Webhook-Scheibe) zur Statusanzeige genutzt
+  const sp = await searchParams;
+
+  /**
+   * Funnel-Messung: checkout_success und site_created feuern NUR, wenn zu
+   * dieser Checkout-Session serverseitig bereits eine Hochzeitsseite
+   * angelegt wurde (der Stripe-Webhook hat also Zahlung und Provisionierung
+   * bestätigt). Der bloße Aufruf dieser URL zählt nicht. An Analytics geht
+   * nur der Stil — keine Session-ID, keine Kundendaten.
+   */
+  let paidStyle: string | null = null;
+  const sessionId = typeof sp?.session_id === 'string' ? sp.session_id : '';
+  if (sessionId) {
+    const admin = createSupabaseAdminClient();
+    if (admin) {
+      const { data } = await admin
+        .from('wedding_sites')
+        .select('start_style_id, purchase_status')
+        .eq('stripe_checkout_session_id', sessionId)
+        .maybeSingle();
+      const row = data as { start_style_id: string | null; purchase_status: string | null } | null;
+      if (row && row.purchase_status === 'paid') paidStyle = row.start_style_id ?? 'unknown';
+    }
+  }
+  // Gleicher Schlüssel je Session-ID: ein Reload zählt nicht erneut.
+  const onceKey = `checkout-${sessionId.slice(-12) || 'none'}`;
 
   return (
     <div style={wrap}>
+      {paidStyle && (
+        <>
+          <TrackView
+            event={EVENTS.checkoutSuccess}
+            onceKey={onceKey}
+            params={{ style: paidStyle, amount: WEBSITE_PRICE_EUR, currency: 'EUR' }}
+          />
+          <TrackView event={EVENTS.siteCreated} onceKey={`site-${onceKey}`} params={{ style: paidStyle }} />
+        </>
+      )}
       <span style={eyebrow}>Geschafft</span>
       <h1 style={title}>Zahlung erfolgreich 🤍</h1>
       <p style={lede}>

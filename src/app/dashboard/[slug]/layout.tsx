@@ -8,6 +8,8 @@ import { DashboardDataProvider } from '@/components/dashboard/DashboardDataProvi
 import AccessBanner from '@/components/dashboard/AccessBanner';
 import DemoBanner from '@/components/dashboard/DemoBanner';
 import { requireSiteOwnerPage } from '@/lib/site-owner';
+import { TrackView } from '@/components/analytics/Track';
+import { EVENTS } from '@/lib/analytics';
 
 /**
  * Layout für /dashboard/[slug]/*
@@ -67,6 +69,11 @@ export default async function DashboardLayout({
 
   return (
     <div className="dash-shell">
+      <TrackView
+        event={EVENTS.dashboardOpen}
+        onceKey={`dash-${slug}`}
+        params={{ style: data.site.start_style_id ?? 'unknown' }}
+      />
       <DashboardSidebar slug={slug} sections={navSections} dirtyBereiche={dirtyState.dirtyBereiche} />
       <div className="dash-main">
         <DashboardTopbar

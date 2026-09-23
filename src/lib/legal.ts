@@ -312,7 +312,16 @@ export const DATENSCHUTZ_SECTIONS: LegalSection[] = [
   {
     title: '18. Cookies',
     paragraphs: [
-      'Wir setzen ausschließlich technisch notwendige Cookies: für die Anmeldung im Dashboard, für die Freischaltung einer per Code geschützten Rückmeldung und für die Testumgebung „Testen" (24 Stunden). Wir setzen keine Analyse- oder Werbe-Cookies.',
+      'Technisch notwendig sind: das Cookie für die Anmeldung im Dashboard, die Freischaltung einer per Code geschützten Rückmeldung und die Testumgebung „Testen" (24 Stunden). Werbe-Cookies setzen wir nicht.',
+      'Die Messung der Seitennutzung (Abschnitt 18a) setzt Cookies erst, wenn ihr ausdrücklich zustimmt. Eure Entscheidung speichern wir im lokalen Speicher eures Browsers, nicht als Cookie.',
+    ],
+  },
+  {
+    title: '18a. Messung der Seitennutzung (Google Analytics)',
+    paragraphs: [
+      'Auf sarahiver.de setzen wir Google Analytics 4 (Google Ireland Limited) ein, um zu verstehen, welche Seiten aufgerufen werden und an welcher Stelle Besucherinnen und Besucher abbrechen. Erfasst werden dabei zum Beispiel aufgerufene Seiten, Zeitpunkt, ungefährer Standort, Gerät und Browser sowie einzelne Ereignisse im Ablauf (Aufruf einer Beispielseite, Start und Abschluss einer Bestellung, Veröffentlichen einer Seite) samt Kampagnenparametern aus dem Link.',
+      'Wir übermitteln dabei keine Namen, E-Mail-Adressen, Adressen von Hochzeitsseiten, Hochzeitsdaten, Gästedaten oder Zahlungsdaten. Die IP-Adresse wird gekürzt verarbeitet.',
+      'Das Messwerkzeug wird erst geladen, nachdem ihr im Hinweis auf der Seite zugestimmt habt. Vorher wird keine Verbindung zu Google aufgebaut. Rechtsgrundlage ist eure Einwilligung (Art. 6 Abs. 1 lit. a DSGVO, § 25 Abs. 1 TDDDG), die ihr jederzeit mit Wirkung für die Zukunft widerrufen könnt, indem ihr den lokalen Speicher eurer Browsersitzung für sarahiver.de löscht.',
     ],
   },
   {
@@ -325,13 +334,13 @@ export const DATENSCHUTZ_SECTIONS: LegalSection[] = [
   {
     title: '20. Empfänger und Auftragsverarbeiter',
     paragraphs: [
-      'Wir setzen folgende Dienstleister ein: Vercel (Hosting), Supabase (Datenbank und Anmeldung), Stripe (Zahlungsabwicklung), Brevo (E-Mail-Versand) und Cloudinary (Bildspeicherung und -auslieferung). Die Dienstleister verarbeiten Daten nur, soweit dies für ihre Leistung erforderlich ist.',
+      'Wir setzen folgende Dienstleister ein: Vercel (Hosting), Supabase (Datenbank und Anmeldung), Stripe (Zahlungsabwicklung), Brevo (E-Mail-Versand), Cloudinary (Bildspeicherung und -auslieferung) und – nach eurer Einwilligung – Google Analytics (Nutzungsmessung). Die Dienstleister verarbeiten Daten nur, soweit dies für ihre Leistung erforderlich ist.',
     ],
   },
   {
     title: '21. Übermittlung in Drittländer',
     paragraphs: [
-      'Einige Dienstleister (u. a. Vercel, Supabase, Cloudinary sowie Google für die eingebetteten Karten) haben ihren Sitz außerhalb der EU oder können Daten außerhalb der EU verarbeiten, insbesondere in den USA. Eine Übermittlung erfolgt nur auf Grundlage der dafür vorgesehenen Garantien der DSGVO, die sich aus den Vertrags- und Datenschutzbedingungen der jeweiligen Anbieter ergeben.',
+      'Einige Dienstleister (u. a. Vercel, Supabase, Cloudinary sowie Google für die eingebetteten Karten und die Nutzungsmessung) haben ihren Sitz außerhalb der EU oder können Daten außerhalb der EU verarbeiten, insbesondere in den USA. Eine Übermittlung erfolgt nur auf Grundlage der dafür vorgesehenen Garantien der DSGVO, die sich aus den Vertrags- und Datenschutzbedingungen der jeweiligen Anbieter ergeben.',
     ],
   },
   {

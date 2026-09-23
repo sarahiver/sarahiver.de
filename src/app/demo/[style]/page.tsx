@@ -9,6 +9,8 @@ import { buildNavItems } from '@/components/layout/nav-config';
 import { FALLBACK_PALETTES, FALLBACK_FONTS, FALLBACK_STYLES } from '@/components/landing/preview-tokens';
 import { DEMO_PAGES, demoByStyle, img, type DemoPage } from '@/lib/demo-pages';
 import type { EffectiveTokens, WeddingBereich } from '@/types/supabase';
+import { TrackView, TrackedLink } from '@/components/analytics/Track';
+import { EVENTS } from '@/lib/analytics';
 
 /**
  * Öffentliche Demo-Seite je Designwelt: /demo/editorial, /demo/kinetic, …
@@ -109,6 +111,8 @@ export default async function DemoPageRoute({ params }: PageProps) {
 
   return (
     <>
+      <TrackView event={EVENTS.demoView} params={{ style: d.style }} onceKey={`demo-${d.style}`} />
+
       <div className="demo-bar">
         <span className="demo-bar__label">
           Beispielseite · <strong>{styleName}</strong>
@@ -120,9 +124,14 @@ export default async function DemoPageRoute({ params }: PageProps) {
           <a className="demo-bar__link" href="/#stile">
             Alle Stile
           </a>
-          <a className="demo-bar__cta" href={`/signup?style=${d.style}`}>
+          <TrackedLink
+            className="demo-bar__cta"
+            href={`/signup?style=${d.style}`}
+            event={EVENTS.demoCtaClick}
+            params={{ style: d.style, position: 'top' }}
+          >
             Diesen Stil wählen
-          </a>
+          </TrackedLink>
         </span>
       </div>
 
@@ -166,9 +175,14 @@ export default async function DemoPageRoute({ params }: PageProps) {
           jedes Bereichs.
         </p>
         <div className="demo-outro__actions">
-          <a className="demo-outro__cta" href={`/signup?style=${d.style}`}>
+          <TrackedLink
+            className="demo-outro__cta"
+            href={`/signup?style=${d.style}`}
+            event={EVENTS.demoCtaClick}
+            params={{ style: d.style, position: 'bottom' }}
+          >
             Mit {styleName} starten — 69 € einmalig
-          </a>
+          </TrackedLink>
           <a className="demo-outro__link" href="/#stile">
             Andere Stile ansehen
           </a>

@@ -44,6 +44,7 @@ import './allelements.css';
 // Komponenten unter components/landing und components/sections können gelöscht
 // werden.
 import { SITE_CONFIG } from '@/lib/content';
+import Analytics from '@/components/analytics/Analytics';
 
 export const metadata: Metadata = {
   title: `${SITE_CONFIG.name} — ${SITE_CONFIG.tagline}`,
@@ -64,7 +65,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="de">
       <head>
       </head>
-      <body className="bg-paper text-ink">{children}</body>
+      <body className="bg-paper text-ink">
+        {children}
+        {/* Messung nur nach Einwilligung; ohne Mess-ID passiert nichts. */}
+        <Analytics />
+      </body>
     </html>
   );
 }
