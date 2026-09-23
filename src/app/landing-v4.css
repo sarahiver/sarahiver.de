@@ -436,7 +436,10 @@
 }
 .sdv4 .sd-miniphone-row b { font-size: 1.2cqi; font-weight: 500; color: #4A443B; white-space: nowrap; }
 
-.sdv4 .sd-note--hero { right: -46px; top: 30px; width: 132px; }
+/* Wandert mit dem Gerät nach unten (siehe translateY in .sd-device), damit der
+   Pfeil weiter auf den Laptop zeigt. Der Prozentwert bezieht sich auf die
+   Höhe von .sd-hero-visual, also dieselbe Bezugsgröße wie der Geräteversatz. */
+.sdv4 .sd-note--hero { right: -46px; top: calc(30px + 24.902%); width: 132px; }
 .sdv4 .sd-note--hero svg { left: -58px; top: 40px; color: var(--honey); transform: scaleY(-1); }
 
 /* -------------------------------------------------------------------------
