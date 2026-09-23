@@ -5,7 +5,6 @@ import {
   VAT_NOTE,
   CONSENT_TEXT,
   AGB_SECTIONS,
-  AGB_DRAFT_NOTICE,
   WIDERRUF_SECTIONS,
   WIDERRUF_FORM_LINES,
   LEGAL_VERSION,
@@ -84,7 +83,7 @@ ${sectionsHtml(WIDERRUF_SECTIONS)}
 ${WIDERRUF_FORM_LINES.map((l) => `<p style="margin:0 0 6px">${esc(l)}</p>`).join('')}
 
 <h2 style="font-size:17px;margin:28px 0 4px">Allgemeine Geschäftsbedingungen</h2>
-<p style="color:#6b6259;font-size:12px">Fassung ${esc(i.legalVersion || LEGAL_VERSION)}. ${esc(AGB_DRAFT_NOTICE)}</p>
+<p style="color:#6b6259;font-size:12px">Fassung ${esc(i.legalVersion || LEGAL_VERSION)}</p>
 ${sectionsHtml(AGB_SECTIONS)}
 
 <p style="margin-top:28px;color:#6b6259;font-size:12px">${esc(OPERATOR.name)} · ${esc(OPERATOR.street)} · ${esc(OPERATOR.city)} · ${esc(OPERATOR.email)}</p>

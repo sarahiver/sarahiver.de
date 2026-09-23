@@ -1,9 +1,8 @@
 import Link from 'next/link';
 import LegalSections from '@/components/legal/LegalSections';
-import { AGB_SECTIONS, AGB_DRAFT_NOTICE, LEGAL_VERSION } from '@/lib/legal';
+import { AGB_SECTIONS, LEGAL_VERSION } from '@/lib/legal';
 
 // Texte in lib/legal.ts (eine Quelle für Seite und Vertragsbestätigung).
-// ENTWURF — vor öffentlichem Launch rechtlich prüfen lassen.
 export const metadata = { title: 'AGB — sarahiver.de' };
 
 export default function Agb() {
@@ -15,7 +14,7 @@ export default function Agb() {
 
       <h1 className="display mt-8 mb-4">Allgemeine Geschäftsbedingungen</h1>
       <p className="text-xs text-muted mb-12 italic">
-        {AGB_DRAFT_NOTICE} Stand: {LEGAL_VERSION}
+        Stand: {LEGAL_VERSION}
       </p>
 
       <LegalSections sections={AGB_SECTIONS} />

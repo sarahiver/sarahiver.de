@@ -3,9 +3,9 @@
  * Widerrufsbelehrung, Checkout-Zustimmungen und die Vertragsbestätigung per
  * E-Mail (dauerhafter Datenträger). Seiten und Mail rendern dieselben Texte.
  *
- * STATUS: AGB = ENTWURF — vor öffentlichem Launch rechtlich prüfen lassen.
- * Die Widerrufsbelehrung folgt dem gesetzlichen Muster (Anlage 1 zu
- * Art. 246a § 1 Abs. 2 EGBGB) für Dienstleistungen.
+ * STATUS: abgenommen (Stand LEGAL_VERSION). Die Widerrufsbelehrung folgt dem
+ * gesetzlichen Muster (Anlage 1 zu Art. 246a § 1 Abs. 2 EGBGB) für
+ * Dienstleistungen.
  *
  * Produktfakten, auf denen die Texte beruhen (aus dem Code):
  *   - Preis 69 € einmalig (lib/pricing.ts), Kleinunternehmer § 19 UStG
@@ -47,8 +47,6 @@ export interface LegalSection {
   title: string;
   paragraphs: string[];
 }
-
-export const AGB_DRAFT_NOTICE = 'Entwurf — vor öffentlichem Launch rechtlich prüfen lassen.';
 
 export const AGB_SECTIONS: LegalSection[] = [
   {
@@ -178,13 +176,10 @@ export const WIDERRUF_FORM_LINES: string[] = [
 ];
 
 // =============================================================================
-// DATENSCHUTZERKLÄRUNG — auf Basis des tatsächlichen Codes (Stand 2026-09).
-// ENTWURF — vor öffentlichem Launch rechtlich prüfen lassen. Offene Punkte
-// (Rollen bei Gästedaten, Speicherdauer, Drittlandübermittlung, Google Maps,
-// Gesundheitsangaben im RSVP) sind im Launch-Bericht als LEGAL REVIEW markiert.
+// DATENSCHUTZERKLÄRUNG — beschreibt den tatsächlichen Datenfluss des Codes.
+// Abgenommen (Stand LEGAL_VERSION). Bei Änderungen am Datenfluss (neue
+// Dienstleister, neue Formularfelder, Löschlogik) hier nachziehen.
 // =============================================================================
-export const DATENSCHUTZ_DRAFT_NOTICE = 'Entwurf — vor öffentlichem Launch rechtlich prüfen lassen.';
-
 export const DATENSCHUTZ_SECTIONS: LegalSection[] = [
   {
     title: '1. Verantwortlicher',
