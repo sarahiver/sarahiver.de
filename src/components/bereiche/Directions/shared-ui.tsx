@@ -1,5 +1,6 @@
 import { renderTitleWithEm, type DirLocation } from './shared';
 import { transitIcon, IconPin } from './icons';
+import ClickToLoadMap from '../ClickToLoadMap';
 
 export function DirHeader({
   eyebrow,
@@ -83,13 +84,7 @@ export function MapFrame({
   return (
     <div className={`dir-mapframe ${className}`} aria-label={`Karte ${loc.name}`}>
       {loc.maps_embed ? (
-        <iframe
-          src={loc.maps_embed}
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          allowFullScreen
-          title={`Karte ${loc.name}`}
-        />
+        <ClickToLoadMap src={loc.maps_embed} title={`Karte ${loc.name}`} address={loc.address} allowFullScreen />
       ) : (
         <div className="dir-map-missing">Karte fehlt</div>
       )}

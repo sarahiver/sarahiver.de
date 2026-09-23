@@ -12,6 +12,7 @@ import { AccHeader, AccMeta, AccEmpty } from './shared-ui';
 import { CopyCode } from './CopyCode';
 import { IconExt, IconHeart } from './icons';
 import StyledBereichBg from '@/components/decoration/StyledBereichBg';
+import ClickToLoadMap from '../ClickToLoadMap';
 
 /**
  * Übernachtung Variante C — Karte + Liste (Google Maps Embed + Pins)
@@ -74,12 +75,7 @@ export default function AccommodationsVariantC({ tokens, content }: Props) {
       <div className="accC-wrap">
         <div className="accC-grid">
           <div className="accC-mapwrap" aria-label="Karte mit Hotel-Positionen">
-            <iframe
-              src={mapSrc}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Karte mit Hotel-Positionen"
-            />
+            <ClickToLoadMap src={mapSrc} title="Karte mit Hotel-Positionen" />
             <div className="accC-maplegend">
               <span className="heart">
                 <IconHeart />

@@ -204,8 +204,8 @@ export const DATENSCHUTZ_SECTIONS: LegalSection[] = [
     title: '3. Externe Inhalte: Karten und Bilder',
     paragraphs: [
       'Schriften liefern wir von unseren eigenen Servern aus; dabei werden keine Daten an Dritte übermittelt.',
-      'Hat ein Brautpaar in den Bereichen „Anfahrt" oder „Übernachtung" eine Adresse hinterlegt, zeigt die Hochzeitswebsite dort eine eingebettete Karte von Google Maps (Google Ireland Limited / Google LLC). Beim Anzeigen dieses Bereichs lädt euer Browser die Karte direkt von Google; Google erhält dabei insbesondere eure IP-Adresse und kann Cookies setzen. Links wie „Route planen" öffnen Google Maps erst, wenn ihr sie anklickt.',
-      'Auf unserer Startseite laden wir Stimmungsbilder vom Dienst Lorem Picsum (picsum.photos), in den Beispiel- und Demoseiten Beispielfotos vom Dienst Pexels. Dabei wird eure IP-Adresse an den jeweiligen Anbieter übermittelt.',
+      'In den Bereichen „Anfahrt" und „Übernachtung" können Hochzeitswebsites eine Karte von Google Maps (Google Ireland Limited / Google LLC) anbieten. Die Karte wird erst geladen, wenn ihr aktiv auf „Karte anzeigen" klickt; vorher wird keine Verbindung zu Google aufgebaut. Mit dem Laden stellt euer Browser eine Verbindung zu Google her; dabei werden insbesondere eure IP-Adresse und technische Verbindungsdaten übertragen. Links wie „Route planen" öffnen Google Maps erst, wenn ihr sie anklickt.',
+      'Auf unserer Startseite sowie in den Beispiel- und Demoseiten laden wir Beispielbilder direkt von den Diensten Lorem Picsum (picsum.photos) und Pexels. Dabei wird eure IP-Adresse an den jeweiligen Anbieter übermittelt. Auf den Hochzeitswebsites unserer Kundinnen und Kunden werden diese Dienste nicht verwendet; dort stammen Bilder aus dem Upload des Brautpaars (Cloudinary).',
       'Rechtsgrundlage ist unser berechtigtes Interesse an einer anschaulichen Darstellung und an der Anzeige von Anfahrtsinformationen (Art. 6 Abs. 1 lit. f DSGVO).',
     ],
   },

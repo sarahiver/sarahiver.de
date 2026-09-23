@@ -5,6 +5,7 @@ import type { EffectiveTokens } from '@/types/supabase';
 import { DIR_DEFAULTS, readLocations, renderDesc } from './shared';
 import { DirHeader, DirLabelChip, DirTransit, RouteBtn, DirEmpty } from './shared-ui';
 import StyledBereichBg from '@/components/decoration/StyledBereichBg';
+import ClickToLoadMap from '../ClickToLoadMap';
 
 /**
  * Anfahrt Variante B — Liste links, Karte rechts (sticky, src-swap)
@@ -134,13 +135,12 @@ export default function DirectionsVariantB({ tokens, content }: Props) {
 
           <div className="dir-mapframe dirB-mapwrap" aria-label={`Karte ${active.name}`}>
             {active.maps_embed ? (
-              <iframe
+              <ClickToLoadMap
                 key="dirB-map"
                 src={active.maps_embed}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
                 title={`Karte ${active.name}`}
+                address={active.address}
+                allowFullScreen
                 style={{ opacity: fading ? 0.4 : 1 }}
               />
             ) : (

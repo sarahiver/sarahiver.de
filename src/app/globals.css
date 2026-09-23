@@ -7262,3 +7262,41 @@ html, body {
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+
+/* Karten erst nach Klick (ClickToLoadMap): neutrale Fläche, erbt Schrift und
+   Farbe des jeweiligen Designs. Füllt den bestehenden Kartencontainer. */
+.map-consent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  padding: 20px;
+  text-align: center;
+  color: inherit;
+  font-family: inherit;
+  background: color-mix(in srgb, currentColor 5%, transparent);
+}
+.accC-mapwrap .map-consent { position: absolute; inset: 0; min-height: 0; }
+.map-consent-address { margin: 0; font-size: 14px; line-height: 1.4; white-space: pre-line; }
+.map-consent-btn {
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.map-consent-btn:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.map-consent-note { margin: 0; max-width: 34ch; font-size: 12px; line-height: 1.45; opacity: 0.75; }
+.map-consent-note a { color: inherit; text-decoration: underline; }
+/* Übernachtung C: Hotel-Pins liegen über der Kartenfläche — Knopf und
+   Hinweis vor dem Laden darüber, damit sie klickbar bleiben. */
+.accC-mapwrap .map-consent > * { position: relative; z-index: 20; }
