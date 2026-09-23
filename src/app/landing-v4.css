@@ -208,10 +208,15 @@
    ------------------------------------------------------------------------- */
 .sdv4 .sd-hero {
   position: relative;
+  /* Nicht mehr beschnitten: Der Laptop steht auf der Unterkante des Heros,
+     das Handy darf darüber hinausragen. z-index hält den Überstand über der
+     folgenden Sektion. */
+  overflow: visible;
+  z-index: 2;
   background: var(--dark);
-  overflow: hidden;
   isolation: isolate;
 }
+.sdv4 .sd-hero-bg, .sdv4 .sd-hero-scrim { overflow: hidden; }
 .sdv4 .sd-hero-bg {
   position: absolute;
   inset: 0;
@@ -306,8 +311,10 @@
   width: 100%;
   max-width: 640px;
   margin-left: auto;
-  /* Gleicht den transparenten Rand unter dem Gerät aus (siehe oben). */
-  transform: translateY(6.0547%);
+  /* Laptop-Unterkante auf die Hero-Unterkante setzen: Im Rahmen-PNG endet der
+     Laptop bei 75,1 % der Rahmenhöhe (y 769 von 1024). Der Rest des Rahmens –
+     vor allem das Handy, das bis 91,1 % reicht – ragt darunter hinaus. */
+  transform: translateY(24.902%);
   /* Container-Query-Basis: alle Schriften im Mockup werden in cqi gesetzt und
      skalieren dadurch exakt mit dem Rahmen — sonst bricht der Inhalt auf dem
      Handy aus den winzigen Bildschirmen aus. */
