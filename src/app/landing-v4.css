@@ -975,3 +975,6 @@
   .sdv4 .sd-track { scroll-behavior: auto; }
   .sdv4 .sd-btn:hover { transform: none; }
 }
+
+/* Stilkarte: Hinweis, dass dahinter eine echte Beispielseite liegt. */
+.sdv4 .sd-style-more { display: block; margin-top: 6px; font-size: 11px; color: var(--muted); }

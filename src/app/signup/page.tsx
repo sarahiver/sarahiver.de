@@ -1,4 +1,5 @@
 import SignupForm from './SignupForm';
+import { VALID_STYLE_IDS } from '@/lib/style-migration';
 import PrelaunchNotice from '@/components/launch/PrelaunchNotice';
 import { PRE_LAUNCH_MODE } from '@/lib/launch';
 
@@ -29,7 +30,7 @@ function sanitizeDomain(raw: string | undefined): string {
 export default async function SignupPage({
   searchParams,
 }: {
-  searchParams: Promise<{ domain?: string; canceled?: string }>;
+  searchParams: Promise<{ domain?: string; canceled?: string; style?: string }>;
 }) {
   if (PRE_LAUNCH_MODE) return <PrelaunchNotice />;
 
@@ -39,6 +40,8 @@ export default async function SignupPage({
     <SignupForm
       initialDomainWish={sanitizeDomain(sp?.domain)}
       canceled={sp?.canceled === '1'}
+      // Von der Demo-Seite: ?style=kinetic wählt den Stil vor.
+      initialStyle={VALID_STYLE_IDS.includes(sp?.style as never) ? sp?.style : undefined}
     />
   );
 }

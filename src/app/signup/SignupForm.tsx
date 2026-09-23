@@ -23,15 +23,17 @@ interface Props {
   /** Wunschdomain aus dem Domain-Check der Landing (?domain=lea-und-ben.de). */
   initialDomainWish: string;
   canceled: boolean;
+  /** Vorauswahl aus der Demo-Seite (/demo/[style]). */
+  initialStyle?: string;
 }
 
-export default function SignupForm({ initialDomainWish, canceled }: Props) {
+export default function SignupForm({ initialDomainWish, canceled, initialStyle }: Props) {
   const [email, setEmail] = useState('');
   const [name1, setName1] = useState('');
   const [name2, setName2] = useState('');
   const [weddingDate, setWeddingDate] = useState('');
   const [slug, setSlug] = useState('');
-  const [style, setStyle] = useState<string>('editorial');
+  const [style, setStyle] = useState<string>(initialStyle || 'editorial');
   const [domain, setDomain] = useState(Boolean(initialDomainWish));
   const [domainWish, setDomainWish] = useState(initialDomainWish);
   // Pflicht-Zustimmungen — nie vorausgewählt, jede einzeln aktiv zu setzen.

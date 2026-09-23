@@ -47,7 +47,7 @@ export default async function StyleShowcase() {
 
             return (
               <li className="sd-style" key={s.id}>
-                <a className="sd-style-link" href={`/testen?style=${encodeURIComponent(s.id)}`}>
+                <a className="sd-style-link" href={`/demo/${encodeURIComponent(s.id)}`}>
                   <div
                     className="sd-style-preview"
                     style={{
@@ -91,6 +91,7 @@ export default async function StyleShowcase() {
                     <span className="sd-style-fonts">
                       {familyName(f?.font_display)} · {familyName(f?.font_body)}
                     </span>
+                    <span className="sd-style-more">Beispielseite ansehen →</span>
                   </div>
                 </a>
               </li>

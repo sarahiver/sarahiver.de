@@ -13,7 +13,7 @@ import {
   PRICING,
   STEPS,
 } from '@/lib/landing-v4';
-import { DEMO_TEMPLATES } from '@/lib/seed-demos';
+import { DEMO_PAGES, img } from '@/lib/demo-pages';
 import { formatDateDe, CUSTOM_DOMAIN_ENABLED } from '@/lib/pricing';
 import DemoCarousel, { type DemoItem } from './DemoCarousel';
 import DeviceMockup from './DeviceMockup';
@@ -55,19 +55,19 @@ const STEP_ICONS: Record<string, ComponentType<{ size?: number }>> = {
 /**
  * Demo-Karten aus den echten Vorlagen bauen.
  *
- * Wichtig: Slug, Paar, Datum und Bild kommen aus DEMO_TEMPLATES — denselben
- * Daten, aus denen die Demo-Seiten geseedet werden. Vorher standen hier
- * erfundene Paare mit geratenen Slugs, deshalb liefen die Karten ins Leere.
+ * Quelle sind die acht kuratierten Demos (lib/demo-pages.ts) — dieselben
+ * Daten, aus denen /demo/[style] rendert. Jede Karte führt damit auf eine
+ * echte, vollständige Beispielseite.
  */
 function buildDemoItems(): DemoItem[] {
-  return DEMO_TEMPLATES.map((t) => ({
-    couple: `${t.name1} & ${t.name2}`,
-    note: 'Wir heiraten',
-    date: formatDateDe(t.date),
-    style: t.style.charAt(0).toUpperCase() + t.style.slice(1),
-    text: DEMOS.taglines[t.style] ?? t.location,
-    href: `/${t.slug}`,
-    image: t.hero,
+  return DEMO_PAGES.map((d) => ({
+    couple: `${d.name1} & ${d.name2}`,
+    note: d.location,
+    date: formatDateDe(d.date),
+    style: d.style.charAt(0).toUpperCase() + d.style.slice(1),
+    text: DEMOS.taglines[d.style] ?? d.claim,
+    href: `/demo/${d.style}`,
+    image: img(d.hero, 1200),
   }));
 }
 
