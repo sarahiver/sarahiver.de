@@ -350,7 +350,7 @@ export default function LandingV4() {
         {/* ------------------------------------------------- Schluss mit Hero-Bild */}
         <section
           className="sd-final"
-          style={{ backgroundImage: `url(${LANDING_IMAGES.hero})` }}
+          style={{ backgroundImage: `url(${LANDING_IMAGES.final})` }}
         >
           <div className="sd-wrap">
             <p className="sd-eyebrow sd-eyebrow--on-dark">{FINAL.eyebrow}</p>

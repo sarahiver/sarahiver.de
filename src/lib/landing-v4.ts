@@ -8,16 +8,21 @@
 /* -------------------------------------------------------------------------
    Bilder
    ---------------------------------------------------------------------------
-   Hero und Domain-Band sind noch PLATZHALTER (picsum). Durch Cloudinary-URLs
-   ersetzen — die Domain steht bereits in next.config.ts.
-   Die Demo-Karten holen ihre Bilder aus lib/seed-demos.ts (DEMO_TEMPLATES),
-   damit Karte und verlinkte Demo dasselbe Motiv zeigen.
+   Hero-, Abschluss- und Domain-Bild liegen als eigene Dateien unter
+   public/images/landing/ — keine externen Bilddienste auf der Startseite.
+   Die Demo-Karten holen ihre Bilder aus lib/demo-pages.ts, damit Karte und
+   verlinkte Demo dasselbe Motiv zeigen.
    ------------------------------------------------------------------------- */
 export const LANDING_IMAGES = {
-  /** Hero-Hintergrund, quer, dunkel/warm — Paar nah, Gegenlicht. */
-  hero: 'https://picsum.photos/seed/sdv4-hero/1800/1200',
-  /** Hintergrund Domain-Check — dunkles Grün/Blattwerk. */
-  domain: 'https://picsum.photos/seed/sdv4-green/1800/900',
+  /**
+   * Eigene Bilder unter public/images/landing/ — keine externen Bilddienste
+   * mehr auf der Startseite.
+   */
+  /** Hero-Hintergrund, quer, warm — Paar im Gegenlicht. */
+  hero: '/images/landing/hero.jpg',
+  /** Abschluss-Sektion und Domain-Check: gedeckte Tafel im Abendlicht. */
+  final: '/images/landing/footer.jpg',
+  domain: '/images/landing/footer.jpg',
   /** Geräte-Rahmen (freigestellt, beide Bildschirme sind transparent). */
   deviceFrame:
     'https://res.cloudinary.com/si-weddings/image/upload/v1789465404/device-frame_nxaalw.png',
