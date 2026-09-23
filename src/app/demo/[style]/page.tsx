@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
 import type { Metadata } from 'next';
 import { tokensToCSSVariables, getBereichBackground, SPACING_MULTIPLIER } from '@/lib/tokens';
 import { resolveStyleId } from '@/lib/style-migration';
@@ -115,12 +114,15 @@ export default async function DemoPageRoute({ params }: PageProps) {
           Beispielseite · <strong>{styleName}</strong>
         </span>
         <span className="demo-bar__actions">
-          <Link className="demo-bar__link" href="/#stile">
+          {/* Bewusst einfache Links (wie auf der Landingpage): voller
+              Seitenwechsel, damit der Wechsel aus der Stilwelt heraus
+              zuverlässig funktioniert. */}
+          <a className="demo-bar__link" href="/#stile">
             Alle Stile
-          </Link>
-          <Link className="demo-bar__cta" href={`/signup?style=${d.style}`}>
+          </a>
+          <a className="demo-bar__cta" href={`/signup?style=${d.style}`}>
             Diesen Stil wählen
-          </Link>
+          </a>
         </span>
       </div>
 
@@ -164,12 +166,12 @@ export default async function DemoPageRoute({ params }: PageProps) {
           jedes Bereichs.
         </p>
         <div className="demo-outro__actions">
-          <Link className="demo-outro__cta" href={`/signup?style=${d.style}`}>
+          <a className="demo-outro__cta" href={`/signup?style=${d.style}`}>
             Mit {styleName} starten — 69 € einmalig
-          </Link>
-          <Link className="demo-outro__link" href="/#stile">
+          </a>
+          <a className="demo-outro__link" href="/#stile">
             Andere Stile ansehen
-          </Link>
+          </a>
         </div>
         <p className="demo-outro__meta">Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.</p>
       </section>
