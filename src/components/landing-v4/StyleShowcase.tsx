@@ -1,5 +1,6 @@
 import { loadAllPresets } from '@/lib/presets';
 import { VALID_STYLE_IDS } from '@/lib/style-migration';
+import StylePreview from './StylePreview';
 import { DEMOS, STYLES_SECTION } from '@/lib/landing-v4';
 import { IconArrowRight } from './icons';
 
@@ -48,33 +49,21 @@ export default async function StyleShowcase() {
             return (
               <li className="sd-style" key={s.id}>
                 <a className="sd-style-link" href={`/demo/${encodeURIComponent(s.id)}`}>
-                  <div
-                    className="sd-style-preview"
-                    style={{
-                      background: p?.color_bg ?? '#F7F4ED',
-                      color: p?.color_ink ?? '#1A1714',
-                    }}
-                  >
-                    <span
-                      className="sd-style-sample"
-                      style={{
-                        fontFamily: cssFamily(f?.font_display),
-                        fontWeight: f?.display_weight ?? 400,
-                        fontStyle: f?.display_style === 'italic' ? 'italic' : 'normal',
-                      }}
-                    >
-                      {STYLES_SECTION.sampleCouple}
-                    </span>
-                    <span
-                      className="sd-style-rule"
-                      style={{ background: p?.color_accent ?? '#C9A44A' }}
+                  <div className="sd-style-preview">
+                    <StylePreview
+                      styleId={s.id}
+                      palette={p}
+                      font={
+                        f
+                          ? {
+                              font_display: f.font_display,
+                              font_body: f.font_body,
+                              display_weight: f.display_weight,
+                              display_style: f.display_style,
+                            }
+                          : undefined
+                      }
                     />
-                    <span
-                      className="sd-style-body"
-                      style={{ fontFamily: cssFamily(f?.font_body) }}
-                    >
-                      Wir heiraten
-                    </span>
                   </div>
 
                   <div className="sd-style-meta">
@@ -116,8 +105,3 @@ function familyName(stack: string | null | undefined): string {
   const first = stack.split(',')[0] ?? '';
   return first.replace(/['"]/g, '').trim() || '—';
 }
-
-function cssFamily(stack: string | null | undefined): string | undefined {
-  return stack || undefined;
-}
-

@@ -847,22 +847,160 @@
   transform: translateY(-2px);
   box-shadow: 0 14px 30px rgba(26, 23, 20, .08);
 }
-.sdv4 .sd-style-preview {
-  aspect-ratio: 4 / 3;
+.sdv4 .sd-style-preview { aspect-ratio: 4 / 3; }
+
+/* =========================================================================
+   Mini-Art-Direction der Stilkarten (components/landing-v4/StylePreview.tsx)
+   -------------------------------------------------------------------------
+   Gemeinsames Gerüst: eine Fläche mit zwei dekorativen Ebenen (.sd-pv-art,
+   .sd-pv-art2), Kicker, Namen und Datum. Farben kommen als Variablen aus den
+   echten Presets (--pv-bg/-soft/-accent/-deep/-ink), Schriften aus
+   --pv-display / --pv-body. Je Stil greifen nur wenige Merkmale — kein
+   Nachbau der Demo, sondern deren Handschrift im Kleinen.
+   ========================================================================= */
+.sdv4 .sd-pv {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 16px;
+  gap: 8px;
+  padding: 18px;
   text-align: center;
+  background: var(--pv-bg);
+  color: var(--pv-ink);
 }
-.sdv4 .sd-style-sample {
-  font-size: clamp(19px, 1.9vw, 25px);
-  line-height: 1.1;
+.sdv4 .sd-pv-art, .sdv4 .sd-pv-art2 { position: absolute; z-index: 0; pointer-events: none; }
+.sdv4 .sd-pv-names {
+  position: relative;
+  z-index: 1;
+  font-family: var(--pv-display);
+  font-size: clamp(18px, 1.8vw, 24px);
+  line-height: 1.12;
 }
-.sdv4 .sd-style-rule { display: block; width: 26px; height: 1px; opacity: .8; }
-.sdv4 .sd-style-body { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
+.sdv4 .sd-pv-amp { opacity: .7; }
+.sdv4 .sd-pv-body, .sdv4 .sd-pv-meta {
+  position: relative;
+  z-index: 1;
+  font-family: var(--pv-body);
+  font-weight: 400;
+  font-style: normal;
+  font-size: 9.5px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  opacity: .72;
+}
+
+/* --- Editorial: viel Weißraum, feine Linien, sanftes Bildfragment --------- */
+.sdv4 .sd-pv--editorial { justify-content: flex-end; align-items: flex-start; text-align: left; padding: 20px; }
+.sdv4 .sd-pv--editorial .sd-pv-art {
+  inset: 0 0 auto 0; height: 46%;
+  background: linear-gradient(160deg, var(--pv-soft), color-mix(in srgb, var(--pv-accent) 26%, var(--pv-soft)));
+}
+.sdv4 .sd-pv--editorial .sd-pv-art2 { left: 20px; right: 20px; top: 46%; height: 1px; background: var(--pv-ink); opacity: .22; }
+.sdv4 .sd-pv--editorial .sd-pv-names { margin-top: 2px; }
+.sdv4 .sd-pv--editorial .sd-pv-names { font-size: clamp(17px, 1.7vw, 22px); letter-spacing: .01em; }
+.sdv4 .sd-pv--editorial .sd-pv-body { order: -1; margin-bottom: 2px; }
+
+/* --- Brutalist: schwarze Fläche, harte Kanten, Signalbalken -------------- */
+.sdv4 .sd-pv--brutalist {
+  background: var(--pv-ink); color: var(--pv-bg);
+  align-items: flex-start; justify-content: flex-end; text-align: left; gap: 6px; padding: 16px;
+}
+.sdv4 .sd-pv--brutalist .sd-pv-art { inset: 0 auto 0 0; width: 10px; background: var(--pv-accent); }
+.sdv4 .sd-pv--brutalist .sd-pv-art2 { left: 16px; right: 16px; top: 16px; height: 16px; background: var(--pv-accent); }
+.sdv4 .sd-pv--brutalist .sd-pv-names {
+  font-size: clamp(20px, 2.1vw, 27px); font-weight: 800; text-transform: uppercase;
+  letter-spacing: -.02em; line-height: .95; padding-left: 8px;
+}
+.sdv4 .sd-pv--brutalist .sd-pv-amp { color: var(--pv-accent); opacity: 1; }
+.sdv4 .sd-pv--brutalist :is(.sd-pv-body, .sd-pv-meta) { opacity: .85; padding-left: 8px; }
+
+/* --- Organic: weicher Bogen, warme Fläche, zeitlos ----------------------- */
+.sdv4 .sd-pv--organic { background: var(--pv-soft); }
+.sdv4 .sd-pv--organic .sd-pv-art {
+  left: 50%; top: 14px; width: 62%; height: 78%; transform: translateX(-50%);
+  border-radius: 999px 999px 8px 8px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--pv-accent) 34%, var(--pv-bg)), var(--pv-bg));
+}
+.sdv4 .sd-pv--organic .sd-pv-art2 {
+  left: 50%; bottom: 16px; width: 34px; height: 34px; transform: translateX(-50%);
+  border: 1px solid color-mix(in srgb, var(--pv-ink) 25%, transparent); border-radius: 999px;
+}
+.sdv4 .sd-pv--organic .sd-pv-names { font-size: clamp(17px, 1.7vw, 22px); }
+.sdv4 .sd-pv--organic .sd-pv-meta { opacity: 0; }
+
+/* --- Mono: monochrom, Raster, präzise ----------------------------------- */
+.sdv4 .sd-pv--mono { background: #fff; align-items: flex-start; text-align: left; justify-content: space-between; padding: 16px; }
+.sdv4 .sd-pv--mono .sd-pv-art {
+  inset: 16px; border-top: 1px solid var(--pv-ink); border-bottom: 1px solid var(--pv-ink); opacity: .55;
+}
+/* Kurzer Rasterstrich oben statt durchgehender Linie — sonst kreuzt er mobil die Namen. */
+.sdv4 .sd-pv--mono .sd-pv-art2 { top: 16px; height: 30%; left: 62%; width: 1px; background: var(--pv-ink); opacity: .3; }
+.sdv4 .sd-pv--mono .sd-pv-names { font-size: clamp(16px, 1.6vw, 21px); }
+.sdv4 .sd-pv--mono :is(.sd-pv-body, .sd-pv-meta) { font-size: 9px; opacity: .6; }
+
+/* --- Opulent: dunkler Auftakt, Goldlinie, festlich ----------------------- */
+.sdv4 .sd-pv--opulent { background: var(--pv-ink); color: var(--pv-bg); }
+.sdv4 .sd-pv--opulent .sd-pv-art {
+  inset: 10px; border: 1px solid color-mix(in srgb, var(--pv-accent) 55%, transparent);
+}
+.sdv4 .sd-pv--opulent .sd-pv-art2 {
+  left: 50%; top: 30%; width: 44px; height: 1px; transform: translateX(-50%); background: var(--pv-accent);
+}
+.sdv4 .sd-pv--opulent .sd-pv-names { font-size: clamp(18px, 1.9vw, 24px); letter-spacing: .02em; }
+.sdv4 .sd-pv--opulent .sd-pv-amp { color: var(--pv-accent); opacity: 1; }
+.sdv4 .sd-pv--opulent :is(.sd-pv-body, .sd-pv-meta) { color: var(--pv-accent); opacity: .85; }
+
+/* --- Liquefy: diffuse Lichtwolken, weich schwebend ----------------------- */
+.sdv4 .sd-pv--liquefy { background: var(--pv-bg); }
+.sdv4 .sd-pv--liquefy .sd-pv-art {
+  inset: -18%;
+  background:
+    radial-gradient(40% 44% at 22% 26%, color-mix(in srgb, var(--pv-accent) 58%, transparent), transparent 70%),
+    radial-gradient(38% 40% at 78% 30%, color-mix(in srgb, var(--pv-soft) 92%, transparent), transparent 72%),
+    radial-gradient(46% 48% at 60% 88%, color-mix(in srgb, var(--pv-deep) 34%, transparent), transparent 74%);
+}
+.sdv4 .sd-pv--liquefy .sd-pv-art2 {
+  left: 50%; top: 50%; width: 76%; height: 54%; transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background: color-mix(in srgb, #fff 62%, transparent);
+}
+.sdv4 .sd-pv--liquefy .sd-pv-names { font-size: clamp(17px, 1.8vw, 23px); }
+
+/* --- Kinetic: kondensierte Großtypo, Electric Blue, Versatz -------------- */
+.sdv4 .sd-pv--kinetic {
+  background: var(--pv-bg); align-items: flex-start; justify-content: flex-end; text-align: left; gap: 4px; padding: 16px;
+}
+.sdv4 .sd-pv--kinetic .sd-pv-art { right: -6%; top: 12%; width: 46%; height: 34%; background: var(--pv-accent); }
+.sdv4 .sd-pv--kinetic .sd-pv-art2 { left: 16px; bottom: 34px; width: 54px; height: 6px; background: var(--pv-ink); }
+.sdv4 .sd-pv--kinetic .sd-pv-names {
+  font-size: clamp(22px, 2.4vw, 32px); font-weight: 800; font-stretch: 68%;
+  text-transform: uppercase; letter-spacing: -.01em; line-height: .88; margin-left: -.02em;
+}
+.sdv4 .sd-pv--kinetic .sd-pv-amp { color: var(--pv-accent); opacity: 1; }
+.sdv4 .sd-pv--kinetic .sd-pv-body {
+  order: -1; align-self: flex-start; background: var(--pv-accent); color: #fff;
+  padding: 3px 7px 2px; opacity: 1; font-size: 8.5px;
+}
+.sdv4 .sd-pv--kinetic .sd-pv-meta { opacity: .6; }
+
+/* --- Bauhaus: Primärformen, strenges Raster ----------------------------- */
+.sdv4 .sd-pv--bauhaus { background: var(--pv-bg); align-items: flex-start; text-align: left; justify-content: flex-end; padding: 16px; }
+.sdv4 .sd-pv--bauhaus .sd-pv-art {
+  right: 16px; top: 14px; width: 46px; height: 46px; border-radius: 999px; background: var(--pv-accent);
+}
+.sdv4 .sd-pv--bauhaus .sd-pv-art2 {
+  left: 16px; top: 14px; width: 30px; height: 30px; background: var(--pv-deep);
+}
+.sdv4 .sd-pv--bauhaus .sd-pv-names {
+  font-size: clamp(17px, 1.8vw, 23px); text-transform: uppercase; letter-spacing: .01em; font-weight: 700;
+}
+.sdv4 .sd-pv--bauhaus .sd-pv-meta { opacity: .65; }
 .sdv4 .sd-style-meta { padding: 14px 16px 0; }
 .sdv4 .sd-style-meta h3 { font-family: var(--body); font-size: 14px; font-weight: 600; }
 .sdv4 .sd-style-meta p { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
