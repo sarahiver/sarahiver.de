@@ -82,6 +82,12 @@ function diagnose(row: AdminSiteRow): Diagnosis {
     return { headline: 'Erstattet', level: 'error', notes };
   }
   if (row.purchaseStatus !== 'paid') {
+    // Seiten ohne Kaufstatus UND ohne Stripe-Session stammen aus der Zeit vor
+    // dem Verkaufsstart (eigene Tests, frühe Demos). Kein Supportfall.
+    if (!row.purchaseStatus && !row.stripeSessionId) {
+      notes.push('Angelegt ohne Checkout — Altbestand oder eigene Testseite.');
+      return { headline: 'Altbestand / Test', level: 'info', notes };
+    }
     notes.push(`Kaufstatus: ${row.purchaseStatus ?? 'unbekannt'}.`);
     return { headline: 'Nicht bezahlt', level: 'warn', notes };
   }
@@ -237,6 +243,10 @@ export function filterRows(
       return out.filter((r) => !!r.accessUntil && new Date(r.accessUntil).getTime() < Date.now());
     case 'refunded':
       return out.filter((r) => r.purchaseStatus === 'refunded');
+    case 'legacy':
+      return out.filter((r) => !r.purchaseStatus && !r.stripeSessionId);
+    case 'customers':
+      return out.filter((r) => !!r.stripeSessionId || r.purchaseStatus === 'paid');
     default:
       return out;
   }

@@ -11,11 +11,13 @@ const LEVEL: Record<string, string> = { ok: '#1f7a45', info: '#2c5bb5', warn: '#
 
 const FILTERS = [
   ['', 'Alle'],
+  ['customers', 'Echte Kunden'],
   ['problem', 'Probleme'],
   ['unpublished', 'Nicht veröffentlicht'],
   ['unpaid', 'Nicht bezahlt'],
   ['expired', 'Abgelaufen'],
   ['refunded', 'Erstattet'],
+  ['legacy', 'Altbestand / Tests'],
   ['published', 'Veröffentlicht'],
 ] as const;
 
@@ -115,7 +117,7 @@ function Row({ r }: { r: AdminSiteRow }) {
       <td style={td}>{de(r.accessUntil)}</td>
       <td style={td}>{r.accountLastSignIn ? `Login ${de(r.accountLastSignIn)}` : r.ownerEmail ? 'nie' : '—'}</td>
       <td style={td}>
-        {r.rsvpCount} RSVP · {r.guestbookPending}/{r.guestbookTotal} GB · {r.photoCount} Fotos
+        {r.rsvpCount} RSVP · {r.guestbookPending}/{r.guestbookTotal} Gästebuch · {r.photoCount} Fotos
       </td>
       <td style={{ ...td, color: LEVEL[r.diagnosis.level], fontWeight: 600 }}>{r.diagnosis.headline}</td>
     </tr>
