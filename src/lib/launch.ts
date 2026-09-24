@@ -12,20 +12,20 @@ export const LAUNCH_DATE = '2026-10-15';
 export const LAUNCH_DATE_LABEL = '15. Oktober 2026';
 
 /**
- * Hauptschalter.
+ * Hauptschalter — seit dem Verkaufsstart AUS.
  *
- * Am 15.10.2026: hier auf `false` setzen, committen, fertig.
- * Zum Prüfen ohne Deploy: NEXT_PUBLIC_PRE_LAUNCH=off in Vercel setzen.
+ * Damit rendert das Launch-Modal nicht mehr, /signup zeigt das Bestellformular
+ * und der Checkout ist freigegeben. Die Komponenten (LaunchGate,
+ * PrelaunchNotice, Warteliste) bleiben im Code, falls der Verkauf noch einmal
+ * pausiert werden muss: dann hier wieder auf `true` setzen.
+ * Notbremse ohne Deploy: NEXT_PUBLIC_PRE_LAUNCH=on in Vercel setzen.
  */
-export const PRE_LAUNCH_MODE = process.env.NEXT_PUBLIC_PRE_LAUNCH !== 'off';
+export const PRE_LAUNCH_MODE = process.env.NEXT_PUBLIC_PRE_LAUNCH === 'on';
 
 /**
- * Kauf-Schalter. Vor dem Launch darf kein Stripe-Checkout starten — weder über
- * die Landing noch durch direkten Aufruf von /signup. Geprüft wird das an zwei
- * Stellen: in der Seite (Anzeige) UND in der Server Action (verbindlich).
- *
- * Hängt bewusst am selben Schalter: am 15.10.2026 wird mit PRE_LAUNCH_MODE
- * automatisch auch der Kauf freigeschaltet.
+ * Kauf-Schalter. Hängt am selben Hauptschalter und wird an zwei Stellen
+ * geprüft: in der Seite (Anzeige) UND in der Server Action (verbindlich).
+ * Wird der Verkauf pausiert, greift die Sperre also auch bei direktem Aufruf.
  */
 export const CHECKOUT_ENABLED = !PRE_LAUNCH_MODE;
 
